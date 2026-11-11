@@ -1,0 +1,31 @@
+name: ReadLater
+options:
+  bundleIdPrefix: com.readlater
+  deploymentTarget:
+    iOS: "17.0"
+    macOS: "14.0"
+
+packages:
+  ReadLaterCore:
+    path: ../../packages/ReadLaterCore
+  ReadLaterUI:
+    path: ../../packages/ReadLaterUI
+
+targets:
+  ReadLater:
+    type: application
+    platform: iOS
+    supportedDestinations: [iOS, mac]
+    bundleId: com.readlater.app
+    sources:
+      - path: Sources
+    resources:
+      - path: Resources
+    dependencies:
+      - package: ReadLaterCore
+      - package: ReadLaterUI
+    settings:
+      CODE_SIGNING_ALLOWED: NO
+      GENERATE_INFOPLIST_FILE: YES
+      MARKETING_VERSION: "0.1.0"
+      CURRENT_PROJECT_VERSION: "1"
