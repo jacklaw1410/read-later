@@ -24,10 +24,23 @@ public struct NoopDiagnostics: Diagnostics {
 }
 
 /// Keeps events in memory so tests and the pilot export can read them.
-public actor InMemoryDiagnostics: Diagnostics {
-    public private(set) var events: [DiagnosticEvent] = []
+public final class InMemoryDiagnostics: Diagnostics, @unchecked Sendable {
+    private let lock = NSLock()
+    private var storage: [DiagnosticEvent] = []
+
     public init() {}
-    public func record(_ event: DiagnosticEvent) { events.append(event) }
+
+    public func record(_ event: DiagnosticEvent) {
+        lock.lock()
+        defer { lock.unlock() }
+        storage.append(event)
+    }
+
+    public var events: [DiagnosticEvent] {
+        lock.lock()
+        defer { lock.unlock() }
+        return storage
+    }
 }
 
 // MARK: - Speech
@@ -182,7 +195,22 @@ public enum TokenShape {
 
 public protocol Extractor: Sendable {
     /// Returns blocks for a usable page, or throws the class that stopped it.
-    func extract(html: String, source: String) throws -> ExtractionResult
+    ///
+    /// `httpStatus` is part of the input on purpose. A 401, 403 or 451 is a wall
+    /// whatever the body says, and the stored body of such a page is often empty:
+    /// nine of the pinned walls carry no readable text. Without the status the
+    /// extractor reports `failed`, and `failed` tells the reader nothing.
+    func extract(html: String, source: String, httpStatus: Int?) throws -> ExtractionResult
+}
+
+public extension Extractor {
+    func extract(html: String, source: String) throws -> ExtractionResult {
+        try extract(html: html, source: source, httpStatus: nil)
+    }
+}
+
+public enum WallStatus {
+    public static let denied: Set<Int> = [401, 403, 451]
 }
 
 // MARK: - Spoken plan
@@ -197,12 +225,12 @@ public enum SpokenPlanBuilder {
         source: String,
         sourceSHA256: String
     ) -> BlockPlan {
-        fatalError("ReadLaterCore: SpokenPlanBuilder.build not implemented")
+        SpokenPlanEngine.build(blocks: blocks, source: source, sourceSHA256: sourceSHA256)
     }
 
     /// Splits one block's text into sentences, without touching the block tree.
     public static func sentences(in text: String) -> [Sentence] {
-        fatalError("ReadLaterCore: SpokenPlanBuilder.sentences not implemented")
+        SpokenPlanEngine.sentences(in: text)
     }
 }
 
@@ -230,6 +258,6 @@ public enum SpokenPlanInvariant {
     /// Every spoken sentence must be an exact slice of its block's text.
     /// Runs at load, before the first utterance. Zero failures on 12,240 sentences.
     public static func violations(in blocks: [Block]) -> [InvariantViolation] {
-        fatalError("ReadLaterCore: SpokenPlanInvariant.violations not implemented")
+        SpokenPlanCheck.violations(in: blocks)
     }
 }

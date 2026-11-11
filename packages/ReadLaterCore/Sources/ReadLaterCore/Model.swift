@@ -108,7 +108,7 @@ public struct SkippedBlock: Codable, Sendable, Hashable {
 }
 
 /// The extraction contract. `version` is the schema version, not the app version.
-public struct BlockPlan: Codable, Sendable {
+public struct BlockPlan: Codable, Sendable, Hashable {
     public var version: Int
     public var source: String
     public var sourceSHA256: String
