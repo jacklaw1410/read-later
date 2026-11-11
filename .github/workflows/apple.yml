@@ -1,0 +1,169 @@
+name: apple
+
+on:
+  pull_request:
+    paths:
+      - "apps/apple/**"
+      - "packages/**"
+      - "contracts/**"
+      - "fixtures/**"
+      - "tools/**"
+      - ".github/workflows/apple.yml"
+  push:
+    branches: [main]
+    paths:
+      - "apps/apple/**"
+      - "packages/**"
+      - "contracts/**"
+      - "fixtures/**"
+      - "tools/**"
+      - ".github/workflows/apple.yml"
+
+# A newer push on the same branch supersedes the older run.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: swift-format lint
+        run: |
+          if command -v swift-format >/dev/null 2>&1; then
+            swift-format lint --recursive apps packages tools
+          else
+            echo "swift-format not installed on this runner; skipping."
+          fi
+      - name: shellcheck
+        run: |
+          if command -v shellcheck >/dev/null 2>&1; then
+            git ls-files '*.sh' | xargs -r shellcheck
+          else
+            echo "shellcheck not installed on this runner; skipping."
+          fi
+      - name: actionlint
+        uses: rhysd/actionlint@v1
+        with:
+          fail_on_error: true
+      - name: privacy manifest
+        run: |
+          MANIFEST=apps/apple/Resources/PrivacyInfo.xcprivacy
+          if [ ! -f "$MANIFEST" ]; then
+            echo "$MANIFEST not present yet; skipping."
+            exit 0
+          fi
+          if command -v plutil >/dev/null 2>&1; then
+            plutil -lint "$MANIFEST"
+          else
+            python3 -c "import plistlib,sys; plistlib.load(open('$MANIFEST','rb')); print('plist OK')"
+          fi
+
+  contracts:
+    name: contracts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: validate contracts and fixtures
+        run: |
+          pip install jsonschema
+          python3 tools/contracts/validate.py
+
+  unit:
+    name: unit
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: swift test, every package, warnings as errors
+        run: |
+          for pkg in packages/*/; do
+            if [ -f "$pkg/Package.swift" ]; then
+              swift test --package-path "$pkg" -Xswiftc -warnings-as-errors
+            fi
+          done
+
+  build-macos:
+    name: build-macos
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: install xcodegen
+        run: brew install xcodegen
+      - name: unsigned macOS build
+        working-directory: apps/apple
+        run: |
+          xcodegen generate
+          xcodebuild -project ReadLater.xcodeproj -scheme ReadLater \
+            -destination 'platform=macOS' build CODE_SIGNING_ALLOWED=NO
+
+  build-ios:
+    name: build-ios
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: install xcodegen
+        run: brew install xcodegen
+      - name: unsigned simulator build
+        working-directory: apps/apple
+        run: |
+          xcodegen generate
+          xcodebuild -project ReadLater.xcodeproj -scheme ReadLater \
+            -destination 'platform=iOS Simulator,name=iPhone 16' build CODE_SIGNING_ALLOWED=NO
+
+  invariant:
+    name: invariant
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: spoken-slice invariant, 0 failures required
+        run: |
+          for pkg in packages/*/; do
+            if [ -f "$pkg/Package.swift" ]; then
+              swift test --package-path "$pkg" --filter Invariant
+            fi
+          done
+
+  e2e:
+    name: e2e
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: decide scope
+        id: scope
+        run: |
+          BASE="${{ github.base_ref }}"
+          if [ -n "$BASE" ]; then
+            CHANGED=$(git diff --name-only "origin/$BASE...HEAD")
+          else
+            CHANGED=$(git diff --name-only HEAD~1 2>/dev/null || git ls-files)
+          fi
+          echo "changed files:"; echo "$CHANGED"
+          if echo "$CHANGED" | grep -q '^apps/'; then
+            echo "run-e2e=true" >> "$GITHUB_OUTPUT"
+          elif [ -z "$(echo "$CHANGED" | grep -v '^packages/ReadLaterCore/')" ]; then
+            echo "Core-only change; skipping e2e."
+            echo "run-e2e=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "run-e2e=true" >> "$GITHUB_OUTPUT"
+          fi
+      # The five reader journeys (paste, tap, miss, decline, install) land in M2.
+      # Until apps/apple/UITests exists this job reports the skip and succeeds.
+      - name: reader journeys
+        if: steps.scope.outputs.run-e2e == 'true'
+        working-directory: apps/apple
+        run: |
+          if [ -d UITests ]; then
+            xcodegen generate
+            xcodebuild test -project ReadLater.xcodeproj -scheme ReadLater \
+              -destination 'platform=iOS Simulator,name=iPhone 16' \
+              CODE_SIGNING_ALLOWED=NO
+          else
+            echo "NOTICE: apps/apple/UITests does not exist yet; e2e journeys land in M2. Skipping with success."
+          fi
