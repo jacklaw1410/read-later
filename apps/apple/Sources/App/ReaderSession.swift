@@ -81,9 +81,13 @@ final class ReaderSession: ObservableObject {
         switch speech.state {
         case .paused:
             speech.resume()
-        case .speaking, .warming:
+        case .speaking:
             speech.pause()
-        case .idle, .finished:
+        case .warming, .idle, .finished:
+            // Warming is a background pre-warm, not playback. The reader's
+            // first press must start the article even if the voice is still
+            // getting ready; treating warming as playing made the button do
+            // nothing on a cold launch.
             startSpeaking(at: resumeAt ?? 0)
         }
     }
@@ -248,6 +252,23 @@ final class ReaderSession: ObservableObject {
         autoScroll = true
         isHeld = false
     }
+
+    #if DEBUG
+    /// Moves the wash and the progress without the audio engine.
+    ///
+    /// The snapshot harness runs in a launch where `AVSpeechSynthesizer`
+    /// starts an utterance and then delivers no word boundaries at all, so
+    /// every screenshot of playback would show word zero. This drives the same
+    /// wash the voice would drive, and nothing else. Release builds do not
+    /// contain it.
+    var washWordIndex: Int { wash.wordIndex ?? 0 }
+
+    func simulateWash(toWord index: Int) {
+        guard let slot = spoken.word(at: index) else { return }
+        wash.wordIndex = slot.index
+        wash.isPlaying = true
+    }
+    #endif
 
     // MARK: - Speech callbacks
 

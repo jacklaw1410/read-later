@@ -71,6 +71,8 @@ public final class AVSpeechController: NSObject, SpeechController {
     private var currentWordIndex = 0
     private var epoch = 0
     private var warmedUp = false
+    /// Epoch captured when a fill is scheduled, so a stale fill does nothing.
+    private var epochAtFill = 0
     private var warmupIDs = Set<ObjectIdentifier>()
     private var pausedByInterruption = false
     private var voice: AVSpeechSynthesisVoice?
@@ -129,6 +131,7 @@ public final class AVSpeechController: NSObject, SpeechController {
 
     public func speak(sentences: [(blockID: Int, sentence: Sentence)], prefetch: Int) {
         epoch += 1
+        epochAtFill = epoch
         synthesizer.stopSpeaking(at: .immediate)
         inFlight.removeAll()
         retained.removeAll()
@@ -143,7 +146,13 @@ public final class AVSpeechController: NSObject, SpeechController {
             return
         }
         state = .speaking
-        fillWindow()
+        // `stopSpeaking(at: .immediate)` is processed on the synthesizer's own
+        // queue. An utterance enqueued in the same turn as the stop is
+        // discarded, so the first fill waits for one run-loop turn.
+        DispatchQueue.main.async { [weak self] in
+            guard let self, self.epoch == self.epochAtFill, self.state == .speaking else { return }
+            self.fillWindow()
+        }
     }
 
     public func pause() {
@@ -305,8 +314,12 @@ public final class AVSpeechController: NSObject, SpeechController {
 
 extension AVSpeechController {
     fileprivate func handleDidStart(utteranceID: ObjectIdentifier) {
-        guard inFlight[utteranceID] != nil || warmupIDs.contains(utteranceID) else { return }
-        if state == .warming { return }
+        // A warm-up is not playback. Its callbacks can arrive out of order
+        // (the finish of a single space often beats its own start), and a
+        // late start must never promote the controller to `speaking`: that
+        // leaves a state that claims to play while nothing is queued, and the
+        // transport then swallows the reader's first press.
+        guard inFlight[utteranceID] != nil, !warmupIDs.contains(utteranceID) else { return }
         state = .speaking
     }
 
