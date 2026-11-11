@@ -653,7 +653,7 @@ struct _WashableTextView: UIViewRepresentable {
         context.coordinator.onTapWord = onTapWord
         context.coordinator.onTapMarker = onTapMarker
         context.coordinator.slots = slots
-        context.coordinator.rebuildBase(text: text, style: style, tone: tone)
+        context.coordinator.rebuildBase(text: text, style: style, tone: tone, marker: marker)
         textView.attributedText = context.coordinator.baseText
         context.coordinator.applyMarks(marks)
         return textView
@@ -668,8 +668,9 @@ struct _WashableTextView: UIViewRepresentable {
         if context.coordinator.lastText != text
             || context.coordinator.lastStyle != style
             || context.coordinator.lastTone != tone
+            || context.coordinator.lastMarker != marker
         {
-            context.coordinator.rebuildBase(text: text, style: style, tone: tone)
+            context.coordinator.rebuildBase(text: text, style: style, tone: tone, marker: marker)
             textView.attributedText = context.coordinator.baseText
             context.coordinator.lastMarks = []
         }
@@ -694,9 +695,15 @@ struct _WashableTextView: UIViewRepresentable {
         var lastText: String?
         var lastStyle: WashableTextStyle?
         var lastTone: WashableTextTone?
+        var lastMarker: String?
         var lastMarks: [WashMark] = []
 
-        func rebuildBase(text: String, style: WashableTextStyle, tone: WashableTextTone) {
+        func rebuildBase(
+            text: String,
+            style: WashableTextStyle,
+            tone: WashableTextTone,
+            marker: String?
+        ) {
             defer { bodyLength = (text as NSString).length }
             let paragraph = NSMutableParagraphStyle()
             if style == .body {
@@ -726,6 +733,7 @@ struct _WashableTextView: UIViewRepresentable {
             lastText = text
             lastStyle = style
             lastTone = tone
+            lastMarker = marker
         }
 
         @objc func handleTap(_ gesture: UITapGestureRecognizer) {

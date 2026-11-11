@@ -286,7 +286,7 @@ public final class AVSpeechController: NSObject, SpeechController {
 
     private func handleInterruption(_ note: Notification) {
         #if os(iOS)
-            guard let raw = note.userInfo?[AVAudioSession.interruptionTypeKey] as? UInt,
+            guard let raw = note.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt,
                   let type = AVAudioSession.InterruptionType(rawValue: raw)
             else { return }
             switch type {
@@ -297,7 +297,7 @@ public final class AVSpeechController: NSObject, SpeechController {
                     state = .paused
                 }
             case .ended:
-                let options = (note.userInfo?[AVAudioSession.interruptionOptionKey] as? UInt)
+                let options = (note.userInfo?[AVAudioSessionInterruptionOptionKey] as? UInt)
                     .map(AVAudioSession.InterruptionOptions.init(rawValue:)) ?? []
                 defer { pausedByInterruption = false }
                 guard pausedByInterruption, options.contains(.shouldResume), state == .paused else { return }
