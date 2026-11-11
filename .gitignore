@@ -1,0 +1,18 @@
+# Build products
+.build/
+.swiftpm/
+DerivedData/
+*.xcodeproj
+*.xcworkspace
+
+# macOS
+.DS_Store
+
+# Secrets
+*.p12
+*.mobileprovision
+Secrets.xcconfig
+
+# Test output
+*.xcresult
+TestResults/
