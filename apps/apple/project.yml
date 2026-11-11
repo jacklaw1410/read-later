@@ -14,8 +14,7 @@ packages:
 targets:
   ReadLater:
     type: application
-    platform: iOS
-    supportedDestinations: [iOS, mac]
+    supportedDestinations: [iOS, macOS]
     bundleId: com.readlater.app
     sources:
       - path: Sources
