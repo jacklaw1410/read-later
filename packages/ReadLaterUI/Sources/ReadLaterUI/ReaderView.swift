@@ -34,34 +34,10 @@ public struct ReaderView<Player: View, Overlay: View>: View {
         self.overlay = overlay
     }
 
-    /// Where the scroll view should be, given the wash word.
-    ///
-    /// A short block is centred when the voice enters it. A long block cannot
-    /// be centred without pushing its own start off screen, so the anchor walks
-    /// with the word: the fraction of the block the word sits at becomes the
-    /// fraction of the viewport it lands on. That keeps the wash on screen in a
-    /// 250-word paragraph without a scroll on every word, because the value
-    /// only changes when the word crosses an eight-word bucket.
-    private var scrollTarget: ScrollTarget? {
-        guard let index = wash.wordIndex,
-              let slot = spoken.word(at: index),
-              let words = spoken.byBlock[slot.blockID],
-              !words.isEmpty
-        else { return nil }
-
-        guard words.count > 120 else {
-            return ScrollTarget(blockID: slot.blockID, anchor: .center, bucket: -1, isFractional: false)
-        }
-        guard let position = words.firstIndex(where: { $0.index == index }) else { return nil }
-        let bucket = position / 8
-        let fraction = Double(position) / Double(max(words.count - 1, 1))
-        let unitY = min(max(fraction, 0.3), 0.66)
-        return ScrollTarget(
-            blockID: slot.blockID,
-            anchor: UnitPoint(x: 0.5, y: unitY),
-            bucket: bucket,
-            isFractional: true
-        )
+    /// True when this block holds the word the voice is on.
+    private func holdsWash(_ blockID: Int) -> Bool {
+        guard let index = wash.wordIndex else { return false }
+        return spoken.byBlock[blockID]?.contains { $0.index == index } ?? false
     }
 
     /// Marker blocks attached to the preceding body block, paired with note
@@ -100,8 +76,7 @@ public struct ReaderView<Player: View, Overlay: View>: View {
     public var body: some View {
         ZStack {
             VStack(spacing: 0) {
-                ScrollViewReader { proxy in
-                    ScrollView {
+                ScrollView {
                         VStack(alignment: .leading, spacing: 14) {
                             Text(document.title)
                                 .font(Theme.title())
@@ -117,6 +92,7 @@ public struct ReaderView<Player: View, Overlay: View>: View {
                                     wash: wash,
                                     spoken: spoken,
                                     footnote: footnoteAttachments[block.id],
+                                    followsWash: autoScroll && holdsWash(block.id),
                                     onTapWord: onTapWord,
                                     onTapNote: onTapNote
                                 )
@@ -131,13 +107,11 @@ public struct ReaderView<Player: View, Overlay: View>: View {
                         .frame(maxWidth: Theme.maxLineWidth)
                         .frame(maxWidth: .infinity, alignment: .center)
                     }
-                    .onChange(of: scrollTarget) { _, target in
-                        guard autoScroll, let target else { return }
-                        withAnimation(.easeInOut(duration: target.isFractional ? 0.45 : 0.25)) {
-                            proxy.scrollTo(target.blockID, anchor: target.anchor)
-                        }
-                    }
-                }
+                    // No `ScrollViewReader` here on purpose: `scrollTo` takes
+                    // a view id, and a word is not a view. The block holding
+                    // the wash word scrolls its own enclosing scroll view, so
+                    // the page follows within a paragraph as well as between
+                    // paragraphs.
                 player()
             }
             overlay()
@@ -162,13 +136,4 @@ public struct ReaderView<Player: View, Overlay: View>: View {
         }
         .padding(.top, 18)
     }
-}
-
-/// One computed scroll position. Equatable so the reader only animates when the
-/// bucket, the block, or the kind of scroll changes.
-struct ScrollTarget: Equatable {
-    var blockID: Int
-    var anchor: UnitPoint
-    var bucket: Int
-    var isFractional: Bool
 }

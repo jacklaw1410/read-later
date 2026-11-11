@@ -72,7 +72,7 @@ public enum ArticleLibrary {
                 kind: .prose,
                 confidence: 0.97,
                 reason: "element: p",
-                text: "Begin tonight. Read one page slowly, then close the book and say back what it claimed.¹ Linger on the last line, and let it keep its echo.",
+                text: "Begin tonight. Read one page slowly, then close the book and say back what it claimed. Linger on the last line, and let it keep its echo.",
                 children: [
                     Block(
                         id: 7,

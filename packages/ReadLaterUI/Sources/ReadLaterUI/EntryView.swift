@@ -159,29 +159,33 @@ public struct EntryView: View {
 
     @ViewBuilder
     private var progressArea: some View {
-        if showsProgress {
-            VStack(alignment: .leading, spacing: 8) {
-                GeometryReader { geo in
-                    ZStack(alignment: .leading) {
-                        Capsule()
-                            .fill(Theme.line)
-                            .frame(height: 3)
-                        Capsule()
-                            .fill(Theme.brand)
-                            .frame(width: shownProgress * geo.size.width, height: 3)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        // Always laid out, only revealed when a load starts. A view that
+        // inserts itself on press moves the button under the reader's finger
+        // and shifts the whole form; reserving the height costs two lines of
+        // empty space and no jolt.
+        VStack(alignment: .leading, spacing: 8) {
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    Capsule()
+                        .fill(Theme.line)
+                        .frame(height: 3)
+                    Capsule()
+                        .fill(Theme.brand)
+                        .frame(width: shownProgress * geo.size.width, height: 3)
                 }
-                .frame(height: 3)
-                .animation(reduceMotion ? nil : .easeInOut(duration: 0.3), value: shownProgress)
-                Text(progressLabel)
-                    .font(Theme.caption())
-                    .foregroundStyle(Theme.inkSecondary)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
             }
-            .accessibilityElement(children: .combine)
-            .accessibilityLabel("Loading progress")
-            .accessibilityValue("\(Int(shownProgress * 100)) percent")
+            .frame(height: 3)
+            .animation(reduceMotion ? nil : .easeInOut(duration: 0.3), value: shownProgress)
+            Text(showsProgress ? progressLabel : " ")
+                .font(Theme.caption())
+                .foregroundStyle(Theme.inkSecondary)
         }
+        .opacity(showsProgress ? 1 : 0)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Loading progress")
+        .accessibilityValue("\(Int(shownProgress * 100)) percent")
+        .accessibilityHidden(!showsProgress)
     }
 
     private func open() {

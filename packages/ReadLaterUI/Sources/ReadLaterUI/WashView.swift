@@ -83,7 +83,16 @@ public struct WashableText: View {
     private var wash: WashState
     private var style: WashableTextStyle
     private var tone: WashableTextTone
+    /// A footnote marker drawn as a superscript at the end of the text. It is
+    /// display only: it never enters `Block.text`, so the wash ranges and the
+    /// spoken plan cannot see it.
+    private var marker: String?
+    /// True when this block holds the word the voice is on and the reader has
+    /// not taken the page over. The platform view then keeps that word in view
+    /// itself; SwiftUI's `scrollTo` cannot address a word inside one block.
+    private var followsWash: Bool
     private var onTapWord: (WordSlot?, String) -> Void
+    private var onTapMarker: (() -> Void)?
 
     public init(
         text: String,
@@ -91,14 +100,20 @@ public struct WashableText: View {
         wash: WashState,
         style: WashableTextStyle = .body,
         tone: WashableTextTone = .ink,
-        onTapWord: @escaping (WordSlot?, String) -> Void
+        marker: String? = nil,
+        followsWash: Bool = false,
+        onTapWord: @escaping (WordSlot?, String) -> Void,
+        onTapMarker: (() -> Void)? = nil
     ) {
         self.text = text
         self.slots = slots
         self.wash = wash
         self.style = style
         self.tone = tone
+        self.marker = marker
+        self.followsWash = followsWash
         self.onTapWord = onTapWord
+        self.onTapMarker = onTapMarker
     }
 
     public var body: some View {
@@ -108,7 +123,10 @@ public struct WashableText: View {
             marks: washMarks(slots: slots, wash: wash),
             style: style,
             tone: tone,
-            onTapWord: onTapWord
+            marker: marker,
+            followsWash: followsWash,
+            onTapWord: onTapWord,
+            onTapMarker: onTapMarker
         )
     }
 }
@@ -142,6 +160,12 @@ extension Theme {
 
     static var platformCoincidenceRing: NSColor {
         NSColor(name: nil) { $0.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua ? NSColor.washHex(0xF59E0B) : NSColor.washHex(0xB45309) }
+    }
+
+    /// Link and marker ink. The light value is the brand slate; the dark value
+    /// is the lifted blue, so the marker stays visible on the dark page.
+    static var platformBrandInk: NSColor {
+        NSColor(name: nil) { $0.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua ? NSColor.washHex(0x7FB3D5) : NSColor.washHex(0x334E68) }
     }
 
     static var platformSkipInk: NSColor {
@@ -182,15 +206,16 @@ func temporaryAttributes(for emphasis: WordEmphasis) -> [NSAttributedString.Key:
     }
 }
 
-/// The chip behind one word. Rounded, tight to the glyphs, with the state's
-/// edge rule drawn inside its bottom edge. The four states are told apart by
-/// fill and edge, never by alpha alone.
-func washChip(for emphasis: WordEmphasis) -> (fill: NSColor, edge: NSColor?, edgeWidth: CGFloat)? {
+/// The chip behind one word: fill, and an inset ring when the state has one.
+/// Source: prototype `.kw` rules (`background` plus `box-shadow: inset`).
+/// The four states are told apart by fill and ring, never by alpha alone.
+func washChip(for emphasis: WordEmphasis) -> (fill: NSColor, ring: NSColor?, ringWidth: CGFloat)? {
     switch emphasis {
     case .current:
         return (Theme.platformWashBackground, nil, 0)
     case .paused:
-        return (Theme.platformPausedWash, Theme.platformPausedRing, 2)
+        // The prototype's grey amber with a 1.5 pt inset ring.
+        return (Theme.platformPausedWash, Theme.platformPausedRing, 1.5)
     case .selected:
         return (Theme.platformSelectionWash, nil, 0)
     case .coincide:
@@ -198,6 +223,13 @@ func washChip(for emphasis: WordEmphasis) -> (fill: NSColor, edge: NSColor?, edg
     case .none:
         return nil
     }
+}
+
+/// Keeps the wash word inside the enclosing scroll view. Free function so the
+/// representable can call it without owning the subclass type.
+@MainActor
+func revealWash(in textView: NSTextView) {
+    (textView as? _WashedTextView)?.revealWash()
 }
 
 /// An `NSTextView` that paints the wash itself.
@@ -214,9 +246,55 @@ final class _WashedTextView: NSTextView {
         }
     }
 
-    override func drawBackground(in rect: NSRect) {
-        super.drawBackground(in: rect)
+    /// Scrolls the enclosing scroll view so the wash word sits about 40 % down
+    /// the viewport. Called from the block that currently holds the word, so
+    /// only the visible block ever asks, and only when the reader is following.
+    func revealWash(anchorFraction: CGFloat = 0.5) {
+        guard let mark = washMarkList.first(where: { $0.emphasis == .current || $0.emphasis == .paused }),
+              let layoutManager, let container = textContainer,
+              let scrollView = enclosingScrollView,
+              let document = scrollView.documentView
+        else { return }
+
+        let glyphRange = layoutManager.glyphRange(forCharacterRange: mark.range, actualCharacterRange: nil)
+        var box = layoutManager.boundingRect(forGlyphRange: glyphRange, in: container)
+        box.origin.x += textContainerOrigin.x
+        box.origin.y += textContainerOrigin.y
+        let inDocument = convert(box, to: document)
+
+        let clip = scrollView.contentView.bounds
+        let maxOffset = max(0, document.frame.height - clip.height)
+        let target = inDocument.midY - clip.height * anchorFraction
+        let y = min(max(target, 0), maxOffset)
+
+        // A small dead band stops the page twitching on every word while the
+        // wash moves inside the comfortable middle of the viewport.
+        guard abs(y - clip.origin.y) > 32 else { return }
+        scrollView.contentView.scroll(to: NSPoint(x: clip.origin.x, y: y))
+        scrollView.reflectScrolledClipView(scrollView.contentView)
+    }
+
+    /// The chips go under the text. `drawBackground` runs after the glyphs on
+    /// a non-editable `NSTextView`, so painting there hid the washed word under
+    /// its own chip; overriding `draw` puts the wash behind the ink.
+    override func draw(_ dirtyRect: NSRect) {
+        drawWashChips(in: dirtyRect)
+        super.draw(dirtyRect)
+    }
+
+    /// A width change re-lays the paragraph, and the chip is drawn from glyph
+    /// rects. Without a repaint the wash keeps the box it computed at the old
+    /// width, which is how a chip ends up beside its word.
+    override func setFrameSize(_ newSize: NSSize) {
+        super.setFrameSize(newSize)
+        needsDisplay = true
+    }
+
+    private func drawWashChips(in rect: NSRect) {
         guard let layoutManager, let container = textContainer, let storage = textStorage else { return }
+        // Geometry queries below read the layout manager. Mid-scroll it can be
+        // partially invalid, so force the paragraph out first.
+        layoutManager.ensureLayout(for: container)
         let origin = textContainerOrigin
 
         for mark in washMarkList {
@@ -229,27 +307,63 @@ final class _WashedTextView: NSTextView {
             let glyphBox = layoutManager.boundingRect(forGlyphRange: glyphRange, in: container)
             guard !glyphBox.isEmpty else { continue }
 
-            // Two points of horizontal breathing room, one above and below:
-            // the prototype's `padding: 1px 2px`.
+            let font = storage.attribute(.font, at: mark.range.location, effectiveRange: nil) as? NSFont
+                ?? NSFont.systemFont(ofSize: 17)
+            // The inline box, not the line box. A washed word is drawn from the
+            // type's own ascent and descent, so a 19 pt word on a 31 pt line
+            // gets a 23 pt chip. The line box would give a slab.
+            //
+            // The y comes from the glyph box because
+            // `location(forGlyphAt:)` reports the baseline inside the line
+            // fragment, not inside the container: on the fifth line it still
+            // says 26, which put every chip on the first line.
+            let height = font.ascender - font.descender
             let box = NSRect(
                 x: glyphBox.minX + origin.x - 2,
-                y: glyphBox.minY + origin.y - 1,
+                y: glyphBox.minY + origin.y + (glyphBox.height - height) / 2,
                 width: glyphBox.width + 4,
-                height: glyphBox.height + 2
+                height: height
             )
-            let path = NSBezierPath(roundedRect: box, xRadius: 4, yRadius: 4)
 
-            if let edge = chip.edge {
-                // The edge rule is the non-colour cue: it survives greyscale
-                // and a colour-blind reader still sees where the voice stopped.
-                chip.fill.setFill()
-                path.fill()
-                edge.setFill()
-                NSRect(x: box.minX, y: box.maxY - chip.edgeWidth, width: box.width, height: chip.edgeWidth).fill()
-            } else {
-                chip.fill.setFill()
-                path.fill()
+            let path = NSBezierPath(roundedRect: box, xRadius: 4, yRadius: 4)
+            chip.fill.setFill()
+            path.fill()
+
+            if let ring = chip.ring {
+                // An inset ring, as the prototype draws it: a shape cue that
+                // survives greyscale, so which word holds the voice never
+                // depends on telling amber from grey amber.
+                let width = chip.ringWidth
+                let inner = NSBezierPath(
+                    roundedRect: box.insetBy(dx: width / 2, dy: width / 2),
+                    xRadius: 4,
+                    yRadius: 4
+                )
+                ring.setStroke()
+                inner.lineWidth = width
+                inner.stroke()
             }
+
+            if mark.emphasis == .paused {
+                drawDottedUnderline(in: NSRect(
+                    x: box.minX + 3,
+                    y: box.minY,
+                    width: box.width - 6,
+                    height: box.height
+                ), colour: Theme.platformPausedRing, baseline: box.maxY)
+            }
+        }
+    }
+
+    /// The paused state's second non-colour cue, in place of a text underline
+    /// attribute: a dotted rule under the word.
+    private func drawDottedUnderline(in box: NSRect, colour: NSColor, baseline: CGFloat) {
+        colour.setFill()
+        let y = baseline - 1
+        var x = box.minX
+        while x < box.maxX {
+            NSRect(x: x, y: y, width: 1.5, height: 1.5).fill()
+            x += 4
         }
     }
 }
@@ -261,7 +375,10 @@ struct _WashableTextView: NSViewRepresentable {
     var marks: [WashMark]
     var style: WashableTextStyle
     var tone: WashableTextTone
+    var marker: String?
+    var followsWash: Bool
     var onTapWord: (WordSlot?, String) -> Void
+    var onTapMarker: (() -> Void)?
 
     func makeCoordinator() -> Coordinator { Coordinator() }
 
@@ -278,6 +395,8 @@ struct _WashableTextView: NSViewRepresentable {
         let click = NSClickGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleClick(_:)))
         textView.addGestureRecognizer(click)
         context.coordinator.onTapWord = onTapWord
+        context.coordinator.onTapMarker = onTapMarker
+        context.coordinator.bodyLength = (text as NSString).length
         applyBaseStyle(to: textView)
         context.coordinator.lastText = text
         context.coordinator.lastStyle = style
@@ -285,11 +404,16 @@ struct _WashableTextView: NSViewRepresentable {
         context.coordinator.slots = slots
         textView.washMarkList = marks
         context.coordinator.applyMarks(marks, to: textView)
+        if followsWash {
+            DispatchQueue.main.async { revealWash(in: textView) }
+        }
         return textView
     }
 
     func updateNSView(_ textView: NSTextView, context: Context) {
         context.coordinator.onTapWord = onTapWord
+        context.coordinator.onTapMarker = onTapMarker
+        context.coordinator.bodyLength = (text as NSString).length
         context.coordinator.slots = slots
         if context.coordinator.lastText != text
             || context.coordinator.lastStyle != style
@@ -302,6 +426,10 @@ struct _WashableTextView: NSViewRepresentable {
             context.coordinator.lastMarks = []
         }
         context.coordinator.applyMarks(marks, to: textView)
+        if followsWash, marks != context.coordinator.lastRevealedMarks {
+            context.coordinator.lastRevealedMarks = marks
+            DispatchQueue.main.async { revealWash(in: textView) }
+        }
     }
 
     func sizeThatFits(_ proposal: ProposedViewSize, nsView: NSTextView, context _: Context) -> NSSize? {
@@ -323,17 +451,33 @@ struct _WashableTextView: NSViewRepresentable {
             .foregroundColor: ink,
             .paragraphStyle: paragraph,
         ]
-        textView.textStorage?.setAttributedString(NSAttributedString(string: text, attributes: attributes))
+        let built = NSMutableAttributedString(string: text, attributes: attributes)
+        if let marker, !marker.isEmpty {
+            // A thin space keeps the superscript off the final full stop
+            // without changing the word before it.
+            let superscript: [NSAttributedString.Key: Any] = [
+                .font: NSFont.systemFont(ofSize: max(10, ReaderMetrics.bodySize - 8), weight: .semibold),
+                .foregroundColor: Theme.platformBrandInk,
+                .baselineOffset: 7,
+                .paragraphStyle: paragraph,
+            ]
+            built.append(NSAttributedString(string: "\u{2009}" + marker, attributes: superscript))
+        }
+        textView.textStorage?.setAttributedString(built)
     }
 
     @MainActor
     final class Coordinator: NSObject {
         var onTapWord: ((WordSlot?, String) -> Void)?
+        var onTapMarker: (() -> Void)?
+        /// UTF-16 length of the block text, without the marker suffix.
+        var bodyLength = 0
         var slots: [WordSlot] = []
         var lastText: String?
         var lastStyle: WashableTextStyle?
         var lastTone: WashableTextTone?
         var lastMarks: [WashMark] = []
+        var lastRevealedMarks: [WashMark] = []
 
         @objc func handleClick(_ gesture: NSClickGestureRecognizer) {
             guard let view = gesture.view as? NSTextView,
@@ -342,22 +486,35 @@ struct _WashableTextView: NSViewRepresentable {
             else { return }
             let point = gesture.location(in: view)
             let index = layoutManager.characterIndex(for: point, in: container, fractionOfDistanceBetweenInsertionPoints: nil)
+            // Past the body is the footnote marker, which is a target, not a
+            // word. Checked before the word scan so the tap cannot fall through.
+            if index >= bodyLength {
+                if onTapMarker != nil { onTapMarker?() }
+                return
+            }
             let nsText = view.string as NSString
             guard let (word, _) = wordAt(nsText, index: index) else { return }
             onTapWord?(slotAt(slots: slots, utf16Index: index), word)
         }
 
+        /// Clears and reapplies the whole ink set.
+        ///
+        /// An incremental diff left the previous word amber whenever two
+        /// updates arrived in one run-loop turn, because the "which marks went
+        /// away" test compared against a list that had already moved on. A
+        /// paragraph is a few hundred characters, so a full reset costs nothing
+        /// and cannot go stale.
         func applyMarks(_ marks: [WashMark], to view: NSTextView) {
             guard marks != lastMarks,
                   let layoutManager = view.layoutManager,
                   let storage = view.textStorage
             else { return }
             let length = storage.length
-            for mark in lastMarks where !marks.contains(mark) {
-                guard NSMaxRange(mark.range) <= length else { continue }
-                layoutManager.removeTemporaryAttribute(.foregroundColor, forCharacterRange: mark.range)
-            }
-            for mark in marks where !lastMarks.contains(mark) {
+            layoutManager.removeTemporaryAttribute(
+                .foregroundColor,
+                forCharacterRange: NSRange(location: 0, length: length)
+            )
+            for mark in marks {
                 guard mark.range.length > 0, NSMaxRange(mark.range) <= length else { continue }
                 for (key, value) in temporaryAttributes(for: mark.emphasis) {
                     layoutManager.addTemporaryAttribute(key, value: value, forCharacterRange: mark.range)
@@ -365,6 +522,7 @@ struct _WashableTextView: NSViewRepresentable {
             }
             lastMarks = marks
             (view as? _WashedTextView)?.washMarkList = marks
+
         }
     }
 }
@@ -410,6 +568,10 @@ extension Theme {
 
     static var platformCoincidenceRing: UIColor {
         UIColor { $0.userInterfaceStyle == .dark ? UIColor.washHex(0xF59E0B) : UIColor.washHex(0xB45309) }
+    }
+
+    static var platformBrandInk: UIColor {
+        UIColor { $0.userInterfaceStyle == .dark ? UIColor.washHex(0x7FB3D5) : UIColor.washHex(0x334E68) }
     }
 
     static var platformSkipInk: UIColor {
@@ -470,7 +632,10 @@ struct _WashableTextView: UIViewRepresentable {
     var marks: [WashMark]
     var style: WashableTextStyle
     var tone: WashableTextTone
+    var marker: String?
+    var followsWash: Bool
     var onTapWord: (WordSlot?, String) -> Void
+    var onTapMarker: (() -> Void)?
 
     func makeCoordinator() -> Coordinator { Coordinator() }
 
@@ -486,6 +651,7 @@ struct _WashableTextView: UIViewRepresentable {
         textView.addGestureRecognizer(tap)
         context.coordinator.view = textView
         context.coordinator.onTapWord = onTapWord
+        context.coordinator.onTapMarker = onTapMarker
         context.coordinator.slots = slots
         context.coordinator.rebuildBase(text: text, style: style, tone: tone)
         textView.attributedText = context.coordinator.baseText
@@ -496,6 +662,8 @@ struct _WashableTextView: UIViewRepresentable {
     func updateUIView(_ textView: UITextView, context: Context) {
         context.coordinator.view = textView
         context.coordinator.onTapWord = onTapWord
+        context.coordinator.onTapMarker = onTapMarker
+        context.coordinator.bodyLength = (text as NSString).length
         context.coordinator.slots = slots
         if context.coordinator.lastText != text
             || context.coordinator.lastStyle != style
@@ -518,6 +686,9 @@ struct _WashableTextView: UIViewRepresentable {
     final class Coordinator: NSObject {
         weak var view: UITextView?
         var onTapWord: ((WordSlot?, String) -> Void)?
+        var onTapMarker: (() -> Void)?
+        /// UTF-16 length of the block text, without the marker suffix.
+        var bodyLength = 0
         var slots: [WordSlot] = []
         var baseText = NSAttributedString(string: "")
         var lastText: String?
@@ -526,6 +697,7 @@ struct _WashableTextView: UIViewRepresentable {
         var lastMarks: [WashMark] = []
 
         func rebuildBase(text: String, style: WashableTextStyle, tone: WashableTextTone) {
+            defer { bodyLength = (text as NSString).length }
             let paragraph = NSMutableParagraphStyle()
             if style == .body {
             // The line box is fixed at 31 pt, so the leading is the
@@ -537,11 +709,20 @@ struct _WashableTextView: UIViewRepresentable {
             paragraph.maximumLineHeight = ReaderMetrics.bodyLineHeight
             }
             let ink = tone == .skip ? Theme.platformSkipInk : Theme.platformInk
-            baseText = NSAttributedString(string: text, attributes: [
+            let built = NSMutableAttributedString(string: text, attributes: [
                 .font: Theme.platformFont(for: style),
                 .foregroundColor: ink,
                 .paragraphStyle: paragraph,
             ])
+            if let marker, !marker.isEmpty {
+                built.append(NSAttributedString(string: "\u{2009}" + marker, attributes: [
+                    .font: UIFont.systemFont(ofSize: max(10, ReaderMetrics.bodySize - 8), weight: .semibold),
+                    .foregroundColor: Theme.platformBrandInk,
+                    .baselineOffset: 7,
+                    .paragraphStyle: paragraph,
+                ]))
+            }
+            baseText = built
             lastText = text
             lastStyle = style
             lastTone = tone
@@ -553,6 +734,10 @@ struct _WashableTextView: UIViewRepresentable {
             let point = gesture.location(in: view)
             let container = view.textContainer
             let index = layoutManager.characterIndex(for: point, in: container, fractionOfDistanceBetweenInsertionPoints: nil)
+            if index >= bodyLength {
+                if onTapMarker != nil { onTapMarker?() }
+                return
+            }
             let nsText = (view.text ?? "") as NSString
             guard let (word, _) = wordAt(nsText, index: index) else { return }
             onTapWord?(slotAt(slots: slots, utf16Index: index), word)

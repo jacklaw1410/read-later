@@ -22,6 +22,7 @@ public struct BlockView: View {
     private let wash: WashState
     private let spoken: SpokenIndex
     private let footnote: FootnoteAttachment?
+    private let followsWash: Bool
     private let onTapWord: (Int, WordSlot?, String) -> Void
     private let onTapNote: (Int) -> Void
 
@@ -30,6 +31,7 @@ public struct BlockView: View {
         wash: WashState,
         spoken: SpokenIndex,
         footnote: FootnoteAttachment? = nil,
+        followsWash: Bool = false,
         onTapWord: @escaping (Int, WordSlot?, String) -> Void,
         onTapNote: @escaping (Int) -> Void
     ) {
@@ -37,18 +39,13 @@ public struct BlockView: View {
         self.wash = wash
         self.spoken = spoken
         self.footnote = footnote
+        self.followsWash = followsWash
         self.onTapWord = onTapWord
         self.onTapNote = onTapNote
     }
 
     public var body: some View {
         blockContent
-            .overlay(alignment: .bottomTrailing) {
-                if let footnote {
-                    footnoteChip(attachment: footnote)
-                        .padding(.trailing, 4)
-                }
-            }
     }
 
     @ViewBuilder
@@ -102,14 +99,31 @@ public struct BlockView: View {
     }
 
     private var proseBody: some View {
-        WashableText(text: block.text, slots: spokenSlots, wash: wash) { slot, word in
+        WashableText(
+            text: block.text,
+            slots: spokenSlots,
+            wash: wash,
+            marker: footnote?.marker,
+            followsWash: followsWash
+        ) { slot, word in
             tap(slot, word)
+        } onTapMarker: {
+            if let footnote { onTapNote(footnote.noteIndex) }
         }
     }
 
     private var headingBody: some View {
-        WashableText(text: block.text, slots: spokenSlots, wash: wash, style: .heading) { slot, word in
+        WashableText(
+            text: block.text,
+            slots: spokenSlots,
+            wash: wash,
+            style: .heading,
+            marker: footnote?.marker,
+            followsWash: followsWash
+        ) { slot, word in
             tap(slot, word)
+        } onTapMarker: {
+            if let footnote { onTapNote(footnote.noteIndex) }
         }
     }
 
@@ -118,8 +132,15 @@ public struct BlockView: View {
             Rectangle()
                 .fill(Theme.brand)
                 .frame(width: ReaderMetrics.quoteBorder)
-            WashableText(text: block.text, slots: spokenSlots, wash: wash) { slot, word in
+            WashableText(
+                text: block.text,
+                slots: spokenSlots,
+                wash: wash,
+                marker: footnote?.marker
+            ) { slot, word in
                 tap(slot, word)
+            } onTapMarker: {
+                if let footnote { onTapNote(footnote.noteIndex) }
             }
             .padding(.leading, ReaderMetrics.quoteInset)
         }
@@ -140,12 +161,15 @@ public struct BlockView: View {
     }
 
     private var codeBody: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            Text(block.text)
-                .font(Theme.code())
-                .foregroundStyle(Theme.skipInk)
-                .multilineTextAlignment(.leading)
-        }
+        // Wrapped, not horizontally scrolled. A scroll view with hidden
+        // indicators hides code with no cue that more exists, and the reader
+        // is on a 430 pt window. Line breaks inside a string are visible; a
+        // line that is silently cut is not.
+        Text(block.text)
+            .font(Theme.code())
+            .foregroundStyle(Theme.skipInk)
+            .textSelection(.enabled)
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var tableBody: some View {
@@ -168,7 +192,6 @@ public struct BlockView: View {
                 }
             }
         }
-        .background(Theme.surface)
         .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 
@@ -228,25 +251,6 @@ public struct BlockView: View {
             .foregroundStyle(Theme.inkSecondary)
     }
 
-    // MARK: - Footnote marker
-
-    private func footnoteChip(attachment: FootnoteAttachment) -> some View {
-        Button {
-            onTapNote(attachment.noteIndex)
-        } label: {
-            Text(attachment.marker)
-                .font(.system(size: 12, weight: .bold, design: .default))
-                .foregroundStyle(Theme.brand)
-                .frame(minWidth: 26, minHeight: 26)
-                .background(Theme.chipSurface)
-                .clipShape(RoundedRectangle(cornerRadius: 6))
-        }
-        .buttonStyle(.plain)
-        .frame(minWidth: ReaderMetrics.footnoteHitTarget, minHeight: ReaderMetrics.footnoteHitTarget)
-        .contentShape(Rectangle())
-        .accessibilityLabel("Footnote \(attachment.marker)")
-    }
-
     // MARK: - Table rows
 
     /// Splits table text into rows and cells. Child blocks are rows when
@@ -265,9 +269,12 @@ public struct BlockView: View {
             if trimmed.contains("\t") {
                 return trimmed.components(separatedBy: "\t")
             }
-            if trimmed.hasPrefix("|"), trimmed.hasSuffix("|") {
-                let inner = trimmed.dropFirst().dropLast()
-                return inner.split(separator: "|").map { $0.trimmingCharacters(in: .whitespaces) }
+            if trimmed.contains("|") {
+                var inner = Substring(trimmed)
+                if inner.hasPrefix("|") { inner = inner.dropFirst() }
+                if inner.hasSuffix("|") { inner = inner.dropLast() }
+                return inner.split(separator: "|", omittingEmptySubsequences: false)
+                    .map { $0.trimmingCharacters(in: .whitespaces) }
             }
             return [trimmed]
         }
