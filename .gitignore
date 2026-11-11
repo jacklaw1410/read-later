@@ -16,3 +16,6 @@ Secrets.xcconfig
 # Test output
 *.xcresult
 TestResults/
+
+# Editor
+.vscode/
