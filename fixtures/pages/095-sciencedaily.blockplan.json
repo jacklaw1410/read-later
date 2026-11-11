@@ -1,0 +1,2522 @@
+{
+  "blocks" : [
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 0,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 20,
+          "offset" : 0,
+          "text" : "Skip to main content"
+        }
+      ],
+      "text" : "Skip to main content"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 1,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 40,
+          "offset" : 0,
+          "text" : "Your source for the latest research news"
+        }
+      ],
+      "text" : "Your source for the latest research news"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 2,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 7,
+          "offset" : 0,
+          "text" : "Follow:"
+        }
+      ],
+      "text" : "Follow:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 3,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 8,
+          "offset" : 0,
+          "text" : "Facebook"
+        }
+      ],
+      "text" : "Facebook"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 4,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 9,
+          "offset" : 0,
+          "text" : "X/Twitter"
+        }
+      ],
+      "text" : "X/Twitter"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 5,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 10,
+          "offset" : 0,
+          "text" : "Subscribe:"
+        }
+      ],
+      "text" : "Subscribe:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 6,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 9,
+          "offset" : 0,
+          "text" : "RSS Feeds"
+        }
+      ],
+      "text" : "RSS Feeds"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 7,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 10,
+          "offset" : 0,
+          "text" : "Newsletter"
+        }
+      ],
+      "text" : "Newsletter"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 8,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 4,
+          "offset" : 0,
+          "text" : "New!"
+        }
+      ],
+      "text" : "New!"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 9,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 16,
+          "offset" : 0,
+          "text" : "email newsletter"
+        }
+      ],
+      "text" : "email newsletter"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 10,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 22,
+          "offset" : 0,
+          "text" : "Sign up for our free ."
+        }
+      ],
+      "text" : "Sign up for our free ."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 11,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 12,
+          "offset" : 0,
+          "text" : "Science News"
+        }
+      ],
+      "text" : "Science News"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 12,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 27,
+          "offset" : 0,
+          "text" : "from research organizations"
+        }
+      ],
+      "text" : "from research organizations"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 13,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h1",
+      "spoken" : [
+        {
+          "length" : 75,
+          "offset" : 0,
+          "text" : "Scientists discover a giant 66-pound rodent that lived 34 million years ago"
+        }
+      ],
+      "text" : "Scientists discover a giant 66-pound rodent that lived 34 million years ago"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.8,
+      "id" : 14,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "dl",
+      "spoken" : [
+        {
+          "length" : 233,
+          "offset" : 0,
+          "text" : "Date: November 10, 2026 Source: McGill University Summary: Scientists have uncovered fossils of a giant rodent that lived in Thailand 34 million years ago, revealing that enormous rodents evolved much earlier than previously thought."
+        },
+        {
+          "length" : 139,
+          "offset" : 234,
+          "text" : "Named Yakamys sirindhornae, the ancient animal may have weighed around 66 pounds, roughly twice as much as other known rodents of its time."
+        },
+        {
+          "length" : 48,
+          "offset" : 374,
+          "text" : "Share: Facebook Twitter Pinterest LinkedIN Email"
+        }
+      ],
+      "text" : "Date: November 10, 2026 Source: McGill University Summary: Scientists have uncovered fossils of a giant rodent that lived in Thailand 34 million years ago, revealing that enormous rodents evolved much earlier than previously thought. Named Yakamys sirindhornae, the ancient animal may have weighed around 66 pounds, roughly twice as much as other known rodents of its time. Share: Facebook Twitter Pinterest LinkedIN Email"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 15,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 10,
+          "offset" : 0,
+          "text" : "FULL STORY"
+        }
+      ],
+      "text" : "FULL STORY"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 16,
+      "kind" : "figure",
+      "lowConfidence" : false,
+      "reason" : "figure",
+      "spoken" : [
+        {
+          "length" : 232,
+          "offset" : 0,
+          "text" : "The discovery of giant rodent teeth fossils in Krabi Province, Thailand, highlights the important role of Southeast Asia in the early evolutionary history of large-bodied rodents, including the newly identified Yakamys sirindhornae."
+        },
+        {
+          "length" : 34,
+          "offset" : 233,
+          "text" : "Credit: Yaowalak Chaimanee, edited"
+        }
+      ],
+      "text" : "The discovery of giant rodent teeth fossils in Krabi Province, Thailand, highlights the important role of Southeast Asia in the early evolutionary history of large-bodied rodents, including the newly identified Yakamys sirindhornae. Credit: Yaowalak Chaimanee, edited"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 17,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 114,
+          "offset" : 0,
+          "text" : "An ancient rodent of extraordinary size has been identified from fossils uncovered in a mine in southern Thailand."
+        },
+        {
+          "length" : 232,
+          "offset" : 115,
+          "text" : "The discovery, made by an international team of paleontologists that includes scientists from McGill University, provides new evidence that giant rodents appeared much earlier and in more parts of the world than previously believed."
+        }
+      ],
+      "text" : "An ancient rodent of extraordinary size has been identified from fossils uncovered in a mine in southern Thailand. The discovery, made by an international team of paleontologists that includes scientists from McGill University, provides new evidence that giant rodents appeared much earlier and in more parts of the world than previously believed."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 18,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 128,
+          "offset" : 0,
+          "text" : "The researchers found \"remarkably large\" fossilized teeth belonging to a previously unknown species called Yakamys sirindhornae."
+        },
+        {
+          "length" : 108,
+          "offset" : 129,
+          "text" : "This prehistoric rodent lived approximately 34 million years ago, during the middle of the Paleogene period."
+        },
+        {
+          "length" : 162,
+          "offset" : 238,
+          "text" : "Its remains, consisting of a lower second molar and a lower incisor, were recovered from the Bang Mark Pit at the Krabi lignite mine in Thailand's Krabi Province."
+        }
+      ],
+      "text" : "The researchers found \"remarkably large\" fossilized teeth belonging to a previously unknown species called Yakamys sirindhornae. This prehistoric rodent lived approximately 34 million years ago, during the middle of the Paleogene period. Its remains, consisting of a lower second molar and a lower incisor, were recovered from the Bang Mark Pit at the Krabi lignite mine in Thailand's Krabi Province."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 19,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 174,
+          "offset" : 0,
+          "text" : "Although only two teeth have been identified, they offer valuable clues about rodent gigantism, the evolutionary process through which rodents develop unusually large bodies."
+        },
+        {
+          "length" : 145,
+          "offset" : 175,
+          "text" : "The discovery suggests that Southeast Asia played a more significant role in the early evolution of giant rodents than scientists had recognized."
+        }
+      ],
+      "text" : "Although only two teeth have been identified, they offer valuable clues about rodent gigantism, the evolutionary process through which rodents develop unusually large bodies. The discovery suggests that Southeast Asia played a more significant role in the early evolution of giant rodents than scientists had recognized."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 20,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 53,
+          "offset" : 0,
+          "text" : "Giant Rodents Have a Much Older History Than Expected"
+        }
+      ],
+      "text" : "Giant Rodents Have a Much Older History Than Expected"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 21,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 207,
+          "offset" : 0,
+          "text" : "\"Today, the largest living rodent is the capybara, but very large rodents are not restricted to recent ecosystems,\" said Virginie Millien, a biology professor at McGill University and co-author of the study."
+        },
+        {
+          "length" : 97,
+          "offset" : 208,
+          "text" : "\"Giant rodents evolved repeatedly during the later history of the group, mostly in South America."
+        },
+        {
+          "length" : 133,
+          "offset" : 306,
+          "text" : "This discovery suggests that Southeast Asia also played an important role in the early evolutionary history of large-bodied rodents.\""
+        }
+      ],
+      "text" : "\"Today, the largest living rodent is the capybara, but very large rodents are not restricted to recent ecosystems,\" said Virginie Millien, a biology professor at McGill University and co-author of the study. \"Giant rodents evolved repeatedly during the later history of the group, mostly in South America. This discovery suggests that Southeast Asia also played an important role in the early evolutionary history of large-bodied rodents.\""
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 22,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 100,
+          "offset" : 0,
+          "text" : "The newly identified animal's name reflects both its impressive size and its connection to Thailand."
+        },
+        {
+          "length" : 93,
+          "offset" : 101,
+          "text" : "Yakamys combines \"yak,\" the Thai word for giant, with \"mys,\" the Greek word for mouse or rat."
+        }
+      ],
+      "text" : "The newly identified animal's name reflects both its impressive size and its connection to Thailand. Yakamys combines \"yak,\" the Thai word for giant, with \"mys,\" the Greek word for mouse or rat."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 23,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 108,
+          "offset" : 0,
+          "text" : "The second part of its scientific name recognizes an important supporter of scientific research in Thailand."
+        }
+      ],
+      "text" : "The second part of its scientific name recognizes an important supporter of scientific research in Thailand."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 24,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 184,
+          "offset" : 0,
+          "text" : "\"The species name, sirindhornae, honors Princess Maha Chakri Sirindhorn, in recognition of her longstanding support for science and paleontological research in Thailand,\" Millien said."
+        }
+      ],
+      "text" : "\"The species name, sirindhornae, honors Princess Maha Chakri Sirindhorn, in recognition of her longstanding support for science and paleontological research in Thailand,\" Millien said."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 25,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 44,
+          "offset" : 0,
+          "text" : "How Big Was This 34-Million-Year-Old Rodent?"
+        }
+      ],
+      "text" : "How Big Was This 34-Million-Year-Old Rodent?"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 26,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 134,
+          "offset" : 0,
+          "text" : "To estimate the animal's size, the research team applied seven established methods that use tooth measurements to calculate body mass."
+        },
+        {
+          "length" : 178,
+          "offset" : 135,
+          "text" : "Their results suggest that Yakamys sirindhornae weighed approximately 30 kilograms, making it about twice as heavy as other known rodents from the same period, including Hulgana."
+        }
+      ],
+      "text" : "To estimate the animal's size, the research team applied seven established methods that use tooth measurements to calculate body mass. Their results suggest that Yakamys sirindhornae weighed approximately 30 kilograms, making it about twice as heavy as other known rodents from the same period, including Hulgana."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 27,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 103,
+          "offset" : 0,
+          "text" : "That would have made the newly discovered species exceptionally large compared with its contemporaries."
+        },
+        {
+          "length" : 153,
+          "offset" : 104,
+          "text" : "However, the researchers emphasize that determining an extinct animal's weight from a small number of fossilized teeth involves considerable uncertainty."
+        }
+      ],
+      "text" : "That would have made the newly discovered species exceptionally large compared with its contemporaries. However, the researchers emphasize that determining an extinct animal's weight from a small number of fossilized teeth involves considerable uncertainty."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 28,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 128,
+          "offset" : 0,
+          "text" : "\"This is only a ballpark figure, as there is substantial uncertainty associated with fossil body-mass estimation,\" Millien said."
+        }
+      ],
+      "text" : "\"This is only a ballpark figure, as there is substantial uncertainty associated with fossil body-mass estimation,\" Millien said."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 29,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 113,
+          "offset" : 0,
+          "text" : "The limited fossil evidence also makes it difficult to reconstruct how Yakamys evolved or what its life was like."
+        },
+        {
+          "length" : 137,
+          "offset" : 114,
+          "text" : "Additional discoveries will be needed to better understand its physical characteristics, ecological role, and evolutionary relationships."
+        }
+      ],
+      "text" : "The limited fossil evidence also makes it difficult to reconstruct how Yakamys evolved or what its life was like. Additional discoveries will be needed to better understand its physical characteristics, ecological role, and evolutionary relationships."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 30,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 59,
+          "offset" : 0,
+          "text" : "International Research Uncovers Thailand's Prehistoric Past"
+        }
+      ],
+      "text" : "International Research Uncovers Thailand's Prehistoric Past"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 31,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 131,
+          "offset" : 0,
+          "text" : "The fossils were identified through an ongoing international collaboration investigating ancient mammals in Thailand's Krabi Basin."
+        },
+        {
+          "length" : 184,
+          "offset" : 132,
+          "text" : "The project brings together scientists from McGill University, Thailand's Department of Mineral Resources, and French research organizations, including CNRS and Université de Poitiers."
+        }
+      ],
+      "text" : "The fossils were identified through an ongoing international collaboration investigating ancient mammals in Thailand's Krabi Basin. The project brings together scientists from McGill University, Thailand's Department of Mineral Resources, and French research organizations, including CNRS and Université de Poitiers."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 32,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 182,
+          "offset" : 0,
+          "text" : "By revealing evidence of an unusually large rodent in Southeast Asia 34 million years ago, the discovery expands scientists' understanding of where and when rodent gigantism emerged."
+        },
+        {
+          "length" : 165,
+          "offset" : 183,
+          "text" : "Future fossil finds could help establish how these ancient giants lived and how their evolution relates to the enormous rodents that appeared elsewhere in the world."
+        }
+      ],
+      "text" : "By revealing evidence of an unusually large rodent in Southeast Asia 34 million years ago, the discovery expands scientists' understanding of where and when rodent gigantism emerged. Future fossil finds could help establish how these ancient giants lived and how their evolution relates to the enormous rodents that appeared elsewhere in the world."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 33,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 163,
+          "offset" : 0,
+          "text" : "The research received support from CNRS, Université de Poitiers, Université de Montpellier, McGill University, and the Department of Mineral Resources of Thailand."
+        }
+      ],
+      "text" : "The research received support from CNRS, Université de Poitiers, Université de Montpellier, McGill University, and the Department of Mineral Resources of Thailand."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.8,
+      "id" : 34,
+      "kind" : "nav",
+      "lowConfidence" : false,
+      "reason" : "class=nav",
+      "spoken" : [
+
+      ],
+      "text" : "RELATED TOPICS Plants & Animals New Species Mice Rodents Mammals Fossils & Ruins Fossils Evolution Early Mammals Origin of Life"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.8,
+      "id" : 35,
+      "kind" : "nav",
+      "lowConfidence" : false,
+      "reason" : "class=nav",
+      "spoken" : [
+
+      ],
+      "text" : "RELATED TERMS Fossil Rodent Feathered dinosaurs Homo ergaster Dinosaur Precambrian Ichthyosaur Shrimp farm"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 36,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 13,
+          "offset" : 0,
+          "text" : "Story Source:"
+        }
+      ],
+      "text" : "Story Source:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 37,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 40,
+          "offset" : 0,
+          "text" : "Materials provided by McGill University."
+        },
+        {
+          "length" : 49,
+          "offset" : 41,
+          "text" : "Note: Content may be edited for style and length."
+        }
+      ],
+      "text" : "Materials provided by McGill University. Note: Content may be edited for style and length."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 38,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 18,
+          "offset" : 0,
+          "text" : "Journal Reference:"
+        }
+      ],
+      "text" : "Journal Reference:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 39,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ol",
+      "spoken" : [
+        {
+          "length" : 105,
+          "offset" : 0,
+          "text" : "Yaowalak Chaimanee, Laurent Marivaux, Virginie Millien, Chotima Yamee, Pannipa Tian, Jean-Jacques Jaeger."
+        },
+        {
+          "length" : 95,
+          "offset" : 106,
+          "text" : "A giant eocene ischyromyid from Southeast Asia reveals the early evolution of rodent gigantism."
+        },
+        {
+          "length" : 64,
+          "offset" : 202,
+          "text" : "Scientific Reports, 2026; 16 (1) DOI: 10.1038/s41598-026-76711-6"
+        }
+      ],
+      "text" : "Yaowalak Chaimanee, Laurent Marivaux, Virginie Millien, Chotima Yamee, Pannipa Tian, Jean-Jacques Jaeger. A giant eocene ischyromyid from Southeast Asia reveals the early evolution of rodent gigantism. Scientific Reports, 2026; 16 (1) DOI: 10.1038/s41598-026-76711-6"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 40,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 15,
+          "offset" : 0,
+          "text" : "Cite This Page:"
+        }
+      ],
+      "text" : "Cite This Page:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.8,
+      "id" : 41,
+      "kind" : "nav",
+      "lowConfidence" : false,
+      "reason" : "class=nav",
+      "spoken" : [
+
+      ],
+      "text" : "MLA APA Chicago"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 42,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 18,
+          "offset" : 0,
+          "text" : "McGill University."
+        },
+        {
+          "length" : 78,
+          "offset" : 19,
+          "text" : "\"Scientists discover a giant 66-pound rodent that lived 34 million years ago.\""
+        },
+        {
+          "length" : 13,
+          "offset" : 98,
+          "text" : "ScienceDaily."
+        },
+        {
+          "length" : 31,
+          "offset" : 112,
+          "text" : "ScienceDaily, 10 November 2026."
+        },
+        {
+          "length" : 57,
+          "offset" : 144,
+          "text" : "<www.sciencedaily.com/releases/2026/11/261110042532.htm>."
+        }
+      ],
+      "text" : "McGill University. \"Scientists discover a giant 66-pound rodent that lived 34 million years ago.\" ScienceDaily. ScienceDaily, 10 November 2026. <www.sciencedaily.com/releases/2026/11/261110042532.htm>."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 43,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 12,
+          "offset" : 0,
+          "text" : "ScienceDaily"
+        }
+      ],
+      "text" : "ScienceDaily"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 44,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 18,
+          "offset" : 0,
+          "text" : "McGill University."
+        },
+        {
+          "length" : 20,
+          "offset" : 19,
+          "text" : "(2026, November 10)."
+        },
+        {
+          "length" : 76,
+          "offset" : 40,
+          "text" : "Scientists discover a giant 66-pound rodent that lived 34 million years ago."
+        },
+        {
+          "length" : 1,
+          "offset" : 117,
+          "text" : "."
+        },
+        {
+          "length" : 87,
+          "offset" : 119,
+          "text" : "Retrieved November 10, 2026 from www.sciencedaily.com/releases/2026/11/261110042532.htm"
+        }
+      ],
+      "text" : "McGill University. (2026, November 10). Scientists discover a giant 66-pound rodent that lived 34 million years ago. . Retrieved November 10, 2026 from www.sciencedaily.com/releases/2026/11/261110042532.htm"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 45,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 18,
+          "offset" : 0,
+          "text" : "McGill University."
+        },
+        {
+          "length" : 78,
+          "offset" : 19,
+          "text" : "\"Scientists discover a giant 66-pound rodent that lived 34 million years ago.\""
+        },
+        {
+          "length" : 13,
+          "offset" : 98,
+          "text" : "ScienceDaily."
+        },
+        {
+          "length" : 84,
+          "offset" : 112,
+          "text" : "www.sciencedaily.com/releases/2026/11/261110042532.htm (accessed November 10, 2026)."
+        }
+      ],
+      "text" : "McGill University. \"Scientists discover a giant 66-pound rodent that lived 34 million years ago.\" ScienceDaily. www.sciencedaily.com/releases/2026/11/261110042532.htm (accessed November 10, 2026)."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 46,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h2",
+      "spoken" : [
+        {
+          "length" : 12,
+          "offset" : 0,
+          "text" : "Explore More"
+        }
+      ],
+      "text" : "Explore More"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 47,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 17,
+          "offset" : 0,
+          "text" : "from ScienceDaily"
+        }
+      ],
+      "text" : "from ScienceDaily"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 48,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 15,
+          "offset" : 0,
+          "text" : "RELATED STORIES"
+        }
+      ],
+      "text" : "RELATED STORIES"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 49,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 65,
+          "offset" : 0,
+          "text" : "Scientists Found Homo Erectus 200,000 Years Earlier Than Expected"
+        }
+      ],
+      "text" : "Scientists Found Homo Erectus 200,000 Years Earlier Than Expected"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 50,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 4,
+          "offset" : 0,
+          "text" : "Oct."
+        },
+        {
+          "length" : 9,
+          "offset" : 5,
+          "text" : "8, 2026 "
+        }
+      ],
+      "text" : "Oct. 8, 2026 "
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 51,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 79,
+          "offset" : 0,
+          "text" : "New fossils from South Africa are reshaping the story of early human evolution."
+        },
+        {
+          "length" : 122,
+          "offset" : 80,
+          "text" : "Researchers have described 18 hominin fossils from Drimolen Cave, including an adult Homo erectus skull fragment dated ..."
+        }
+      ],
+      "text" : "New fossils from South Africa are reshaping the story of early human evolution. Researchers have described 18 hominin fossils from Drimolen Cave, including an adult Homo erectus skull fragment dated ..."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 52,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 71,
+          "offset" : 0,
+          "text" : "New Giant Salamander Species Discovered in 3.5-Million-Year-Old Fossils"
+        }
+      ],
+      "text" : "New Giant Salamander Species Discovered in 3.5-Million-Year-Old Fossils"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 53,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 15,
+          "offset" : 0,
+          "text" : "July 23, 2026 "
+        }
+      ],
+      "text" : "July 23, 2026 "
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 54,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 130,
+          "offset" : 0,
+          "text" : "Fossils discovered in Japan more than two decades ago have finally been identified as a new genus and species of giant salamander."
+        },
+        {
+          "length" : 69,
+          "offset" : 131,
+          "text" : "Limnospondylus ajimuensis lived around 3.5 million years ago in a ..."
+        }
+      ],
+      "text" : "Fossils discovered in Japan more than two decades ago have finally been identified as a new genus and species of giant salamander. Limnospondylus ajimuensis lived around 3.5 million years ago in a ..."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 55,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 84,
+          "offset" : 0,
+          "text" : "Scientists Discover Giant Sea Predator Tylosaurus Rex That Terrorized Ancient Oceans"
+        }
+      ],
+      "text" : "Scientists Discover Giant Sea Predator Tylosaurus Rex That Terrorized Ancient Oceans"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 56,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 14,
+          "offset" : 0,
+          "text" : "May 23, 2026 "
+        }
+      ],
+      "text" : "May 23, 2026 "
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 57,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 184,
+          "offset" : 0,
+          "text" : "A colossal new sea predator named Tylosaurus rex has been identified from fossils found in Texas, revealing a brutal 43-foot-long hunter that ruled ancient oceans 80 million years ago."
+        },
+        {
+          "length" : 17,
+          "offset" : 185,
+          "text" : "The discovery ..."
+        }
+      ],
+      "text" : "A colossal new sea predator named Tylosaurus rex has been identified from fossils found in Texas, revealing a brutal 43-foot-long hunter that ruled ancient oceans 80 million years ago. The discovery ..."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 58,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 78,
+          "offset" : 0,
+          "text" : "Scientists Discover Giant “last Titan” Dinosaur, Southeast Asia’s Largest Ever"
+        }
+      ],
+      "text" : "Scientists Discover Giant “last Titan” Dinosaur, Southeast Asia’s Largest Ever"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 59,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 14,
+          "offset" : 0,
+          "text" : "May 15, 2026 "
+        }
+      ],
+      "text" : "May 15, 2026 "
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 60,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 96,
+          "offset" : 0,
+          "text" : "A massive new dinosaur discovered in Thailand is rewriting Southeast Asia’s prehistoric history."
+        },
+        {
+          "length" : 104,
+          "offset" : 97,
+          "text" : "The newly named Nagatitan chaiyaphumensis was a colossal long-necked sauropod that weighed around 27 ..."
+        }
+      ],
+      "text" : "A massive new dinosaur discovered in Thailand is rewriting Southeast Asia’s prehistoric history. The newly named Nagatitan chaiyaphumensis was a colossal long-necked sauropod that weighed around 27 ..."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 61,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 76,
+          "offset" : 0,
+          "text" : "These 545-Million-Year-Old Fossil Trails Just Rewrote the Story of Evolution"
+        }
+      ],
+      "text" : "These 545-Million-Year-Old Fossil Trails Just Rewrote the Story of Evolution"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 62,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 15,
+          "offset" : 0,
+          "text" : "June 27, 2025 "
+        }
+      ],
+      "text" : "June 27, 2025 "
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 63,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 179,
+          "offset" : 0,
+          "text" : "A groundbreaking study suggests that the famous Cambrian explosion—the dramatic burst of diverse animal life—might have actually started millions of years earlier than we thought."
+        },
+        {
+          "length" : 16,
+          "offset" : 180,
+          "text" : "By analyzing ..."
+        }
+      ],
+      "text" : "A groundbreaking study suggests that the famous Cambrian explosion—the dramatic burst of diverse animal life—might have actually started millions of years earlier than we thought. By analyzing ..."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 64,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 79,
+          "offset" : 0,
+          "text" : "Famous Sterkfontein Caves Deposit 1 Million Years Older Than Previously Thought"
+        }
+      ],
+      "text" : "Famous Sterkfontein Caves Deposit 1 Million Years Older Than Previously Thought"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 65,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 15,
+          "offset" : 0,
+          "text" : "June 27, 2022 "
+        }
+      ],
+      "text" : "June 27, 2022 "
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 66,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 128,
+          "offset" : 0,
+          "text" : "Fossils found at the Sterkfontein Caves in South Africa reveal nearly four million years of hominin and environmental evolution."
+        },
+        {
+          "length" : 63,
+          "offset" : 129,
+          "text" : "The Sterkfontein Cave has become famous for the hundreds of ..."
+        }
+      ],
+      "text" : "Fossils found at the Sterkfontein Caves in South Africa reveal nearly four million years of hominin and environmental evolution. The Sterkfontein Cave has become famous for the hundreds of ..."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 67,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 16,
+          "offset" : 0,
+          "text" : "SCITECHDAILY.com"
+        }
+      ],
+      "text" : "SCITECHDAILY.com"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 68,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 11,
+          "offset" : 0,
+          "text" : "TRENDING AT"
+        }
+      ],
+      "text" : "TRENDING AT"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 69,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 54,
+          "offset" : 0,
+          "text" : "Smiling Isn’t Always Good for You, Scientists Discover"
+        }
+      ],
+      "text" : "Smiling Isn’t Always Good for You, Scientists Discover"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 70,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 68,
+          "offset" : 0,
+          "text" : "Dinosaurs May Have Eaten Far More Fruit Than Scientists Ever Thought"
+        }
+      ],
+      "text" : "Dinosaurs May Have Eaten Far More Fruit Than Scientists Ever Thought"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 71,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 18,
+          "offset" : 0,
+          "text" : "Is Einstein Wrong?"
+        },
+        {
+          "length" : 54,
+          "offset" : 19,
+          "text" : "Deep-Sea Neutrinos Put the Laws of Physics to the Test"
+        }
+      ],
+      "text" : "Is Einstein Wrong? Deep-Sea Neutrinos Put the Laws of Physics to the Test"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 72,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 75,
+          "offset" : 0,
+          "text" : "Hidden Brain Signals Could Predict Alzheimer’s Years Before Symptoms Appear"
+        }
+      ],
+      "text" : "Hidden Brain Signals Could Predict Alzheimer’s Years Before Symptoms Appear"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 73,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 5,
+          "offset" : 0,
+          "text" : "Print"
+        }
+      ],
+      "text" : "Print"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 74,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 5,
+          "offset" : 0,
+          "text" : "Email"
+        }
+      ],
+      "text" : "Email"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 75,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 5,
+          "offset" : 0,
+          "text" : "Share"
+        }
+      ],
+      "text" : "Share"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 76,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h2",
+      "spoken" : [
+        {
+          "length" : 8,
+          "offset" : 0,
+          "text" : "Breaking"
+        }
+      ],
+      "text" : "Breaking"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 77,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 9,
+          "offset" : 0,
+          "text" : "this hour"
+        }
+      ],
+      "text" : "this hour"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 78,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 207,
+          "offset" : 0,
+          "text" : "Hubble Reveals a 93-Billion-Mile Mystery Ancient Soft Tissue Survives 450 Million Years Hidden Heart Disease Risk Beyond Cholesterol Comets May Not Have Seeded Life on Earth How Does Hair Know Where to Grow?"
+        },
+        {
+          "length" : 211,
+          "offset" : 208,
+          "text" : "NASA Discovers a Strange Solar Wind Twist NASA’s Mars Crew Finally Returns to Earth A Mangled Coin Hides a 200-Year-Old Mystery Fossils Reveal First Fully Marine Amphibian Alzheimer’s May Begin Outside the Brain"
+        }
+      ],
+      "text" : "Hubble Reveals a 93-Billion-Mile Mystery Ancient Soft Tissue Survives 450 Million Years Hidden Heart Disease Risk Beyond Cholesterol Comets May Not Have Seeded Life on Earth How Does Hair Know Where to Grow? NASA Discovers a Strange Solar Wind Twist NASA’s Mars Crew Finally Returns to Earth A Mangled Coin Hides a 200-Year-Old Mystery Fossils Reveal First Fully Marine Amphibian Alzheimer’s May Begin Outside the Brain"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 79,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h2",
+      "spoken" : [
+        {
+          "length" : 15,
+          "offset" : 0,
+          "text" : "Trending Topics"
+        }
+      ],
+      "text" : "Trending Topics"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 80,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 9,
+          "offset" : 0,
+          "text" : "this week"
+        }
+      ],
+      "text" : "this week"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 81,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 16,
+          "offset" : 0,
+          "text" : "PLANTS & ANIMALS"
+        }
+      ],
+      "text" : "PLANTS & ANIMALS"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 82,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 7,
+          "offset" : 0,
+          "text" : "Organic"
+        }
+      ],
+      "text" : "Organic"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 83,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 6,
+          "offset" : 0,
+          "text" : "Nature"
+        }
+      ],
+      "text" : "Nature"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 84,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 18,
+          "offset" : 0,
+          "text" : "Endangered Animals"
+        }
+      ],
+      "text" : "Endangered Animals"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 85,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 15,
+          "offset" : 0,
+          "text" : "EARTH & CLIMATE"
+        }
+      ],
+      "text" : "EARTH & CLIMATE"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 86,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 7,
+          "offset" : 0,
+          "text" : "Ecology"
+        }
+      ],
+      "text" : "Ecology"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 87,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 5,
+          "offset" : 0,
+          "text" : "Water"
+        }
+      ],
+      "text" : "Water"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 88,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 23,
+          "offset" : 0,
+          "text" : "Environmental Awareness"
+        }
+      ],
+      "text" : "Environmental Awareness"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 89,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 15,
+          "offset" : 0,
+          "text" : "FOSSILS & RUINS"
+        }
+      ],
+      "text" : "FOSSILS & RUINS"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 90,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 7,
+          "offset" : 0,
+          "text" : "Fossils"
+        }
+      ],
+      "text" : "Fossils"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 91,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 12,
+          "offset" : 0,
+          "text" : "Early Humans"
+        }
+      ],
+      "text" : "Early Humans"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 92,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 14,
+          "offset" : 0,
+          "text" : "Lost Treasures"
+        }
+      ],
+      "text" : "Lost Treasures"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 93,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h2",
+      "spoken" : [
+        {
+          "length" : 17,
+          "offset" : 0,
+          "text" : "Strange & Offbeat"
+        }
+      ],
+      "text" : "Strange & Offbeat"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 94,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 16,
+          "offset" : 0,
+          "text" : "PLANTS & ANIMALS"
+        }
+      ],
+      "text" : "PLANTS & ANIMALS"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 95,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 88,
+          "offset" : 0,
+          "text" : "Paleontologists Discover “one-in-a-Million” Fossil With 450-Million-Year-Old Soft Tissue"
+        }
+      ],
+      "text" : "Paleontologists Discover “one-in-a-Million” Fossil With 450-Million-Year-Old Soft Tissue"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 96,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 69,
+          "offset" : 0,
+          "text" : "Scientists Discover a Surprising Link Between Acorns and Lyme Disease"
+        }
+      ],
+      "text" : "Scientists Discover a Surprising Link Between Acorns and Lyme Disease"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 97,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 80,
+          "offset" : 0,
+          "text" : "Ancient Siberian Tomb Reveals Surprising Secrets of Cannabis Use 2,800 Years Ago"
+        }
+      ],
+      "text" : "Ancient Siberian Tomb Reveals Surprising Secrets of Cannabis Use 2,800 Years Ago"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 98,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 15,
+          "offset" : 0,
+          "text" : "EARTH & CLIMATE"
+        }
+      ],
+      "text" : "EARTH & CLIMATE"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 99,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 78,
+          "offset" : 0,
+          "text" : "Human Bodies Produce 2 Billion Metric Tons of CO2 a Year Just by Staying Alive"
+        }
+      ],
+      "text" : "Human Bodies Produce 2 Billion Metric Tons of CO2 a Year Just by Staying Alive"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 100,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 63,
+          "offset" : 0,
+          "text" : "Scientists Discover a Hidden Oxygen Reservoir Deep Inside Earth"
+        }
+      ],
+      "text" : "Scientists Discover a Hidden Oxygen Reservoir Deep Inside Earth"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 101,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 70,
+          "offset" : 0,
+          "text" : "Something Strange Is Happening Beneath a Volcano Near 2 Million People"
+        }
+      ],
+      "text" : "Something Strange Is Happening Beneath a Volcano Near 2 Million People"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 102,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 15,
+          "offset" : 0,
+          "text" : "FOSSILS & RUINS"
+        }
+      ],
+      "text" : "FOSSILS & RUINS"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 103,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 62,
+          "offset" : 0,
+          "text" : "DNA on the Shroud of Turin Reveals Centuries of Hidden Secrets"
+        }
+      ],
+      "text" : "DNA on the Shroud of Turin Reveals Centuries of Hidden Secrets"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 104,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 68,
+          "offset" : 0,
+          "text" : "Scientists Just Found Dinosaur Blood That Survived 115 Million Years"
+        }
+      ],
+      "text" : "Scientists Just Found Dinosaur Blood That Survived 115 Million Years"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 105,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 65,
+          "offset" : 0,
+          "text" : "400,000-Year-Old Teeth Reveal a Stunning Twist in Human Evolution"
+        }
+      ],
+      "text" : "400,000-Year-Old Teeth Reveal a Stunning Twist in Human Evolution"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.8,
+      "id" : 106,
+      "kind" : "nav",
+      "lowConfidence" : false,
+      "reason" : "class=navbar",
+      "spoken" : [
+
+      ],
+      "text" : "Toggle navigation Menu SD SD Home Page Top Science News Latest News Home Home Page Top Science News Latest News Health View all the latest top news in the health sciences, or browse the topics below: Health & Medicine Allergy Cancer Cold and Flu Diabetes Heart Disease ... more topics Mind & Brain ADD and ADHD Alzheimer's Headaches Intelligence Psychology ... more topics Living Well Parenting Child Development Stress Nutrition Fitness ... more topics Tech View all the latest top news in the physical sciences & technology, or browse the topics below: Matter & Energy Chemistry Fossil Fuels Nanotechnology Physics Solar Energy ... more topics Space & Time Black Holes Dark Matter Extrasolar Planets Solar System Space Telescopes ... more topics Computers & Math Artificial Intelligence Mathematics Quantum Computers Robotics Virtual Reality ... more topics Enviro View all the latest top news in the environmental sciences, or browse the topics below: Plants & Animals Agriculture and Food Biology Biotechnology Extinction Microbes and More ... more topics Earth & Climate Climate Earthquakes Geology Global Warming Pollution ... more topics Fossils & Ruins Anthropology Archaeology Dinosaurs Evolution Paleontology ... more topics Society View all the latest top news in the social sciences & education, or browse the topics below: Science & Society Arts & Culture Economics Privacy Issues Public Health Sports ... more topics Business & Industry Computers & Internet Energy & Resources Engineering Medical Technology Transportation ... more topics Education & Learning Creativity Educational Psychology Infant & Preschool Learning Disorders STEM Education ... more topics Quirky Top News Human Quirks Odd Creatures Bizarre Things Weird World"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 107,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 18,
+          "offset" : 0,
+          "text" : "Free Subscriptions"
+        }
+      ],
+      "text" : "Free Subscriptions"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 108,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 82,
+          "offset" : 0,
+          "text" : "Stay informed with ScienceDaily's free email newsletter, updated daily and weekly."
+        },
+        {
+          "length" : 46,
+          "offset" : 83,
+          "text" : "Or view our many newsfeeds in your RSS reader:"
+        }
+      ],
+      "text" : "Stay informed with ScienceDaily's free email newsletter, updated daily and weekly. Or view our many newsfeeds in your RSS reader:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 109,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 26,
+          "offset" : 0,
+          "text" : "Email Newsletter RSS Feeds"
+        }
+      ],
+      "text" : "Email Newsletter RSS Feeds"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 110,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 9,
+          "offset" : 0,
+          "text" : "Follow Us"
+        }
+      ],
+      "text" : "Follow Us"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 111,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 75,
+          "offset" : 0,
+          "text" : "Keep up to date with the latest news from ScienceDaily via social networks:"
+        }
+      ],
+      "text" : "Keep up to date with the latest news from ScienceDaily via social networks:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 112,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 20,
+          "offset" : 0,
+          "text" : "Facebook X / Twitter"
+        }
+      ],
+      "text" : "Facebook X / Twitter"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 113,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 14,
+          "offset" : 0,
+          "text" : "Have Feedback?"
+        }
+      ],
+      "text" : "Have Feedback?"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 114,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 89,
+          "offset" : 0,
+          "text" : "Tell us what you think of ScienceDaily -- we welcome both positive and negative comments."
+        },
+        {
+          "length" : 33,
+          "offset" : 90,
+          "text" : "Have any problems using the site?"
+        },
+        {
+          "length" : 10,
+          "offset" : 124,
+          "text" : "Questions?"
+        }
+      ],
+      "text" : "Tell us what you think of ScienceDaily -- we welcome both positive and negative comments. Have any problems using the site? Questions?"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 115,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 25,
+          "offset" : 0,
+          "text" : "Leave Feedback Contact Us"
+        }
+      ],
+      "text" : "Leave Feedback Contact Us"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 116,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 15,
+          "offset" : 0,
+          "text" : "About This Site"
+        }
+      ],
+      "text" : "About This Site"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 117,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 5,
+          "offset" : 0,
+          "text" : "Staff"
+        }
+      ],
+      "text" : "Staff"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 118,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 10,
+          "offset" : 0,
+          "text" : "Contribute"
+        }
+      ],
+      "text" : "Contribute"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 119,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 9,
+          "offset" : 0,
+          "text" : "Advertise"
+        }
+      ],
+      "text" : "Advertise"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 120,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 14,
+          "offset" : 0,
+          "text" : "Privacy Policy"
+        }
+      ],
+      "text" : "Privacy Policy"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 121,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 16,
+          "offset" : 0,
+          "text" : "Editorial Policy"
+        }
+      ],
+      "text" : "Editorial Policy"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 122,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 12,
+          "offset" : 0,
+          "text" : "Terms of Use"
+        }
+      ],
+      "text" : "Terms of Use"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 123,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 11,
+          "offset" : 0,
+          "text" : "| | | | | |"
+        }
+      ],
+      "text" : "| | | | | |"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 124,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 32,
+          "offset" : 0,
+          "text" : "Copyright 1995-2026 ScienceDaily"
+        }
+      ],
+      "text" : "Copyright 1995-2026 ScienceDaily"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 125,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 37,
+          "offset" : 0,
+          "text" : "or by other parties, where indicated."
+        },
+        {
+          "length" : 49,
+          "offset" : 38,
+          "text" : "All rights controlled by their respective owners."
+        },
+        {
+          "length" : 48,
+          "offset" : 88,
+          "text" : "Content on this website is for information only."
+        },
+        {
+          "length" : 67,
+          "offset" : 137,
+          "text" : "It is not intended to provide medical or other professional advice."
+        },
+        {
+          "length" : 96,
+          "offset" : 205,
+          "text" : "Views expressed here do not necessarily reflect those of ScienceDaily, contributors or partners."
+        },
+        {
+          "length" : 83,
+          "offset" : 302,
+          "text" : "Financial support for ScienceDaily comes from advertisements and referral programs."
+        }
+      ],
+      "text" : "or by other parties, where indicated. All rights controlled by their respective owners. Content on this website is for information only. It is not intended to provide medical or other professional advice. Views expressed here do not necessarily reflect those of ScienceDaily, contributors or partners. Financial support for ScienceDaily comes from advertisements and referral programs."
+    }
+  ],
+  "sentence_count" : 168,
+  "skipped" : [
+    {
+      "block_id" : 34,
+      "confidence" : 0.8,
+      "kind" : "nav",
+      "reason" : "class=nav",
+      "words" : 20
+    },
+    {
+      "block_id" : 35,
+      "confidence" : 0.8,
+      "kind" : "nav",
+      "reason" : "class=nav",
+      "words" : 13
+    },
+    {
+      "block_id" : 41,
+      "confidence" : 0.8,
+      "kind" : "nav",
+      "reason" : "class=nav",
+      "words" : 3
+    },
+    {
+      "block_id" : 106,
+      "confidence" : 0.8,
+      "kind" : "nav",
+      "reason" : "class=navbar",
+      "words" : 265
+    }
+  ],
+  "source" : "095-sciencedaily.html",
+  "source_sha256" : "4549043fb3be2e0188c79ac6e2eb0349ddec4ecf440dd671fdcaf1a393c155ab",
+  "spoken_words" : 1499,
+  "validation_failures" : 0,
+  "version" : 1
+}

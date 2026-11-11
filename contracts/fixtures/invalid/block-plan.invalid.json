@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "source": "004-averages.html",
+  "source_sha256": "not-a-sha256",
+  "sentence_count": -1,
+  "spoken_words": 0,
+  "validation_failures": 0,
+  "blocks": [
+    {
+      "id": 0,
+      "kind": "paragraph",
+      "confidence": 1.4,
+      "reason": "p",
+      "text": "Lisp is worth learning.",
+      "children": [],
+      "spoken": [{ "offset": -2, "length": 23, "text": "Lisp is worth learning." }],
+      "lowConfidence": false
+    }
+  ],
+  "skipped": []
+}

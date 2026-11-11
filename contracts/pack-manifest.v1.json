@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://readlater.app/contracts/pack-manifest.v1.json",
+  "title": "Pack manifest v1",
+  "description": "One JSON manifest per dictionary pack, fetched from the pack registry. The installer validates every field before download. Fields mirror evidence/2026-11-10-pack-zh-hk/artifacts/dictionary.en-zh-HK.lexical.manifest.json. Source of truth: read-later-research/spec/dictionary-packs.md section 2.",
+  "type": "object",
+  "required": [
+    "id",
+    "kind",
+    "version",
+    "size_bytes",
+    "sha256",
+    "min_app_version",
+    "languages",
+    "capabilities",
+    "licence"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "description": "Reverse-DNS, globally unique.",
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "description": "Must be in the installer allowlist.",
+      "type": "string",
+      "enum": ["dictionary.en-zh-HK.lexical", "model.llm.small"]
+    },
+    "version": {
+      "description": "Semver-ish YYYY-MM-DD.N. Update detection is numeric comparison.",
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}\\.[0-9]+$"
+    },
+    "size_bytes": {
+      "description": "Exact download size in bytes. Shown to the user before download.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "sha256": {
+      "description": "Hex digest of the downloaded archive. Verified before first use.",
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "min_app_version": {
+      "description": "Pack is refused below this app version.",
+      "type": "string",
+      "minLength": 1
+    },
+    "languages": {
+      "description": "BCP-47 plus script.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "capabilities": {
+      "description": "Subset of the known capability set.",
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": ["gloss", "phonetic", "pos", "on-device-inference"]
+      }
+    },
+    "licence": {
+      "description": "Rendered in Settings, Acknowledgements.",
+      "type": "object",
+      "required": ["name", "text_url", "attribution"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "text_url": { "type": "string", "minLength": 1 },
+        "attribution": { "type": "string", "minLength": 1 }
+      }
+    },
+    "source_url": {
+      "description": "Provenance of the source data. Informational only.",
+      "type": "string"
+    },
+    "conversion": {
+      "description": "Build-time conversion applied to the source data. Informational only.",
+      "type": "string"
+    },
+    "headwords": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "format": {
+      "type": "string"
+    }
+  }
+}

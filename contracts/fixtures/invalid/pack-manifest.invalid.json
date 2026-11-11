@@ -1,0 +1,14 @@
+{
+  "id": "dictionary.en-zh-HK.lexical",
+  "kind": "dictionary.en-zh-HK.gloss",
+  "version": "yesterday",
+  "size_bytes": "14.47 MiB",
+  "sha256": "769256b3f33470a",
+  "min_app_version": "0.1.0",
+  "languages": [],
+  "capabilities": ["gloss", "telepathy"],
+  "licence": {
+    "name": "MIT",
+    "text_url": "https://github.com/skywind3000/ECDICT/blob/master/LICENSE"
+  }
+}

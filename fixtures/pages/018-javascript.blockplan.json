@@ -1,0 +1,1732 @@
+{
+  "blocks" : [
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 0,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 35,
+          "offset" : 0,
+          "text" : "Skip to main content Skip to search"
+        }
+      ],
+      "text" : "Skip to main content Skip to search"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.85,
+      "id" : 1,
+      "kind" : "nav",
+      "lowConfidence" : false,
+      "reason" : "nav",
+      "spoken" : [
+
+      ],
+      "text" : "HTML HTML: Markup language HTML reference Elements Global attributes Attributes See all… HTML guides Responsive images HTML cheatsheet Date & time formats See all… Markup languages SVG MathML XML CSS CSS: Styling language CSS reference Properties Selectors At-rules Values See all… CSS guides Box model Animations Flexbox Colors See all… Layout cookbook Column layouts Centering an element Card component See all… JavaScriptJS JavaScript: Scripting language JS reference Standard built-in objects Expressions & operators Statements & declarations Functions See all… JS guides Control flow & error handling Loops and iteration Working with objects Using classes See all… Web APIs Web APIs: Programming interfaces Web API reference File system API Fetch API Geolocation API HTML DOM API Push API Service worker API See all… Web API guides Using the Web animation API Using the Fetch API Working with the History API Using the Web speech API Using web workers All All web technology Technologies Accessibility HTTP URI Web extensions WebAssembly WebDriver See all… Topics Media Performance Privacy Security Progressive web apps Learn Learn web development Frontend developer course Getting started modules Core modules MDN Curriculum Check out the video course from Scrimba, our partner Learn HTML Structuring content with HTML module Learn CSS CSS styling basics module CSS layout module Learn JavaScript Dynamic scripting with JavaScript module Tools Discover our tools Playground HTTP Observatory Border-image generator Border-radius generator Box-shadow generator Color format converter Color mixer Shape generator About Get to know MDN better About MDN Advertise with us Community MDN on GitHub Blog"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 2,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 14,
+          "offset" : 0,
+          "text" : "Toggle sidebar"
+        }
+      ],
+      "text" : "Toggle sidebar"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.8,
+      "id" : 3,
+      "kind" : "nav",
+      "lowConfidence" : false,
+      "reason" : "class=breadcrumbs",
+      "spoken" : [
+
+      ],
+      "text" : "Web JavaScript Guide Introduction"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.7,
+      "id" : 4,
+      "kind" : "list",
+      "lowConfidence" : true,
+      "reason" : "short-lines",
+      "spoken" : [
+        {
+          "length" : 27,
+          "offset" : 0,
+          "text" : "Theme OS default Light Dark"
+        }
+      ],
+      "text" : "Theme OS default Light Dark"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.75,
+      "id" : 5,
+      "kind" : "code",
+      "lowConfidence" : true,
+      "reason" : "symbol-density",
+      "spoken" : [
+
+      ],
+      "text" : "English (US) Remember language Learn more Deutsch English (US) Español Français 日本語 한국어 Português (do Brasil) Русский 中文 (简体) 正體中文 (繁體)"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 6,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h1",
+      "spoken" : [
+        {
+          "length" : 12,
+          "offset" : 0,
+          "text" : "Introduction"
+        }
+      ],
+      "text" : "Introduction"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 7,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 13,
+          "offset" : 0,
+          "text" : "Previous Next"
+        }
+      ],
+      "text" : "Previous Next"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 8,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 82,
+          "offset" : 0,
+          "text" : "This chapter introduces JavaScript and discusses some of its fundamental concepts."
+        }
+      ],
+      "text" : "This chapter introduces JavaScript and discusses some of its fundamental concepts."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.9,
+      "id" : 9,
+      "kind" : "aside",
+      "lowConfidence" : false,
+      "reason" : "aside",
+      "spoken" : [
+        {
+          "length" : 101,
+          "offset" : 0,
+          "text" : "In this article What you should already know Where to find JavaScript information What is JavaScript?"
+        },
+        {
+          "length" : 107,
+          "offset" : 102,
+          "text" : "JavaScript and Java JavaScript and the ECMAScript specification Getting started with JavaScript What's next"
+        }
+      ],
+      "text" : "In this article What you should already know Where to find JavaScript information What is JavaScript? JavaScript and Java JavaScript and the ECMAScript specification Getting started with JavaScript What's next"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 10,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h2",
+      "spoken" : [
+        {
+          "length" : 28,
+          "offset" : 0,
+          "text" : "What you should already know"
+        }
+      ],
+      "text" : "What you should already know"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 11,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 59,
+          "offset" : 0,
+          "text" : "This guide assumes you have the following basic background:"
+        }
+      ],
+      "text" : "This guide assumes you have the following basic background:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 12,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 69,
+          "offset" : 0,
+          "text" : "A general understanding of the Internet and the World Wide Web (WWW)."
+        },
+        {
+          "length" : 59,
+          "offset" : 70,
+          "text" : "Good working knowledge of HyperText Markup Language (HTML)."
+        },
+        {
+          "length" : 28,
+          "offset" : 130,
+          "text" : "Some programming experience."
+        },
+        {
+          "length" : 97,
+          "offset" : 159,
+          "text" : "If you are new to programming, try one of the tutorials linked on the main page about JavaScript."
+        }
+      ],
+      "text" : "A general understanding of the Internet and the World Wide Web (WWW). Good working knowledge of HyperText Markup Language (HTML). Some programming experience. If you are new to programming, try one of the tutorials linked on the main page about JavaScript."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 13,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h2",
+      "spoken" : [
+        {
+          "length" : 36,
+          "offset" : 0,
+          "text" : "Where to find JavaScript information"
+        }
+      ],
+      "text" : "Where to find JavaScript information"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 14,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 59,
+          "offset" : 0,
+          "text" : "The JavaScript documentation on MDN includes the following:"
+        }
+      ],
+      "text" : "The JavaScript documentation on MDN includes the following:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 15,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 148,
+          "offset" : 0,
+          "text" : "Dynamic scripting with JavaScript provides structured JavaScript guides for beginners and introduces basic concepts of programming and the Internet."
+        },
+        {
+          "length" : 97,
+          "offset" : 149,
+          "text" : "JavaScript Guide (this guide) provides an overview about the JavaScript language and its objects."
+        },
+        {
+          "length" : 73,
+          "offset" : 247,
+          "text" : "JavaScript Reference provides detailed reference material for JavaScript."
+        }
+      ],
+      "text" : "Dynamic scripting with JavaScript provides structured JavaScript guides for beginners and introduces basic concepts of programming and the Internet. JavaScript Guide (this guide) provides an overview about the JavaScript language and its objects. JavaScript Reference provides detailed reference material for JavaScript."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 16,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h2",
+      "spoken" : [
+        {
+          "length" : 19,
+          "offset" : 0,
+          "text" : "What is JavaScript?"
+        }
+      ],
+      "text" : "What is JavaScript?"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 17,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 173,
+          "offset" : 0,
+          "text" : "JavaScript is a cross-platform, object-oriented scripting language used to make webpages interactive (e.g., having complex animations, clickable buttons, popup menus, etc.)."
+        },
+        {
+          "length" : 219,
+          "offset" : 174,
+          "text" : "There are also more advanced server side versions of JavaScript such as Node.js, which allow you to add more functionality to a website than downloading files (such as realtime collaboration between multiple computers)."
+        },
+        {
+          "length" : 160,
+          "offset" : 394,
+          "text" : "Inside a host environment (for example, a web browser), JavaScript can be connected to the objects of its environment to provide programmatic control over them."
+        }
+      ],
+      "text" : "JavaScript is a cross-platform, object-oriented scripting language used to make webpages interactive (e.g., having complex animations, clickable buttons, popup menus, etc.). There are also more advanced server side versions of JavaScript such as Node.js, which allow you to add more functionality to a website than downloading files (such as realtime collaboration between multiple computers). Inside a host environment (for example, a web browser), JavaScript can be connected to the objects of its environment to provide programmatic control over them."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 18,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 171,
+          "offset" : 0,
+          "text" : "JavaScript contains a standard library of objects, such as Array, Map, and Math, and a core set of language elements such as operators, control structures, and statements."
+        },
+        {
+          "length" : 115,
+          "offset" : 172,
+          "text" : "Core JavaScript can be extended for a variety of purposes by supplementing it with additional objects; for example:"
+        }
+      ],
+      "text" : "JavaScript contains a standard library of objects, such as Array, Map, and Math, and a core set of language elements such as operators, control structures, and statements. Core JavaScript can be extended for a variety of purposes by supplementing it with additional objects; for example:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 19,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 127,
+          "offset" : 0,
+          "text" : "Client-side JavaScript extends the core language by supplying objects to control a browser and its Document Object Model (DOM)."
+        },
+        {
+          "length" : 172,
+          "offset" : 128,
+          "text" : "For example, client-side extensions allow an application to place elements on an HTML form and respond to user events such as mouse clicks, form input, and page navigation."
+        },
+        {
+          "length" : 113,
+          "offset" : 301,
+          "text" : "Server-side JavaScript extends the core language by supplying objects relevant to running JavaScript on a server."
+        },
+        {
+          "length" : 216,
+          "offset" : 415,
+          "text" : "For example, server-side extensions allow an application to communicate with a database, provide continuity of information from one invocation to another of the application, or perform file manipulations on a server."
+        }
+      ],
+      "text" : "Client-side JavaScript extends the core language by supplying objects to control a browser and its Document Object Model (DOM). For example, client-side extensions allow an application to place elements on an HTML form and respond to user events such as mouse clicks, form input, and page navigation. Server-side JavaScript extends the core language by supplying objects relevant to running JavaScript on a server. For example, server-side extensions allow an application to communicate with a database, provide continuity of information from one invocation to another of the application, or perform file manipulations on a server."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 20,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 86,
+          "offset" : 0,
+          "text" : "This means that in the browser, JavaScript can change the way the webpage (DOM) looks."
+        },
+        {
+          "length" : 116,
+          "offset" : 87,
+          "text" : "And, likewise, Node.js JavaScript on the server can respond to custom requests sent by code executed in the browser."
+        }
+      ],
+      "text" : "This means that in the browser, JavaScript can change the way the webpage (DOM) looks. And, likewise, Node.js JavaScript on the server can respond to custom requests sent by code executed in the browser."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 21,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h2",
+      "spoken" : [
+        {
+          "length" : 19,
+          "offset" : 0,
+          "text" : "JavaScript and Java"
+        }
+      ],
+      "text" : "JavaScript and Java"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 22,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 88,
+          "offset" : 0,
+          "text" : "JavaScript and Java are similar in some ways but fundamentally different in some others."
+        },
+        {
+          "length" : 103,
+          "offset" : 89,
+          "text" : "The JavaScript language resembles Java but does not have Java's static typing and strong type checking."
+        },
+        {
+          "length" : 171,
+          "offset" : 193,
+          "text" : "JavaScript follows most Java expression syntax, naming conventions and basic control-flow constructs which was the reason why it was renamed from LiveScript to JavaScript."
+        }
+      ],
+      "text" : "JavaScript and Java are similar in some ways but fundamentally different in some others. The JavaScript language resembles Java but does not have Java's static typing and strong type checking. JavaScript follows most Java expression syntax, naming conventions and basic control-flow constructs which was the reason why it was renamed from LiveScript to JavaScript."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 23,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 200,
+          "offset" : 0,
+          "text" : "In contrast to Java's compile-time system of classes built by declarations, JavaScript supports a runtime system based on a small number of data types representing numeric, Boolean, and string values."
+        },
+        {
+          "length" : 98,
+          "offset" : 201,
+          "text" : "JavaScript has a prototype-based object model instead of the more common class-based object model."
+        },
+        {
+          "length" : 115,
+          "offset" : 300,
+          "text" : "The prototype-based model provides dynamic inheritance; that is, what is inherited can vary for individual objects."
+        },
+        {
+          "length" : 80,
+          "offset" : 416,
+          "text" : "JavaScript also supports functions without any special declarative requirements."
+        },
+        {
+          "length" : 75,
+          "offset" : 497,
+          "text" : "Functions can be properties of objects, executing as loosely typed methods."
+        }
+      ],
+      "text" : "In contrast to Java's compile-time system of classes built by declarations, JavaScript supports a runtime system based on a small number of data types representing numeric, Boolean, and string values. JavaScript has a prototype-based object model instead of the more common class-based object model. The prototype-based model provides dynamic inheritance; that is, what is inherited can vary for individual objects. JavaScript also supports functions without any special declarative requirements. Functions can be properties of objects, executing as loosely typed methods."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 24,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 57,
+          "offset" : 0,
+          "text" : "JavaScript is a very free-form language compared to Java."
+        },
+        {
+          "length" : 63,
+          "offset" : 58,
+          "text" : "You do not have to declare all variables, classes, and methods."
+        },
+        {
+          "length" : 132,
+          "offset" : 122,
+          "text" : "You do not have to be concerned with whether methods are public, private, or protected, and you do not have to implement interfaces."
+        },
+        {
+          "length" : 74,
+          "offset" : 255,
+          "text" : "Variables, parameters, and function return types are not explicitly typed."
+        }
+      ],
+      "text" : "JavaScript is a very free-form language compared to Java. You do not have to declare all variables, classes, and methods. You do not have to be concerned with whether methods are public, private, or protected, and you do not have to implement interfaces. Variables, parameters, and function return types are not explicitly typed."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 25,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 87,
+          "offset" : 0,
+          "text" : "Java is a class-based programming language designed for fast execution and type safety."
+        },
+        {
+          "length" : 150,
+          "offset" : 88,
+          "text" : "Type safety means, for instance, that you can't cast a Java integer into an object reference or access private memory by corrupting the Java bytecode."
+        },
+        {
+          "length" : 94,
+          "offset" : 239,
+          "text" : "Java's class-based model means that programs consist exclusively of classes and their methods."
+        },
+        {
+          "length" : 96,
+          "offset" : 334,
+          "text" : "Java's class inheritance and strong typing generally require tightly coupled object hierarchies."
+        },
+        {
+          "length" : 82,
+          "offset" : 431,
+          "text" : "These requirements make Java programming more complex than JavaScript programming."
+        }
+      ],
+      "text" : "Java is a class-based programming language designed for fast execution and type safety. Type safety means, for instance, that you can't cast a Java integer into an object reference or access private memory by corrupting the Java bytecode. Java's class-based model means that programs consist exclusively of classes and their methods. Java's class inheritance and strong typing generally require tightly coupled object hierarchies. These requirements make Java programming more complex than JavaScript programming."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 26,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 123,
+          "offset" : 0,
+          "text" : "In contrast, JavaScript descends in spirit from a line of smaller, dynamically typed languages such as HyperTalk and dBase."
+        },
+        {
+          "length" : 188,
+          "offset" : 124,
+          "text" : "These scripting languages offer programming tools to a much wider audience because of their easier syntax, specialized built-in functionality, and minimal requirements for object creation."
+        }
+      ],
+      "text" : "In contrast, JavaScript descends in spirit from a line of smaller, dynamically typed languages such as HyperTalk and dBase. These scripting languages offer programming tools to a much wider audience because of their easier syntax, specialized built-in functionality, and minimal requirements for object creation."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 27,
+      "kind" : "figure",
+      "lowConfidence" : false,
+      "reason" : "figure",
+      "spoken" : [
+        {
+          "length" : 32,
+          "offset" : 0,
+          "text" : "JavaScript Java Object-oriented."
+        },
+        {
+          "length" : 40,
+          "offset" : 33,
+          "text" : "No distinction between types of objects."
+        },
+        {
+          "length" : 114,
+          "offset" : 74,
+          "text" : "Inheritance is through the prototype mechanism, and properties and methods can be added to any object dynamically."
+        },
+        {
+          "length" : 12,
+          "offset" : 189,
+          "text" : "Class-based."
+        },
+        {
+          "length" : 96,
+          "offset" : 202,
+          "text" : "Objects are divided into classes and instances with all inheritance through the class hierarchy."
+        },
+        {
+          "length" : 74,
+          "offset" : 299,
+          "text" : "Classes and instances cannot have properties or methods added dynamically."
+        },
+        {
+          "length" : 69,
+          "offset" : 374,
+          "text" : "Variable data types are not declared (dynamic typing, loosely typed)."
+        },
+        {
+          "length" : 69,
+          "offset" : 444,
+          "text" : "Variable data types must be declared (static typing, strongly typed)."
+        },
+        {
+          "length" : 40,
+          "offset" : 514,
+          "text" : "Cannot automatically write to hard disk."
+        },
+        {
+          "length" : 37,
+          "offset" : 555,
+          "text" : "Can automatically write to hard disk."
+        }
+      ],
+      "text" : "JavaScript Java Object-oriented. No distinction between types of objects. Inheritance is through the prototype mechanism, and properties and methods can be added to any object dynamically. Class-based. Objects are divided into classes and instances with all inheritance through the class hierarchy. Classes and instances cannot have properties or methods added dynamically. Variable data types are not declared (dynamic typing, loosely typed). Variable data types must be declared (static typing, strongly typed). Cannot automatically write to hard disk. Can automatically write to hard disk."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 28,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h2",
+      "spoken" : [
+        {
+          "length" : 43,
+          "offset" : 0,
+          "text" : "JavaScript and the ECMAScript specification"
+        }
+      ],
+      "text" : "JavaScript and the ECMAScript specification"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 29,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 297,
+          "offset" : 0,
+          "text" : "JavaScript is standardized at Ecma International — the European association for standardizing information and communication systems (ECMA was formerly an acronym for the European Computer Manufacturers Association) to deliver a standardized, international programming language based on JavaScript."
+        },
+        {
+          "length" : 127,
+          "offset" : 298,
+          "text" : "This standardized version of JavaScript, called ECMAScript, behaves the same way in all applications that support the standard."
+        },
+        {
+          "length" : 91,
+          "offset" : 426,
+          "text" : "Companies can use the open standard language to develop their implementation of JavaScript."
+        },
+        {
+          "length" : 68,
+          "offset" : 518,
+          "text" : "The ECMAScript standard is documented in the ECMA-262 specification."
+        }
+      ],
+      "text" : "JavaScript is standardized at Ecma International — the European association for standardizing information and communication systems (ECMA was formerly an acronym for the European Computer Manufacturers Association) to deliver a standardized, international programming language based on JavaScript. This standardized version of JavaScript, called ECMAScript, behaves the same way in all applications that support the standard. Companies can use the open standard language to develop their implementation of JavaScript. The ECMAScript standard is documented in the ECMA-262 specification."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 30,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 112,
+          "offset" : 0,
+          "text" : "The ECMA-262 standard is also approved by the ISO (International Organization for Standardization) as ISO-16262."
+        },
+        {
+          "length" : 70,
+          "offset" : 113,
+          "text" : "You can also find the specification on the Ecma International website."
+        },
+        {
+          "length" : 208,
+          "offset" : 184,
+          "text" : "The ECMAScript specification does not describe the Document Object Model (DOM), which is standardized by the World Wide Web Consortium (W3C) and/or WHATWG (Web Hypertext Application Technology Working Group)."
+        },
+        {
+          "length" : 82,
+          "offset" : 393,
+          "text" : "The DOM defines the way in which HTML document objects are exposed to your script."
+        },
+        {
+          "length" : 155,
+          "offset" : 476,
+          "text" : "To get a better idea about the different technologies that are used when programming with JavaScript, consult the article JavaScript technologies overview."
+        }
+      ],
+      "text" : "The ECMA-262 standard is also approved by the ISO (International Organization for Standardization) as ISO-16262. You can also find the specification on the Ecma International website. The ECMAScript specification does not describe the Document Object Model (DOM), which is standardized by the World Wide Web Consortium (W3C) and/or WHATWG (Web Hypertext Application Technology Working Group). The DOM defines the way in which HTML document objects are exposed to your script. To get a better idea about the different technologies that are used when programming with JavaScript, consult the article JavaScript technologies overview."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 31,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h3",
+      "spoken" : [
+        {
+          "length" : 60,
+          "offset" : 0,
+          "text" : "JavaScript documentation versus the ECMAScript specification"
+        }
+      ],
+      "text" : "JavaScript documentation versus the ECMAScript specification"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 32,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 82,
+          "offset" : 0,
+          "text" : "The ECMAScript specification is a set of requirements for implementing ECMAScript."
+        },
+        {
+          "length" : 171,
+          "offset" : 83,
+          "text" : "It is useful if you want to implement standards-compliant language features in your ECMAScript implementation or engine (such as SpiderMonkey in Firefox, or V8 in Chrome)."
+        }
+      ],
+      "text" : "The ECMAScript specification is a set of requirements for implementing ECMAScript. It is useful if you want to implement standards-compliant language features in your ECMAScript implementation or engine (such as SpiderMonkey in Firefox, or V8 in Chrome)."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 33,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 67,
+          "offset" : 0,
+          "text" : "The ECMAScript document is not intended to help script programmers."
+        },
+        {
+          "length" : 70,
+          "offset" : 68,
+          "text" : "Use the JavaScript documentation for information when writing scripts."
+        }
+      ],
+      "text" : "The ECMAScript document is not intended to help script programmers. Use the JavaScript documentation for information when writing scripts."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 34,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 107,
+          "offset" : 0,
+          "text" : "The ECMAScript specification uses terminology and syntax that may be unfamiliar to a JavaScript programmer."
+        },
+        {
+          "length" : 104,
+          "offset" : 108,
+          "text" : "Although the description of the language may differ in ECMAScript, the language itself remains the same."
+        },
+        {
+          "length" : 79,
+          "offset" : 213,
+          "text" : "JavaScript supports all functionality outlined in the ECMAScript specification."
+        }
+      ],
+      "text" : "The ECMAScript specification uses terminology and syntax that may be unfamiliar to a JavaScript programmer. Although the description of the language may differ in ECMAScript, the language itself remains the same. JavaScript supports all functionality outlined in the ECMAScript specification."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 35,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 112,
+          "offset" : 0,
+          "text" : "The JavaScript documentation describes aspects of the language that are appropriate for a JavaScript programmer."
+        }
+      ],
+      "text" : "The JavaScript documentation describes aspects of the language that are appropriate for a JavaScript programmer."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 36,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h2",
+      "spoken" : [
+        {
+          "length" : 31,
+          "offset" : 0,
+          "text" : "Getting started with JavaScript"
+        }
+      ],
+      "text" : "Getting started with JavaScript"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 37,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 69,
+          "offset" : 0,
+          "text" : "To get started with JavaScript, all you need is a modern web browser."
+        },
+        {
+          "length" : 112,
+          "offset" : 70,
+          "text" : "Recent versions of Firefox, Chrome, Microsoft Edge, and Safari all support the features discussed in this guide."
+        }
+      ],
+      "text" : "To get started with JavaScript, all you need is a modern web browser. Recent versions of Firefox, Chrome, Microsoft Edge, and Safari all support the features discussed in this guide."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 38,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 211,
+          "offset" : 0,
+          "text" : "A very useful tool for exploring JavaScript is the JavaScript Console (sometimes called the Web Console, or just the console): this is a tool which enables you to enter JavaScript and run it in the current page."
+        }
+      ],
+      "text" : "A very useful tool for exploring JavaScript is the JavaScript Console (sometimes called the Web Console, or just the console): this is a tool which enables you to enter JavaScript and run it in the current page."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 39,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 123,
+          "offset" : 0,
+          "text" : "The screenshots here show the Firefox Web Console, but all modern browsers ship with a console that works in a similar way."
+        }
+      ],
+      "text" : "The screenshots here show the Firefox Web Console, but all modern browsers ship with a console that works in a similar way."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 40,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h3",
+      "spoken" : [
+        {
+          "length" : 19,
+          "offset" : 0,
+          "text" : "Opening the console"
+        }
+      ],
+      "text" : "Opening the console"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 41,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 80,
+          "offset" : 0,
+          "text" : "The exact instructions for opening the console vary from one browser to another:"
+        }
+      ],
+      "text" : "The exact instructions for opening the console vary from one browser to another:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 42,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 98,
+          "offset" : 0,
+          "text" : "Opening the console in Firefox Opening the console in Chrome Opening the console in Microsoft Edge"
+        }
+      ],
+      "text" : "Opening the console in Firefox Opening the console in Chrome Opening the console in Microsoft Edge"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 43,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h3",
+      "spoken" : [
+        {
+          "length" : 31,
+          "offset" : 0,
+          "text" : "Entering and running JavaScript"
+        }
+      ],
+      "text" : "Entering and running JavaScript"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 44,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 56,
+          "offset" : 0,
+          "text" : "The console appears at the bottom of the browser window."
+        },
+        {
+          "length" : 129,
+          "offset" : 57,
+          "text" : "Along the bottom of the console is an input line that you can use to enter JavaScript, and the output appears in the panel above:"
+        }
+      ],
+      "text" : "The console appears at the bottom of the browser window. Along the bottom of the console is an input line that you can use to enter JavaScript, and the output appears in the panel above:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 45,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 86,
+          "offset" : 0,
+          "text" : "The console works the exact same way as eval: the last expression entered is returned."
+        },
+        {
+          "length" : 164,
+          "offset" : 87,
+          "text" : "For the sake of simplicity, it can be imagined that every time something is entered into the console, it is actually surrounded by console.log around eval, like so:"
+        }
+      ],
+      "text" : "The console works the exact same way as eval: the last expression entered is returned. For the sake of simplicity, it can be imagined that every time something is entered into the console, it is actually surrounded by console.log around eval, like so:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 46,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 2,
+          "offset" : 0,
+          "text" : "js"
+        }
+      ],
+      "text" : "js"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.99,
+      "id" : 47,
+      "kind" : "code",
+      "lowConfidence" : false,
+      "reason" : "pre",
+      "spoken" : [
+
+      ],
+      "text" : "console.log(eval(\"3 + 5\"));"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 48,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h3",
+      "spoken" : [
+        {
+          "length" : 31,
+          "offset" : 0,
+          "text" : "Multi-line input in the console"
+        }
+      ],
+      "text" : "Multi-line input in the console"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 49,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 140,
+          "offset" : 0,
+          "text" : "By default, if you press Enter (or Return, depending on your keyboard) after entering a line of code, then the string you typed is executed."
+        },
+        {
+          "length" : 26,
+          "offset" : 141,
+          "text" : "To enter multi-line input:"
+        }
+      ],
+      "text" : "By default, if you press Enter (or Return, depending on your keyboard) after entering a line of code, then the string you typed is executed. To enter multi-line input:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 50,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 162,
+          "offset" : 0,
+          "text" : "If the string you typed was incomplete (for example, you typed function foo() {) then the console will treat Enter as a line break, and let you type another line."
+        },
+        {
+          "length" : 125,
+          "offset" : 163,
+          "text" : "If you hold down Shift while pressing Enter, then the console will treat this as a line break, and let you type another line."
+        },
+        {
+          "length" : 157,
+          "offset" : 289,
+          "text" : "In Firefox only, you can activate multi-line input mode, in which you can enter multiple lines in a mini-editor, then run the whole thing when you are ready."
+        }
+      ],
+      "text" : "If the string you typed was incomplete (for example, you typed function foo() {) then the console will treat Enter as a line break, and let you type another line. If you hold down Shift while pressing Enter, then the console will treat this as a line break, and let you type another line. In Firefox only, you can activate multi-line input mode, in which you can enter multiple lines in a mini-editor, then run the whole thing when you are ready."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 51,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 113,
+          "offset" : 0,
+          "text" : "To get started with writing JavaScript, open the console, copy the following code, and paste it in at the prompt:"
+        }
+      ],
+      "text" : "To get started with writing JavaScript, open the console, copy the following code, and paste it in at the prompt:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 52,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 2,
+          "offset" : 0,
+          "text" : "js"
+        }
+      ],
+      "text" : "js"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.99,
+      "id" : 53,
+      "kind" : "code",
+      "lowConfidence" : false,
+      "reason" : "pre",
+      "spoken" : [
+
+      ],
+      "text" : "(function () { \"use strict\"; /* Start of your code */ function greetMe(yourName) { alert(`Hello ${yourName}`); } greetMe(\"World\"); /* End of your code */ })();"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 54,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 47,
+          "offset" : 0,
+          "text" : "Press Enter to watch it unfold in your browser!"
+        }
+      ],
+      "text" : "Press Enter to watch it unfold in your browser!"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 55,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h2",
+      "spoken" : [
+        {
+          "length" : 11,
+          "offset" : 0,
+          "text" : "What's next"
+        }
+      ],
+      "text" : "What's next"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 56,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 158,
+          "offset" : 0,
+          "text" : "In the following pages, this guide introduces you to the JavaScript syntax and language features, so that you will be able to write more complex applications."
+        }
+      ],
+      "text" : "In the following pages, this guide introduces you to the JavaScript syntax and language features, so that you will be able to write more complex applications."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 57,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 126,
+          "offset" : 0,
+          "text" : "But for now, remember to always include the (function(){\"use strict\"; before your code, and add })(); to the end of your code."
+        },
+        {
+          "length" : 115,
+          "offset" : 127,
+          "text" : "The strict mode and IIFE articles explain what those do, but for now they can be thought of as doing the following:"
+        }
+      ],
+      "text" : "But for now, remember to always include the (function(){\"use strict\"; before your code, and add })(); to the end of your code. The strict mode and IIFE articles explain what those do, but for now they can be thought of as doing the following:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 58,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ol",
+      "spoken" : [
+        {
+          "length" : 55,
+          "offset" : 0,
+          "text" : "Prevent semantics in JavaScript that trip up beginners."
+        },
+        {
+          "length" : 183,
+          "offset" : 56,
+          "text" : "Prevent code snippets executed in the console from interacting with one another (e.g., having something created in one console execution being used for a different console execution)."
+        }
+      ],
+      "text" : "Prevent semantics in JavaScript that trip up beginners. Prevent code snippets executed in the console from interacting with one another (e.g., having something created in one console execution being used for a different console execution)."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 59,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 13,
+          "offset" : 0,
+          "text" : "Previous Next"
+        }
+      ],
+      "text" : "Previous Next"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 60,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h2",
+      "spoken" : [
+        {
+          "length" : 16,
+          "offset" : 0,
+          "text" : "Help improve MDN"
+        }
+      ],
+      "text" : "Help improve MDN"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.7,
+      "id" : 61,
+      "kind" : "code",
+      "lowConfidence" : true,
+      "reason" : "line-variance",
+      "spoken" : [
+
+      ],
+      "text" : "Was this page helpful to you? Yes No"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 62,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 23,
+          "offset" : 0,
+          "text" : "Learn how to contribute"
+        }
+      ],
+      "text" : "Learn how to contribute"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 63,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 63,
+          "offset" : 0,
+          "text" : "This page was last modified on Jul 8, 2026 by MDN contributors."
+        }
+      ],
+      "text" : "This page was last modified on Jul 8, 2026 by MDN contributors."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 64,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 24,
+          "offset" : 0,
+          "text" : "View this page on GitHub"
+        }
+      ],
+      "text" : "View this page on GitHub"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 65,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 34,
+          "offset" : 0,
+          "text" : "Report a problem with this content"
+        }
+      ],
+      "text" : "Report a problem with this content"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 66,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 1,
+          "offset" : 0,
+          "text" : "•"
+        }
+      ],
+      "text" : "•"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.9,
+      "id" : 67,
+      "kind" : "aside",
+      "lowConfidence" : false,
+      "reason" : "aside",
+      "spoken" : [
+        {
+          "length" : 2522,
+          "offset" : 0,
+          "text" : "Filter sidebar Clear filter input JavaScript Tutorials and guides JavaScript Guide Introduction Grammar and types Control flow and error handling Loops and iteration Functions Expressions and operators Numbers and strings Representing dates & times Regular expressions Indexed collections Keyed collections Working with objects Using classes Using promises JavaScript typed arrays Iterators and generators Resource management Internationalization JavaScript modules Using modules on the web Understanding the module graph Modules across platforms Intermediate Language overview JavaScript data structures Equality comparisons and sameness Enumerability and ownership of properties Closures Advanced Inheritance and the prototype chain Meta programming Memory Management Agent communication and coordination References Built-in objects AbstractModuleSource AggregateError Array ArrayBuffer AsyncDisposableStack AsyncFunction AsyncGenerator AsyncGeneratorFunction AsyncIterator Atomics BigInt BigInt64Array BigUint64Array Boolean DataView Date decodeURI() decodeURIComponent() DisposableStack encodeURI() encodeURIComponent() Error escape() eval() EvalError FinalizationRegistry Float16Array Float32Array Float64Array Function Generator GeneratorFunction globalThis Infinity Int8Array Int16Array Int32Array InternalError Intl isFinite() isNaN() Iterator JSON Map Math NaN Number Object parseFloat() parseInt() Promise Proxy RangeError ReferenceError Reflect RegExp Set SharedArrayBuffer String SuppressedError Symbol SyntaxError Temporal TypedArray TypeError Uint8Array Uint8ClampedArray Uint16Array Uint32Array undefined unescape() URIError WeakMap WeakRef WeakSet Expressions & operators Addition (+) Addition assignment (+=) Assignment (=) async function expression async function* expression await Bitwise AND (&) Bitwise AND assignment (&=) Bitwise NOT (~) Bitwise OR (|) Bitwise OR assignment (|=) Bitwise XOR (^) Bitwise XOR assignment (^=) class expression Comma operator (,) Conditional (ternary) operator Decrement (--) delete Destructuring Division (/) Division assignment (/=) Equality (==) Exponentiation (**) Exponentiation assignment (**=) function expression function* expression Greater than (>) Greater than or equal (>=) Grouping operator ( ) import.meta import.meta.resolve() import() import.defer() import.source() in Increment (++) Inequality (!=) instanceof Left shift (<<) Left shift assignment (<<=) Less than (<) Less than or equal (<=) Logical AND (&&) Logical AND assignment (&&=) Logical NOT (!)"
+        },
+        {
+          "length" : 182,
+          "offset" : 2523,
+          "text" : "Logical OR (||) Logical OR assignment (||=) Multiplication (*) Multiplication assignment (*=) new new.target null Nullish coalescing assignment (??=) Nullish coalescing operator (??)"
+        },
+        {
+          "length" : 61,
+          "offset" : 2706,
+          "text" : "Object initializer Operator precedence Optional chaining (?.)"
+        },
+        {
+          "length" : 124,
+          "offset" : 2768,
+          "text" : "Property accessors Remainder (%) Remainder assignment (%=) Right shift (>>) Right shift assignment (>>=) Spread syntax (...)"
+        },
+        {
+          "length" : 961,
+          "offset" : 2893,
+          "text" : "Strict equality (===) Strict inequality (!==) Subtraction (-) Subtraction assignment (-=) super this typeof Unary negation (-) Unary plus (+) Unsigned right shift (>>>) Unsigned right shift assignment (>>>=) void operator yield yield* Statements & declarations async function async function* await using Block statement break class const continue debugger do...while Empty statement export Expression statement for for await...of for...in for...of function function* if...else import Import attributes import defer import source Labeled statement let return switch throw try...catch using var while with Functions Arrow function expressions Default parameters get Method definitions Rest parameters set The arguments object [Symbol.iterator]() callee length Classes constructor extends Private elements Public class fields static Static initialization blocks Regular expressions Backreference: \\1, \\2 Buffer boundary assertion: \\A, \\z, \\Z Capturing group: (...)"
+        },
+        {
+          "length" : 77,
+          "offset" : 3855,
+          "text" : "Character class escape: \\d, \\D, \\w, \\W, \\s, \\S Character class: [...], [^...]"
+        },
+        {
+          "length" : 29,
+          "offset" : 3933,
+          "text" : "Character escape: \\n, \\u{...}"
+        },
+        {
+          "length" : 107,
+          "offset" : 3963,
+          "text" : "Disjunction: | Input boundary assertion: ^, $ Literal character: a, b Lookahead assertion: (?=...), (?!...)"
+        },
+        {
+          "length" : 40,
+          "offset" : 4071,
+          "text" : "Lookbehind assertion: (?<=...), (?<!...)"
+        },
+        {
+          "length" : 24,
+          "offset" : 4112,
+          "text" : "Modifier: (?ims-ims:...)"
+        },
+        {
+          "length" : 65,
+          "offset" : 4137,
+          "text" : "Named backreference: \\k<name> Named capturing group: (?<name>...)"
+        },
+        {
+          "length" : 28,
+          "offset" : 4203,
+          "text" : "Non-capturing group: (?:...)"
+        },
+        {
+          "length" : 86,
+          "offset" : 4232,
+          "text" : "Quantifier: *, +, ?, {n}, {n,}, {n,m} Unicode character class escape: \\p{...}, \\P{...}"
+        },
+        {
+          "length" : 11,
+          "offset" : 4319,
+          "text" : "Wildcard: ."
+        },
+        {
+          "length" : 1657,
+          "offset" : 4331,
+          "text" : "Word boundary assertion: \\b, \\B Errors AggregateError: No Promise in Promise.any was resolved Error: Permission denied to access property \"x\" InternalError: too much recursion RangeError: argument is not a valid code point RangeError: BigInt division by zero RangeError: BigInt negative exponent RangeError: form must be one of 'NFC', 'NFD', 'NFKC', or 'NFKD' RangeError: invalid array length RangeError: invalid date RangeError: precision is out of range RangeError: radix must be an integer RangeError: repeat count must be less than infinity RangeError: repeat count must be non-negative RangeError: x can't be converted to BigInt because it isn't an integer ReferenceError: \"x\" is not defined ReferenceError: assignment to undeclared variable \"x\" ReferenceError: can't access lexical declaration 'X' before initialization ReferenceError: must call super constructor before using 'this' in derived class constructor ReferenceError: super() called twice in derived class constructor SyntaxError: 'arguments'/'eval' can't be defined or assigned to in strict mode code SyntaxError: \"0\"-prefixed octal literals are deprecated SyntaxError: \"use strict\" not allowed in function with non-simple parameters SyntaxError: \"x\" is a reserved identifier SyntaxError: \\ at end of pattern SyntaxError: a declaration in the head of a for-of loop can't have an initializer SyntaxError: applying the 'delete' operator to an unqualified name is deprecated SyntaxError: arguments is not valid in fields SyntaxError: await is only valid in async functions, async generators and modules SyntaxError: await/yield expression can't be used in parameter SyntaxError: cannot use ??"
+        },
+        {
+          "length" : 1942,
+          "offset" : 5989,
+          "text" : "unparenthesized within || and && expressions SyntaxError: character class escape cannot be used in class range in regular expression SyntaxError: continue must be inside loop SyntaxError: duplicate capture group name in regular expression SyntaxError: duplicate formal argument x SyntaxError: for-in loop head declarations may not have initializers SyntaxError: function statement requires a name SyntaxError: functions cannot be labelled SyntaxError: getter and setter for private name #x should either be both static or non-static SyntaxError: getter functions must have no arguments SyntaxError: identifier starts immediately after numeric literal SyntaxError: illegal character SyntaxError: import declarations may only appear at top level of a module SyntaxError: incomplete quantifier in regular expression SyntaxError: invalid assignment left-hand side SyntaxError: invalid BigInt syntax SyntaxError: invalid capture group name in regular expression SyntaxError: invalid character in class in regular expression SyntaxError: invalid class set operation in regular expression SyntaxError: invalid decimal escape in regular expression SyntaxError: invalid identity escape in regular expression SyntaxError: invalid named capture reference in regular expression SyntaxError: invalid property name in regular expression SyntaxError: invalid range in character class SyntaxError: invalid regexp group SyntaxError: invalid regular expression flag \"x\" SyntaxError: invalid unicode escape in regular expression SyntaxError: JSON.parse: bad parsing SyntaxError: label not found SyntaxError: missing : after property id SyntaxError: missing ) after argument list SyntaxError: missing ) after condition SyntaxError: missing ] after element list SyntaxError: missing } after function body SyntaxError: missing } after property list SyntaxError: missing = in const declaration SyntaxError: missing formal parameter SyntaxError: missing name after ."
+        },
+        {
+          "length" : 261,
+          "offset" : 7932,
+          "text" : "operator SyntaxError: missing variable name SyntaxError: negated character class with strings in regular expression SyntaxError: new keyword cannot be used with an optional chain SyntaxError: nothing to repeat SyntaxError: numbers out of order in {} quantifier."
+        },
+        {
+          "length" : 1200,
+          "offset" : 8194,
+          "text" : "SyntaxError: octal escape sequences can't be used in untagged template literals or in strict mode code SyntaxError: parameter after rest parameter SyntaxError: private fields can't be deleted SyntaxError: property name __proto__ appears more than once in object literal SyntaxError: raw bracket is not allowed in regular expression with unicode flag SyntaxError: redeclaration of formal parameter \"x\" SyntaxError: reference to undeclared private field or method #x SyntaxError: rest parameter may not have a default SyntaxError: return not in function SyntaxError: setter functions must have one argument SyntaxError: string literal contains an unescaped line break SyntaxError: super() is only valid in derived class constructors SyntaxError: tagged template cannot be used with optional chain SyntaxError: Unexpected '#' used outside of class body SyntaxError: Unexpected token SyntaxError: unlabeled break must be inside loop or switch SyntaxError: unparenthesized unary expression can't appear on the left-hand side of '**' SyntaxError: use of super property/member accesses only valid within methods or eval code within methods SyntaxError: Using //@ to indicate sourceURL pragmas is deprecated."
+        },
+        {
+          "length" : 2283,
+          "offset" : 9395,
+          "text" : "Use //# instead TypeError: 'caller', 'callee', and 'arguments' properties may not be accessed TypeError: 'x' is not iterable TypeError: \"x\" is (not) \"y\" TypeError: \"x\" is not a constructor TypeError: \"x\" is not a function TypeError: \"x\" is not a non-null object TypeError: \"x\" is read-only TypeError: already executing generator TypeError: BigInt value can't be serialized in JSON TypeError: calling a builtin X constructor without new is forbidden TypeError: can't access/set private field or method: object is not the right class TypeError: can't assign to property \"x\" on \"y\": not an object TypeError: can't convert BigInt to number TypeError: can't convert x to BigInt TypeError: can't define property \"x\": \"obj\" is not extensible TypeError: can't delete non-configurable array element TypeError: can't redefine non-configurable property \"x\" TypeError: can't set prototype of this object TypeError: can't set prototype: it would cause a prototype chain cycle TypeError: cannot use 'in' operator to search for 'x' in 'y' TypeError: class constructors must be invoked with 'new' TypeError: cyclic object value TypeError: derived class constructor returned invalid value x TypeError: getting private setter-only property TypeError: Initializing an object twice is an error with private fields/methods TypeError: invalid 'instanceof' operand 'x' TypeError: invalid Array.prototype.sort argument TypeError: invalid assignment to const \"x\" TypeError: Iterator/AsyncIterator constructor can't be used directly TypeError: matchAll/replaceAll must be called with a global RegExp TypeError: More arguments needed TypeError: null/undefined has no properties TypeError: property \"x\" is non-configurable and can't be deleted TypeError: Reduce of empty array with no initial value TypeError: setting getter-only property \"x\" TypeError: WeakSet key/WeakMap value 'x' must be an object or an unregistered symbol TypeError: X.prototype.y called on incompatible type URIError: malformed URI sequence Warning: -file- is being assigned a //# sourceMappingURL, but already has one Warning: unreachable code after return statement Misc JavaScript technologies overview Execution model Lexical grammar Magic comments Iteration protocols Strict mode Template literals Trailing commas Deprecated features"
+        }
+      ],
+      "text" : "Filter sidebar Clear filter input JavaScript Tutorials and guides JavaScript Guide Introduction Grammar and types Control flow and error handling Loops and iteration Functions Expressions and operators Numbers and strings Representing dates & times Regular expressions Indexed collections Keyed collections Working with objects Using classes Using promises JavaScript typed arrays Iterators and generators Resource management Internationalization JavaScript modules Using modules on the web Understanding the module graph Modules across platforms Intermediate Language overview JavaScript data structures Equality comparisons and sameness Enumerability and ownership of properties Closures Advanced Inheritance and the prototype chain Meta programming Memory Management Agent communication and coordination References Built-in objects AbstractModuleSource AggregateError Array ArrayBuffer AsyncDisposableStack AsyncFunction AsyncGenerator AsyncGeneratorFunction AsyncIterator Atomics BigInt BigInt64Array BigUint64Array Boolean DataView Date decodeURI() decodeURIComponent() DisposableStack encodeURI() encodeURIComponent() Error escape() eval() EvalError FinalizationRegistry Float16Array Float32Array Float64Array Function Generator GeneratorFunction globalThis Infinity Int8Array Int16Array Int32Array InternalError Intl isFinite() isNaN() Iterator JSON Map Math NaN Number Object parseFloat() parseInt() Promise Proxy RangeError ReferenceError Reflect RegExp Set SharedArrayBuffer String SuppressedError Symbol SyntaxError Temporal TypedArray TypeError Uint8Array Uint8ClampedArray Uint16Array Uint32Array undefined unescape() URIError WeakMap WeakRef WeakSet Expressions & operators Addition (+) Addition assignment (+=) Assignment (=) async function expression async function* expression await Bitwise AND (&) Bitwise AND assignment (&=) Bitwise NOT (~) Bitwise OR (|) Bitwise OR assignment (|=) Bitwise XOR (^) Bitwise XOR assignment (^=) class expression Comma operator (,) Conditional (ternary) operator Decrement (--) delete Destructuring Division (/) Division assignment (/=) Equality (==) Exponentiation (**) Exponentiation assignment (**=) function expression function* expression Greater than (>) Greater than or equal (>=) Grouping operator ( ) import.meta import.meta.resolve() import() import.defer() import.source() in Increment (++) Inequality (!=) instanceof Left shift (<<) Left shift assignment (<<=) Less than (<) Less than or equal (<=) Logical AND (&&) Logical AND assignment (&&=) Logical NOT (!) Logical OR (||) Logical OR assignment (||=) Multiplication (*) Multiplication assignment (*=) new new.target null Nullish coalescing assignment (??=) Nullish coalescing operator (??) Object initializer Operator precedence Optional chaining (?.) Property accessors Remainder (%) Remainder assignment (%=) Right shift (>>) Right shift assignment (>>=) Spread syntax (...) Strict equality (===) Strict inequality (!==) Subtraction (-) Subtraction assignment (-=) super this typeof Unary negation (-) Unary plus (+) Unsigned right shift (>>>) Unsigned right shift assignment (>>>=) void operator yield yield* Statements & declarations async function async function* await using Block statement break class const continue debugger do...while Empty statement export Expression statement for for await...of for...in for...of function function* if...else import Import attributes import defer import source Labeled statement let return switch throw try...catch using var while with Functions Arrow function expressions Default parameters get Method definitions Rest parameters set The arguments object [Symbol.iterator]() callee length Classes constructor extends Private elements Public class fields static Static initialization blocks Regular expressions Backreference: \\1, \\2 Buffer boundary assertion: \\A, \\z, \\Z Capturing group: (...) Character class escape: \\d, \\D, \\w, \\W, \\s, \\S Character class: [...], [^...] Character escape: \\n, \\u{...} Disjunction: | Input boundary assertion: ^, $ Literal character: a, b Lookahead assertion: (?=...), (?!...) Lookbehind assertion: (?<=...), (?<!...) Modifier: (?ims-ims:...) Named backreference: \\k<name> Named capturing group: (?<name>...) Non-capturing group: (?:...) Quantifier: *, +, ?, {n}, {n,}, {n,m} Unicode character class escape: \\p{...}, \\P{...} Wildcard: . Word boundary assertion: \\b, \\B Errors AggregateError: No Promise in Promise.any was resolved Error: Permission denied to access property \"x\" InternalError: too much recursion RangeError: argument is not a valid code point RangeError: BigInt division by zero RangeError: BigInt negative exponent RangeError: form must be one of 'NFC', 'NFD', 'NFKC', or 'NFKD' RangeError: invalid array length RangeError: invalid date RangeError: precision is out of range RangeError: radix must be an integer RangeError: repeat count must be less than infinity RangeError: repeat count must be non-negative RangeError: x can't be converted to BigInt because it isn't an integer ReferenceError: \"x\" is not defined ReferenceError: assignment to undeclared variable \"x\" ReferenceError: can't access lexical declaration 'X' before initialization ReferenceError: must call super constructor before using 'this' in derived class constructor ReferenceError: super() called twice in derived class constructor SyntaxError: 'arguments'/'eval' can't be defined or assigned to in strict mode code SyntaxError: \"0\"-prefixed octal literals are deprecated SyntaxError: \"use strict\" not allowed in function with non-simple parameters SyntaxError: \"x\" is a reserved identifier SyntaxError: \\ at end of pattern SyntaxError: a declaration in the head of a for-of loop can't have an initializer SyntaxError: applying the 'delete' operator to an unqualified name is deprecated SyntaxError: arguments is not valid in fields SyntaxError: await is only valid in async functions, async generators and modules SyntaxError: await/yield expression can't be used in parameter SyntaxError: cannot use ?? unparenthesized within || and && expressions SyntaxError: character class escape cannot be used in class range in regular expression SyntaxError: continue must be inside loop SyntaxError: duplicate capture group name in regular expression SyntaxError: duplicate formal argument x SyntaxError: for-in loop head declarations may not have initializers SyntaxError: function statement requires a name SyntaxError: functions cannot be labelled SyntaxError: getter and setter for private name #x should either be both static or non-static SyntaxError: getter functions must have no arguments SyntaxError: identifier starts immediately after numeric literal SyntaxError: illegal character SyntaxError: import declarations may only appear at top level of a module SyntaxError: incomplete quantifier in regular expression SyntaxError: invalid assignment left-hand side SyntaxError: invalid BigInt syntax SyntaxError: invalid capture group name in regular expression SyntaxError: invalid character in class in regular expression SyntaxError: invalid class set operation in regular expression SyntaxError: invalid decimal escape in regular expression SyntaxError: invalid identity escape in regular expression SyntaxError: invalid named capture reference in regular expression SyntaxError: invalid property name in regular expression SyntaxError: invalid range in character class SyntaxError: invalid regexp group SyntaxError: invalid regular expression flag \"x\" SyntaxError: invalid unicode escape in regular expression SyntaxError: JSON.parse: bad parsing SyntaxError: label not found SyntaxError: missing : after property id SyntaxError: missing ) after argument list SyntaxError: missing ) after condition SyntaxError: missing ] after element list SyntaxError: missing } after function body SyntaxError: missing } after property list SyntaxError: missing = in const declaration SyntaxError: missing formal parameter SyntaxError: missing name after . operator SyntaxError: missing variable name SyntaxError: negated character class with strings in regular expression SyntaxError: new keyword cannot be used with an optional chain SyntaxError: nothing to repeat SyntaxError: numbers out of order in {} quantifier. SyntaxError: octal escape sequences can't be used in untagged template literals or in strict mode code SyntaxError: parameter after rest parameter SyntaxError: private fields can't be deleted SyntaxError: property name __proto__ appears more than once in object literal SyntaxError: raw bracket is not allowed in regular expression with unicode flag SyntaxError: redeclaration of formal parameter \"x\" SyntaxError: reference to undeclared private field or method #x SyntaxError: rest parameter may not have a default SyntaxError: return not in function SyntaxError: setter functions must have one argument SyntaxError: string literal contains an unescaped line break SyntaxError: super() is only valid in derived class constructors SyntaxError: tagged template cannot be used with optional chain SyntaxError: Unexpected '#' used outside of class body SyntaxError: Unexpected token SyntaxError: unlabeled break must be inside loop or switch SyntaxError: unparenthesized unary expression can't appear on the left-hand side of '**' SyntaxError: use of super property/member accesses only valid within methods or eval code within methods SyntaxError: Using //@ to indicate sourceURL pragmas is deprecated. Use //# instead TypeError: 'caller', 'callee', and 'arguments' properties may not be accessed TypeError: 'x' is not iterable TypeError: \"x\" is (not) \"y\" TypeError: \"x\" is not a constructor TypeError: \"x\" is not a function TypeError: \"x\" is not a non-null object TypeError: \"x\" is read-only TypeError: already executing generator TypeError: BigInt value can't be serialized in JSON TypeError: calling a builtin X constructor without new is forbidden TypeError: can't access/set private field or method: object is not the right class TypeError: can't assign to property \"x\" on \"y\": not an object TypeError: can't convert BigInt to number TypeError: can't convert x to BigInt TypeError: can't define property \"x\": \"obj\" is not extensible TypeError: can't delete non-configurable array element TypeError: can't redefine non-configurable property \"x\" TypeError: can't set prototype of this object TypeError: can't set prototype: it would cause a prototype chain cycle TypeError: cannot use 'in' operator to search for 'x' in 'y' TypeError: class constructors must be invoked with 'new' TypeError: cyclic object value TypeError: derived class constructor returned invalid value x TypeError: getting private setter-only property TypeError: Initializing an object twice is an error with private fields/methods TypeError: invalid 'instanceof' operand 'x' TypeError: invalid Array.prototype.sort argument TypeError: invalid assignment to const \"x\" TypeError: Iterator/AsyncIterator constructor can't be used directly TypeError: matchAll/replaceAll must be called with a global RegExp TypeError: More arguments needed TypeError: null/undefined has no properties TypeError: property \"x\" is non-configurable and can't be deleted TypeError: Reduce of empty array with no initial value TypeError: setting getter-only property \"x\" TypeError: WeakSet key/WeakMap value 'x' must be an object or an unregistered symbol TypeError: X.prototype.y called on incompatible type URIError: malformed URI sequence Warning: -file- is being assigned a //# sourceMappingURL, but already has one Warning: unreachable code after return statement Misc JavaScript technologies overview Execution model Lexical grammar Magic comments Iteration protocols Strict mode Template literals Trailing commas Deprecated features"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 68,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 37,
+          "offset" : 0,
+          "text" : "Your blueprint for a better internet."
+        }
+      ],
+      "text" : "Your blueprint for a better internet."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.8,
+      "id" : 69,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "dl",
+      "spoken" : [
+        {
+          "length" : 70,
+          "offset" : 0,
+          "text" : "MDN About Blog Mozilla careers Advertise with us MDN Plus Product help"
+        }
+      ],
+      "text" : "MDN About Blog Mozilla careers Advertise with us MDN Plus Product help"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.8,
+      "id" : 70,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "dl",
+      "spoken" : [
+        {
+          "length" : 89,
+          "offset" : 0,
+          "text" : "Contribute MDN Community Community resources Writing guidelines MDN Discord MDN on GitHub"
+        }
+      ],
+      "text" : "Contribute MDN Community Community resources Writing guidelines MDN Discord MDN on GitHub"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.8,
+      "id" : 71,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "dl",
+      "spoken" : [
+        {
+          "length" : 86,
+          "offset" : 0,
+          "text" : "Developers Web technologies Learn web development Guides Tutorials Glossary Hacks blog"
+        }
+      ],
+      "text" : "Developers Web technologies Learn web development Guides Tutorials Glossary Hacks blog"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 72,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 82,
+          "offset" : 0,
+          "text" : "Website Privacy Notice Telemetry Settings Legal Community Participation Guidelines"
+        }
+      ],
+      "text" : "Website Privacy Notice Telemetry Settings Legal Community Participation Guidelines"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 73,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 79,
+          "offset" : 0,
+          "text" : "Portions of this content are ©1998–2026 by individual mozilla.org contributors."
+        },
+        {
+          "length" : 51,
+          "offset" : 80,
+          "text" : "Content available under a Creative Commons license."
+        }
+      ],
+      "text" : "Portions of this content are ©1998–2026 by individual mozilla.org contributors. Content available under a Creative Commons license."
+    }
+  ],
+  "sentence_count" : 142,
+  "skipped" : [
+    {
+      "block_id" : 1,
+      "confidence" : 0.85,
+      "kind" : "nav",
+      "reason" : "nav",
+      "words" : 251
+    },
+    {
+      "block_id" : 3,
+      "confidence" : 0.8,
+      "kind" : "nav",
+      "reason" : "class=breadcrumbs",
+      "words" : 4
+    },
+    {
+      "block_id" : 5,
+      "confidence" : 0.75,
+      "kind" : "code",
+      "reason" : "symbol-density",
+      "words" : 21
+    },
+    {
+      "block_id" : 47,
+      "confidence" : 0.99,
+      "kind" : "code",
+      "reason" : "pre",
+      "words" : 3
+    },
+    {
+      "block_id" : 53,
+      "confidence" : 0.99,
+      "kind" : "code",
+      "reason" : "pre",
+      "words" : 25
+    },
+    {
+      "block_id" : 61,
+      "confidence" : 0.7,
+      "kind" : "code",
+      "reason" : "line-variance",
+      "words" : 8
+    }
+  ],
+  "source" : "018-javascript.html",
+  "source_sha256" : "8755f5ce18d97c6ef06154aa661c4f9b596badbecd89536a4e4cd14986c857da",
+  "spoken_words" : 3194,
+  "validation_failures" : 0,
+  "version" : 1
+}

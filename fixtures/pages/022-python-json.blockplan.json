@@ -1,0 +1,2710 @@
+{
+  "blocks" : [
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.85,
+      "id" : 0,
+      "kind" : "nav",
+      "lowConfidence" : false,
+      "reason" : "role=navigation",
+      "spoken" : [
+
+      ],
+      "text" : "Theme Auto Light Dark Table of Contents json — JSON encoder and decoder Basic Usage Encoders and Decoders Exceptions Standard Compliance and Interoperability Character Encodings Infinite and NaN Number Values Repeated Names Within an Object Top-level Non-Object, Non-Array Values Implementation Limitations Command-line interface Command-line options Previous topic email.iterators: Iterators Next topic mailbox — Manipulate mailboxes in various formats This page Report a bug Improve this page Show source"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 1,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h3",
+      "spoken" : [
+        {
+          "length" : 10,
+          "offset" : 0,
+          "text" : "Navigation"
+        }
+      ],
+      "text" : "Navigation"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 2,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 178,
+          "offset" : 0,
+          "text" : "index modules | next | previous | Python » 3.15.2 documentation » The Python standard library » Internet Data Handling » json — JSON encoder and decoder | Theme Auto Light Dark |"
+        }
+      ],
+      "text" : "index modules | next | previous | Python » 3.15.2 documentation » The Python standard library » Internet Data Handling » json — JSON encoder and decoder | Theme Auto Light Dark |"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 3,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h1",
+      "spoken" : [
+        {
+          "length" : 32,
+          "offset" : 0,
+          "text" : "json — JSON encoder and decoder¶"
+        }
+      ],
+      "text" : "json — JSON encoder and decoder¶"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 4,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 33,
+          "offset" : 0,
+          "text" : "Source code: Lib/json/__init__.py"
+        }
+      ],
+      "text" : "Source code: Lib/json/__init__.py"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 5,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 243,
+          "offset" : 0,
+          "text" : "JSON (JavaScript Object Notation), specified by RFC 7159 (which obsoletes RFC 4627) and by ECMA-404, is a lightweight data interchange format inspired by JavaScript object literal syntax (although it is not a strict subset of JavaScript [1] )."
+        }
+      ],
+      "text" : "JSON (JavaScript Object Notation), specified by RFC 7159 (which obsoletes RFC 4627) and by ECMA-404, is a lightweight data interchange format inspired by JavaScript object literal syntax (although it is not a strict subset of JavaScript [1] )."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 6,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 4,
+          "offset" : 0,
+          "text" : "Note"
+        }
+      ],
+      "text" : "Note"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 7,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 79,
+          "offset" : 0,
+          "text" : "The term “object” in the context of JSON processing in Python can be ambiguous."
+        },
+        {
+          "length" : 33,
+          "offset" : 80,
+          "text" : "All values in Python are objects."
+        },
+        {
+          "length" : 94,
+          "offset" : 114,
+          "text" : "In JSON, an object refers to any data wrapped in curly braces, similar to a Python dictionary."
+        }
+      ],
+      "text" : "The term “object” in the context of JSON processing in Python can be ambiguous. All values in Python are objects. In JSON, an object refers to any data wrapped in curly braces, similar to a Python dictionary."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 8,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 7,
+          "offset" : 0,
+          "text" : "Warning"
+        }
+      ],
+      "text" : "Warning"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 9,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 58,
+          "offset" : 0,
+          "text" : "Be cautious when parsing JSON data from untrusted sources."
+        },
+        {
+          "length" : 95,
+          "offset" : 59,
+          "text" : "A malicious JSON string may cause the decoder to consume considerable CPU and memory resources."
+        },
+        {
+          "length" : 54,
+          "offset" : 155,
+          "text" : "Limiting the size of data to be parsed is recommended."
+        }
+      ],
+      "text" : "Be cautious when parsing JSON data from untrusted sources. A malicious JSON string may cause the decoder to consume considerable CPU and memory resources. Limiting the size of data to be parsed is recommended."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 10,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 96,
+          "offset" : 0,
+          "text" : "This module exposes an API familiar to users of the standard library marshal and pickle modules."
+        }
+      ],
+      "text" : "This module exposes an API familiar to users of the standard library marshal and pickle modules."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 11,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 41,
+          "offset" : 0,
+          "text" : "Encoding basic Python object hierarchies:"
+        }
+      ],
+      "text" : "Encoding basic Python object hierarchies:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.99,
+      "id" : 12,
+      "kind" : "code",
+      "lowConfidence" : false,
+      "reason" : "pre",
+      "spoken" : [
+
+      ],
+      "text" : ">>> import json >>> json.dumps(['foo', {'bar': ('baz', None, 1.0, 2)}]) '[\"foo\", {\"bar\": [\"baz\", null, 1.0, 2]}]' >>> print(json.dumps(\"\\\"foo\\bar\")) \"\\\"foo\\bar\" >>> print(json.dumps('\\u1234')) \"\\u1234\" >>> print(json.dumps('\\\\')) \"\\\\\" >>> print(json.dumps({\"c\": 0, \"b\": 0, \"a\": 0}, sort_keys=True)) {\"a\": 0, \"b\": 0, \"c\": 0} >>> from io import StringIO >>> io = StringIO() >>> json.dump(['streaming API'], io) >>> io.getvalue() '[\"streaming API\"]'"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 13,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 17,
+          "offset" : 0,
+          "text" : "Compact encoding:"
+        }
+      ],
+      "text" : "Compact encoding:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.99,
+      "id" : 14,
+      "kind" : "code",
+      "lowConfidence" : false,
+      "reason" : "pre",
+      "spoken" : [
+
+      ],
+      "text" : ">>> import json >>> json.dumps([1, 2, 3, {'4': 5, '6': 7}], separators=(',', ':')) '[1,2,3,{\"4\":5,\"6\":7}]'"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 15,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 16,
+          "offset" : 0,
+          "text" : "Pretty printing:"
+        }
+      ],
+      "text" : "Pretty printing:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.99,
+      "id" : 16,
+      "kind" : "code",
+      "lowConfidence" : false,
+      "reason" : "pre",
+      "spoken" : [
+
+      ],
+      "text" : ">>> import json >>> print(json.dumps({'6': 7, '4': 5}, sort_keys=True, indent=4)) { \"4\": 5, \"6\": 7 }"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 17,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 33,
+          "offset" : 0,
+          "text" : "Customizing JSON object encoding:"
+        }
+      ],
+      "text" : "Customizing JSON object encoding:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.99,
+      "id" : 18,
+      "kind" : "code",
+      "lowConfidence" : false,
+      "reason" : "pre",
+      "spoken" : [
+
+      ],
+      "text" : ">>> import json >>> def custom_json(obj): ... if isinstance(obj, complex): ... return {'__complex__': True, 'real': obj.real, 'imag': obj.imag} ... raise TypeError(f'Cannot serialize object of {type(obj)}') ... >>> json.dumps(1 + 2j, default=custom_json) '{\"__complex__\": true, \"real\": 1.0, \"imag\": 2.0}'"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 19,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 14,
+          "offset" : 0,
+          "text" : "Decoding JSON:"
+        }
+      ],
+      "text" : "Decoding JSON:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.99,
+      "id" : 20,
+      "kind" : "code",
+      "lowConfidence" : false,
+      "reason" : "pre",
+      "spoken" : [
+
+      ],
+      "text" : ">>> import json >>> json.loads('[\"foo\", {\"bar\":[\"baz\", null, 1.0, 2]}]') ['foo', {'bar': ['baz', None, 1.0, 2]}] >>> json.loads('\"\\\\\"foo\\\\bar\"') '\"foo\\x08ar' >>> from io import StringIO >>> io = StringIO('[\"streaming API\"]') >>> json.load(io) ['streaming API']"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 21,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 33,
+          "offset" : 0,
+          "text" : "Customizing JSON object decoding:"
+        }
+      ],
+      "text" : "Customizing JSON object decoding:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.99,
+      "id" : 22,
+      "kind" : "code",
+      "lowConfidence" : false,
+      "reason" : "pre",
+      "spoken" : [
+
+      ],
+      "text" : ">>> import json >>> def as_complex(dct): ... if '__complex__' in dct: ... return complex(dct['real'], dct['imag']) ... return dct ... >>> json.loads('{\"__complex__\": true, \"real\": 1, \"imag\": 2}', ... object_hook=as_complex) (1+2j) >>> import decimal >>> json.loads('1.1', parse_float=decimal.Decimal) Decimal('1.1') >>> json.loads('{\"name\": \"point\", \"coords\": [[1, 2], [3, 4]]}', ... array_hook=tuple) {'name': 'point', 'coords': ((1, 2), (3, 4))} >>> json.loads('{\"name\": \"point\", \"coords\": [1, 2]}', ... object_pairs_hook=frozendict, array_hook=tuple) frozendict({'name': 'point', 'coords': (1, 2)})"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 23,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 22,
+          "offset" : 0,
+          "text" : "Extending JSONEncoder:"
+        }
+      ],
+      "text" : "Extending JSONEncoder:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.99,
+      "id" : 24,
+      "kind" : "code",
+      "lowConfidence" : false,
+      "reason" : "pre",
+      "spoken" : [
+
+      ],
+      "text" : ">>> import json >>> class ComplexEncoder(json.JSONEncoder): ... def default(self, obj): ... if isinstance(obj, complex): ... return [obj.real, obj.imag] ... # Let the base class default method raise the TypeError ... return super().default(obj) ... >>> json.dumps(2 + 1j, cls=ComplexEncoder) '[2.0, 1.0]' >>> ComplexEncoder().encode(2 + 1j) '[2.0, 1.0]' >>> list(ComplexEncoder().iterencode(2 + 1j)) ['[2.0', ', 1.0', ']']"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 25,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 55,
+          "offset" : 0,
+          "text" : "Using json from the shell to validate and pretty-print:"
+        }
+      ],
+      "text" : "Using json from the shell to validate and pretty-print:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.99,
+      "id" : 26,
+      "kind" : "code",
+      "lowConfidence" : false,
+      "reason" : "pre",
+      "spoken" : [
+
+      ],
+      "text" : "$ echo '{\"json\":\"obj\"}' | python -m json { \"json\": \"obj\" } $ echo '{1.2:3.4}' | python -m json Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 27,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 54,
+          "offset" : 0,
+          "text" : "See Command-line interface for detailed documentation."
+        }
+      ],
+      "text" : "See Command-line interface for detailed documentation."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 28,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 4,
+          "offset" : 0,
+          "text" : "Note"
+        }
+      ],
+      "text" : "Note"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 29,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 29,
+          "offset" : 0,
+          "text" : "JSON is a subset of YAML 1.2."
+        },
+        {
+          "length" : 135,
+          "offset" : 30,
+          "text" : "The JSON produced by this module’s default settings (in particular, the default separators value) is also a subset of YAML 1.0 and 1.1."
+        },
+        {
+          "length" : 55,
+          "offset" : 166,
+          "text" : "This module can thus also be used as a YAML serializer."
+        }
+      ],
+      "text" : "JSON is a subset of YAML 1.2. The JSON produced by this module’s default settings (in particular, the default separators value) is also a subset of YAML 1.0 and 1.1. This module can thus also be used as a YAML serializer."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 30,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 4,
+          "offset" : 0,
+          "text" : "Note"
+        }
+      ],
+      "text" : "Note"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 31,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 79,
+          "offset" : 0,
+          "text" : "This module’s encoders and decoders preserve input and output order by default."
+        },
+        {
+          "length" : 62,
+          "offset" : 80,
+          "text" : "Order is only lost if the underlying containers are unordered."
+        }
+      ],
+      "text" : "This module’s encoders and decoders preserve input and output order by default. Order is only lost if the underlying containers are unordered."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 32,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h2",
+      "spoken" : [
+        {
+          "length" : 12,
+          "offset" : 0,
+          "text" : "Basic Usage¶"
+        }
+      ],
+      "text" : "Basic Usage¶"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.8,
+      "id" : 33,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "dl",
+      "spoken" : [
+        {
+          "length" : 303,
+          "offset" : 0,
+          "text" : "json.dump(obj, fp, *, skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True, cls=None, indent=None, separators=None, default=None, sort_keys=False, **kw)¶ Serialize obj as a JSON formatted stream to fp (a .write()-supporting file-like object) using this Python-to-JSON conversion table."
+        },
+        {
+          "length" : 187,
+          "offset" : 304,
+          "text" : "Note Unlike pickle and marshal, JSON is not a framed protocol, so trying to serialize multiple objects with repeated calls to dump() using the same fp will result in an invalid JSON file."
+        },
+        {
+          "length" : 62,
+          "offset" : 492,
+          "text" : "Parameters: obj (object) – The Python object to be serialized."
+        },
+        {
+          "length" : 71,
+          "offset" : 555,
+          "text" : "fp (file-like object) – The file-like object obj will be serialized to."
+        },
+        {
+          "length" : 108,
+          "offset" : 627,
+          "text" : "The json module always produces str objects, not bytes objects, therefore fp.write() must support str input."
+        },
+        {
+          "length" : 138,
+          "offset" : 736,
+          "text" : "skipkeys (bool) – If True, keys that are not of a basic type (str, int, float, bool, None) will be skipped instead of raising a TypeError."
+        },
+        {
+          "length" : 14,
+          "offset" : 875,
+          "text" : "Default False."
+        },
+        {
+          "length" : 138,
+          "offset" : 890,
+          "text" : "ensure_ascii (bool) – If True (the default), the output is guaranteed to have all incoming non-ASCII and non-printable characters escaped."
+        },
+        {
+          "length" : 343,
+          "offset" : 1029,
+          "text" : "If False, all characters will be outputted as-is, except for the characters that must be escaped: quotation mark, reverse solidus, and the control characters U+0000 through U+001F. check_circular (bool) – If False, the circular reference check for container types is skipped and a circular reference will result in a RecursionError (or worse)."
+        },
+        {
+          "length" : 13,
+          "offset" : 1373,
+          "text" : "Default True."
+        },
+        {
+          "length" : 167,
+          "offset" : 1387,
+          "text" : "allow_nan (bool) – If False, serialization of out-of-range float values (nan, inf, -inf) will result in a ValueError, in strict compliance with the JSON specification."
+        },
+        {
+          "length" : 88,
+          "offset" : 1555,
+          "text" : "If True (the default), their JavaScript equivalents (NaN, Infinity, -Infinity) are used."
+        },
+        {
+          "length" : 137,
+          "offset" : 1644,
+          "text" : "cls (a JSONEncoder subclass) – If set, a custom JSON encoder with the default() method overridden, for serializing into custom datatypes."
+        },
+        {
+          "length" : 43,
+          "offset" : 1782,
+          "text" : "If None (the default), JSONEncoder is used."
+        },
+        {
+          "length" : 146,
+          "offset" : 1826,
+          "text" : "indent (int | str | None) – If a positive integer or string, JSON array elements and object members will be pretty-printed with that indent level."
+        },
+        {
+          "length" : 108,
+          "offset" : 1973,
+          "text" : "A positive integer indents that many spaces per level; a string (such as \"\\t\") is used to indent each level."
+        },
+        {
+          "length" : 72,
+          "offset" : 2082,
+          "text" : "If zero, negative, or \"\" (the empty string), only newlines are inserted."
+        },
+        {
+          "length" : 48,
+          "offset" : 2155,
+          "text" : "If None (the default), no newlines are inserted."
+        },
+        {
+          "length" : 73,
+          "offset" : 2204,
+          "text" : "separators (tuple | None) – A two-tuple: (item_separator, key_separator)."
+        },
+        {
+          "length" : 104,
+          "offset" : 2278,
+          "text" : "If None (the default), separators defaults to (', ', ': ') if indent is None, and (',', ': ') otherwise."
+        },
+        {
+          "length" : 70,
+          "offset" : 2383,
+          "text" : "For the most compact JSON, specify (',', ':') to eliminate whitespace."
+        },
+        {
+          "length" : 101,
+          "offset" : 2454,
+          "text" : "default (callable | None) – A function that is called for objects that can’t otherwise be serialized."
+        },
+        {
+          "length" : 77,
+          "offset" : 2556,
+          "text" : "It should return a JSON encodable version of the object or raise a TypeError."
+        },
+        {
+          "length" : 43,
+          "offset" : 2634,
+          "text" : "If None (the default), TypeError is raised."
+        },
+        {
+          "length" : 73,
+          "offset" : 2678,
+          "text" : "sort_keys (bool) – If True, dictionaries will be outputted sorted by key."
+        },
+        {
+          "length" : 14,
+          "offset" : 2752,
+          "text" : "Default False."
+        },
+        {
+          "length" : 64,
+          "offset" : 2767,
+          "text" : "Note Keys in key/value pairs of JSON are always of the type str."
+        },
+        {
+          "length" : 98,
+          "offset" : 2832,
+          "text" : "When a dictionary is converted into JSON, all the keys of the dictionary are converted to strings."
+        },
+        {
+          "length" : 139,
+          "offset" : 2931,
+          "text" : "As a result of this, if a dictionary is converted into JSON and then back into a dictionary, the dictionary may not equal the original one."
+        },
+        {
+          "length" : 55,
+          "offset" : 3071,
+          "text" : "That is, loads(dumps(x)) != x if x has non-string keys."
+        },
+        {
+          "length" : 135,
+          "offset" : 3127,
+          "text" : "sort_keys sorts the keys before they are converted to strings, so numeric keys are sorted by value, not by their string representation."
+        },
+        {
+          "length" : 73,
+          "offset" : 3263,
+          "text" : "Changed in version 3.2: Allow strings for indent in addition to integers."
+        },
+        {
+          "length" : 73,
+          "offset" : 3337,
+          "text" : "Changed in version 3.4: Use (',', ': ') as default if indent is not None."
+        },
+        {
+          "length" : 69,
+          "offset" : 3411,
+          "text" : "Changed in version 3.6: All optional parameters are now keyword-only."
+        }
+      ],
+      "text" : "json.dump(obj, fp, *, skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True, cls=None, indent=None, separators=None, default=None, sort_keys=False, **kw)¶ Serialize obj as a JSON formatted stream to fp (a .write()-supporting file-like object) using this Python-to-JSON conversion table. Note Unlike pickle and marshal, JSON is not a framed protocol, so trying to serialize multiple objects with repeated calls to dump() using the same fp will result in an invalid JSON file. Parameters: obj (object) – The Python object to be serialized. fp (file-like object) – The file-like object obj will be serialized to. The json module always produces str objects, not bytes objects, therefore fp.write() must support str input. skipkeys (bool) – If True, keys that are not of a basic type (str, int, float, bool, None) will be skipped instead of raising a TypeError. Default False. ensure_ascii (bool) – If True (the default), the output is guaranteed to have all incoming non-ASCII and non-printable characters escaped. If False, all characters will be outputted as-is, except for the characters that must be escaped: quotation mark, reverse solidus, and the control characters U+0000 through U+001F. check_circular (bool) – If False, the circular reference check for container types is skipped and a circular reference will result in a RecursionError (or worse). Default True. allow_nan (bool) – If False, serialization of out-of-range float values (nan, inf, -inf) will result in a ValueError, in strict compliance with the JSON specification. If True (the default), their JavaScript equivalents (NaN, Infinity, -Infinity) are used. cls (a JSONEncoder subclass) – If set, a custom JSON encoder with the default() method overridden, for serializing into custom datatypes. If None (the default), JSONEncoder is used. indent (int | str | None) – If a positive integer or string, JSON array elements and object members will be pretty-printed with that indent level. A positive integer indents that many spaces per level; a string (such as \"\\t\") is used to indent each level. If zero, negative, or \"\" (the empty string), only newlines are inserted. If None (the default), no newlines are inserted. separators (tuple | None) – A two-tuple: (item_separator, key_separator). If None (the default), separators defaults to (', ', ': ') if indent is None, and (',', ': ') otherwise. For the most compact JSON, specify (',', ':') to eliminate whitespace. default (callable | None) – A function that is called for objects that can’t otherwise be serialized. It should return a JSON encodable version of the object or raise a TypeError. If None (the default), TypeError is raised. sort_keys (bool) – If True, dictionaries will be outputted sorted by key. Default False. Note Keys in key/value pairs of JSON are always of the type str. When a dictionary is converted into JSON, all the keys of the dictionary are converted to strings. As a result of this, if a dictionary is converted into JSON and then back into a dictionary, the dictionary may not equal the original one. That is, loads(dumps(x)) != x if x has non-string keys. sort_keys sorts the keys before they are converted to strings, so numeric keys are sorted by value, not by their string representation. Changed in version 3.2: Allow strings for indent in addition to integers. Changed in version 3.4: Use (',', ': ') as default if indent is not None. Changed in version 3.6: All optional parameters are now keyword-only."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.8,
+      "id" : 34,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "dl",
+      "spoken" : [
+        {
+          "length" : 235,
+          "offset" : 0,
+          "text" : "json.dumps(obj, *, skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True, cls=None, indent=None, separators=None, default=None, sort_keys=False, **kw)¶ Serialize obj to a JSON formatted str using this conversion table."
+        },
+        {
+          "length" : 49,
+          "offset" : 236,
+          "text" : "The arguments have the same meaning as in dump()."
+        }
+      ],
+      "text" : "json.dumps(obj, *, skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True, cls=None, indent=None, separators=None, default=None, sort_keys=False, **kw)¶ Serialize obj to a JSON formatted str using this conversion table. The arguments have the same meaning as in dump()."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.8,
+      "id" : 35,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "dl",
+      "spoken" : [
+        {
+          "length" : 224,
+          "offset" : 0,
+          "text" : "json.load(fp, *, cls=None, object_hook=None, parse_float=None, parse_int=None, parse_constant=None, object_pairs_hook=None, array_hook=None, **kw)¶ Deserialize fp to a Python object using the JSON-to-Python conversion table."
+        },
+        {
+          "length" : 130,
+          "offset" : 225,
+          "text" : "Parameters: fp (file-like object) – A .read()-supporting text file or binary file containing the JSON document to be deserialized."
+        },
+        {
+          "length" : 61,
+          "offset" : 356,
+          "text" : "cls (a JSONDecoder subclass) – If set, a custom JSON decoder."
+        },
+        {
+          "length" : 80,
+          "offset" : 418,
+          "text" : "Additional keyword arguments to load() will be passed to the constructor of cls."
+        },
+        {
+          "length" : 43,
+          "offset" : 499,
+          "text" : "If None (the default), JSONDecoder is used."
+        },
+        {
+          "length" : 126,
+          "offset" : 543,
+          "text" : "object_hook (callable | None) – If set, a function that is called with the result of any JSON object literal decoded (a dict)."
+        },
+        {
+          "length" : 67,
+          "offset" : 670,
+          "text" : "The return value of this function will be used instead of the dict."
+        },
+        {
+          "length" : 90,
+          "offset" : 738,
+          "text" : "This feature can be used to implement custom decoders, for example JSON-RPC class hinting."
+        },
+        {
+          "length" : 13,
+          "offset" : 829,
+          "text" : "Default None."
+        },
+        {
+          "length" : 153,
+          "offset" : 843,
+          "text" : "object_pairs_hook (callable | None) – If set, a function that is called with the result of any JSON object literal decoded with an ordered list of pairs."
+        },
+        {
+          "length" : 67,
+          "offset" : 997,
+          "text" : "The return value of this function will be used instead of the dict."
+        },
+        {
+          "length" : 54,
+          "offset" : 1065,
+          "text" : "This feature can be used to implement custom decoders."
+        },
+        {
+          "length" : 61,
+          "offset" : 1120,
+          "text" : "If object_hook is also set, object_pairs_hook takes priority."
+        },
+        {
+          "length" : 13,
+          "offset" : 1182,
+          "text" : "Default None."
+        },
+        {
+          "length" : 132,
+          "offset" : 1196,
+          "text" : "array_hook (callable | None) – If set, a function that is called with the result of any JSON array literal decoded as a Python list."
+        },
+        {
+          "length" : 67,
+          "offset" : 1329,
+          "text" : "The return value of this function will be used instead of the list."
+        },
+        {
+          "length" : 54,
+          "offset" : 1397,
+          "text" : "This feature can be used to implement custom decoders."
+        },
+        {
+          "length" : 13,
+          "offset" : 1452,
+          "text" : "Default None."
+        },
+        {
+          "length" : 116,
+          "offset" : 1466,
+          "text" : "parse_float (callable | None) – If set, a function that is called with the string of every JSON float to be decoded."
+        },
+        {
+          "length" : 58,
+          "offset" : 1583,
+          "text" : "If None (the default), it is equivalent to float(num_str)."
+        },
+        {
+          "length" : 89,
+          "offset" : 1642,
+          "text" : "This can be used to parse JSON floats into custom datatypes, for example decimal.Decimal."
+        },
+        {
+          "length" : 112,
+          "offset" : 1732,
+          "text" : "parse_int (callable | None) – If set, a function that is called with the string of every JSON int to be decoded."
+        },
+        {
+          "length" : 56,
+          "offset" : 1845,
+          "text" : "If None (the default), it is equivalent to int(num_str)."
+        },
+        {
+          "length" : 81,
+          "offset" : 1902,
+          "text" : "This can be used to parse JSON integers into custom datatypes, for example float."
+        },
+        {
+          "length" : 138,
+          "offset" : 1984,
+          "text" : "parse_constant (callable | None) – If set, a function that is called with one of the following strings: '-Infinity', 'Infinity', or 'NaN'."
+        },
+        {
+          "length" : 79,
+          "offset" : 2123,
+          "text" : "This can be used to raise an exception if invalid JSON numbers are encountered."
+        },
+        {
+          "length" : 13,
+          "offset" : 2203,
+          "text" : "Default None."
+        },
+        {
+          "length" : 88,
+          "offset" : 2217,
+          "text" : "Raises: JSONDecodeError – When the data being deserialized is not a valid JSON document."
+        },
+        {
+          "length" : 108,
+          "offset" : 2306,
+          "text" : "UnicodeDecodeError – When the data being deserialized does not contain UTF-8, UTF-16 or UTF-32 encoded data."
+        },
+        {
+          "length" : 71,
+          "offset" : 2415,
+          "text" : "Changed in version 3.1: Added the optional object_pairs_hook parameter."
+        },
+        {
+          "length" : 69,
+          "offset" : 2487,
+          "text" : "parse_constant doesn’t get called on ‘null’, ‘true’, ‘false’ anymore."
+        },
+        {
+          "length" : 69,
+          "offset" : 2557,
+          "text" : "Changed in version 3.6: All optional parameters are now keyword-only."
+        },
+        {
+          "length" : 28,
+          "offset" : 2627,
+          "text" : "fp can now be a binary file."
+        },
+        {
+          "length" : 53,
+          "offset" : 2656,
+          "text" : "The input encoding should be UTF-8, UTF-16 or UTF-32."
+        },
+        {
+          "length" : 214,
+          "offset" : 2710,
+          "text" : "Changed in version 3.11: The default parse_int of int() now limits the maximum length of the integer string via the interpreter’s integer string conversion length limitation to help avoid denial of service attacks."
+        },
+        {
+          "length" : 65,
+          "offset" : 2925,
+          "text" : "Changed in version 3.15: Added the optional array_hook parameter."
+        }
+      ],
+      "text" : "json.load(fp, *, cls=None, object_hook=None, parse_float=None, parse_int=None, parse_constant=None, object_pairs_hook=None, array_hook=None, **kw)¶ Deserialize fp to a Python object using the JSON-to-Python conversion table. Parameters: fp (file-like object) – A .read()-supporting text file or binary file containing the JSON document to be deserialized. cls (a JSONDecoder subclass) – If set, a custom JSON decoder. Additional keyword arguments to load() will be passed to the constructor of cls. If None (the default), JSONDecoder is used. object_hook (callable | None) – If set, a function that is called with the result of any JSON object literal decoded (a dict). The return value of this function will be used instead of the dict. This feature can be used to implement custom decoders, for example JSON-RPC class hinting. Default None. object_pairs_hook (callable | None) – If set, a function that is called with the result of any JSON object literal decoded with an ordered list of pairs. The return value of this function will be used instead of the dict. This feature can be used to implement custom decoders. If object_hook is also set, object_pairs_hook takes priority. Default None. array_hook (callable | None) – If set, a function that is called with the result of any JSON array literal decoded as a Python list. The return value of this function will be used instead of the list. This feature can be used to implement custom decoders. Default None. parse_float (callable | None) – If set, a function that is called with the string of every JSON float to be decoded. If None (the default), it is equivalent to float(num_str). This can be used to parse JSON floats into custom datatypes, for example decimal.Decimal. parse_int (callable | None) – If set, a function that is called with the string of every JSON int to be decoded. If None (the default), it is equivalent to int(num_str). This can be used to parse JSON integers into custom datatypes, for example float. parse_constant (callable | None) – If set, a function that is called with one of the following strings: '-Infinity', 'Infinity', or 'NaN'. This can be used to raise an exception if invalid JSON numbers are encountered. Default None. Raises: JSONDecodeError – When the data being deserialized is not a valid JSON document. UnicodeDecodeError – When the data being deserialized does not contain UTF-8, UTF-16 or UTF-32 encoded data. Changed in version 3.1: Added the optional object_pairs_hook parameter. parse_constant doesn’t get called on ‘null’, ‘true’, ‘false’ anymore. Changed in version 3.6: All optional parameters are now keyword-only. fp can now be a binary file. The input encoding should be UTF-8, UTF-16 or UTF-32. Changed in version 3.11: The default parse_int of int() now limits the maximum length of the integer string via the interpreter’s integer string conversion length limitation to help avoid denial of service attacks. Changed in version 3.15: Added the optional array_hook parameter."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.8,
+      "id" : 36,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "dl",
+      "spoken" : [
+        {
+          "length" : 329,
+          "offset" : 0,
+          "text" : "json.loads(s, *, cls=None, object_hook=None, parse_float=None, parse_int=None, parse_constant=None, object_pairs_hook=None, array_hook=None, **kw)¶ Identical to load(), but instead of a file-like object, deserialize s (a str, bytes or bytearray instance containing a JSON document) to a Python object using this conversion table."
+        },
+        {
+          "length" : 64,
+          "offset" : 330,
+          "text" : "Changed in version 3.6: s can now be of type bytes or bytearray."
+        },
+        {
+          "length" : 53,
+          "offset" : 395,
+          "text" : "The input encoding should be UTF-8, UTF-16 or UTF-32."
+        },
+        {
+          "length" : 71,
+          "offset" : 449,
+          "text" : "Changed in version 3.9: The keyword argument encoding has been removed."
+        }
+      ],
+      "text" : "json.loads(s, *, cls=None, object_hook=None, parse_float=None, parse_int=None, parse_constant=None, object_pairs_hook=None, array_hook=None, **kw)¶ Identical to load(), but instead of a file-like object, deserialize s (a str, bytes or bytearray instance containing a JSON document) to a Python object using this conversion table. Changed in version 3.6: s can now be of type bytes or bytearray. The input encoding should be UTF-8, UTF-16 or UTF-32. Changed in version 3.9: The keyword argument encoding has been removed."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 37,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h2",
+      "spoken" : [
+        {
+          "length" : 22,
+          "offset" : 0,
+          "text" : "Encoders and Decoders¶"
+        }
+      ],
+      "text" : "Encoders and Decoders¶"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.8,
+      "id" : 38,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "dl",
+      "spoken" : [
+        {
+          "length" : 174,
+          "offset" : 0,
+          "text" : "class json.JSONDecoder(*, object_hook=None, parse_float=None, parse_int=None, parse_constant=None, strict=True, object_pairs_hook=None, array_hook=None)¶ Simple JSON decoder."
+        },
+        {
+          "length" : 292,
+          "offset" : 175,
+          "text" : "Performs the following translations in decoding by default: JSON Python object dict array list string str number (int) int number (real) float true True false False null None It also understands NaN, Infinity, and -Infinity as their corresponding float values, which is outside the JSON spec."
+        },
+        {
+          "length" : 162,
+          "offset" : 468,
+          "text" : "object_hook is an optional function that will be called with the result of every JSON object decoded and its return value will be used in place of the given dict."
+        },
+        {
+          "length" : 93,
+          "offset" : 631,
+          "text" : "This can be used to provide custom deserializations (e.g. to support JSON-RPC class hinting)."
+        },
+        {
+          "length" : 137,
+          "offset" : 725,
+          "text" : "object_pairs_hook is an optional function that will be called with the result of every JSON object decoded with an ordered list of pairs."
+        },
+        {
+          "length" : 71,
+          "offset" : 863,
+          "text" : "The return value of object_pairs_hook will be used instead of the dict."
+        },
+        {
+          "length" : 54,
+          "offset" : 935,
+          "text" : "This feature can be used to implement custom decoders."
+        },
+        {
+          "length" : 69,
+          "offset" : 990,
+          "text" : "If object_hook is also defined, the object_pairs_hook takes priority."
+        },
+        {
+          "length" : 60,
+          "offset" : 1060,
+          "text" : "Changed in version 3.1: Added support for object_pairs_hook."
+        },
+        {
+          "length" : 109,
+          "offset" : 1121,
+          "text" : "array_hook is an optional function that will be called with the result of every JSON array decoded as a list."
+        },
+        {
+          "length" : 64,
+          "offset" : 1231,
+          "text" : "The return value of array_hook will be used instead of the list."
+        },
+        {
+          "length" : 54,
+          "offset" : 1296,
+          "text" : "This feature can be used to implement custom decoders."
+        },
+        {
+          "length" : 54,
+          "offset" : 1351,
+          "text" : "Changed in version 3.15: Added support for array_hook."
+        },
+        {
+          "length" : 106,
+          "offset" : 1406,
+          "text" : "parse_float is an optional function that will be called with the string of every JSON float to be decoded."
+        },
+        {
+          "length" : 49,
+          "offset" : 1513,
+          "text" : "By default, this is equivalent to float(num_str)."
+        },
+        {
+          "length" : 90,
+          "offset" : 1563,
+          "text" : "This can be used to use another datatype or parser for JSON floats (e.g. decimal.Decimal)."
+        },
+        {
+          "length" : 102,
+          "offset" : 1654,
+          "text" : "parse_int is an optional function that will be called with the string of every JSON int to be decoded."
+        },
+        {
+          "length" : 47,
+          "offset" : 1757,
+          "text" : "By default, this is equivalent to int(num_str)."
+        },
+        {
+          "length" : 82,
+          "offset" : 1805,
+          "text" : "This can be used to use another datatype or parser for JSON integers (e.g. float)."
+        },
+        {
+          "length" : 125,
+          "offset" : 1888,
+          "text" : "parse_constant is an optional function that will be called with one of the following strings: '-Infinity', 'Infinity', 'NaN'."
+        },
+        {
+          "length" : 79,
+          "offset" : 2014,
+          "text" : "This can be used to raise an exception if invalid JSON numbers are encountered."
+        },
+        {
+          "length" : 97,
+          "offset" : 2094,
+          "text" : "If strict is false (True is the default), then control characters will be allowed inside strings."
+        },
+        {
+          "length" : 127,
+          "offset" : 2192,
+          "text" : "Control characters in this context are those with character codes in the 0–31 range, including '\\t' (tab), '\\n', '\\r' and '\\0'."
+        },
+        {
+          "length" : 94,
+          "offset" : 2320,
+          "text" : "If the data being deserialized is not a valid JSON document, a JSONDecodeError will be raised."
+        },
+        {
+          "length" : 60,
+          "offset" : 2415,
+          "text" : "Changed in version 3.6: All parameters are now keyword-only."
+        },
+        {
+          "length" : 93,
+          "offset" : 2476,
+          "text" : "decode(s)¶ Return the Python representation of s (a str instance containing a JSON document)."
+        },
+        {
+          "length" : 71,
+          "offset" : 2570,
+          "text" : "JSONDecodeError will be raised if the given JSON document is not valid."
+        },
+        {
+          "length" : 178,
+          "offset" : 2642,
+          "text" : "raw_decode(s)¶ Decode a JSON document from s (a str beginning with a JSON document) and return a 2-tuple of the Python representation and the index in s where the document ended."
+        },
+        {
+          "length" : 98,
+          "offset" : 2821,
+          "text" : "This can be used to decode a JSON document from a string that may have extraneous data at the end."
+        }
+      ],
+      "text" : "class json.JSONDecoder(*, object_hook=None, parse_float=None, parse_int=None, parse_constant=None, strict=True, object_pairs_hook=None, array_hook=None)¶ Simple JSON decoder. Performs the following translations in decoding by default: JSON Python object dict array list string str number (int) int number (real) float true True false False null None It also understands NaN, Infinity, and -Infinity as their corresponding float values, which is outside the JSON spec. object_hook is an optional function that will be called with the result of every JSON object decoded and its return value will be used in place of the given dict. This can be used to provide custom deserializations (e.g. to support JSON-RPC class hinting). object_pairs_hook is an optional function that will be called with the result of every JSON object decoded with an ordered list of pairs. The return value of object_pairs_hook will be used instead of the dict. This feature can be used to implement custom decoders. If object_hook is also defined, the object_pairs_hook takes priority. Changed in version 3.1: Added support for object_pairs_hook. array_hook is an optional function that will be called with the result of every JSON array decoded as a list. The return value of array_hook will be used instead of the list. This feature can be used to implement custom decoders. Changed in version 3.15: Added support for array_hook. parse_float is an optional function that will be called with the string of every JSON float to be decoded. By default, this is equivalent to float(num_str). This can be used to use another datatype or parser for JSON floats (e.g. decimal.Decimal). parse_int is an optional function that will be called with the string of every JSON int to be decoded. By default, this is equivalent to int(num_str). This can be used to use another datatype or parser for JSON integers (e.g. float). parse_constant is an optional function that will be called with one of the following strings: '-Infinity', 'Infinity', 'NaN'. This can be used to raise an exception if invalid JSON numbers are encountered. If strict is false (True is the default), then control characters will be allowed inside strings. Control characters in this context are those with character codes in the 0–31 range, including '\\t' (tab), '\\n', '\\r' and '\\0'. If the data being deserialized is not a valid JSON document, a JSONDecodeError will be raised. Changed in version 3.6: All parameters are now keyword-only. decode(s)¶ Return the Python representation of s (a str instance containing a JSON document). JSONDecodeError will be raised if the given JSON document is not valid. raw_decode(s)¶ Decode a JSON document from s (a str beginning with a JSON document) and return a 2-tuple of the Python representation and the index in s where the document ended. This can be used to decode a JSON document from a string that may have extraneous data at the end."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.8,
+      "id" : 39,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "dl",
+      "spoken" : [
+        {
+          "length" : 211,
+          "offset" : 0,
+          "text" : "class json.JSONEncoder(*, skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True, sort_keys=False, indent=None, separators=None, default=None)¶ Extensible JSON encoder for Python data structures."
+        },
+        {
+          "length" : 274,
+          "offset" : 212,
+          "text" : "Supports the following objects and types by default: Python JSON dict, frozendict object list, tuple array str string int, float, int- & float-derived Enums number True true False false None null Changed in version 3.4: Added support for int- and float-derived Enum classes."
+        },
+        {
+          "length" : 54,
+          "offset" : 487,
+          "text" : "Changed in version 3.15: Added support for frozendict."
+        },
+        {
+          "length" : 235,
+          "offset" : 542,
+          "text" : "To extend this to recognize other objects, subclass and implement a default() method with another method that returns a serializable object for o if possible, otherwise it should call the superclass implementation (to raise TypeError)."
+        },
+        {
+          "length" : 133,
+          "offset" : 778,
+          "text" : "If skipkeys is false (the default), a TypeError will be raised when trying to encode keys that are not str, int, float, bool or None."
+        },
+        {
+          "length" : 51,
+          "offset" : 912,
+          "text" : "If skipkeys is true, such items are simply skipped."
+        },
+        {
+          "length" : 132,
+          "offset" : 964,
+          "text" : "If ensure_ascii is true (the default), the output is guaranteed to have all incoming non-ASCII and non-printable characters escaped."
+        },
+        {
+          "length" : 407,
+          "offset" : 1097,
+          "text" : "If ensure_ascii is false, all characters will be output as-is, except for the characters that must be escaped: quotation mark, reverse solidus, and the control characters U+0000 through U+001F. If check_circular is true (the default), then lists, dicts, and custom encoded objects will be checked for circular references during encoding to prevent an infinite recursion (which would cause a RecursionError)."
+        },
+        {
+          "length" : 37,
+          "offset" : 1505,
+          "text" : "Otherwise, no such check takes place."
+        },
+        {
+          "length" : 94,
+          "offset" : 1543,
+          "text" : "If allow_nan is true (the default), then NaN, Infinity, and -Infinity will be encoded as such."
+        },
+        {
+          "length" : 118,
+          "offset" : 1638,
+          "text" : "This behavior is not JSON specification compliant, but is consistent with most JavaScript based encoders and decoders."
+        },
+        {
+          "length" : 57,
+          "offset" : 1757,
+          "text" : "Otherwise, it will be a ValueError to encode such floats."
+        },
+        {
+          "length" : 203,
+          "offset" : 1815,
+          "text" : "If sort_keys is true (default: False), then the output of dictionaries will be sorted by key; this is useful for regression tests to ensure that JSON serializations can be compared on a day-to-day basis."
+        },
+        {
+          "length" : 137,
+          "offset" : 2019,
+          "text" : "If indent is a non-negative integer or string, then JSON array elements and object members will be pretty-printed with that indent level."
+        },
+        {
+          "length" : 64,
+          "offset" : 2157,
+          "text" : "An indent level of 0, negative, or \"\" will only insert newlines."
+        },
+        {
+          "length" : 59,
+          "offset" : 2222,
+          "text" : "None (the default) selects the most compact representation."
+        },
+        {
+          "length" : 67,
+          "offset" : 2282,
+          "text" : "Using a positive integer indent indents that many spaces per level."
+        },
+        {
+          "length" : 79,
+          "offset" : 2350,
+          "text" : "If indent is a string (such as \"\\t\"), that string is used to indent each level."
+        },
+        {
+          "length" : 73,
+          "offset" : 2430,
+          "text" : "Changed in version 3.2: Allow strings for indent in addition to integers."
+        },
+        {
+          "length" : 76,
+          "offset" : 2504,
+          "text" : "If specified, separators should be an (item_separator, key_separator) tuple."
+        },
+        {
+          "length" : 72,
+          "offset" : 2581,
+          "text" : "The default is (', ', ': ') if indent is None and (',', ': ') otherwise."
+        },
+        {
+          "length" : 99,
+          "offset" : 2654,
+          "text" : "To get the most compact JSON representation, you should specify (',', ':') to eliminate whitespace."
+        },
+        {
+          "length" : 73,
+          "offset" : 2754,
+          "text" : "Changed in version 3.4: Use (',', ': ') as default if indent is not None."
+        },
+        {
+          "length" : 107,
+          "offset" : 2828,
+          "text" : "If specified, default should be a function that gets called for objects that can’t otherwise be serialized."
+        },
+        {
+          "length" : 77,
+          "offset" : 2936,
+          "text" : "It should return a JSON encodable version of the object or raise a TypeError."
+        },
+        {
+          "length" : 38,
+          "offset" : 3014,
+          "text" : "If not specified, TypeError is raised."
+        },
+        {
+          "length" : 60,
+          "offset" : 3053,
+          "text" : "Changed in version 3.6: All parameters are now keyword-only."
+        },
+        {
+          "length" : 154,
+          "offset" : 3114,
+          "text" : "default(o)¶ Implement this method in a subclass such that it returns a serializable object for o, or calls the base implementation (to raise a TypeError)."
+        },
+        {
+          "length" : 530,
+          "offset" : 3269,
+          "text" : "For example, to support arbitrary iterators, you could implement default() like this: def default(self, o): try: iterable = iter(o) except TypeError: pass else: return list(iterable) # Let the base class default method raise the TypeError return super().default(o) encode(o)¶ Return a JSON string representation of a Python data structure, o. For example: >>> json.JSONEncoder().encode({\"foo\": [\"bar\", \"baz\"]}) '{\"foo\": [\"bar\", \"baz\"]}' iterencode(o)¶ Encode the given object, o, and yield each string representation as available."
+        },
+        {
+          "length" : 89,
+          "offset" : 3800,
+          "text" : "For example: for chunk in json.JSONEncoder().iterencode(bigobject): mysocket.write(chunk)"
+        }
+      ],
+      "text" : "class json.JSONEncoder(*, skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True, sort_keys=False, indent=None, separators=None, default=None)¶ Extensible JSON encoder for Python data structures. Supports the following objects and types by default: Python JSON dict, frozendict object list, tuple array str string int, float, int- & float-derived Enums number True true False false None null Changed in version 3.4: Added support for int- and float-derived Enum classes. Changed in version 3.15: Added support for frozendict. To extend this to recognize other objects, subclass and implement a default() method with another method that returns a serializable object for o if possible, otherwise it should call the superclass implementation (to raise TypeError). If skipkeys is false (the default), a TypeError will be raised when trying to encode keys that are not str, int, float, bool or None. If skipkeys is true, such items are simply skipped. If ensure_ascii is true (the default), the output is guaranteed to have all incoming non-ASCII and non-printable characters escaped. If ensure_ascii is false, all characters will be output as-is, except for the characters that must be escaped: quotation mark, reverse solidus, and the control characters U+0000 through U+001F. If check_circular is true (the default), then lists, dicts, and custom encoded objects will be checked for circular references during encoding to prevent an infinite recursion (which would cause a RecursionError). Otherwise, no such check takes place. If allow_nan is true (the default), then NaN, Infinity, and -Infinity will be encoded as such. This behavior is not JSON specification compliant, but is consistent with most JavaScript based encoders and decoders. Otherwise, it will be a ValueError to encode such floats. If sort_keys is true (default: False), then the output of dictionaries will be sorted by key; this is useful for regression tests to ensure that JSON serializations can be compared on a day-to-day basis. If indent is a non-negative integer or string, then JSON array elements and object members will be pretty-printed with that indent level. An indent level of 0, negative, or \"\" will only insert newlines. None (the default) selects the most compact representation. Using a positive integer indent indents that many spaces per level. If indent is a string (such as \"\\t\"), that string is used to indent each level. Changed in version 3.2: Allow strings for indent in addition to integers. If specified, separators should be an (item_separator, key_separator) tuple. The default is (', ', ': ') if indent is None and (',', ': ') otherwise. To get the most compact JSON representation, you should specify (',', ':') to eliminate whitespace. Changed in version 3.4: Use (',', ': ') as default if indent is not None. If specified, default should be a function that gets called for objects that can’t otherwise be serialized. It should return a JSON encodable version of the object or raise a TypeError. If not specified, TypeError is raised. Changed in version 3.6: All parameters are now keyword-only. default(o)¶ Implement this method in a subclass such that it returns a serializable object for o, or calls the base implementation (to raise a TypeError). For example, to support arbitrary iterators, you could implement default() like this: def default(self, o): try: iterable = iter(o) except TypeError: pass else: return list(iterable) # Let the base class default method raise the TypeError return super().default(o) encode(o)¶ Return a JSON string representation of a Python data structure, o. For example: >>> json.JSONEncoder().encode({\"foo\": [\"bar\", \"baz\"]}) '{\"foo\": [\"bar\", \"baz\"]}' iterencode(o)¶ Encode the given object, o, and yield each string representation as available. For example: for chunk in json.JSONEncoder().iterencode(bigobject): mysocket.write(chunk)"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 40,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h2",
+      "spoken" : [
+        {
+          "length" : 11,
+          "offset" : 0,
+          "text" : "Exceptions¶"
+        }
+      ],
+      "text" : "Exceptions¶"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.8,
+      "id" : 41,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "dl",
+      "spoken" : [
+        {
+          "length" : 147,
+          "offset" : 0,
+          "text" : "exception json.JSONDecodeError(msg, doc, pos)¶ Subclass of ValueError with the following additional attributes: msg¶ The unformatted error message."
+        },
+        {
+          "length" : 36,
+          "offset" : 148,
+          "text" : "doc¶ The JSON document being parsed."
+        },
+        {
+          "length" : 49,
+          "offset" : 185,
+          "text" : "pos¶ The start index of doc where parsing failed."
+        },
+        {
+          "length" : 38,
+          "offset" : 235,
+          "text" : "lineno¶ The line corresponding to pos."
+        },
+        {
+          "length" : 39,
+          "offset" : 274,
+          "text" : "colno¶ The column corresponding to pos."
+        },
+        {
+          "length" : 21,
+          "offset" : 314,
+          "text" : "Added in version 3.5."
+        }
+      ],
+      "text" : "exception json.JSONDecodeError(msg, doc, pos)¶ Subclass of ValueError with the following additional attributes: msg¶ The unformatted error message. doc¶ The JSON document being parsed. pos¶ The start index of doc where parsing failed. lineno¶ The line corresponding to pos. colno¶ The column corresponding to pos. Added in version 3.5."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 42,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h2",
+      "spoken" : [
+        {
+          "length" : 41,
+          "offset" : 0,
+          "text" : "Standard Compliance and Interoperability¶"
+        }
+      ],
+      "text" : "Standard Compliance and Interoperability¶"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 43,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 57,
+          "offset" : 0,
+          "text" : "The JSON format is specified by RFC 7159 and by ECMA-404."
+        },
+        {
+          "length" : 68,
+          "offset" : 58,
+          "text" : "This section details this module’s level of compliance with the RFC."
+        },
+        {
+          "length" : 129,
+          "offset" : 127,
+          "text" : "For simplicity, JSONEncoder and JSONDecoder subclasses, and parameters other than those explicitly mentioned, are not considered."
+        }
+      ],
+      "text" : "The JSON format is specified by RFC 7159 and by ECMA-404. This section details this module’s level of compliance with the RFC. For simplicity, JSONEncoder and JSONDecoder subclasses, and parameters other than those explicitly mentioned, are not considered."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 44,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 136,
+          "offset" : 0,
+          "text" : "This module does not comply with the RFC in a strict fashion, implementing some extensions that are valid JavaScript but not valid JSON."
+        },
+        {
+          "length" : 14,
+          "offset" : 137,
+          "text" : "In particular:"
+        }
+      ],
+      "text" : "This module does not comply with the RFC in a strict fashion, implementing some extensions that are valid JavaScript but not valid JSON. In particular:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 45,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 157,
+          "offset" : 0,
+          "text" : "Infinite and NaN number values are accepted and output; Repeated names within an object are accepted, and only the value of the last name-value pair is used."
+        }
+      ],
+      "text" : "Infinite and NaN number values are accepted and output; Repeated names within an object are accepted, and only the value of the last name-value pair is used."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 46,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 173,
+          "offset" : 0,
+          "text" : "Since the RFC permits RFC-compliant parsers to accept input texts that are not RFC-compliant, this module’s deserializer is technically RFC-compliant under default settings."
+        }
+      ],
+      "text" : "Since the RFC permits RFC-compliant parsers to accept input texts that are not RFC-compliant, this module’s deserializer is technically RFC-compliant under default settings."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 47,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h3",
+      "spoken" : [
+        {
+          "length" : 20,
+          "offset" : 0,
+          "text" : "Character Encodings¶"
+        }
+      ],
+      "text" : "Character Encodings¶"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 48,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 151,
+          "offset" : 0,
+          "text" : "The RFC requires that JSON be represented using either UTF-8, UTF-16, or UTF-32, with UTF-8 being the recommended default for maximum interoperability."
+        }
+      ],
+      "text" : "The RFC requires that JSON be represented using either UTF-8, UTF-16, or UTF-32, with UTF-8 being the recommended default for maximum interoperability."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 49,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 202,
+          "offset" : 0,
+          "text" : "As permitted, though not required, by the RFC, this module’s serializer sets ensure_ascii=True by default, thus escaping the output so that the resulting strings only contain printable ASCII characters."
+        }
+      ],
+      "text" : "As permitted, though not required, by the RFC, this module’s serializer sets ensure_ascii=True by default, thus escaping the output so that the resulting strings only contain printable ASCII characters."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 50,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 216,
+          "offset" : 0,
+          "text" : "Other than the ensure_ascii parameter, this module is defined strictly in terms of conversion between Python objects and Unicode strings, and thus does not otherwise directly address the issue of character encodings."
+        }
+      ],
+      "text" : "Other than the ensure_ascii parameter, this module is defined strictly in terms of conversion between Python objects and Unicode strings, and thus does not otherwise directly address the issue of character encodings."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 51,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 140,
+          "offset" : 0,
+          "text" : "The RFC prohibits adding a byte order mark (BOM) to the start of a JSON text, and this module’s serializer does not add a BOM to its output."
+        },
+        {
+          "length" : 98,
+          "offset" : 141,
+          "text" : "The RFC permits, but does not require, JSON deserializers to ignore an initial BOM in their input."
+        },
+        {
+          "length" : 78,
+          "offset" : 240,
+          "text" : "This module’s deserializer raises a ValueError when an initial BOM is present."
+        }
+      ],
+      "text" : "The RFC prohibits adding a byte order mark (BOM) to the start of a JSON text, and this module’s serializer does not add a BOM to its output. The RFC permits, but does not require, JSON deserializers to ignore an initial BOM in their input. This module’s deserializer raises a ValueError when an initial BOM is present."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 52,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 225,
+          "offset" : 0,
+          "text" : "The RFC does not explicitly forbid JSON strings which contain byte sequences that don’t correspond to valid Unicode characters (e.g. unpaired UTF-16 surrogates), but it does note that they may cause interoperability problems."
+        },
+        {
+          "length" : 110,
+          "offset" : 226,
+          "text" : "By default, this module accepts and outputs (when present in the original str) code points for such sequences."
+        }
+      ],
+      "text" : "The RFC does not explicitly forbid JSON strings which contain byte sequences that don’t correspond to valid Unicode characters (e.g. unpaired UTF-16 surrogates), but it does note that they may cause interoperability problems. By default, this module accepts and outputs (when present in the original str) code points for such sequences."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 53,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h3",
+      "spoken" : [
+        {
+          "length" : 31,
+          "offset" : 0,
+          "text" : "Infinite and NaN Number Values¶"
+        }
+      ],
+      "text" : "Infinite and NaN Number Values¶"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 54,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 76,
+          "offset" : 0,
+          "text" : "The RFC does not permit the representation of infinite or NaN number values."
+        },
+        {
+          "length" : 136,
+          "offset" : 77,
+          "text" : "Despite that, by default, this module accepts and outputs Infinity, -Infinity, and NaN as if they were valid JSON number literal values:"
+        }
+      ],
+      "text" : "The RFC does not permit the representation of infinite or NaN number values. Despite that, by default, this module accepts and outputs Infinity, -Infinity, and NaN as if they were valid JSON number literal values:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.99,
+      "id" : 55,
+      "kind" : "code",
+      "lowConfidence" : false,
+      "reason" : "pre",
+      "spoken" : [
+
+      ],
+      "text" : ">>> # Neither of these calls raises an exception, but the results are not valid JSON >>> json.dumps(float('-inf')) '-Infinity' >>> json.dumps(float('nan')) 'NaN' >>> # Same when deserializing >>> json.loads('-Infinity') -inf >>> json.loads('NaN') nan"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 56,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 78,
+          "offset" : 0,
+          "text" : "In the serializer, the allow_nan parameter can be used to alter this behavior."
+        },
+        {
+          "length" : 85,
+          "offset" : 79,
+          "text" : "In the deserializer, the parse_constant parameter can be used to alter this behavior."
+        }
+      ],
+      "text" : "In the serializer, the allow_nan parameter can be used to alter this behavior. In the deserializer, the parse_constant parameter can be used to alter this behavior."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 57,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h3",
+      "spoken" : [
+        {
+          "length" : 32,
+          "offset" : 0,
+          "text" : "Repeated Names Within an Object¶"
+        }
+      ],
+      "text" : "Repeated Names Within an Object¶"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 58,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 146,
+          "offset" : 0,
+          "text" : "The RFC specifies that the names within a JSON object should be unique, but does not mandate how repeated names in JSON objects should be handled."
+        },
+        {
+          "length" : 123,
+          "offset" : 147,
+          "text" : "By default, this module does not raise an exception; instead, it ignores all but the last name-value pair for a given name:"
+        }
+      ],
+      "text" : "The RFC specifies that the names within a JSON object should be unique, but does not mandate how repeated names in JSON objects should be handled. By default, this module does not raise an exception; instead, it ignores all but the last name-value pair for a given name:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.99,
+      "id" : 59,
+      "kind" : "code",
+      "lowConfidence" : false,
+      "reason" : "pre",
+      "spoken" : [
+
+      ],
+      "text" : ">>> weird_json = '{\"x\": 1, \"x\": 2, \"x\": 3}' >>> json.loads(weird_json) {'x': 3}"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 60,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 67,
+          "offset" : 0,
+          "text" : "The object_pairs_hook parameter can be used to alter this behavior."
+        }
+      ],
+      "text" : "The object_pairs_hook parameter can be used to alter this behavior."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 61,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h3",
+      "spoken" : [
+        {
+          "length" : 39,
+          "offset" : 0,
+          "text" : "Top-level Non-Object, Non-Array Values¶"
+        }
+      ],
+      "text" : "Top-level Non-Object, Non-Array Values¶"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 62,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 232,
+          "offset" : 0,
+          "text" : "The old version of JSON specified by the obsolete RFC 4627 required that the top-level value of a JSON text must be either a JSON object or array (Python dict or list), and could not be a JSON null, boolean, number, or string value."
+        },
+        {
+          "length" : 148,
+          "offset" : 233,
+          "text" : "RFC 7159 removed that restriction, and this module does not and has never implemented that restriction in either its serializer or its deserializer."
+        }
+      ],
+      "text" : "The old version of JSON specified by the obsolete RFC 4627 required that the top-level value of a JSON text must be either a JSON object or array (Python dict or list), and could not be a JSON null, boolean, number, or string value. RFC 7159 removed that restriction, and this module does not and has never implemented that restriction in either its serializer or its deserializer."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 63,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 105,
+          "offset" : 0,
+          "text" : "Regardless, for maximum interoperability, you may wish to voluntarily adhere to the restriction yourself."
+        }
+      ],
+      "text" : "Regardless, for maximum interoperability, you may wish to voluntarily adhere to the restriction yourself."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 64,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h3",
+      "spoken" : [
+        {
+          "length" : 27,
+          "offset" : 0,
+          "text" : "Implementation Limitations¶"
+        }
+      ],
+      "text" : "Implementation Limitations¶"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 65,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 57,
+          "offset" : 0,
+          "text" : "Some JSON deserializer implementations may set limits on:"
+        }
+      ],
+      "text" : "Some JSON deserializer implementations may set limits on:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 66,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 174,
+          "offset" : 0,
+          "text" : "the size of accepted JSON texts the maximum level of nesting of JSON objects and arrays the range and precision of JSON numbers the content and maximum length of JSON strings"
+        }
+      ],
+      "text" : "the size of accepted JSON texts the maximum level of nesting of JSON objects and arrays the range and precision of JSON numbers the content and maximum length of JSON strings"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 67,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 134,
+          "offset" : 0,
+          "text" : "This module does not impose any such limits beyond those of the relevant Python datatypes themselves or the Python interpreter itself."
+        }
+      ],
+      "text" : "This module does not impose any such limits beyond those of the relevant Python datatypes themselves or the Python interpreter itself."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 68,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 97,
+          "offset" : 0,
+          "text" : "When serializing to JSON, beware any such limitations in applications that may consume your JSON."
+        },
+        {
+          "length" : 177,
+          "offset" : 98,
+          "text" : "In particular, it is common for JSON numbers to be deserialized into IEEE 754 double precision numbers and thus subject to that representation’s range and precision limitations."
+        },
+        {
+          "length" : 175,
+          "offset" : 276,
+          "text" : "This is especially relevant when serializing Python int values of extremely large magnitude, or when serializing instances of “exotic” numerical types such as decimal.Decimal."
+        }
+      ],
+      "text" : "When serializing to JSON, beware any such limitations in applications that may consume your JSON. In particular, it is common for JSON numbers to be deserialized into IEEE 754 double precision numbers and thus subject to that representation’s range and precision limitations. This is especially relevant when serializing Python int values of extremely large magnitude, or when serializing instances of “exotic” numerical types such as decimal.Decimal."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 69,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h2",
+      "spoken" : [
+        {
+          "length" : 23,
+          "offset" : 0,
+          "text" : "Command-line interface¶"
+        }
+      ],
+      "text" : "Command-line interface¶"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 70,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 29,
+          "offset" : 0,
+          "text" : "Source code: Lib/json/tool.py"
+        }
+      ],
+      "text" : "Source code: Lib/json/tool.py"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 71,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 104,
+          "offset" : 0,
+          "text" : "The json module can be invoked as a script via python -m json to validate and pretty-print JSON objects."
+        },
+        {
+          "length" : 50,
+          "offset" : 105,
+          "text" : "The json.tool submodule implements this interface."
+        }
+      ],
+      "text" : "The json module can be invoked as a script via python -m json to validate and pretty-print JSON objects. The json.tool submodule implements this interface."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 72,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 115,
+          "offset" : 0,
+          "text" : "If the optional infile and outfile arguments are not specified, sys.stdin and sys.stdout will be used respectively:"
+        }
+      ],
+      "text" : "If the optional infile and outfile arguments are not specified, sys.stdin and sys.stdout will be used respectively:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.99,
+      "id" : 73,
+      "kind" : "code",
+      "lowConfidence" : false,
+      "reason" : "pre",
+      "spoken" : [
+
+      ],
+      "text" : "$ echo '{\"json\": \"obj\"}' | python -m json { \"json\": \"obj\" } $ echo '{1.2:3.4}' | python -m json Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 74,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 73,
+          "offset" : 0,
+          "text" : "Changed in version 3.5: The output is now in the same order as the input."
+        },
+        {
+          "length" : 84,
+          "offset" : 74,
+          "text" : "Use the --sort-keys option to sort the output of dictionaries alphabetically by key."
+        }
+      ],
+      "text" : "Changed in version 3.5: The output is now in the same order as the input. Use the --sort-keys option to sort the output of dictionaries alphabetically by key."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 75,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 88,
+          "offset" : 0,
+          "text" : "Changed in version 3.14: The json module may now be directly executed as python -m json."
+        },
+        {
+          "length" : 87,
+          "offset" : 89,
+          "text" : "For backwards compatibility, invoking the CLI as python -m json.tool remains supported."
+        }
+      ],
+      "text" : "Changed in version 3.14: The json module may now be directly executed as python -m json. For backwards compatibility, invoking the CLI as python -m json.tool remains supported."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 76,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h3",
+      "spoken" : [
+        {
+          "length" : 21,
+          "offset" : 0,
+          "text" : "Command-line options¶"
+        }
+      ],
+      "text" : "Command-line options¶"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.8,
+      "id" : 77,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "dl",
+      "spoken" : [
+        {
+          "length" : 274,
+          "offset" : 0,
+          "text" : "infile¶ The JSON file to be validated or pretty-printed: $ python -m json mp_films.json [ { \"title\": \"And Now for Something Completely Different\", \"year\": 1971 }, { \"title\": \"Monty Python and the Holy Grail\", \"year\": 1975 } ] If infile is not specified, read from sys.stdin."
+        }
+      ],
+      "text" : "infile¶ The JSON file to be validated or pretty-printed: $ python -m json mp_films.json [ { \"title\": \"And Now for Something Completely Different\", \"year\": 1971 }, { \"title\": \"Monty Python and the Holy Grail\", \"year\": 1975 } ] If infile is not specified, read from sys.stdin."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.8,
+      "id" : 78,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "dl",
+      "spoken" : [
+        {
+          "length" : 61,
+          "offset" : 0,
+          "text" : "outfile¶ Write the output of the infile to the given outfile."
+        },
+        {
+          "length" : 34,
+          "offset" : 62,
+          "text" : "Otherwise, write it to sys.stdout."
+        }
+      ],
+      "text" : "outfile¶ Write the output of the infile to the given outfile. Otherwise, write it to sys.stdout."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.8,
+      "id" : 79,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "dl",
+      "spoken" : [
+        {
+          "length" : 67,
+          "offset" : 0,
+          "text" : "--sort-keys¶ Sort the output of dictionaries alphabetically by key."
+        },
+        {
+          "length" : 21,
+          "offset" : 68,
+          "text" : "Added in version 3.5."
+        }
+      ],
+      "text" : "--sort-keys¶ Sort the output of dictionaries alphabetically by key. Added in version 3.5."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.8,
+      "id" : 80,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "dl",
+      "spoken" : [
+        {
+          "length" : 99,
+          "offset" : 0,
+          "text" : "--no-ensure-ascii¶ Disable escaping of non-ascii characters, see json.dumps() for more information."
+        },
+        {
+          "length" : 21,
+          "offset" : 100,
+          "text" : "Added in version 3.9."
+        }
+      ],
+      "text" : "--no-ensure-ascii¶ Disable escaping of non-ascii characters, see json.dumps() for more information. Added in version 3.9."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.8,
+      "id" : 81,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "dl",
+      "spoken" : [
+        {
+          "length" : 61,
+          "offset" : 0,
+          "text" : "--json-lines¶ Parse every input line as separate JSON object."
+        },
+        {
+          "length" : 21,
+          "offset" : 62,
+          "text" : "Added in version 3.8."
+        }
+      ],
+      "text" : "--json-lines¶ Parse every input line as separate JSON object. Added in version 3.8."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.8,
+      "id" : 82,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "dl",
+      "spoken" : [
+        {
+          "length" : 91,
+          "offset" : 0,
+          "text" : "--indent, --tab, --no-indent, --compact¶ Mutually exclusive options for whitespace control."
+        },
+        {
+          "length" : 21,
+          "offset" : 92,
+          "text" : "Added in version 3.9."
+        }
+      ],
+      "text" : "--indent, --tab, --no-indent, --compact¶ Mutually exclusive options for whitespace control. Added in version 3.9."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.8,
+      "id" : 83,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "dl",
+      "spoken" : [
+        {
+          "length" : 34,
+          "offset" : 0,
+          "text" : "-h, --help¶ Show the help message."
+        }
+      ],
+      "text" : "-h, --help¶ Show the help message."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 84,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 9,
+          "offset" : 0,
+          "text" : "Footnotes"
+        }
+      ],
+      "text" : "Footnotes"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.9,
+      "id" : 85,
+      "kind" : "aside",
+      "lowConfidence" : false,
+      "reason" : "aside",
+      "spoken" : [
+        {
+          "length" : 201,
+          "offset" : 0,
+          "text" : "[1] As noted in the errata for RFC 7159, JSON permits literal U+2028 (LINE SEPARATOR) and U+2029 (PARAGRAPH SEPARATOR) characters in strings, whereas JavaScript (as of ECMAScript Edition 5.1) does not."
+        }
+      ],
+      "text" : "[1] As noted in the errata for RFC 7159, JSON permits literal U+2028 (LINE SEPARATOR) and U+2029 (PARAGRAPH SEPARATOR) characters in strings, whereas JavaScript (as of ECMAScript Edition 5.1) does not."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 86,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h3",
+      "spoken" : [
+        {
+          "length" : 17,
+          "offset" : 0,
+          "text" : "Table of Contents"
+        }
+      ],
+      "text" : "Table of Contents"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 87,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 310,
+          "offset" : 0,
+          "text" : "json — JSON encoder and decoder Basic Usage Encoders and Decoders Exceptions Standard Compliance and Interoperability Character Encodings Infinite and NaN Number Values Repeated Names Within an Object Top-level Non-Object, Non-Array Values Implementation Limitations Command-line interface Command-line options"
+        }
+      ],
+      "text" : "json — JSON encoder and decoder Basic Usage Encoders and Decoders Exceptions Standard Compliance and Interoperability Character Encodings Infinite and NaN Number Values Repeated Names Within an Object Top-level Non-Object, Non-Array Values Implementation Limitations Command-line interface Command-line options"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 88,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h4",
+      "spoken" : [
+        {
+          "length" : 14,
+          "offset" : 0,
+          "text" : "Previous topic"
+        }
+      ],
+      "text" : "Previous topic"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 89,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 26,
+          "offset" : 0,
+          "text" : "email.iterators: Iterators"
+        }
+      ],
+      "text" : "email.iterators: Iterators"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 90,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h4",
+      "spoken" : [
+        {
+          "length" : 10,
+          "offset" : 0,
+          "text" : "Next topic"
+        }
+      ],
+      "text" : "Next topic"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 91,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 49,
+          "offset" : 0,
+          "text" : "mailbox — Manipulate mailboxes in various formats"
+        }
+      ],
+      "text" : "mailbox — Manipulate mailboxes in various formats"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 92,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h3",
+      "spoken" : [
+        {
+          "length" : 9,
+          "offset" : 0,
+          "text" : "This page"
+        }
+      ],
+      "text" : "This page"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 93,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 42,
+          "offset" : 0,
+          "text" : "Report a bug Improve this page Show source"
+        }
+      ],
+      "text" : "Report a bug Improve this page Show source"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 94,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 1,
+          "offset" : 0,
+          "text" : "«"
+        }
+      ],
+      "text" : "«"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 95,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h3",
+      "spoken" : [
+        {
+          "length" : 10,
+          "offset" : 0,
+          "text" : "Navigation"
+        }
+      ],
+      "text" : "Navigation"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 96,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 178,
+          "offset" : 0,
+          "text" : "index modules | next | previous | Python » 3.15.2 documentation » The Python standard library » Internet Data Handling » json — JSON encoder and decoder | Theme Auto Light Dark |"
+        }
+      ],
+      "text" : "index modules | next | previous | Python » 3.15.2 documentation » The Python standard library » Internet Data Handling » json — JSON encoder and decoder | Theme Auto Light Dark |"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 97,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 9,
+          "offset" : 0,
+          "text" : "Copyright"
+        }
+      ],
+      "text" : "Copyright"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 98,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 19,
+          "offset" : 0,
+          "text" : "History and License"
+        }
+      ],
+      "text" : "History and License"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 99,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 14,
+          "offset" : 0,
+          "text" : "Please donate."
+        }
+      ],
+      "text" : "Please donate."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 100,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 11,
+          "offset" : 0,
+          "text" : "Found a bug"
+        }
+      ],
+      "text" : "Found a bug"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 101,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 6,
+          "offset" : 0,
+          "text" : "Sphinx"
+        }
+      ],
+      "text" : "Sphinx"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.8,
+      "id" : 102,
+      "kind" : "nav",
+      "lowConfidence" : false,
+      "reason" : "class=footer",
+      "spoken" : [
+
+      ],
+      "text" : "© 2001 Python Software Foundation. This page is licensed under the Python Software Foundation License Version 2. Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License. See for more information. The Python Software Foundation is a non-profit corporation. Last updated on Nov 11, 2026 (09:19 UTC). ? Created using 9.1.1."
+    }
+  ],
+  "sentence_count" : 251,
+  "skipped" : [
+    {
+      "block_id" : 0,
+      "confidence" : 0.85,
+      "kind" : "nav",
+      "reason" : "role=navigation",
+      "words" : 68
+    },
+    {
+      "block_id" : 12,
+      "confidence" : 0.99,
+      "kind" : "code",
+      "reason" : "pre",
+      "words" : 56
+    },
+    {
+      "block_id" : 14,
+      "confidence" : 0.99,
+      "kind" : "code",
+      "reason" : "pre",
+      "words" : 14
+    },
+    {
+      "block_id" : 16,
+      "confidence" : 0.99,
+      "kind" : "code",
+      "reason" : "pre",
+      "words" : 16
+    },
+    {
+      "block_id" : 18,
+      "confidence" : 0.99,
+      "kind" : "code",
+      "reason" : "pre",
+      "words" : 37
+    },
+    {
+      "block_id" : 20,
+      "confidence" : 0.99,
+      "kind" : "code",
+      "reason" : "pre",
+      "words" : 32
+    },
+    {
+      "block_id" : 22,
+      "confidence" : 0.99,
+      "kind" : "code",
+      "reason" : "pre",
+      "words" : 67
+    },
+    {
+      "block_id" : 24,
+      "confidence" : 0.99,
+      "kind" : "code",
+      "reason" : "pre",
+      "words" : 54
+    },
+    {
+      "block_id" : 26,
+      "confidence" : 0.99,
+      "kind" : "code",
+      "reason" : "pre",
+      "words" : 31
+    },
+    {
+      "block_id" : 55,
+      "confidence" : 0.99,
+      "kind" : "code",
+      "reason" : "pre",
+      "words" : 33
+    },
+    {
+      "block_id" : 59,
+      "confidence" : 0.99,
+      "kind" : "code",
+      "reason" : "pre",
+      "words" : 13
+    },
+    {
+      "block_id" : 73,
+      "confidence" : 0.99,
+      "kind" : "code",
+      "reason" : "pre",
+      "words" : 32
+    },
+    {
+      "block_id" : 102,
+      "confidence" : 0.8,
+      "kind" : "nav",
+      "reason" : "class=footer",
+      "words" : 58
+    }
+  ],
+  "source" : "022-python-json.html",
+  "source_sha256" : "e4ec5e442de9e8f991c4be93120c536e109164ee4dfa382fdcaa7c5eeff4b1a8",
+  "spoken_words" : 3526,
+  "validation_failures" : 0,
+  "version" : 1
+}

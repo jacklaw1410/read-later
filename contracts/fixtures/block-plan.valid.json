@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "source": "004-averages.html",
+  "source_sha256": "00dd5e1386b5306a43221dc044132b37ff826c09e96f653b086f7b60fa2e7743",
+  "sentence_count": 4,
+  "spoken_words": 13,
+  "validation_failures": 0,
+  "blocks": [
+    {
+      "id": 0,
+      "kind": "heading",
+      "confidence": 0.95,
+      "reason": "h1",
+      "text": "Beating the Averages",
+      "children": [],
+      "spoken": [],
+      "lowConfidence": false
+    },
+    {
+      "id": 1,
+      "kind": "prose",
+      "confidence": 0.98,
+      "reason": "p",
+      "text": "Lisp is worth learning.",
+      "children": [],
+      "spoken": [{ "offset": 0, "length": 23, "text": "Lisp is worth learning." }],
+      "lowConfidence": false
+    },
+    {
+      "id": 2,
+      "kind": "prose",
+      "confidence": 0.75,
+      "reason": "shape-unsure",
+      "text": "It has ideas. They spread slowly.",
+      "children": [],
+      "spoken": [
+        { "offset": 0, "length": 13, "text": "It has ideas." },
+        { "offset": 14, "length": 19, "text": "They spread slowly." }
+      ],
+      "lowConfidence": true
+    },
+    {
+      "id": 3,
+      "kind": "figure",
+      "confidence": 0.99,
+      "reason": "figure",
+      "text": "A transistor radio.",
+      "children": [
+        {
+          "id": 4,
+          "kind": "image",
+          "confidence": 0.99,
+          "reason": "img",
+          "text": "",
+          "children": [],
+          "spoken": [],
+          "lowConfidence": false
+        },
+        {
+          "id": 5,
+          "kind": "prose",
+          "confidence": 0.97,
+          "reason": "figcaption",
+          "text": "A transistor radio.",
+          "children": [],
+          "spoken": [{ "offset": 0, "length": 19, "text": "A transistor radio." }],
+          "lowConfidence": false
+        }
+      ],
+      "spoken": [],
+      "lowConfidence": false
+    }
+  ],
+  "skipped": [
+    { "block_id": 0, "kind": "heading", "confidence": 0.95, "reason": "h1", "words": 3 },
+    { "block_id": 3, "kind": "figure", "confidence": 0.99, "reason": "figure", "words": 3 }
+  ]
+}

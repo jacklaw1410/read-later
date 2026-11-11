@@ -1,0 +1,1265 @@
+{
+  "blocks" : [
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 0,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 20,
+          "offset" : 0,
+          "text" : "Skip to main content"
+        }
+      ],
+      "text" : "Skip to main content"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 1,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 6,
+          "offset" : 0,
+          "text" : "Search"
+        }
+      ],
+      "text" : "Search"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 2,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 4,
+          "offset" : 0,
+          "text" : "Shop"
+        }
+      ],
+      "text" : "Shop"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 3,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 11,
+          "offset" : 0,
+          "text" : "Newsletters"
+        }
+      ],
+      "text" : "Newsletters"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 4,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 5,
+          "offset" : 0,
+          "text" : "Renew"
+        }
+      ],
+      "text" : "Renew"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 5,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 11,
+          "offset" : 0,
+          "text" : "Give a Gift"
+        }
+      ],
+      "text" : "Give a Gift"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 6,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 9,
+          "offset" : 0,
+          "text" : "Subscribe"
+        }
+      ],
+      "text" : "Subscribe"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 7,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 10,
+          "offset" : 0,
+          "text" : "Membership"
+        }
+      ],
+      "text" : "Membership"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.85,
+      "id" : 8,
+      "kind" : "nav",
+      "lowConfidence" : false,
+      "reason" : "nav",
+      "spoken" : [
+
+      ],
+      "text" : "i Subscribe Give a Gift Renew Sections Smart News History Science Innovation Arts & Culture Travel At the Smithsonian More from Smithsonian magazine Newsletters Photo Contest Podcast Videos Our Partners Smithsonian Store Smithsonian Journeys"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 9,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 54,
+          "offset" : 0,
+          "text" : "Subscribe to Smithsonian magazine and get a FREE tote."
+        }
+      ],
+      "text" : "Subscribe to Smithsonian magazine and get a FREE tote."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 10,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 10,
+          "offset" : 0,
+          "text" : "Cool Finds"
+        }
+      ],
+      "text" : "Cool Finds"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 11,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h1",
+      "spoken" : [
+        {
+          "length" : 100,
+          "offset" : 0,
+          "text" : "The Handwritten Final Draft of Martin Luther King Jr.’s ‘I Have a Dream’ Speech Was Considered Lost."
+        },
+        {
+          "length" : 56,
+          "offset" : 101,
+          "text" : "It Turned Out to Be Sitting in a Desk Drawer for Decades"
+        }
+      ],
+      "text" : "The Handwritten Final Draft of Martin Luther King Jr.’s ‘I Have a Dream’ Speech Was Considered Lost. It Turned Out to Be Sitting in a Desk Drawer for Decades"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 12,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h2",
+      "spoken" : [
+        {
+          "length" : 141,
+          "offset" : 0,
+          "text" : "Across seven yellow notepad pages, King is seen wrestling with word choice and revising his remarks the night before the March on Washington."
+        },
+        {
+          "length" : 95,
+          "offset" : 142,
+          "text" : "The manuscript will head to auction in January and is expected to pull in more than $10 million"
+        }
+      ],
+      "text" : "Across seven yellow notepad pages, King is seen wrestling with word choice and revising his remarks the night before the March on Washington. The manuscript will head to auction in January and is expected to pull in more than $10 million"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 13,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 30,
+          "offset" : 0,
+          "text" : "Gabby Shell | Editorial intern"
+        }
+      ],
+      "text" : "Gabby Shell | Editorial intern"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 14,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 27,
+          "offset" : 0,
+          "text" : "November 10, 2026 4:45 p.m."
+        }
+      ],
+      "text" : "November 10, 2026 4:45 p.m."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 15,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 58,
+          "offset" : 0,
+          "text" : "Share Copy linkEmailSMSFacebookXRedditLinkedInBlueskyPrint"
+        }
+      ],
+      "text" : "Share Copy linkEmailSMSFacebookXRedditLinkedInBlueskyPrint"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 16,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 23,
+          "offset" : 0,
+          "text" : "Add as preferred source"
+        }
+      ],
+      "text" : "Add as preferred source"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 17,
+      "kind" : "figure",
+      "lowConfidence" : false,
+      "reason" : "figure",
+      "spoken" : [
+        {
+          "length" : 148,
+          "offset" : 0,
+          "text" : "Martin Luther King Jr. waves to crowd after delivering his historic \"I Have a Dream\" speech on the steps of the Lincoln Memorial on August 28, 1963."
+        },
+        {
+          "length" : 148,
+          "offset" : 149,
+          "text" : "G. Marshall Wilson / Johnson Publishing Company Archive/ J. Paul Getty Trust and Smithsonian National Museum of African American History and Culture"
+        }
+      ],
+      "text" : "Martin Luther King Jr. waves to crowd after delivering his historic \"I Have a Dream\" speech on the steps of the Lincoln Memorial on August 28, 1963. G. Marshall Wilson / Johnson Publishing Company Archive/ J. Paul Getty Trust and Smithsonian National Museum of African American History and Culture"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 18,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 161,
+          "offset" : 0,
+          "text" : "It was late on August 27, 1963, and Martin Luther King Jr. was huddled with a group of his closest advisors in the lobby of the Willard Hotel in Washington, D.C."
+        }
+      ],
+      "text" : "It was late on August 27, 1963, and Martin Luther King Jr. was huddled with a group of his closest advisors in the lobby of the Willard Hotel in Washington, D.C."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 19,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 168,
+          "offset" : 0,
+          "text" : "They were drafting King’s closing remarks for the March on Washington, officially the March on Washington for Jobs and Freedom, which was set to start in just 12 hours."
+        },
+        {
+          "length" : 83,
+          "offset" : 169,
+          "text" : "The group went back and forth on the message: Should it be ideological or Biblical?"
+        },
+        {
+          "length" : 62,
+          "offset" : 253,
+          "text" : "Directed towards the students marching or the nation at large?"
+        }
+      ],
+      "text" : "They were drafting King’s closing remarks for the March on Washington, officially the March on Washington for Jobs and Freedom, which was set to start in just 12 hours. The group went back and forth on the message: Should it be ideological or Biblical? Directed towards the students marching or the nation at large?"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 20,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 48,
+          "offset" : 0,
+          "text" : "As the night wore on, King eventually bowed out."
+        },
+        {
+          "length" : 95,
+          "offset" : 49,
+          "text" : "“Okay brothers,” Clarence B. Jones, an activist and speechwriter for King, recalled him saying."
+        },
+        {
+          "length" : 61,
+          "offset" : 145,
+          "text" : "“Thank you so much everybody for your suggestions and input …"
+        },
+        {
+          "length" : 60,
+          "offset" : 207,
+          "text" : "I am now going upstairs to my room to counsel with my Lord.”"
+        }
+      ],
+      "text" : "As the night wore on, King eventually bowed out. “Okay brothers,” Clarence B. Jones, an activist and speechwriter for King, recalled him saying. “Thank you so much everybody for your suggestions and input … I am now going upstairs to my room to counsel with my Lord.”"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 21,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 145,
+          "offset" : 0,
+          "text" : "Alone in his suite, King stayed up until 4 a.m., writing and revising his remarks on a yellow notepad, scratching out swaths of text in blue ink."
+        },
+        {
+          "length" : 186,
+          "offset" : 146,
+          "text" : "He then sent these marked-up pages to be typed, forming the basis of his canonical “I Have a Dream” speech, delivered to more than 250,000 demonstrators gathered by the Lincoln Memorial."
+        }
+      ],
+      "text" : "Alone in his suite, King stayed up until 4 a.m., writing and revising his remarks on a yellow notepad, scratching out swaths of text in blue ink. He then sent these marked-up pages to be typed, forming the basis of his canonical “I Have a Dream” speech, delivered to more than 250,000 demonstrators gathered by the Lincoln Memorial."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 22,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 110,
+          "offset" : 0,
+          "text" : "Scholars have long assumed that the original, handwritten final draft had been discarded amid the day’s chaos."
+        },
+        {
+          "length" : 97,
+          "offset" : 111,
+          "text" : "But six decades later, the manuscript has resurfaced from a drawer of one of King’s former aides."
+        },
+        {
+          "length" : 135,
+          "offset" : 209,
+          "text" : "The seven yellow pages are set to be auctioned at Christie’s in January, where the draft is expected to sell for more than $10 million."
+        }
+      ],
+      "text" : "Scholars have long assumed that the original, handwritten final draft had been discarded amid the day’s chaos. But six decades later, the manuscript has resurfaced from a drawer of one of King’s former aides. The seven yellow pages are set to be auctioned at Christie’s in January, where the draft is expected to sell for more than $10 million."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 23,
+      "kind" : "figure",
+      "lowConfidence" : false,
+      "reason" : "figure",
+      "spoken" : [
+        {
+          "length" : 135,
+          "offset" : 0,
+          "text" : "The seven yellow pages do not contain King's improvised \"I have a dream\" refrain, but they do contain the iconic \"free at last\" ending."
+        },
+        {
+          "length" : 10,
+          "offset" : 136,
+          "text" : "Christie's"
+        }
+      ],
+      "text" : "The seven yellow pages do not contain King's improvised \"I have a dream\" refrain, but they do contain the iconic \"free at last\" ending. Christie's"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 24,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 145,
+          "offset" : 0,
+          "text" : "“When I first saw these pages and realized what they were, I was astounded,” Christie’s manuscripts specialist Peter Klarnet says in a statement."
+        },
+        {
+          "length" : 41,
+          "offset" : 146,
+          "text" : "“This is a treasure of American history …"
+        },
+        {
+          "length" : 112,
+          "offset" : 188,
+          "text" : "Reading along, you’re there in the moment with Dr. King, watching him compose it and making edits in real time.”"
+        }
+      ],
+      "text" : "“When I first saw these pages and realized what they were, I was astounded,” Christie’s manuscripts specialist Peter Klarnet says in a statement. “This is a treasure of American history … Reading along, you’re there in the moment with Dr. King, watching him compose it and making edits in real time.”"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 25,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 261,
+          "offset" : 0,
+          "text" : "Civil rights leader and philanthropist Xernona Clayton found the pages in the late 1990s. They were tucked in an envelope labeled “speech,” nestled among other papers in a desk drawer belonging to her late husband, Edward, one of King’s aides and speechwriters."
+        }
+      ],
+      "text" : "Civil rights leader and philanthropist Xernona Clayton found the pages in the late 1990s. They were tucked in an envelope labeled “speech,” nestled among other papers in a desk drawer belonging to her late husband, Edward, one of King’s aides and speechwriters."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 26,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 122,
+          "offset" : 0,
+          "text" : "Clayton knew it was an important document related to the “I Have a Dream” speech but not that it was the final manuscript."
+        },
+        {
+          "length" : 120,
+          "offset" : 123,
+          "text" : "She tucked it back in the desk drawer, not wanting to disrespect King’s memory by selling or displaying his memorabilia."
+        }
+      ],
+      "text" : "Clayton knew it was an important document related to the “I Have a Dream” speech but not that it was the final manuscript. She tucked it back in the desk drawer, not wanting to disrespect King’s memory by selling or displaying his memorabilia."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 27,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 42,
+          "offset" : 0,
+          "text" : "But in recent years, she changed her mind."
+        },
+        {
+          "length" : 96,
+          "offset" : 43,
+          "text" : "“Now that I’m older, I’m wiser,” Clayton, now 96, tells the New York Times’ Jennifer Schuessler."
+        },
+        {
+          "length" : 65,
+          "offset" : 140,
+          "text" : "“It just seems like something that important ought to be shared.”"
+        }
+      ],
+      "text" : "But in recent years, she changed her mind. “Now that I’m older, I’m wiser,” Clayton, now 96, tells the New York Times’ Jennifer Schuessler. “It just seems like something that important ought to be shared.”"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 28,
+      "kind" : "figure",
+      "lowConfidence" : false,
+      "reason" : "figure",
+      "spoken" : [
+        {
+          "length" : 54,
+          "offset" : 0,
+          "text" : "King's edits on the first page of the draft Christie's"
+        }
+      ],
+      "text" : "King's edits on the first page of the draft Christie's"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 29,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 172,
+          "offset" : 0,
+          "text" : "In 2024, she shared the pages with her financial manager, who worked with the Christie’s team to identify it as the only known handwritten final draft of the famous speech."
+        }
+      ],
+      "text" : "In 2024, she shared the pages with her financial manager, who worked with the Christie’s team to identify it as the only known handwritten final draft of the famous speech."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 30,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 70,
+          "offset" : 0,
+          "text" : "“I’m just glad I looked at the drawer,” Clayton says in the statement."
+        },
+        {
+          "length" : 139,
+          "offset" : 71,
+          "text" : "“Now, the world will have the opportunity to see those words of wisdom that continue to inspire hope, freedom and the pursuit of equality.”"
+        }
+      ],
+      "text" : "“I’m just glad I looked at the drawer,” Clayton says in the statement. “Now, the world will have the opportunity to see those words of wisdom that continue to inspire hope, freedom and the pursuit of equality.”"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 31,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 233,
+          "offset" : 0,
+          "text" : "The handwritten manuscript is nearly identical to the final, typeface draft King carried with him to the lectern, a copy of which is currently on view at Smithsonian’s National Museum of African American History and Culture (NMAAHC)."
+        }
+      ],
+      "text" : "The handwritten manuscript is nearly identical to the final, typeface draft King carried with him to the lectern, a copy of which is currently on view at Smithsonian’s National Museum of African American History and Culture (NMAAHC)."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 32,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 113,
+          "offset" : 0,
+          "text" : "“The speech was slotted to be a four-minute closing to the march,” NMAAHC curator Kevin Strait explained in 2021."
+        },
+        {
+          "length" : 93,
+          "offset" : 114,
+          "text" : "“However, it became a powerful, 16-minute rallying cry for the entire civil rights movement.”"
+        }
+      ],
+      "text" : "“The speech was slotted to be a four-minute closing to the march,” NMAAHC curator Kevin Strait explained in 2021. “However, it became a powerful, 16-minute rallying cry for the entire civil rights movement.”"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 33,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 156,
+          "offset" : 0,
+          "text" : "In fact, neither the original, handwritten pages nor the printed copy bear any mention of the speech’s most memorable line, King’s “I have a dream” refrain."
+        },
+        {
+          "length" : 168,
+          "offset" : 157,
+          "text" : "Those words, along with much of the speech’s second half, were improvised on the spot after gospel singer Mahalia Jackson shouted to King, “Tell ‘em about the ‘dream.’”"
+        },
+        {
+          "length" : 140,
+          "offset" : 326,
+          "text" : "The rediscovered draft does contain the speech’s enduring final line, “Free at last, free at last; thank God almighty, we are free at last.”"
+        }
+      ],
+      "text" : "In fact, neither the original, handwritten pages nor the printed copy bear any mention of the speech’s most memorable line, King’s “I have a dream” refrain. Those words, along with much of the speech’s second half, were improvised on the spot after gospel singer Mahalia Jackson shouted to King, “Tell ‘em about the ‘dream.’” The rediscovered draft does contain the speech’s enduring final line, “Free at last, free at last; thank God almighty, we are free at last.”"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 34,
+      "kind" : "figure",
+      "lowConfidence" : false,
+      "reason" : "figure",
+      "spoken" : [
+        {
+          "length" : 120,
+          "offset" : 0,
+          "text" : "The manuscript was discovered in the desk drawer of one of King's trusted aides, where it sat for more than six decades."
+        },
+        {
+          "length" : 10,
+          "offset" : 121,
+          "text" : "Christie's"
+        }
+      ],
+      "text" : "The manuscript was discovered in the desk drawer of one of King's trusted aides, where it sat for more than six decades. Christie's"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 35,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 159,
+          "offset" : 0,
+          "text" : "King’s address has been extensively studied, but this manuscript may shed new light on the activist’s thinking in the hours leading up to the monumental march."
+        },
+        {
+          "length" : 104,
+          "offset" : 160,
+          "text" : "For example, King rewrote the speech’s warning about “the tranquilizing drug of gradualism” three times."
+        },
+        {
+          "length" : 63,
+          "offset" : 265,
+          "text" : "First, he wrote “tokenism,” before replacing it with “waitism.”"
+        },
+        {
+          "length" : 72,
+          "offset" : 329,
+          "text" : "He eventually crossing both out in favor of “gradualism,” per the Times."
+        }
+      ],
+      "text" : "King’s address has been extensively studied, but this manuscript may shed new light on the activist’s thinking in the hours leading up to the monumental march. For example, King rewrote the speech’s warning about “the tranquilizing drug of gradualism” three times. First, he wrote “tokenism,” before replacing it with “waitism.” He eventually crossing both out in favor of “gradualism,” per the Times."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 36,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 98,
+          "offset" : 0,
+          "text" : "Scholars say the opportunity to see the speech in King’s own writing is an incredible opportunity."
+        },
+        {
+          "length" : 56,
+          "offset" : 99,
+          "text" : "“When [Christie’s] called me, I was almost in disbelief."
+        },
+        {
+          "length" : 217,
+          "offset" : 156,
+          "text" : "It’s almost like it gives us a chance to get between King’s ears, to get in his mind,” Lerone A. Martin, director of the Martin Luther King Jr. Research and Education Institute at Stanford University, tells the Times."
+        }
+      ],
+      "text" : "Scholars say the opportunity to see the speech in King’s own writing is an incredible opportunity. “When [Christie’s] called me, I was almost in disbelief. It’s almost like it gives us a chance to get between King’s ears, to get in his mind,” Lerone A. Martin, director of the Martin Luther King Jr. Research and Education Institute at Stanford University, tells the Times."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 37,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 13,
+          "offset" : 0,
+          "text" : "Did you know?"
+        },
+        {
+          "length" : 22,
+          "offset" : 14,
+          "text" : "Malcolm X on the march"
+        }
+      ],
+      "text" : "Did you know? Malcolm X on the march"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 38,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 67,
+          "offset" : 0,
+          "text" : "Malcolm X attended the March on Washington but did not participate."
+        },
+        {
+          "length" : 188,
+          "offset" : 68,
+          "text" : "He critiqued the event, calling it “the Farce in Washington,” and took issue with King’s \"Dream\" speech, declaring that “the black masses in America were—and still are—having a nightmare.”"
+        }
+      ],
+      "text" : "Malcolm X attended the March on Washington but did not participate. He critiqued the event, calling it “the Farce in Washington,” and took issue with King’s \"Dream\" speech, declaring that “the black masses in America were—and still are—having a nightmare.”"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 39,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 219,
+          "offset" : 0,
+          "text" : "All proceeds from the sale will go to philanthropic efforts, including the Xernona Clayton Foundation and the King Center in Atlanta, which was founded by King’s wife and fellow civil rights activist Coretta Scott King."
+        }
+      ],
+      "text" : "All proceeds from the sale will go to philanthropic efforts, including the Xernona Clayton Foundation and the King Center in Atlanta, which was founded by King’s wife and fellow civil rights activist Coretta Scott King."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 40,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 151,
+          "offset" : 0,
+          "text" : "The manuscript will be exhibited at the National Center for Civil and Human Rights in Atlanta from November 16 to 22, followed by a display in Chicago."
+        },
+        {
+          "length" : 124,
+          "offset" : 152,
+          "text" : "The pages will also be on public display at Christie’s New York starting on King’s birthday, January 15, through January 21."
+        },
+        {
+          "length" : 58,
+          "offset" : 277,
+          "text" : "The draft will be sold on January 22 in a single-lot sale."
+        }
+      ],
+      "text" : "The manuscript will be exhibited at the National Center for Civil and Human Rights in Atlanta from November 16 to 22, followed by a display in Chicago. The pages will also be on public display at Christie’s New York starting on King’s birthday, January 15, through January 21. The draft will be sold on January 22 in a single-lot sale."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 41,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 170,
+          "offset" : 0,
+          "text" : "“It’s poetic that the past will protect the future,” Martin Luther King III, a human rights activist and the eldest son of the civil rights leader, says in the statement."
+        },
+        {
+          "length" : 90,
+          "offset" : 171,
+          "text" : "“We are grateful that this treasure was preserved over the decades by the Clayton family …"
+        },
+        {
+          "length" : 95,
+          "offset" : 262,
+          "text" : "Now, for the first time, the public will have the opportunity to be inspired by this document.”"
+        }
+      ],
+      "text" : "“It’s poetic that the past will protect the future,” Martin Luther King III, a human rights activist and the eldest son of the civil rights leader, says in the statement. “We are grateful that this treasure was preserved over the decades by the Clayton family … Now, for the first time, the public will have the opportunity to be inspired by this document.”"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 42,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h3",
+      "spoken" : [
+        {
+          "length" : 19,
+          "offset" : 0,
+          "text" : "You Might Also Like"
+        }
+      ],
+      "text" : "You Might Also Like"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 43,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 42,
+          "offset" : 0,
+          "text" : "Octopuses Are the Ultimate Escape Artists."
+        },
+        {
+          "length" : 321,
+          "offset" : 43,
+          "text" : "Now Scientists Know How the Creatures Contort Themselves to Squeeze Through Tiny Holes November 10, 2026 Celebrate the Nation's Veterans With These 20 Stirring Photographs of American Military Heroes November 10, 2026 Dismantled to Survive the Nazi Blitz, Coventry Cathedral's Stained Glass Is 'a Medieval Jigsaw Puzzle.'"
+        },
+        {
+          "length" : 150,
+          "offset" : 365,
+          "text" : "Its 12,000 Fragments Are Now Digitized for Public View November 10, 2026 This Adorable, Orphaned Baby Walrus Was Rescued by Two Researchers in Alaska."
+        },
+        {
+          "length" : 99,
+          "offset" : 516,
+          "text" : "Now, He's Found a New Home in Florida November 10, 2026 How Do Pandas Have Sex While in Human Care?"
+        },
+        {
+          "length" : 113,
+          "offset" : 616,
+          "text" : "As the National Zoo’s Director Details in Her New Book, It Takes a Village of Dedicated Keepers November 10, 2026"
+        }
+      ],
+      "text" : "Octopuses Are the Ultimate Escape Artists. Now Scientists Know How the Creatures Contort Themselves to Squeeze Through Tiny Holes November 10, 2026 Celebrate the Nation's Veterans With These 20 Stirring Photographs of American Military Heroes November 10, 2026 Dismantled to Survive the Nazi Blitz, Coventry Cathedral's Stained Glass Is 'a Medieval Jigsaw Puzzle.' Its 12,000 Fragments Are Now Digitized for Public View November 10, 2026 This Adorable, Orphaned Baby Walrus Was Rescued by Two Researchers in Alaska. Now, He's Found a New Home in Florida November 10, 2026 How Do Pandas Have Sex While in Human Care? As the National Zoo’s Director Details in Her New Book, It Takes a Village of Dedicated Keepers November 10, 2026"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 44,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 61,
+          "offset" : 0,
+          "text" : "Gabby Shell is an editorial intern with Smithsonian magazine."
+        }
+      ],
+      "text" : "Gabby Shell is an editorial intern with Smithsonian magazine."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 45,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h3",
+      "spoken" : [
+        {
+          "length" : 51,
+          "offset" : 0,
+          "text" : "Get the latest stories in your inbox every weekday."
+        }
+      ],
+      "text" : "Get the latest stories in your inbox every weekday."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.85,
+      "id" : 46,
+      "kind" : "nav",
+      "lowConfidence" : false,
+      "reason" : "nav",
+      "spoken" : [
+
+      ],
+      "text" : "More about: African American History African American History Museum American History Auctions Civil Rights History Martin Luther King, Jr. Race and Ethnicity Washington, D.C."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 47,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 9,
+          "offset" : 0,
+          "text" : "Follow Us"
+        }
+      ],
+      "text" : "Follow Us"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 48,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 7,
+          "offset" : 0,
+          "text" : "Explore"
+        }
+      ],
+      "text" : "Explore"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 49,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 106,
+          "offset" : 0,
+          "text" : "Smart News History Science Innovation Arts & Culture Travel At the Smithsonian Photo Contest Podcast Video"
+        }
+      ],
+      "text" : "Smart News History Science Innovation Arts & Culture Travel At the Smithsonian Photo Contest Podcast Video"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 50,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 12,
+          "offset" : 0,
+          "text" : "Subscription"
+        }
+      ],
+      "text" : "Subscription"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 51,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 45,
+          "offset" : 0,
+          "text" : "Subscribe Give a gift Renew Manage My Account"
+        }
+      ],
+      "text" : "Subscribe Give a gift Renew Manage My Account"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 52,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 11,
+          "offset" : 0,
+          "text" : "Newsletters"
+        }
+      ],
+      "text" : "Newsletters"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 53,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 7,
+          "offset" : 0,
+          "text" : "Sign Up"
+        }
+      ],
+      "text" : "Sign Up"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 54,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 5,
+          "offset" : 0,
+          "text" : "About"
+        }
+      ],
+      "text" : "About"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 55,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 133,
+          "offset" : 0,
+          "text" : "About Us Advertising Contact Us Content Licensing FAQ Feedback Internships & Employment Member Services Smithsonian Institution Staff"
+        }
+      ],
+      "text" : "About Us Advertising Contact Us Content Licensing FAQ Feedback Internships & Employment Member Services Smithsonian Institution Staff"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 56,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 12,
+          "offset" : 0,
+          "text" : "Our Partners"
+        }
+      ],
+      "text" : "Our Partners"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 57,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 115,
+          "offset" : 0,
+          "text" : "Smithsonian.com Smithsonian Store Smithsonian Journeys Smithsonian Channel Smithsonian Books Smithsonian Membership"
+        }
+      ],
+      "text" : "Smithsonian.com Smithsonian Store Smithsonian Journeys Smithsonian Channel Smithsonian Books Smithsonian Membership"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 58,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 148,
+          "offset" : 0,
+          "text" : "© 2026 Smithsonian Magazine Privacy Statement [9/17/26] Cookie Policy [5/20/25] Terms of Use Advertising Notice Your Privacy Choices Cookie Settings"
+        }
+      ],
+      "text" : "© 2026 Smithsonian Magazine Privacy Statement [9/17/26] Cookie Policy [5/20/25] Terms of Use Advertising Notice Your Privacy Choices Cookie Settings"
+    }
+  ],
+  "sentence_count" : 94,
+  "skipped" : [
+    {
+      "block_id" : 8,
+      "confidence" : 0.85,
+      "kind" : "nav",
+      "reason" : "nav",
+      "words" : 34
+    },
+    {
+      "block_id" : 46,
+      "confidence" : 0.85,
+      "kind" : "nav",
+      "reason" : "nav",
+      "words" : 24
+    }
+  ],
+  "source" : "067-mlk-draft.html",
+  "source_sha256" : "89de77e6920acc14f973ca9345c36e3144ae26610a0f0e0e53a723c351ec6591",
+  "spoken_words" : 1405,
+  "validation_failures" : 0,
+  "version" : 1
+}

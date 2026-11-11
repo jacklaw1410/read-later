@@ -1,0 +1,19 @@
+{
+  "id": "dictionary.en-zh-HK.lexical",
+  "kind": "dictionary.en-zh-HK.lexical",
+  "version": "2026-11-10.1",
+  "size_bytes": 15171897,
+  "sha256": "769256b3f33470a0271c8b3f74fe1e0eb7e9dd53ae58bc42292ca305168359a7",
+  "min_app_version": "0.1.0",
+  "languages": ["en", "zh-HK"],
+  "capabilities": ["gloss", "phonetic", "pos"],
+  "licence": {
+    "name": "MIT",
+    "text_url": "https://github.com/skywind3000/ECDICT/blob/master/LICENSE",
+    "attribution": "Copyright (c) 2025 Linwei"
+  },
+  "source_url": "https://raw.githubusercontent.com/skywind3000/ECDICT/master/ecdict.csv",
+  "conversion": "opencc s2hk-standard",
+  "headwords": 770238,
+  "format": "gzip-tsv"
+}

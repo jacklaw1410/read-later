@@ -1,0 +1,2077 @@
+{
+  "blocks" : [
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.85,
+      "id" : 0,
+      "kind" : "nav",
+      "lowConfidence" : false,
+      "reason" : "nav",
+      "spoken" : [
+
+      ],
+      "text" : "Physics Mathematics Biology Computer Science Topics Archive"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.85,
+      "id" : 1,
+      "kind" : "nav",
+      "lowConfidence" : false,
+      "reason" : "nav",
+      "spoken" : [
+
+      ],
+      "text" : "Special Issues Podcasts Videos Qualia Essays Multimedia Q&As Explainers"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 2,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 12,
+          "offset" : 0,
+          "text" : "About Quanta"
+        }
+      ],
+      "text" : "About Quanta"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 3,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 6,
+          "offset" : 0,
+          "text" : "Search"
+        }
+      ],
+      "text" : "Search"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 4,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 10,
+          "offset" : 0,
+          "text" : "Newsletter"
+        }
+      ],
+      "text" : "Newsletter"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 5,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 44,
+          "offset" : 0,
+          "text" : "Get the latest news delivered to your inbox."
+        }
+      ],
+      "text" : "Get the latest news delivered to your inbox."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 6,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 13,
+          "offset" : 0,
+          "text" : "Follow Quanta"
+        }
+      ],
+      "text" : "Follow Quanta"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 7,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 74,
+          "offset" : 0,
+          "text" : "An editorially independent publication supported by the Simons Foundation."
+        }
+      ],
+      "text" : "An editorially independent publication supported by the Simons Foundation."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.85,
+      "id" : 8,
+      "kind" : "nav",
+      "lowConfidence" : false,
+      "reason" : "nav",
+      "spoken" : [
+
+      ],
+      "text" : "Physics Mathematics Biology Computer Science Topics Archive Saved Articles Create a reading list by clicking the Read Later icon next to the articles you wish to save. See all saved articles Log out Change password"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 9,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 35,
+          "offset" : 0,
+          "text" : "Type search term(s) and press enter"
+        }
+      ],
+      "text" : "Type search term(s) and press enter"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.85,
+      "id" : 10,
+      "kind" : "nav",
+      "lowConfidence" : false,
+      "reason" : "nav",
+      "spoken" : [
+
+      ],
+      "text" : "Popular Searches Mathematics Physics Black Holes Evolution"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 11,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 4,
+          "offset" : 0,
+          "text" : "Home"
+        }
+      ],
+      "text" : "Home"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 12,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 37,
+          "offset" : 0,
+          "text" : "The Case for a Bubble at Life’s Start"
+        }
+      ],
+      "text" : "The Case for a Bubble at Life’s Start"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 13,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 10,
+          "offset" : 0,
+          "text" : "Read Later"
+        }
+      ],
+      "text" : "Read Later"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 14,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 5,
+          "offset" : 0,
+          "text" : "Share"
+        }
+      ],
+      "text" : "Share"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 15,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 7,
+          "offset" : 0,
+          "text" : "Copied!"
+        }
+      ],
+      "text" : "Copied!"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 16,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 30,
+          "offset" : 0,
+          "text" : "Comments Read Later Read Later"
+        }
+      ],
+      "text" : "Comments Read Later Read Later"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 17,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 10,
+          "offset" : 0,
+          "text" : "explainers"
+        }
+      ],
+      "text" : "explainers"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 18,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h1",
+      "spoken" : [
+        {
+          "length" : 37,
+          "offset" : 0,
+          "text" : "The Case for a Bubble at Life’s Start"
+        }
+      ],
+      "text" : "The Case for a Bubble at Life’s Start"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 19,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 2,
+          "offset" : 0,
+          "text" : "By"
+        }
+      ],
+      "text" : "By"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 20,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 12,
+          "offset" : 0,
+          "text" : "Perri Thaler"
+        }
+      ],
+      "text" : "Perri Thaler"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 21,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 17,
+          "offset" : 0,
+          "text" : "November 10, 2026"
+        }
+      ],
+      "text" : "November 10, 2026"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 22,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 40,
+          "offset" : 0,
+          "text" : "Is self-enclosure life’s greatest trick?"
+        },
+        {
+          "length" : 119,
+          "offset" : 41,
+          "text" : "According to the lipid-first theory of the origin of life, a cell membrane gave primordial chemistry a place to gather."
+        }
+      ],
+      "text" : "Is self-enclosure life’s greatest trick? According to the lipid-first theory of the origin of life, a cell membrane gave primordial chemistry a place to gather."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 23,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 10,
+          "offset" : 0,
+          "text" : "Read Later"
+        }
+      ],
+      "text" : "Read Later"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 24,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 44,
+          "offset" : 0,
+          "text" : "Add as Preferred Source (opens in a new tab)"
+        }
+      ],
+      "text" : "Add as Preferred Source (opens in a new tab)"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 25,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 1,
+          "offset" : 0,
+          "text" : "i"
+        }
+      ],
+      "text" : "i"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 26,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 126,
+          "offset" : 0,
+          "text" : "Click to tell Google to prioritize Quanta and see more of the best coverage of science and math in your search and AI results."
+        }
+      ],
+      "text" : "Click to tell Google to prioritize Quanta and see more of the best coverage of science and math in your search and AI results."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 27,
+      "kind" : "figure",
+      "lowConfidence" : false,
+      "reason" : "figure",
+      "spoken" : [
+        {
+          "length" : 63,
+          "offset" : 0,
+          "text" : "Some scientists believe that life began with a lipid container."
+        },
+        {
+          "length" : 26,
+          "offset" : 64,
+          "text" : "Mark Belan/Quanta Magazine"
+        }
+      ],
+      "text" : "Some scientists believe that life began with a lipid container. Mark Belan/Quanta Magazine"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 28,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h2",
+      "spoken" : [
+        {
+          "length" : 12,
+          "offset" : 0,
+          "text" : "Introduction"
+        }
+      ],
+      "text" : "Introduction"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 29,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 65,
+          "offset" : 0,
+          "text" : "This explainer is part of Quanta Magazine’s Origins of Life Week."
+        },
+        {
+          "length" : 88,
+          "offset" : 66,
+          "text" : "Check back throughout the week for more stories about one of science’s biggest unknowns."
+        }
+      ],
+      "text" : "This explainer is part of Quanta Magazine’s Origins of Life Week. Check back throughout the week for more stories about one of science’s biggest unknowns."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.9,
+      "id" : 30,
+      "kind" : "aside",
+      "lowConfidence" : false,
+      "reason" : "aside",
+      "spoken" : [
+        {
+          "length" : 152,
+          "offset" : 0,
+          "text" : "By Perri Thaler Science Writing Fellow November 10, 2026 biochemistry biology cells chemistry explainers origins of life Origins of Life Week All topics"
+        }
+      ],
+      "text" : "By Perri Thaler Science Writing Fellow November 10, 2026 biochemistry biology cells chemistry explainers origins of life Origins of Life Week All topics"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 31,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 79,
+          "offset" : 0,
+          "text" : "At its core, every cell is just a bubble of chemistry sealed inside a membrane."
+        },
+        {
+          "length" : 110,
+          "offset" : 80,
+          "text" : "In modern cells, that chemistry is extraordinarily complex, orchestrating some 1 billion reactions per second."
+        },
+        {
+          "length" : 105,
+          "offset" : 191,
+          "text" : "Likewise, its container, the lipid membrane, is built and maintained by elaborate biochemical mechanisms."
+        },
+        {
+          "length" : 69,
+          "offset" : 297,
+          "text" : "But even the much simpler first cells would have needed a bubble too."
+        }
+      ],
+      "text" : "At its core, every cell is just a bubble of chemistry sealed inside a membrane. In modern cells, that chemistry is extraordinarily complex, orchestrating some 1 billion reactions per second. Likewise, its container, the lipid membrane, is built and maintained by elaborate biochemical mechanisms. But even the much simpler first cells would have needed a bubble too."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 32,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 275,
+          "offset" : 0,
+          "text" : "Without a physical boundary corralling molecules into a small space, whatever it was that turned into early life would have been too dispersed to assemble the complex systems that life requires, said Bruce Damer, an astrobiologist at the University of California, Santa Cruz."
+        },
+        {
+          "length" : 56,
+          "offset" : 276,
+          "text" : "“You need a container before you can get the chemistry.”"
+        }
+      ],
+      "text" : "Without a physical boundary corralling molecules into a small space, whatever it was that turned into early life would have been too dispersed to assemble the complex systems that life requires, said Bruce Damer, an astrobiologist at the University of California, Santa Cruz. “You need a container before you can get the chemistry.”"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 33,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 121,
+          "offset" : 0,
+          "text" : "To some researchers, the cell membrane seems so essential to life’s functions that they propose it as the origin of life."
+        },
+        {
+          "length" : 173,
+          "offset" : 122,
+          "text" : "In this framework, known as the “lipid first” hypothesis, Earth transitioned from a mess of primordial chemistry to something recognizably alive because of those containers."
+        }
+      ],
+      "text" : "To some researchers, the cell membrane seems so essential to life’s functions that they propose it as the origin of life. In this framework, known as the “lipid first” hypothesis, Earth transitioned from a mess of primordial chemistry to something recognizably alive because of those containers."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 34,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 55,
+          "offset" : 0,
+          "text" : "But many proponents of the lipid world go even further."
+        },
+        {
+          "length" : 57,
+          "offset" : 56,
+          "text" : "They argue that the bubbles did more than hold chemistry."
+        },
+        {
+          "length" : 39,
+          "offset" : 114,
+          "text" : "The bubbles themselves began to evolve."
+        }
+      ],
+      "text" : "But many proponents of the lipid world go even further. They argue that the bubbles did more than hold chemistry. The bubbles themselves began to evolve."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 35,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 65,
+          "offset" : 0,
+          "text" : "Evolution requires a way for parents to pass traits to offspring."
+        },
+        {
+          "length" : 134,
+          "offset" : 66,
+          "text" : "Modern life accomplishes this with complex biochemicals such as DNA and RNA, which can encode and copy information in their sequences."
+        },
+        {
+          "length" : 177,
+          "offset" : 201,
+          "text" : "In the 1990s, researchers imagined a different possibility: What if a chemical system, rather than a molecule, could carry heritable information and become subject to evolution?"
+        }
+      ],
+      "text" : "Evolution requires a way for parents to pass traits to offspring. Modern life accomplishes this with complex biochemicals such as DNA and RNA, which can encode and copy information in their sequences. In the 1990s, researchers imagined a different possibility: What if a chemical system, rather than a molecule, could carry heritable information and become subject to evolution?"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 36,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 58,
+          "offset" : 0,
+          "text" : "The idea begins with a puddle of water on the early Earth."
+        },
+        {
+          "length" : 122,
+          "offset" : 59,
+          "text" : "The puddle is stocked with all kinds of small organic molecules, some homegrown and some delivered by dust and meteorites."
+        },
+        {
+          "length" : 49,
+          "offset" : 182,
+          "text" : "Many of these molecules have a split personality."
+        },
+        {
+          "length" : 52,
+          "offset" : 232,
+          "text" : "One end of them is drawn to water, or “hydrophilic.”"
+        },
+        {
+          "length" : 59,
+          "offset" : 285,
+          "text" : "The other is repelled by water in the same way that oil is."
+        },
+        {
+          "length" : 115,
+          "offset" : 345,
+          "text" : "These “hydrophobic” ends will huddle together to hide from the water, while the hydrophilic ends will face outward."
+        },
+        {
+          "length" : 69,
+          "offset" : 461,
+          "text" : "These behaviors cause the molecules to form a tiny sphere — a bubble."
+        }
+      ],
+      "text" : "The idea begins with a puddle of water on the early Earth. The puddle is stocked with all kinds of small organic molecules, some homegrown and some delivered by dust and meteorites. Many of these molecules have a split personality. One end of them is drawn to water, or “hydrophilic.” The other is repelled by water in the same way that oil is. These “hydrophobic” ends will huddle together to hide from the water, while the hydrophilic ends will face outward. These behaviors cause the molecules to form a tiny sphere — a bubble."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 37,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 149,
+          "offset" : 0,
+          "text" : "The primordial puddle also has other molecules, simpler raw ingredients that can, under the correct circumstances, be turned into more of themselves."
+        },
+        {
+          "length" : 200,
+          "offset" : 150,
+          "text" : "Here’s how that works: Imagine that a bubble contains two special molecules, molecule A and molecule B. Each of these molecules speeds up a chemical reaction that uses other ingredients in the puddle."
+        },
+        {
+          "length" : 197,
+          "offset" : 351,
+          "text" : "Molecule A, in this case, speeds up chemical reactions that produce molecule B. After a while, the bubble fills up with B’s. These, in turn, may speed up the production of another kind of molecule."
+        }
+      ],
+      "text" : "The primordial puddle also has other molecules, simpler raw ingredients that can, under the correct circumstances, be turned into more of themselves. Here’s how that works: Imagine that a bubble contains two special molecules, molecule A and molecule B. Each of these molecules speeds up a chemical reaction that uses other ingredients in the puddle. Molecule A, in this case, speeds up chemical reactions that produce molecule B. After a while, the bubble fills up with B’s. These, in turn, may speed up the production of another kind of molecule."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 38,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 187,
+          "offset" : 0,
+          "text" : "Sometimes, there might be a puddle where B’s return the favor and make more A’s. The A’s make more B’s, then the B’s make more A’s. Each type keeps the other topped up in an endless loop."
+        },
+        {
+          "length" : 108,
+          "offset" : 188,
+          "text" : "The bubble containing these A’s and B’s will grow, but the ratio of molecules will stay more or less steady."
+        }
+      ],
+      "text" : "Sometimes, there might be a puddle where B’s return the favor and make more A’s. The A’s make more B’s, then the B’s make more A’s. Each type keeps the other topped up in an endless loop. The bubble containing these A’s and B’s will grow, but the ratio of molecules will stay more or less steady."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 39,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 90,
+          "offset" : 0,
+          "text" : "In time, the bubble will split, and its molecules will be dealt out into its baby bubbles."
+        },
+        {
+          "length" : 170,
+          "offset" : 91,
+          "text" : "Each of these may get some A’s and some B’s, and the symbiotic loop will keep running, building the parent’s compositional recipe more faithfully than chance alone would."
+        },
+        {
+          "length" : 137,
+          "offset" : 262,
+          "text" : "Unlike with DNA, which is copied exactly, letter by letter, a proportion of molecules gets passed down to the next generation of bubbles."
+        }
+      ],
+      "text" : "In time, the bubble will split, and its molecules will be dealt out into its baby bubbles. Each of these may get some A’s and some B’s, and the symbiotic loop will keep running, building the parent’s compositional recipe more faithfully than chance alone would. Unlike with DNA, which is copied exactly, letter by letter, a proportion of molecules gets passed down to the next generation of bubbles."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 40,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 39,
+          "offset" : 0,
+          "text" : "But evolution needs more than heredity."
+        },
+        {
+          "length" : 29,
+          "offset" : 40,
+          "text" : "It needs to allow for change."
+        },
+        {
+          "length" : 138,
+          "offset" : 70,
+          "text" : "In our chemical soup, that possibility comes from a stray molecule C, which like a mutation tips a bubble into a different molecular loop."
+        },
+        {
+          "length" : 161,
+          "offset" : 209,
+          "text" : "Faster-growing bubbles split more often and crowd out slower-growing bubbles, so the fast-moving descendants will make up a bigger and bigger share of the crowd."
+        },
+        {
+          "length" : 30,
+          "offset" : 371,
+          "text" : "Slow recipes get squeezed out."
+        }
+      ],
+      "text" : "But evolution needs more than heredity. It needs to allow for change. In our chemical soup, that possibility comes from a stray molecule C, which like a mutation tips a bubble into a different molecular loop. Faster-growing bubbles split more often and crowd out slower-growing bubbles, so the fast-moving descendants will make up a bigger and bigger share of the crowd. Slow recipes get squeezed out."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 41,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 251,
+          "offset" : 0,
+          "text" : "In 2000, Doron Lancet, a geneticist at the Weizmann Institute of Science, and Daniel Segrè, a computational biologist at Boston University, published the results of a computer model that explored whether these dynamics could lead to lifelike behavior."
+        },
+        {
+          "length" : 146,
+          "offset" : 252,
+          "text" : "They found that bubbles can pass their compositions to their daughters, which vary and compete, fulfilling the requirements for natural selection."
+        },
+        {
+          "length" : 78,
+          "offset" : 399,
+          "text" : "In their computer model, at least, the lipid-world idea passed its first test."
+        }
+      ],
+      "text" : "In 2000, Doron Lancet, a geneticist at the Weizmann Institute of Science, and Daniel Segrè, a computational biologist at Boston University, published the results of a computer model that explored whether these dynamics could lead to lifelike behavior. They found that bubbles can pass their compositions to their daughters, which vary and compete, fulfilling the requirements for natural selection. In their computer model, at least, the lipid-world idea passed its first test."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 42,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 42,
+          "offset" : 0,
+          "text" : "Which molecules could build these bubbles?"
+        },
+        {
+          "length" : 92,
+          "offset" : 43,
+          "text" : "In the original simulation, molecules A, B, and the rest would be different kinds of lipids."
+        },
+        {
+          "length" : 169,
+          "offset" : 136,
+          "text" : "The team settled on lipids, the molecules that make up modern cell membranes, in part because they mirror the model’s required half-hydrophobic, half-hydrophilic nature."
+        },
+        {
+          "length" : 81,
+          "offset" : 306,
+          "text" : "When lipids are dropped into water, they can assemble into double-layered sheets."
+        },
+        {
+          "length" : 118,
+          "offset" : 388,
+          "text" : "Under the right conditions, the sheets close in on themselves, forming a sphere with a pocket of water trapped inside."
+        }
+      ],
+      "text" : "Which molecules could build these bubbles? In the original simulation, molecules A, B, and the rest would be different kinds of lipids. The team settled on lipids, the molecules that make up modern cell membranes, in part because they mirror the model’s required half-hydrophobic, half-hydrophilic nature. When lipids are dropped into water, they can assemble into double-layered sheets. Under the right conditions, the sheets close in on themselves, forming a sphere with a pocket of water trapped inside."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 43,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 199,
+          "offset" : 0,
+          "text" : "But in the 25 years since Lancet, Segrè, and their colleagues published the original lipid-world hypothesis, scientists have questioned whether the first compartments had to be made of lipids at all."
+        },
+        {
+          "length" : 64,
+          "offset" : 200,
+          "text" : "Couldn’t other types of molecules have formed a container first?"
+        },
+        {
+          "length" : 75,
+          "offset" : 265,
+          "text" : "“There really isn’t a distinct lipid-world hypothesis anymore,” Damer said."
+        },
+        {
+          "length" : 261,
+          "offset" : 341,
+          "text" : "Researchers have proposed that certain minerals, such as iron sulfides, could have formed the walls of a container, or that coacervates — liquidlike droplets where molecules gather and concentrate — could have acted as membrane-free vessels for early chemistry."
+        }
+      ],
+      "text" : "But in the 25 years since Lancet, Segrè, and their colleagues published the original lipid-world hypothesis, scientists have questioned whether the first compartments had to be made of lipids at all. Couldn’t other types of molecules have formed a container first? “There really isn’t a distinct lipid-world hypothesis anymore,” Damer said. Researchers have proposed that certain minerals, such as iron sulfides, could have formed the walls of a container, or that coacervates — liquidlike droplets where molecules gather and concentrate — could have acted as membrane-free vessels for early chemistry."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 44,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 184,
+          "offset" : 0,
+          "text" : "Damer and David Deamer, a Santa Cruz biochemist who worked with Lancet and Segrè on the original hypothesis, have stayed focused on lipids, but in a specific setting: hot-spring pools."
+        },
+        {
+          "length" : 173,
+          "offset" : 185,
+          "text" : "They now study whether the repeated drying and refilling of such pools could have squeezed simple molecules between layers of lipids to develop increasingly complex systems."
+        },
+        {
+          "length" : 89,
+          "offset" : 359,
+          "text" : "Damer views their more recent “hot spring hypothesis” as an extension of the lipid world."
+        }
+      ],
+      "text" : "Damer and David Deamer, a Santa Cruz biochemist who worked with Lancet and Segrè on the original hypothesis, have stayed focused on lipids, but in a specific setting: hot-spring pools. They now study whether the repeated drying and refilling of such pools could have squeezed simple molecules between layers of lipids to develop increasingly complex systems. Damer views their more recent “hot spring hypothesis” as an extension of the lipid world."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.9,
+      "id" : 45,
+      "kind" : "aside",
+      "lowConfidence" : false,
+      "reason" : "aside",
+      "spoken" : [
+        {
+          "length" : 40,
+          "offset" : 0,
+          "text" : "Related: Did Life Begin in an RNA World?"
+        },
+        {
+          "length" : 43,
+          "offset" : 41,
+          "text" : "In Warm, Greasy Puddles, the Spark of Life?"
+        },
+        {
+          "length" : 125,
+          "offset" : 85,
+          "text" : "For the First Time, a Cell Built From Scratch Grows and Divides The Cellular Secret to Resisting the Pressure of the Deep Sea"
+        }
+      ],
+      "text" : "Related: Did Life Begin in an RNA World? In Warm, Greasy Puddles, the Spark of Life? For the First Time, a Cell Built From Scratch Grows and Divides The Cellular Secret to Resisting the Pressure of the Deep Sea"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 46,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 143,
+          "offset" : 0,
+          "text" : "Origins-of-life research is famously contentious, and scientists in the field debate the lipid world against other ideas about how life formed."
+        },
+        {
+          "length" : 159,
+          "offset" : 144,
+          "text" : "“The idea of a lipid-only form of primitive life has never made sense to me,” said Jack Szostak, a Nobel Prize–winning biochemist at the University of Chicago."
+        },
+        {
+          "length" : 80,
+          "offset" : 304,
+          "text" : "He cited the lack of experimental evidence that a lipid-based system can evolve."
+        },
+        {
+          "length" : 142,
+          "offset" : 385,
+          "text" : "Plus, he said, how even simple lipids would have formed on the early Earth is “the least well-developed aspect of all of prebiotic chemistry.”"
+        }
+      ],
+      "text" : "Origins-of-life research is famously contentious, and scientists in the field debate the lipid world against other ideas about how life formed. “The idea of a lipid-only form of primitive life has never made sense to me,” said Jack Szostak, a Nobel Prize–winning biochemist at the University of Chicago. He cited the lack of experimental evidence that a lipid-based system can evolve. Plus, he said, how even simple lipids would have formed on the early Earth is “the least well-developed aspect of all of prebiotic chemistry.”"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 47,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 75,
+          "offset" : 0,
+          "text" : "Another criticism strikes at the heart of the original computer simulation."
+        },
+        {
+          "length" : 162,
+          "offset" : 76,
+          "text" : "A 2010 analysis suggested that the replication of compositional information from one generation to the next would be too inaccurate for natural selection to work."
+        }
+      ],
+      "text" : "Another criticism strikes at the heart of the original computer simulation. A 2010 analysis suggested that the replication of compositional information from one generation to the next would be too inaccurate for natural selection to work."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 48,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 78,
+          "offset" : 0,
+          "text" : "None of these objections, though, is about whether early life needed a bubble."
+        },
+        {
+          "length" : 206,
+          "offset" : 79,
+          "text" : "Even Szostak, who favors an RNA-based explanation for the origin of life, agrees on the point that the lipid-first camp cares about most — that compartments are necessary to keep related molecules together."
+        },
+        {
+          "length" : 63,
+          "offset" : 286,
+          "text" : "Without them, he said, “Darwinian evolution could not operate.”"
+        }
+      ],
+      "text" : "None of these objections, though, is about whether early life needed a bubble. Even Szostak, who favors an RNA-based explanation for the origin of life, agrees on the point that the lipid-first camp cares about most — that compartments are necessary to keep related molecules together. Without them, he said, “Darwinian evolution could not operate.”"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.9,
+      "id" : 49,
+      "kind" : "aside",
+      "lowConfidence" : false,
+      "reason" : "aside",
+      "spoken" : [
+        {
+          "length" : 26,
+          "offset" : 0,
+          "text" : "Share this article Copied!"
+        },
+        {
+          "length" : 68,
+          "offset" : 27,
+          "text" : "Newsletter Get Quanta Magazine delivered to your inbox Subscribe now"
+        }
+      ],
+      "text" : "Share this article Copied! Newsletter Get Quanta Magazine delivered to your inbox Subscribe now"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.9,
+      "id" : 50,
+      "kind" : "aside",
+      "lowConfidence" : false,
+      "reason" : "aside",
+      "spoken" : [
+        {
+          "length" : 152,
+          "offset" : 0,
+          "text" : "By Perri Thaler Science Writing Fellow November 10, 2026 biochemistry biology cells chemistry explainers origins of life Origins of Life Week All topics"
+        }
+      ],
+      "text" : "By Perri Thaler Science Writing Fellow November 10, 2026 biochemistry biology cells chemistry explainers origins of life Origins of Life Week All topics"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.9,
+      "id" : 51,
+      "kind" : "aside",
+      "lowConfidence" : false,
+      "reason" : "aside",
+      "spoken" : [
+        {
+          "length" : 26,
+          "offset" : 0,
+          "text" : "Share this article Copied!"
+        },
+        {
+          "length" : 68,
+          "offset" : 27,
+          "text" : "Newsletter Get Quanta Magazine delivered to your inbox Subscribe now"
+        }
+      ],
+      "text" : "Share this article Copied! Newsletter Get Quanta Magazine delivered to your inbox Subscribe now"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 52,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 21,
+          "offset" : 0,
+          "text" : "The Quanta Newsletter"
+        }
+      ],
+      "text" : "The Quanta Newsletter"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 53,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 71,
+          "offset" : 0,
+          "text" : "Get highlights of the most important news delivered to your email inbox"
+        }
+      ],
+      "text" : "Get highlights of the most important news delivered to your email inbox"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 54,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h2",
+      "spoken" : [
+        {
+          "length" : 15,
+          "offset" : 0,
+          "text" : "Also in Biology"
+        }
+      ],
+      "text" : "Also in Biology"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 55,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 31,
+          "offset" : 0,
+          "text" : "Did Life Begin in an RNA World?"
+        }
+      ],
+      "text" : "Did Life Begin in an RNA World?"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 56,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 10,
+          "offset" : 0,
+          "text" : "explainers"
+        }
+      ],
+      "text" : "explainers"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 57,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 31,
+          "offset" : 0,
+          "text" : "Did Life Begin in an RNA World?"
+        }
+      ],
+      "text" : "Did Life Begin in an RNA World?"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 58,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 2,
+          "offset" : 0,
+          "text" : "By"
+        }
+      ],
+      "text" : "By"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 59,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 11,
+          "offset" : 0,
+          "text" : "Philip Ball"
+        }
+      ],
+      "text" : "Philip Ball"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 60,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 16,
+          "offset" : 0,
+          "text" : "November 9, 2026"
+        }
+      ],
+      "text" : "November 9, 2026"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 61,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 10,
+          "offset" : 0,
+          "text" : "Read Later"
+        }
+      ],
+      "text" : "Read Later"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 62,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 60,
+          "offset" : 0,
+          "text" : "How Spiders Spin ‘Silk Dope’ Into Nature’s Toughest Material"
+        }
+      ],
+      "text" : "How Spiders Spin ‘Silk Dope’ Into Nature’s Toughest Material"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 63,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 17,
+          "offset" : 0,
+          "text" : "materials science"
+        }
+      ],
+      "text" : "materials science"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 64,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 60,
+          "offset" : 0,
+          "text" : "How Spiders Spin ‘Silk Dope’ Into Nature’s Toughest Material"
+        }
+      ],
+      "text" : "How Spiders Spin ‘Silk Dope’ Into Nature’s Toughest Material"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 65,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 2,
+          "offset" : 0,
+          "text" : "By"
+        }
+      ],
+      "text" : "By"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 66,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 18,
+          "offset" : 0,
+          "text" : "Yasemin Saplakoglu"
+        }
+      ],
+      "text" : "Yasemin Saplakoglu"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 67,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 16,
+          "offset" : 0,
+          "text" : "October 28, 2026"
+        }
+      ],
+      "text" : "October 28, 2026"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 68,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 10,
+          "offset" : 0,
+          "text" : "Read Later"
+        }
+      ],
+      "text" : "Read Later"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 69,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 59,
+          "offset" : 0,
+          "text" : "Malaria Parasite Caught in the Act of Breaking and Entering"
+        }
+      ],
+      "text" : "Malaria Parasite Caught in the Act of Breaking and Entering"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 70,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 10,
+          "offset" : 0,
+          "text" : "biophysics"
+        }
+      ],
+      "text" : "biophysics"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 71,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 59,
+          "offset" : 0,
+          "text" : "Malaria Parasite Caught in the Act of Breaking and Entering"
+        }
+      ],
+      "text" : "Malaria Parasite Caught in the Act of Breaking and Entering"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 72,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 2,
+          "offset" : 0,
+          "text" : "By"
+        }
+      ],
+      "text" : "By"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 73,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 15,
+          "offset" : 0,
+          "text" : "Joanna Thompson"
+        }
+      ],
+      "text" : "Joanna Thompson"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 74,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 16,
+          "offset" : 0,
+          "text" : "October 23, 2026"
+        }
+      ],
+      "text" : "October 23, 2026"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 75,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 10,
+          "offset" : 0,
+          "text" : "Read Later"
+        }
+      ],
+      "text" : "Read Later"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 76,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h2",
+      "spoken" : [
+        {
+          "length" : 23,
+          "offset" : 0,
+          "text" : "Comment on this article"
+        }
+      ],
+      "text" : "Comment on this article"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 77,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 94,
+          "offset" : 0,
+          "text" : "Quanta Magazine moderates comments to facilitate an informed, substantive, civil conversation."
+        },
+        {
+          "length" : 98,
+          "offset" : 95,
+          "text" : "Abusive, profane, self-promotional, misleading, incoherent or off-topic comments will be rejected."
+        },
+        {
+          "length" : 117,
+          "offset" : 194,
+          "text" : "Moderators are staffed during regular business hours (New York time) and can only accept comments written in English."
+        }
+      ],
+      "text" : "Quanta Magazine moderates comments to facilitate an informed, substantive, civil conversation. Abusive, profane, self-promotional, misleading, incoherent or off-topic comments will be rejected. Moderators are staffed during regular business hours (New York time) and can only accept comments written in English."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 78,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 13,
+          "offset" : 0,
+          "text" : "Show comments"
+        }
+      ],
+      "text" : "Show comments"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 79,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h2",
+      "spoken" : [
+        {
+          "length" : 12,
+          "offset" : 0,
+          "text" : "Next article"
+        }
+      ],
+      "text" : "Next article"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 80,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 31,
+          "offset" : 0,
+          "text" : "Did Life Begin in an RNA World?"
+        }
+      ],
+      "text" : "Did Life Begin in an RNA World?"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.85,
+      "id" : 81,
+      "kind" : "nav",
+      "lowConfidence" : false,
+      "reason" : "nav",
+      "spoken" : [
+
+      ],
+      "text" : "About Quanta Archive Contact Us Terms & Conditions Privacy Policy AI Editorial Policy"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 82,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 26,
+          "offset" : 0,
+          "text" : "All Rights Reserved © 2026"
+        }
+      ],
+      "text" : "All Rights Reserved © 2026"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 83,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 74,
+          "offset" : 0,
+          "text" : "An editorially independent publication supported by the Simons Foundation."
+        }
+      ],
+      "text" : "An editorially independent publication supported by the Simons Foundation."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 84,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 17,
+          "offset" : 0,
+          "text" : "Simons Foundation"
+        }
+      ],
+      "text" : "Simons Foundation"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 85,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 16,
+          "offset" : 0,
+          "text" : "Log in to Quanta"
+        }
+      ],
+      "text" : "Log in to Quanta"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 86,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h2",
+      "spoken" : [
+        {
+          "length" : 23,
+          "offset" : 0,
+          "text" : "Use your social network"
+        }
+      ],
+      "text" : "Use your social network"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 87,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 21,
+          "offset" : 0,
+          "text" : "Connect with Facebook"
+        }
+      ],
+      "text" : "Connect with Facebook"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 88,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 19,
+          "offset" : 0,
+          "text" : "Connect with Google"
+        }
+      ],
+      "text" : "Connect with Google"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 89,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 2,
+          "offset" : 0,
+          "text" : "or"
+        }
+      ],
+      "text" : "or"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 90,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 7,
+          "offset" : 0,
+          "text" : "Sign up"
+        }
+      ],
+      "text" : "Sign up"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 91,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 26,
+          "offset" : 0,
+          "text" : "Don't have an account yet?"
+        }
+      ],
+      "text" : "Don't have an account yet?"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 92,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 21,
+          "offset" : 0,
+          "text" : "Forgot your password?"
+        }
+      ],
+      "text" : "Forgot your password?"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 93,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 51,
+          "offset" : 0,
+          "text" : "We’ll email you instructions to reset your password"
+        }
+      ],
+      "text" : "We’ll email you instructions to reset your password"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 94,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 20,
+          "offset" : 0,
+          "text" : "Change your password"
+        }
+      ],
+      "text" : "Change your password"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 95,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 23,
+          "offset" : 0,
+          "text" : "Enter your new password"
+        }
+      ],
+      "text" : "Enter your new password"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 96,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 7,
+          "offset" : 0,
+          "text" : "Sign Up"
+        }
+      ],
+      "text" : "Sign Up"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 97,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 18,
+          "offset" : 0,
+          "text" : "Terms & Conditions"
+        }
+      ],
+      "text" : "Terms & Conditions"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 98,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 14,
+          "offset" : 0,
+          "text" : "Privacy Policy"
+        }
+      ],
+      "text" : "Privacy Policy"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 99,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 58,
+          "offset" : 0,
+          "text" : "Creating an account means you accept Quanta Magazine's and"
+        }
+      ],
+      "text" : "Creating an account means you accept Quanta Magazine's and"
+    }
+  ],
+  "sentence_count" : 145,
+  "skipped" : [
+    {
+      "block_id" : 0,
+      "confidence" : 0.85,
+      "kind" : "nav",
+      "reason" : "nav",
+      "words" : 7
+    },
+    {
+      "block_id" : 1,
+      "confidence" : 0.85,
+      "kind" : "nav",
+      "reason" : "nav",
+      "words" : 9
+    },
+    {
+      "block_id" : 8,
+      "confidence" : 0.85,
+      "kind" : "nav",
+      "reason" : "nav",
+      "words" : 35
+    },
+    {
+      "block_id" : 10,
+      "confidence" : 0.85,
+      "kind" : "nav",
+      "reason" : "nav",
+      "words" : 7
+    },
+    {
+      "block_id" : 81,
+      "confidence" : 0.85,
+      "kind" : "nav",
+      "reason" : "nav",
+      "words" : 13
+    }
+  ],
+  "source" : "089-bubble-quanta.html",
+  "source_sha256" : "825226929628202c601e6e8a836b9875b0b04115c5765524eba824b57bd4f60e",
+  "spoken_words" : 1602,
+  "validation_failures" : 0,
+  "version" : 1
+}

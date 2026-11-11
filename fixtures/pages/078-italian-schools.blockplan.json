@@ -1,0 +1,783 @@
+{
+  "blocks" : [
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 0,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 25,
+          "offset" : 0,
+          "text" : "Log in / sign up for free"
+        }
+      ],
+      "text" : "Log in / sign up for free"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 1,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 4,
+          "offset" : 0,
+          "text" : "Menu"
+        }
+      ],
+      "text" : "Menu"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.85,
+      "id" : 2,
+      "kind" : "nav",
+      "lowConfidence" : false,
+      "reason" : "nav",
+      "spoken" : [
+
+      ],
+      "text" : "Choose edition SingaporeInternational Search singapore asia world opinion life business sport Visual Podcasts STClassifieds Paid press releases Advertise with us FAQs Contact us"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 3,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h1",
+      "spoken" : [
+        {
+          "length" : 62,
+          "offset" : 0,
+          "text" : "At least 300 Italian schools evacuated after email bomb alerts"
+        }
+      ],
+      "text" : "At least 300 Italian schools evacuated after email bomb alerts"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 4,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 57,
+          "offset" : 0,
+          "text" : "Sign up now: Get ST's newsletters delivered to your inbox"
+        }
+      ],
+      "text" : "Sign up now: Get ST's newsletters delivered to your inbox"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 5,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 158,
+          "offset" : 0,
+          "text" : "FILE PHOTO: Italian Minister of Education and Merit Giuseppe Valditara speaks on stage at the annual League party rally in Pontida, Italy, September 21, 2025."
+        },
+        {
+          "length" : 31,
+          "offset" : 159,
+          "text" : "REUTERS/Remo Casilli/File Photo"
+        }
+      ],
+      "text" : "FILE PHOTO: Italian Minister of Education and Merit Giuseppe Valditara speaks on stage at the annual League party rally in Pontida, Italy, September 21, 2025. REUTERS/Remo Casilli/File Photo"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 6,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 32,
+          "offset" : 0,
+          "text" : "Published Nov 11, 2026, 06:58 PM"
+        }
+      ],
+      "text" : "Published Nov 11, 2026, 06:58 PM"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 7,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 30,
+          "offset" : 0,
+          "text" : "Updated Nov 11, 2026, 06:58 PM"
+        }
+      ],
+      "text" : "Updated Nov 11, 2026, 06:58 PM"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 8,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 23,
+          "offset" : 0,
+          "text" : "Set as preferred source"
+        }
+      ],
+      "text" : "Set as preferred source"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 9,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 146,
+          "offset" : 0,
+          "text" : "ROME, Nov 11 - At least 300 schools in Italy were evacuated on Wednesday after receiving the same bomb alert message, the education minister said."
+        }
+      ],
+      "text" : "ROME, Nov 11 - At least 300 schools in Italy were evacuated on Wednesday after receiving the same bomb alert message, the education minister said."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 10,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 173,
+          "offset" : 0,
+          "text" : "The security alert came amid rising concerns in Europe about so-called hybrid warfare threats which have targeted supermarkets, blood banks, air traffic and TV broadcasters."
+        }
+      ],
+      "text" : "The security alert came amid rising concerns in Europe about so-called hybrid warfare threats which have targeted supermarkets, blood banks, air traffic and TV broadcasters."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 11,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 154,
+          "offset" : 0,
+          "text" : "Italian Education Minister Giuseppe Valditara told the La7 TV channel that 300 schools had been affected by the bomb alerts, adding the number could rise."
+        }
+      ],
+      "text" : "Italian Education Minister Giuseppe Valditara told the La7 TV channel that 300 schools had been affected by the bomb alerts, adding the number could rise."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 12,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 196,
+          "offset" : 0,
+          "text" : "\"Following a nationwide bomb alert, we wish to inform you that all students have been taken to a safe area and remain under the supervision of teaching staff,\" one school in Rome informed parents."
+        }
+      ],
+      "text" : "\"Following a nationwide bomb alert, we wish to inform you that all students have been taken to a safe area and remain under the supervision of teaching staff,\" one school in Rome informed parents."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 13,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 142,
+          "offset" : 0,
+          "text" : "The email was signed \"Mikhail Andropov, leader of the Vilayat of Misoginistan,\" according to a government source with knowledge of the matter."
+        }
+      ],
+      "text" : "The email was signed \"Mikhail Andropov, leader of the Vilayat of Misoginistan,\" according to a government source with knowledge of the matter."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 14,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 88,
+          "offset" : 0,
+          "text" : "Italian police forces are investigating the matter, a spokesperson for Rome police said."
+        },
+        {
+          "length" : 7,
+          "offset" : 89,
+          "text" : "REUTERS"
+        }
+      ],
+      "text" : "Italian police forces are investigating the matter, a spokesperson for Rome police said. REUTERS"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 15,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h6",
+      "spoken" : [
+        {
+          "length" : 11,
+          "offset" : 0,
+          "text" : "See more on"
+        }
+      ],
+      "text" : "See more on"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 16,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 6,
+          "offset" : 0,
+          "text" : "Police"
+        }
+      ],
+      "text" : "Police"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 17,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 5,
+          "offset" : 0,
+          "text" : "Italy"
+        }
+      ],
+      "text" : "Italy"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 18,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 18,
+          "offset" : 0,
+          "text" : "Traffic/Road rules"
+        }
+      ],
+      "text" : "Traffic/Road rules"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 19,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 11,
+          "offset" : 0,
+          "text" : "Back to top"
+        }
+      ],
+      "text" : "Back to top"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 20,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 7,
+          "offset" : 0,
+          "text" : "E-paper"
+        }
+      ],
+      "text" : "E-paper"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 21,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 11,
+          "offset" : 0,
+          "text" : "Newsletters"
+        }
+      ],
+      "text" : "Newsletters"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 22,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 8,
+          "offset" : 0,
+          "text" : "Podcasts"
+        }
+      ],
+      "text" : "Podcasts"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 23,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 8,
+          "offset" : 0,
+          "text" : "RSS Feed"
+        }
+      ],
+      "text" : "RSS Feed"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 24,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 8,
+          "offset" : 0,
+          "text" : "About Us"
+        }
+      ],
+      "text" : "About Us"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 25,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 18,
+          "offset" : 0,
+          "text" : "Terms & Conditions"
+        }
+      ],
+      "text" : "Terms & Conditions"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 26,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 31,
+          "offset" : 0,
+          "text" : "Personal Data Protection Notice"
+        }
+      ],
+      "text" : "Personal Data Protection Notice"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 27,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 10,
+          "offset" : 0,
+          "text" : "Need help?"
+        },
+        {
+          "length" : 14,
+          "offset" : 11,
+          "text" : "Reach us here."
+        }
+      ],
+      "text" : "Need help? Reach us here."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 28,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 17,
+          "offset" : 0,
+          "text" : "Advertise with us"
+        }
+      ],
+      "text" : "Advertise with us"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.85,
+      "id" : 29,
+      "kind" : "cjk",
+      "lowConfidence" : false,
+      "reason" : "cjk-ratio",
+      "spoken" : [
+        {
+          "length" : 10,
+          "offset" : 0,
+          "text" : "中文版 (beta)"
+        }
+      ],
+      "text" : "中文版 (beta)"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 30,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 16,
+          "offset" : 0,
+          "text" : "Download the app"
+        }
+      ],
+      "text" : "Download the app"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 31,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 84,
+          "offset" : 0,
+          "text" : "Get unlimited access to exclusive stories and incisive insights from the ST newsroom"
+        }
+      ],
+      "text" : "Get unlimited access to exclusive stories and incisive insights from the ST newsroom"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 32,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 9,
+          "offset" : 0,
+          "text" : "Subscribe"
+        }
+      ],
+      "text" : "Subscribe"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 33,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 34,
+          "offset" : 0,
+          "text" : "News titles published by SPH Media"
+        }
+      ],
+      "text" : "News titles published by SPH Media"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 34,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 18,
+          "offset" : 0,
+          "text" : "The Straits Times|"
+        }
+      ],
+      "text" : "The Straits Times|"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 35,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 19,
+          "offset" : 0,
+          "text" : "The Business Times|"
+        }
+      ],
+      "text" : "The Business Times|"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 36,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 14,
+          "offset" : 0,
+          "text" : "Lianhe Zaobao|"
+        }
+      ],
+      "text" : "Lianhe Zaobao|"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 37,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 14,
+          "offset" : 0,
+          "text" : "Berita Harian|"
+        }
+      ],
+      "text" : "Berita Harian|"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 38,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 13,
+          "offset" : 0,
+          "text" : "Tamil Murasu|"
+        }
+      ],
+      "text" : "Tamil Murasu|"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 39,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 5,
+          "offset" : 0,
+          "text" : "Stomp"
+        }
+      ],
+      "text" : "Stomp"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 40,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 21,
+          "offset" : 0,
+          "text" : "MDDI (P) 046/10/2025."
+        },
+        {
+          "length" : 41,
+          "offset" : 22,
+          "text" : "Published by SPH Media Limited, Co. Regn."
+        },
+        {
+          "length" : 50,
+          "offset" : 64,
+          "text" : "No.202120748H. Copyright © 2026 SPH Media Limited."
+        },
+        {
+          "length" : 20,
+          "offset" : 115,
+          "text" : "All rights reserved."
+        }
+      ],
+      "text" : "MDDI (P) 046/10/2025. Published by SPH Media Limited, Co. Regn. No.202120748H. Copyright © 2026 SPH Media Limited. All rights reserved."
+    }
+  ],
+  "sentence_count" : 46,
+  "skipped" : [
+    {
+      "block_id" : 2,
+      "confidence" : 0.85,
+      "kind" : "nav",
+      "reason" : "nav",
+      "words" : 23
+    }
+  ],
+  "source" : "078-italian-schools.html",
+  "source_sha256" : "ebbd36768c8ba91edf4625476999a67f5bcd173c954495c18c80495f5ae6d362",
+  "spoken_words" : 307,
+  "validation_failures" : 0,
+  "version" : 1
+}

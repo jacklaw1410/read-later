@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://readlater.app/contracts/block-plan.v1.json",
+  "title": "Block plan v1",
+  "description": "Extraction contract. Produced by extract() in ReadLaterCore, read by the app, the research gate and every future platform. Mirrors ReadLaterCore.BlockPlan exactly: a rename here is a schema version bump, not a refactor. Source of truth: read-later-research/spec/non-prose-classification.md.",
+  "type": "object",
+  "required": [
+    "version",
+    "source",
+    "source_sha256",
+    "sentence_count",
+    "spoken_words",
+    "validation_failures",
+    "blocks",
+    "skipped"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "description": "Schema version, not the app version.",
+      "const": 1
+    },
+    "source": {
+      "description": "File name of the HTML the plan was built from.",
+      "type": "string",
+      "minLength": 1
+    },
+    "source_sha256": {
+      "description": "Hex digest of the source HTML bytes.",
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "sentence_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "spoken_words": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "validation_failures": {
+      "description": "Sentences that are not exact slices of their block text. Must be 0; the builder exits non-zero without writing otherwise.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "blocks": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/block" }
+    },
+    "skipped": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/skipped" }
+    }
+  },
+  "$defs": {
+    "blockKind": {
+      "type": "string",
+      "enum": [
+        "prose",
+        "code",
+        "table",
+        "figure",
+        "image",
+        "math",
+        "embed",
+        "quote",
+        "heading",
+        "aside",
+        "nav",
+        "list",
+        "cjk",
+        "pull-quote",
+        "footnote-marker",
+        "footnote-body"
+      ]
+    },
+    "sentence": {
+      "type": "object",
+      "required": ["offset", "length", "text"],
+      "additionalProperties": false,
+      "properties": {
+        "offset": {
+          "description": "Character offset inside the block text.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "length": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    "block": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "confidence",
+        "reason",
+        "text",
+        "children",
+        "spoken",
+        "lowConfidence"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "Stable within a document.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "kind": { "$ref": "#/$defs/blockKind" },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "reason": {
+          "description": "The signal that decided the kind: element name, class, or heuristic.",
+          "type": "string"
+        },
+        "text": {
+          "description": "The block's own text, normalised.",
+          "type": "string"
+        },
+        "children": {
+          "description": "Nested blocks, e.g. figure > img + figcaption.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/block" }
+        },
+        "spoken": {
+          "description": "Sentences to enqueue. Empty for skipped blocks.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/sentence" }
+        },
+        "lowConfidence": {
+          "description": "True when confidence < 0.8. Logged as telemetry.",
+          "type": "boolean"
+        }
+      }
+    },
+    "skipped": {
+      "type": "object",
+      "required": ["block_id", "kind", "confidence", "reason", "words"],
+      "additionalProperties": false,
+      "properties": {
+        "block_id": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "kind": { "$ref": "#/$defs/blockKind" },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "reason": {
+          "type": "string"
+        },
+        "words": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

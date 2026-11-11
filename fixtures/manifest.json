@@ -1,0 +1,189 @@
+{
+  "version": 1,
+  "note": "Committed sample for unit and e2e tests. Not a measurement: 20 pages cannot produce a rate. Groups follow spec/engineering.md section 7.1; classes are the measured five-class gate outcomes.",
+  "pages": [
+    {
+      "file": "pages/004-averages.html",
+      "source_url": "https://paulgraham.com/avg.html",
+      "sha256": "00dd5e1386b5306a43221dc044132b37ff826c09e96f653b086f7b60fa2e7743",
+      "bytes": 38778,
+      "expected_page_class": "usable",
+      "group": "long-form-prose",
+      "research_path": "pins/004-averages.html"
+    },
+    {
+      "file": "pages/005-great-work.html",
+      "source_url": "https://paulgraham.com/greatwork.html",
+      "sha256": "1bf43154578ba0f7fac7aa1fb9a6690fcf67867d8518d6ce2fed93541878c375",
+      "bytes": 79767,
+      "expected_page_class": "usable",
+      "group": "long-form-prose",
+      "research_path": "pins/005-great-work.html"
+    },
+    {
+      "file": "pages/018-javascript.html",
+      "source_url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Introduction",
+      "sha256": "8755f5ce18d97c6ef06154aa661c4f9b596badbecd89536a4e4cd14986c857da",
+      "bytes": 209656,
+      "expected_page_class": "usable",
+      "group": "long-form-prose",
+      "research_path": "pins/018-javascript.html"
+    },
+    {
+      "file": "pages/022-python-json.html",
+      "source_url": "https://docs.python.org/3/library/json.html",
+      "sha256": "e4ec5e442de9e8f991c4be93120c536e109164ee4dfa382fdcaa7c5eeff4b1a8",
+      "bytes": 116296,
+      "expected_page_class": "usable",
+      "group": "long-form-prose",
+      "research_path": "pins/022-python-json.html"
+    },
+    {
+      "file": "pages/061-halifax-essay.html",
+      "source_url": "https://aeon.co/essays/how-does-roshi-joan-halifax-make-sense-of-her-buddhist-life",
+      "sha256": "2905651ae204ff5ac5c7aa0760350d4b77dabb9792bf451b9fcaee0a7a4b4e20",
+      "bytes": 312697,
+      "expected_page_class": "usable",
+      "group": "long-form-prose",
+      "research_path": "evidence/2026-11-11-extraction-gate-100/corpus/061-essays-how-does-roshi-joan-halifax-make-sense-of-her-buddhist-life.html"
+    },
+    {
+      "file": "pages/089-bubble-quanta.html",
+      "source_url": "https://www.quantamagazine.org/the-case-for-a-bubble-at-lifes-start-20261110/",
+      "sha256": "825226929628202c601e6e8a836b9875b0b04115c5765524eba824b57bd4f60e",
+      "bytes": 217127,
+      "expected_page_class": "usable",
+      "group": "long-form-prose",
+      "research_path": "evidence/2026-11-11-extraction-gate-100/corpus/089-the-case-for-a-bubble-at-lifes-start-20261110.html"
+    },
+    {
+      "file": "pages/067-mlk-draft.html",
+      "source_url": "https://www.smithsonianmag.com/smart-news/the-handwritten-final-draft-of-martin-luther-king-jrs-i-have-a-dream-speech-was-considered-lost-it-turned-out-to-be-sitting-in-a-desk-drawer-for-decades-180989856/",
+      "sha256": "89de77e6920acc14f973ca9345c36e3144ae26610a0f0e0e53a723c351ec6591",
+      "bytes": 64631,
+      "expected_page_class": "usable",
+      "group": "short-news",
+      "research_path": "evidence/2026-11-11-extraction-gate-100/corpus/067-smart-news-the-handwritten-final-draft-of-martin-luther-king-jrs-i-hav.html"
+    },
+    {
+      "file": "pages/078-italian-schools.html",
+      "source_url": "https://www.straitstimes.com/world/europe/at-least-300-italian-schools-evacuated-after-email-bomb-alerts",
+      "sha256": "ebbd36768c8ba91edf4625476999a67f5bcd173c954495c18c80495f5ae6d362",
+      "bytes": 115469,
+      "expected_page_class": "usable",
+      "group": "short-news",
+      "research_path": "evidence/2026-11-11-extraction-gate-100/corpus/078-world-europe-at-least-300-italian-schools-evacuated-after-email-bomb-a.html"
+    },
+    {
+      "file": "pages/095-sciencedaily.html",
+      "source_url": "https://www.sciencedaily.com/releases/2026/11/261110042532.htm",
+      "sha256": "4549043fb3be2e0188c79ac6e2eb0349ddec4ecf440dd671fdcaf1a393c155ab",
+      "bytes": 49879,
+      "expected_page_class": "usable",
+      "group": "short-news",
+      "research_path": "evidence/2026-11-11-extraction-gate-100/corpus/095-releases-2026-11-261110042532-htm.html"
+    },
+    {
+      "file": "pages/007-paywall.html",
+      "source_url": "https://www.nytimes.com/2024/01/08/technology/ai-robots-chatbots-2024.html",
+      "sha256": "2c4c28dc0ed4e6232c88b2e19d4eed77cd0b1b88fb1f151ccb281741ae3ee327",
+      "bytes": 771,
+      "expected_page_class": "walled",
+      "group": "login-wall",
+      "research_path": "pins/007-paywall.html",
+      "http_status": 403
+    },
+    {
+      "file": "pages/008-paywall.html",
+      "source_url": "https://www.nytimes.com/2024/04/06/technology/tech-giants-harvest-data-artificial-intelligence.html",
+      "sha256": "02e6b16a2dd62caf75562bfee59f8c688c36367f37a8ae930441bfb7456a3134",
+      "bytes": 771,
+      "expected_page_class": "walled",
+      "group": "login-wall",
+      "research_path": "pins/008-paywall.html",
+      "http_status": 403
+    },
+    {
+      "file": "pages/012-medium.html",
+      "source_url": "https://medium.com/@freecodecamp/how-to-link-to-a-specific-paragraph-in-your-medium-article-2018-table-of-contents-method-e66595fea549",
+      "sha256": "f17b9d7e73662d02a83bc929c5b02b0ecb5b350aa981a853e05712e4e38b4532",
+      "bytes": 6161,
+      "expected_page_class": "walled",
+      "group": "login-wall",
+      "research_path": "pins/012-medium.html",
+      "http_status": 403
+    },
+    {
+      "file": "pages/026-reddit.html",
+      "source_url": "https://www.reddit.com/r/learnprogramming/",
+      "sha256": "f762b054839618004804e9255d9c428d55f9de6c148ee2bc01d9866acb776ed3",
+      "bytes": 8416,
+      "expected_page_class": "unrendered",
+      "group": "js-shell",
+      "research_path": "pins/026-reddit.html"
+    },
+    {
+      "file": "pages/056-jb-help.html",
+      "source_url": "https://www.jetbrains.com/help/",
+      "sha256": "f7daef4454cf75359e13d440c807879b552a3b2f1627a3148b23269200c906f6",
+      "bytes": 37716,
+      "expected_page_class": "unrendered",
+      "group": "js-shell",
+      "research_path": "pins/056-jb-help.html"
+    },
+    {
+      "file": "pages/097-reddit-python.html",
+      "source_url": "https://www.reddit.com/r/python/",
+      "sha256": "41c9c34f40b4d055b47c744ca45ff141ae765742e3ae39c04d145b1e5ee70377",
+      "bytes": 8406,
+      "expected_page_class": "unrendered",
+      "group": "js-shell",
+      "research_path": "pins/097-reddit-python.html"
+    },
+    {
+      "file": "pages/016-login.html",
+      "source_url": "https://x.com/Threads",
+      "sha256": "264c825c9ebb561155f0fe65f2f3f594593e5c7b4609eceb23e4b1c5a0beacab",
+      "bytes": 172068,
+      "expected_page_class": "not-an-article",
+      "group": "index-home",
+      "research_path": "pins/016-login.html"
+    },
+    {
+      "file": "pages/027-hn.html",
+      "source_url": "https://news.ycombinator.com/",
+      "sha256": "10705befe6265fcde4284fdae175447e4c827ea30c94e0e7b98582fac5f50e22",
+      "bytes": 33665,
+      "expected_page_class": "usable",
+      "group": "index-home",
+      "research_path": "pins/027-hn.html"
+    },
+    {
+      "file": "pages/064-tumblr.html",
+      "source_url": "https://www.tumblr.com/blog/view/",
+      "sha256": "35a48df707f2a0b2e7069e602feca42d12691b7018515cd8b1183ad15a76f63d",
+      "bytes": 59475,
+      "expected_page_class": "not-an-article",
+      "group": "index-home",
+      "research_path": "pins/064-tumblr.html"
+    },
+    {
+      "file": "pages/042-de-wiki.html",
+      "source_url": "https://de.wikipedia.org/wiki/Alan_Turing",
+      "sha256": "c7907f9c05997102545f5f5e220dbb0ff4da067f940bee048f0008eb6c73eb60",
+      "bytes": 443434,
+      "expected_page_class": "usable",
+      "group": "non-english-mixed",
+      "research_path": "pins/042-de-wiki.html"
+    },
+    {
+      "file": "pages/040-zhihu.html",
+      "source_url": "https://www.zhihu.com/explore",
+      "sha256": "a3eaa13ab42da7c86f135c0d117e0e23292448eed40f6e65c739e56313ce6bf2",
+      "bytes": 218118,
+      "expected_page_class": "failed",
+      "group": "non-english-mixed",
+      "research_path": "pins/040-zhihu.html"
+    }
+  ]
+}
