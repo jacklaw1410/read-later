@@ -406,11 +406,7 @@
       "lowConfidence" : false,
       "reason" : "h1",
       "spoken" : [
-        {
-          "length" : 21,
-          "offset" : 0,
-          "text" : "The wholehearted life"
-        }
+
       ],
       "text" : "The wholehearted life"
     },
@@ -424,16 +420,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 82,
-          "offset" : 0,
-          "text" : "Roshi Joan Halifax is an original, generous, gritty and profound Buddhist teacher."
-        },
-        {
-          "length" : 35,
-          "offset" : 83,
-          "text" : "How does she look back on her life?"
-        }
+
       ],
       "text" : "Roshi Joan Halifax is an original, generous, gritty and profound Buddhist teacher. How does she look back on her life?"
     },
@@ -488,26 +475,7 @@
       "lowConfidence" : false,
       "reason" : "aside",
       "spoken" : [
-        {
-          "length" : 97,
-          "offset" : 0,
-          "text" : "Ben Daitz is emeritus professor of family and community medicine at the University of New Mexico."
-        },
-        {
-          "length" : 121,
-          "offset" : 98,
-          "text" : "He is the author of the novel Delivery (2004) and has written for The New York Times, The Atlantic, Undark and Eclectica."
-        },
-        {
-          "length" : 52,
-          "offset" : 220,
-          "text" : "He is also a documentary filmmaker at Tijeras Films."
-        },
-        {
-          "length" : 124,
-          "offset" : 273,
-          "text" : "Edited byPam Weintraub 5,400 words Save Meaning and the good lifeAgeing and deathSpirituality SYNDICATE THIS ESSAY SaveShare"
-        }
+
       ],
       "text" : "Ben Daitz is emeritus professor of family and community medicine at the University of New Mexico. He is the author of the novel Delivery (2004) and has written for The New York Times, The Atlantic, Undark and Eclectica. He is also a documentary filmmaker at Tijeras Films. Edited byPam Weintraub 5,400 words Save Meaning and the good lifeAgeing and deathSpirituality SYNDICATE THIS ESSAY SaveShare"
     },
@@ -986,16 +954,7 @@
       "lowConfidence" : false,
       "reason" : "pullquote-class",
       "spoken" : [
-        {
-          "length" : 55,
-          "offset" : 0,
-          "text" : "‘You could be both contemplative and a social activist."
-        },
-        {
-          "length" : 23,
-          "offset" : 56,
-          "text" : "I want to be like that’"
-        }
+
       ],
       "text" : "‘You could be both contemplative and a social activist. I want to be like that’"
     },
@@ -1166,11 +1125,7 @@
       "lowConfidence" : false,
       "reason" : "figure",
       "spoken" : [
-        {
-          "length" : 87,
-          "offset" : 0,
-          "text" : "Joan Halifax and her Pentax, photographed by Mark Moskowitz in Paris, 1968, from Flickr"
-        }
+
       ],
       "text" : "Joan Halifax and her Pentax, photographed by Mark Moskowitz in Paris, 1968, from Flickr"
     },
@@ -1478,21 +1433,7 @@
       "lowConfidence" : false,
       "reason" : "pullquote-class",
       "spoken" : [
-        {
-          "length" : 62,
-          "offset" : 0,
-          "text" : "He believed Jose had been cursed, and recommended an exorcism."
-        },
-        {
-          "length" : 17,
-          "offset" : 63,
-          "text" : "I called Halifax."
-        },
-        {
-          "length" : 20,
-          "offset" : 81,
-          "text" : "She came immediately"
-        }
+
       ],
       "text" : "He believed Jose had been cursed, and recommended an exorcism. I called Halifax. She came immediately"
     },
@@ -1918,11 +1859,7 @@
       "lowConfidence" : false,
       "reason" : "figure",
       "spoken" : [
-        {
-          "length" : 74,
-          "offset" : 0,
-          "text" : "The wedding of Joan Halifax and Stanislav Grof, Iceland, 1972, from Flickr"
-        }
+
       ],
       "text" : "The wedding of Joan Halifax and Stanislav Grof, Iceland, 1972, from Flickr"
     },
@@ -1997,11 +1934,7 @@
       "lowConfidence" : false,
       "reason" : "pullquote-class",
       "spoken" : [
-        {
-          "length" : 115,
-          "offset" : 0,
-          "text" : "Being a woman gave her ‘the permission and latitude to ride straight into a catastrophic mental and physical state’"
-        }
+
       ],
       "text" : "Being a woman gave her ‘the permission and latitude to ride straight into a catastrophic mental and physical state’"
     },
@@ -2230,11 +2163,7 @@
       "lowConfidence" : false,
       "reason" : "figure",
       "spoken" : [
-        {
-          "length" : 70,
-          "offset" : 0,
-          "text" : "Joan Halifax with Don José Matsúwa at the Ojai Foundation, from Flickr"
-        }
+
       ],
       "text" : "Joan Halifax with Don José Matsúwa at the Ojai Foundation, from Flickr"
     },
@@ -2400,16 +2329,7 @@
       "lowConfidence" : false,
       "reason" : "pullquote-class",
       "spoken" : [
-        {
-          "length" : 32,
-          "offset" : 0,
-          "text" : "‘It wasn’t gritty enough for me."
-        },
-        {
-          "length" : 42,
-          "offset" : 33,
-          "text" : "I always felt like a bull in a china shop’"
-        }
+
       ],
       "text" : "‘It wasn’t gritty enough for me. I always felt like a bull in a china shop’"
     },
@@ -2461,11 +2381,7 @@
       "lowConfidence" : false,
       "reason" : "figure",
       "spoken" : [
-        {
-          "length" : 77,
-          "offset" : 0,
-          "text" : "Joan Halifax with Seung Sahn at the Ojai Foundation in the 1980s, from Flickr"
-        }
+
       ],
       "text" : "Joan Halifax with Seung Sahn at the Ojai Foundation in the 1980s, from Flickr"
     },
@@ -2512,16 +2428,7 @@
       "lowConfidence" : false,
       "reason" : "figure",
       "spoken" : [
-        {
-          "length" : 77,
-          "offset" : 0,
-          "text" : "Members of the Nomads Clinic with a patient in Kharta, Tibet, in August 2002."
-        },
-        {
-          "length" : 34,
-          "offset" : 78,
-          "text" : "Photo by Joan Halifax, from Flickr"
-        }
+
       ],
       "text" : "Members of the Nomads Clinic with a patient in Kharta, Tibet, in August 2002. Photo by Joan Halifax, from Flickr"
     },
@@ -2730,11 +2637,7 @@
       "lowConfidence" : false,
       "reason" : "pullquote-class",
       "spoken" : [
-        {
-          "length" : 83,
-          "offset" : 0,
-          "text" : "His gesture made her see the pity within her grief – and that she had to let him go"
-        }
+
       ],
       "text" : "His gesture made her see the pity within her grief – and that she had to let him go"
     },
@@ -2963,11 +2866,7 @@
       "lowConfidence" : false,
       "reason" : "figure",
       "spoken" : [
-        {
-          "length" : 102,
-          "offset" : 0,
-          "text" : "Roshi Bernie Glassman (centre) with Sensei Eve Marko (left) and Roshi Joan Halifax, 1990s, from Flickr"
-        }
+
       ],
       "text" : "Roshi Bernie Glassman (centre) with Sensei Eve Marko (left) and Roshi Joan Halifax, 1990s, from Flickr"
     },
@@ -3047,16 +2946,7 @@
       "lowConfidence" : false,
       "reason" : "pullquote-class",
       "spoken" : [
-        {
-          "length" : 63,
-          "offset" : 0,
-          "text" : "‘It’ll be apparent after I’m dead, if I have any legacy at all."
-        },
-        {
-          "length" : 29,
-          "offset" : 64,
-          "text" : "I haven’t tried to build one’"
-        }
+
       ],
       "text" : "‘It’ll be apparent after I’m dead, if I have any legacy at all. I haven’t tried to build one’"
     },
@@ -3621,8 +3511,113 @@
       "text" : "Aeon is published by registered charity Aeon Media Group Ltd in association with Aeon America, a 501(c)(3) charity."
     }
   ],
-  "sentence_count" : 401,
+  "sentence_count" : 376,
   "skipped" : [
+    {
+      "block_id" : 22,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h1",
+      "words" : 3
+    },
+    {
+      "block_id" : 23,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 20
+    },
+    {
+      "block_id" : 26,
+      "confidence" : 0.9,
+      "kind" : "aside",
+      "reason" : "aside",
+      "words" : 64
+    },
+    {
+      "block_id" : 42,
+      "confidence" : 0.85,
+      "kind" : "pull-quote",
+      "reason" : "pullquote-class",
+      "words" : 15
+    },
+    {
+      "block_id" : 47,
+      "confidence" : 0.95,
+      "kind" : "figure",
+      "reason" : "figure",
+      "words" : 14
+    },
+    {
+      "block_id" : 56,
+      "confidence" : 0.85,
+      "kind" : "pull-quote",
+      "reason" : "pullquote-class",
+      "words" : 16
+    },
+    {
+      "block_id" : 66,
+      "confidence" : 0.95,
+      "kind" : "figure",
+      "reason" : "figure",
+      "words" : 12
+    },
+    {
+      "block_id" : 69,
+      "confidence" : 0.85,
+      "kind" : "pull-quote",
+      "reason" : "pullquote-class",
+      "words" : 19
+    },
+    {
+      "block_id" : 75,
+      "confidence" : 0.95,
+      "kind" : "figure",
+      "reason" : "figure",
+      "words" : 12
+    },
+    {
+      "block_id" : 80,
+      "confidence" : 0.85,
+      "kind" : "pull-quote",
+      "reason" : "pullquote-class",
+      "words" : 16
+    },
+    {
+      "block_id" : 82,
+      "confidence" : 0.95,
+      "kind" : "figure",
+      "reason" : "figure",
+      "words" : 14
+    },
+    {
+      "block_id" : 84,
+      "confidence" : 0.95,
+      "kind" : "figure",
+      "reason" : "figure",
+      "words" : 20
+    },
+    {
+      "block_id" : 90,
+      "confidence" : 0.85,
+      "kind" : "pull-quote",
+      "reason" : "pullquote-class",
+      "words" : 19
+    },
+    {
+      "block_id" : 96,
+      "confidence" : 0.95,
+      "kind" : "figure",
+      "reason" : "figure",
+      "words" : 16
+    },
+    {
+      "block_id" : 99,
+      "confidence" : 0.85,
+      "kind" : "pull-quote",
+      "reason" : "pullquote-class",
+      "words" : 19
+    },
     {
       "block_id" : 118,
       "confidence" : 0.85,
@@ -3647,7 +3642,7 @@
   ],
   "source" : "061-halifax-essay.html",
   "source_sha256" : "2905651ae204ff5ac5c7aa0760350d4b77dabb9792bf451b9fcaee0a7a4b4e20",
-  "spoken_words" : 5855,
+  "spoken_words" : 5576,
   "validation_failures" : 0,
   "version" : 1
 }

@@ -6,10 +6,17 @@ import Foundation
 /// delegate to this engine so the contract file keeps only signatures.
 enum SpokenPlanEngine {
     /// Kinds that render reduced-ink and contribute zero utterances.
-    /// Everything else speaks: prose, heading, quote, pull-quote, list,
-    /// aside, cjk, figure (its own text), footnote-body.
+    ///
+    /// Copied from `read-later-research/spec/inline-content-rules.md`, row by
+    /// row. A heading is a landmark a reader scans, not a stop in the voice;
+    /// a figure's text is a caption; a pull quote repeats the body. Speaking
+    /// any of them puts words in the time-left figure that the reader never
+    /// hears as prose.
+    ///
+    /// Everything else speaks: prose, quote, list, cjk.
     static let neverSpoken: Set<BlockKind> = [
-        .code, .table, .image, .math, .embed, .nav, .footnoteMarker,
+        .code, .table, .image, .figure, .math, .embed, .nav,
+        .heading, .pullQuote, .aside, .footnoteMarker, .footnoteBody,
     ]
 
     /// Abbreviations whose period never ends a sentence. Multi-part entries

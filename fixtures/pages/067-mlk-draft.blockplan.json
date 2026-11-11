@@ -204,16 +204,7 @@
       "lowConfidence" : false,
       "reason" : "h1",
       "spoken" : [
-        {
-          "length" : 100,
-          "offset" : 0,
-          "text" : "The Handwritten Final Draft of Martin Luther King Jr.’s ‘I Have a Dream’ Speech Was Considered Lost."
-        },
-        {
-          "length" : 56,
-          "offset" : 101,
-          "text" : "It Turned Out to Be Sitting in a Desk Drawer for Decades"
-        }
+
       ],
       "text" : "The Handwritten Final Draft of Martin Luther King Jr.’s ‘I Have a Dream’ Speech Was Considered Lost. It Turned Out to Be Sitting in a Desk Drawer for Decades"
     },
@@ -227,16 +218,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 141,
-          "offset" : 0,
-          "text" : "Across seven yellow notepad pages, King is seen wrestling with word choice and revising his remarks the night before the March on Washington."
-        },
-        {
-          "length" : 95,
-          "offset" : 142,
-          "text" : "The manuscript will head to auction in January and is expected to pull in more than $10 million"
-        }
+
       ],
       "text" : "Across seven yellow notepad pages, King is seen wrestling with word choice and revising his remarks the night before the March on Washington. The manuscript will head to auction in January and is expected to pull in more than $10 million"
     },
@@ -322,16 +304,7 @@
       "lowConfidence" : false,
       "reason" : "figure",
       "spoken" : [
-        {
-          "length" : 148,
-          "offset" : 0,
-          "text" : "Martin Luther King Jr. waves to crowd after delivering his historic \"I Have a Dream\" speech on the steps of the Lincoln Memorial on August 28, 1963."
-        },
-        {
-          "length" : 148,
-          "offset" : 149,
-          "text" : "G. Marshall Wilson / Johnson Publishing Company Archive/ J. Paul Getty Trust and Smithsonian National Museum of African American History and Culture"
-        }
+
       ],
       "text" : "Martin Luther King Jr. waves to crowd after delivering his historic \"I Have a Dream\" speech on the steps of the Lincoln Memorial on August 28, 1963. G. Marshall Wilson / Johnson Publishing Company Archive/ J. Paul Getty Trust and Smithsonian National Museum of African American History and Culture"
     },
@@ -475,16 +448,7 @@
       "lowConfidence" : false,
       "reason" : "figure",
       "spoken" : [
-        {
-          "length" : 135,
-          "offset" : 0,
-          "text" : "The seven yellow pages do not contain King's improvised \"I have a dream\" refrain, but they do contain the iconic \"free at last\" ending."
-        },
-        {
-          "length" : 10,
-          "offset" : 136,
-          "text" : "Christie's"
-        }
+
       ],
       "text" : "The seven yellow pages do not contain King's improvised \"I have a dream\" refrain, but they do contain the iconic \"free at last\" ending. Christie's"
     },
@@ -595,11 +559,7 @@
       "lowConfidence" : false,
       "reason" : "figure",
       "spoken" : [
-        {
-          "length" : 54,
-          "offset" : 0,
-          "text" : "King's edits on the first page of the draft Christie's"
-        }
+
       ],
       "text" : "King's edits on the first page of the draft Christie's"
     },
@@ -723,16 +683,7 @@
       "lowConfidence" : false,
       "reason" : "figure",
       "spoken" : [
-        {
-          "length" : 120,
-          "offset" : 0,
-          "text" : "The manuscript was discovered in the desk drawer of one of King's trusted aides, where it sat for more than six decades."
-        },
-        {
-          "length" : 10,
-          "offset" : 121,
-          "text" : "Christie's"
-        }
+
       ],
       "text" : "The manuscript was discovered in the desk drawer of one of King's trusted aides, where it sat for more than six decades. Christie's"
     },
@@ -927,11 +878,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 19,
-          "offset" : 0,
-          "text" : "You Might Also Like"
-        }
+
       ],
       "text" : "You Might Also Like"
     },
@@ -1001,11 +948,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 51,
-          "offset" : 0,
-          "text" : "Get the latest stories in your inbox every weekday."
-        }
+
       ],
       "text" : "Get the latest stories in your inbox every weekday."
     },
@@ -1240,7 +1183,7 @@
       "text" : "© 2026 Smithsonian Magazine Privacy Statement [9/17/26] Cookie Policy [5/20/25] Terms of Use Advertising Notice Your Privacy Choices Cookie Settings"
     }
   ],
-  "sentence_count" : 94,
+  "sentence_count" : 81,
   "skipped" : [
     {
       "block_id" : 8,
@@ -1248,6 +1191,62 @@
       "kind" : "nav",
       "reason" : "nav",
       "words" : 34
+    },
+    {
+      "block_id" : 11,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h1",
+      "words" : 29
+    },
+    {
+      "block_id" : 12,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 41
+    },
+    {
+      "block_id" : 17,
+      "confidence" : 0.95,
+      "kind" : "figure",
+      "reason" : "figure",
+      "words" : 49
+    },
+    {
+      "block_id" : 23,
+      "confidence" : 0.95,
+      "kind" : "figure",
+      "reason" : "figure",
+      "words" : 25
+    },
+    {
+      "block_id" : 28,
+      "confidence" : 0.95,
+      "kind" : "figure",
+      "reason" : "figure",
+      "words" : 10
+    },
+    {
+      "block_id" : 34,
+      "confidence" : 0.95,
+      "kind" : "figure",
+      "reason" : "figure",
+      "words" : 23
+    },
+    {
+      "block_id" : 42,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 4
+    },
+    {
+      "block_id" : 45,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 9
     },
     {
       "block_id" : 46,
@@ -1259,7 +1258,7 @@
   ],
   "source" : "067-mlk-draft.html",
   "source_sha256" : "89de77e6920acc14f973ca9345c36e3144ae26610a0f0e0e53a723c351ec6591",
-  "spoken_words" : 1405,
+  "spoken_words" : 1215,
   "validation_failures" : 0,
   "version" : 1
 }

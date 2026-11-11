@@ -1,0 +1,133 @@
+import Foundation
+import ReadLaterCore
+
+/// How one word is drawn. Four states, and the combination of two of them.
+///
+/// - `current`: the word the voice is saying, amber.
+/// - `paused`: the word where playback stopped, grey-amber with a ring. Never
+///   only a colour change: a paused wash must survive a screenshot in greyscale.
+/// - `selected`: the word the reader tapped, blue.
+/// - `coincide`: tapped and currently spoken, blue fill with an amber ring.
+public enum WordEmphasis: Sendable, Hashable {
+    case none
+    case current
+    case paused
+    case selected
+    case coincide
+
+    public var isMarked: Bool { self != .none }
+}
+
+/// Everything the reader surface needs to draw a wash.
+///
+/// One value, one comparison, no per-word view state. The wash moves by
+/// changing this, and the text view redraws attributes rather than content.
+public struct WashState: Sendable, Equatable {
+    /// The word the voice last reported, or nil before the first word.
+    public var wordIndex: Int?
+    public var isPlaying: Bool
+    /// The word under an open lookup card, or nil when no card is open.
+    public var selectedWordIndex: Int?
+
+    public init(wordIndex: Int? = nil, isPlaying: Bool = false, selectedWordIndex: Int? = nil) {
+        self.wordIndex = wordIndex
+        self.isPlaying = isPlaying
+        self.selectedWordIndex = selectedWordIndex
+    }
+
+    public static let idle = WashState()
+
+    public func emphasis(for index: Int) -> WordEmphasis {
+        let isSpokenWord = wordIndex == index
+        let isSelected = selectedWordIndex == index
+        if isSpokenWord && isSelected { return .coincide }
+        if isSelected { return .selected }
+        if isSpokenWord { return isPlaying ? .current : .paused }
+        return .none
+    }
+}
+
+// MARK: - Block presentation
+
+public extension BlockKind {
+    /// The label on a reduced-ink block. Nil when the block speaks.
+    var skipChipLabel: String? {
+        switch self {
+        case .heading: return "heading · skipped by audio"
+        case .code: return "code block · skipped by audio"
+        case .table: return "table · skipped by audio"
+        case .image: return "image · skipped by audio"
+        case .figure: return "image · skipped by audio"
+        case .math: return "math · skipped by audio"
+        case .embed: return "embed · skipped by audio"
+        case .pullQuote: return "pull quote · skipped by audio"
+        case .aside: return "aside · skipped by audio"
+        case .nav: return "navigation · skipped by audio"
+        case .footnoteBody: return "note · not read aloud"
+        case .footnoteMarker: return nil
+        case .prose, .quote, .list, .cjk: return "skipped by audio"
+        }
+    }
+}
+
+public extension Block {
+    /// A block is skipped when it has no spoken sentences. That is the same
+    /// test the voice uses, so the ink and the audio cannot disagree.
+    var isSkippedByAudio: Bool {
+        spoken.isEmpty && kind != .footnoteMarker && kind != .footnoteBody
+    }
+
+    /// Notes render below the body, never inline.
+    var isNote: Bool { kind == .footnoteBody }
+}
+
+// MARK: - Reading order with notes removed
+
+public extension Document {
+    /// Blocks that appear in the scrolling body, in order. Notes are lifted
+    /// out because the reader shows them in a section at the end.
+    var bodyBlocks: [Block] {
+        readingOrder.filter { !$0.isNote }
+    }
+
+    var noteBlocks: [Block] {
+        readingOrder.filter { $0.isNote }
+    }
+
+    /// Word count the voice will speak. Used by the reader subhead.
+    var spokenWordCount: Int {
+        readingOrder.reduce(0) { total, block in
+            total + block.spoken.reduce(0) { $0 + SpokenIndex.wordRanges(in: $1.text, base: 0).count }
+        }
+    }
+
+    /// Number of reduced-ink blocks, excluding notes and markers.
+    var skippedRegionCount: Int {
+        readingOrder.filter { $0.isSkippedByAudio }.count
+    }
+}
+
+// MARK: - Reader metrics
+
+/// The reader's line and type measurements, taken from the prototype so the
+/// app and the prototype cannot drift apart on the thing a reader feels first.
+public enum ReaderMetrics {
+    public static let bodySize: CGFloat = 19
+    public static let bodyLineHeight: CGFloat = 31
+    public static let bodyLeading: CGFloat = bodyLineHeight - bodySize
+    public static let titleSize: CGFloat = 24
+    public static let titleLineHeight: CGFloat = 30
+    public static let quoteInset: CGFloat = 14
+    public static let quoteBorder: CGFloat = 3
+    public static let paragraphGap: CGFloat = 14
+    public static let chipSize: CGFloat = 10
+    public static let codeSize: CGFloat = 12
+    public static let footnoteSize: CGFloat = 13
+    /// A footnote marker needs a 44 pt target without growing the line box.
+    public static let footnoteHitTarget: CGFloat = 44
+    /// Auto-scroll stops following once the wash is this far from centre.
+    public static let autoScrollTolerance: CGFloat = 140
+    /// The wash is drawn half a word ahead of the audio clock so the eye lands
+    /// on the word as it is spoken, not after it.
+    public static let washLeadWords: Double = 0.5
+}

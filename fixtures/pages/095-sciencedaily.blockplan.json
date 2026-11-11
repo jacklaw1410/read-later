@@ -244,11 +244,7 @@
       "lowConfidence" : false,
       "reason" : "h1",
       "spoken" : [
-        {
-          "length" : 75,
-          "offset" : 0,
-          "text" : "Scientists discover a giant 66-pound rodent that lived 34 million years ago"
-        }
+
       ],
       "text" : "Scientists discover a giant 66-pound rodent that lived 34 million years ago"
     },
@@ -308,16 +304,7 @@
       "lowConfidence" : false,
       "reason" : "figure",
       "spoken" : [
-        {
-          "length" : 232,
-          "offset" : 0,
-          "text" : "The discovery of giant rodent teeth fossils in Krabi Province, Thailand, highlights the important role of Southeast Asia in the early evolutionary history of large-bodied rodents, including the newly identified Yakamys sirindhornae."
-        },
-        {
-          "length" : 34,
-          "offset" : 233,
-          "text" : "Credit: Yaowalak Chaimanee, edited"
-        }
+
       ],
       "text" : "The discovery of giant rodent teeth fossils in Krabi Province, Thailand, highlights the important role of Southeast Asia in the early evolutionary history of large-bodied rodents, including the newly identified Yakamys sirindhornae. Credit: Yaowalak Chaimanee, edited"
     },
@@ -971,11 +958,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 12,
-          "offset" : 0,
-          "text" : "Explore More"
-        }
+
       ],
       "text" : "Explore More"
     },
@@ -1551,11 +1534,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 8,
-          "offset" : 0,
-          "text" : "Breaking"
-        }
+
       ],
       "text" : "Breaking"
     },
@@ -1610,11 +1589,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 15,
-          "offset" : 0,
-          "text" : "Trending Topics"
-        }
+
       ],
       "text" : "Trending Topics"
     },
@@ -1862,11 +1837,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 17,
-          "offset" : 0,
-          "text" : "Strange & Offbeat"
-        }
+
       ],
       "text" : "Strange & Offbeat"
     },
@@ -2483,8 +2454,22 @@
       "text" : "or by other parties, where indicated. All rights controlled by their respective owners. Content on this website is for information only. It is not intended to provide medical or other professional advice. Views expressed here do not necessarily reflect those of ScienceDaily, contributors or partners. Financial support for ScienceDaily comes from advertisements and referral programs."
     }
   ],
-  "sentence_count" : 168,
+  "sentence_count" : 161,
   "skipped" : [
+    {
+      "block_id" : 13,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h1",
+      "words" : 12
+    },
+    {
+      "block_id" : 16,
+      "confidence" : 0.95,
+      "kind" : "figure",
+      "reason" : "figure",
+      "words" : 36
+    },
     {
       "block_id" : 34,
       "confidence" : 0.8,
@@ -2507,6 +2492,34 @@
       "words" : 3
     },
     {
+      "block_id" : 46,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 2
+    },
+    {
+      "block_id" : 76,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 1
+    },
+    {
+      "block_id" : 79,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 2
+    },
+    {
+      "block_id" : 93,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 3
+    },
+    {
       "block_id" : 106,
       "confidence" : 0.8,
       "kind" : "nav",
@@ -2516,7 +2529,7 @@
   ],
   "source" : "095-sciencedaily.html",
   "source_sha256" : "4549043fb3be2e0188c79ac6e2eb0349ddec4ecf440dd671fdcaf1a393c155ab",
-  "spoken_words" : 1499,
+  "spoken_words" : 1443,
   "validation_failures" : 0,
   "version" : 1
 }

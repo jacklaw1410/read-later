@@ -10,6 +10,8 @@ packages:
     path: ../../packages/ReadLaterCore
   ReadLaterUI:
     path: ../../packages/ReadLaterUI
+  ReadLaterPacks:
+    path: ../../packages/ReadLaterPacks
 
 targets:
   ReadLater:
@@ -18,11 +20,14 @@ targets:
     bundleId: com.readlater.app
     sources:
       - path: Sources
-    resources:
+      # `resources:` is not a target key in XcodeGen. A source entry with an
+      # explicit resource build phase is what actually copies the files.
       - path: Resources
+        buildPhase: resources
     dependencies:
       - package: ReadLaterCore
       - package: ReadLaterUI
+      - package: ReadLaterPacks
     settings:
       CODE_SIGNING_ALLOWED: NO
       GENERATE_INFOPLIST_FILE: YES

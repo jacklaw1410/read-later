@@ -1,32 +1,43 @@
 import ReadLaterCore
 import SwiftUI
 
-/// The hit state: the tapped word resolved to a gloss.
+/// The hit state: the tapped word resolved to a gloss. The card owns no
+/// playback; the caller supplies the flag and the word index.
 public struct LookupCard: View {
     private let result: LookupResult
+    private let wasPlayingBeforeLookup: Bool
+    private let wordIndex: Int?
+    private let isCurrentWashWord: Bool
     private let onClose: () -> Void
 
-    public init(result: LookupResult, onClose: @escaping () -> Void) {
+    public init(
+        result: LookupResult,
+        wasPlayingBeforeLookup: Bool,
+        wordIndex: Int?,
+        isCurrentWashWord: Bool,
+        onClose: @escaping () -> Void
+    ) {
         self.result = result
+        self.wasPlayingBeforeLookup = wasPlayingBeforeLookup
+        self.wordIndex = wordIndex
+        self.isCurrentWashWord = isCurrentWashWord
         self.onClose = onClose
     }
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(result.word)
-                    .font(Theme.lookupWord())
-                    .foregroundStyle(Theme.ink)
-                metaLine
-                if let accentVariant = result.accentVariant {
-                    Text(accentVariant)
-                        .font(Theme.caption())
-                        .foregroundStyle(Theme.inkSecondary)
-                }
+            Text(result.word)
+                .font(Theme.lookupWord())
+                .foregroundStyle(Theme.ink)
+            metaLine
+            if let accentVariant = result.accentVariant {
+                Text(accentVariant)
+                    .font(Theme.caption())
+                    .foregroundStyle(Theme.inkSecondary)
             }
-            .padding(.bottom, 12)
 
             Divider()
+                .padding(.top, 12)
 
             if !result.gloss.isEmpty {
                 Text(result.gloss)
@@ -35,21 +46,36 @@ public struct LookupCard: View {
                     .padding(.vertical, 12)
             }
 
+            if isCurrentWashWord {
+                Text(CardCopy.coincidenceNote)
+                    .font(Theme.caption())
+                    .foregroundStyle(Theme.holdInk)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 6)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Theme.holdSurface)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Theme.holdBorder, lineWidth: 1))
+                    .padding(.bottom, 12)
+            }
+
             Divider()
 
-            Text("Source · \(result.source.rawValue)")
+            Text(CardCopy.hitSourceLine(for: result))
                 .font(Theme.caption())
                 .foregroundStyle(Theme.inkSecondary)
                 .padding(.vertical, 8)
 
             Divider()
 
-            HStack {
-                Spacer()
-                Button("Close", action: onClose)
-                    .frame(minWidth: 120, minHeight: Theme.minTarget)
-            }
-            .frame(minHeight: Theme.minTarget)
+            Text(CardCopy.pauseLine(wasPlayingBeforeLookup: wasPlayingBeforeLookup, wordIndex: wordIndex))
+                .font(Theme.caption())
+                .foregroundStyle(Theme.inkSecondary)
+                .padding(.top, 8)
+
+            Button(CardCopy.closeLabel(wasPlayingBeforeLookup: wasPlayingBeforeLookup), action: onClose)
+                .buttonStyle(SecondaryActionButtonStyle())
+                .padding(.top, 8)
         }
         .padding(Theme.screenGutter)
         .background(Theme.surface)

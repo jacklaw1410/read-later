@@ -60,11 +60,7 @@
       "lowConfidence" : false,
       "reason" : "h1",
       "spoken" : [
-        {
-          "length" : 62,
-          "offset" : 0,
-          "text" : "At least 300 Italian schools evacuated after email bomb alerts"
-        }
+
       ],
       "text" : "At least 300 Italian schools evacuated after email bomb alerts"
     },
@@ -286,11 +282,7 @@
       "lowConfidence" : false,
       "reason" : "h6",
       "spoken" : [
-        {
-          "length" : 11,
-          "offset" : 0,
-          "text" : "See more on"
-        }
+
       ],
       "text" : "See more on"
     },
@@ -765,7 +757,7 @@
       "text" : "MDDI (P) 046/10/2025. Published by SPH Media Limited, Co. Regn. No.202120748H. Copyright © 2026 SPH Media Limited. All rights reserved."
     }
   ],
-  "sentence_count" : 46,
+  "sentence_count" : 44,
   "skipped" : [
     {
       "block_id" : 2,
@@ -773,11 +765,25 @@
       "kind" : "nav",
       "reason" : "nav",
       "words" : 23
+    },
+    {
+      "block_id" : 3,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h1",
+      "words" : 10
+    },
+    {
+      "block_id" : 15,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h6",
+      "words" : 3
     }
   ],
   "source" : "078-italian-schools.html",
   "source_sha256" : "ebbd36768c8ba91edf4625476999a67f5bcd173c954495c18c80495f5ae6d362",
-  "spoken_words" : 307,
+  "spoken_words" : 294,
   "validation_failures" : 0,
   "version" : 1
 }

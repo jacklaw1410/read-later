@@ -24,11 +24,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 10,
-          "offset" : 0,
-          "text" : "Navigation"
-        }
+
       ],
       "text" : "Navigation"
     },
@@ -60,11 +56,7 @@
       "lowConfidence" : false,
       "reason" : "h1",
       "spoken" : [
-        {
-          "length" : 32,
-          "offset" : 0,
-          "text" : "json — JSON encoder and decoder¶"
-        }
+
       ],
       "text" : "json — JSON encoder and decoder¶"
     },
@@ -585,11 +577,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 12,
-          "offset" : 0,
-          "text" : "Basic Usage¶"
-        }
+
       ],
       "text" : "Basic Usage¶"
     },
@@ -1035,11 +1023,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 22,
-          "offset" : 0,
-          "text" : "Encoders and Decoders¶"
-        }
+
       ],
       "text" : "Encoders and Decoders¶"
     },
@@ -1374,11 +1358,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 11,
-          "offset" : 0,
-          "text" : "Exceptions¶"
-        }
+
       ],
       "text" : "Exceptions¶"
     },
@@ -1435,11 +1415,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 41,
-          "offset" : 0,
-          "text" : "Standard Compliance and Interoperability¶"
-        }
+
       ],
       "text" : "Standard Compliance and Interoperability¶"
     },
@@ -1540,11 +1516,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 20,
-          "offset" : 0,
-          "text" : "Character Encodings¶"
-        }
+
       ],
       "text" : "Character Encodings¶"
     },
@@ -1663,11 +1635,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 31,
-          "offset" : 0,
-          "text" : "Infinite and NaN Number Values¶"
-        }
+
       ],
       "text" : "Infinite and NaN Number Values¶"
     },
@@ -1741,11 +1709,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 32,
-          "offset" : 0,
-          "text" : "Repeated Names Within an Object¶"
-        }
+
       ],
       "text" : "Repeated Names Within an Object¶"
     },
@@ -1814,11 +1778,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 39,
-          "offset" : 0,
-          "text" : "Top-level Non-Object, Non-Array Values¶"
-        }
+
       ],
       "text" : "Top-level Non-Object, Non-Array Values¶"
     },
@@ -1873,11 +1833,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 27,
-          "offset" : 0,
-          "text" : "Implementation Limitations¶"
-        }
+
       ],
       "text" : "Implementation Limitations¶"
     },
@@ -1973,11 +1929,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 23,
-          "offset" : 0,
-          "text" : "Command-line interface¶"
-        }
+
       ],
       "text" : "Command-line interface¶"
     },
@@ -2110,11 +2062,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 21,
-          "offset" : 0,
-          "text" : "Command-line options¶"
-        }
+
       ],
       "text" : "Command-line options¶"
     },
@@ -2297,11 +2245,7 @@
       "lowConfidence" : false,
       "reason" : "aside",
       "spoken" : [
-        {
-          "length" : 201,
-          "offset" : 0,
-          "text" : "[1] As noted in the errata for RFC 7159, JSON permits literal U+2028 (LINE SEPARATOR) and U+2029 (PARAGRAPH SEPARATOR) characters in strings, whereas JavaScript (as of ECMAScript Edition 5.1) does not."
-        }
+
       ],
       "text" : "[1] As noted in the errata for RFC 7159, JSON permits literal U+2028 (LINE SEPARATOR) and U+2029 (PARAGRAPH SEPARATOR) characters in strings, whereas JavaScript (as of ECMAScript Edition 5.1) does not."
     },
@@ -2315,11 +2259,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 17,
-          "offset" : 0,
-          "text" : "Table of Contents"
-        }
+
       ],
       "text" : "Table of Contents"
     },
@@ -2351,11 +2291,7 @@
       "lowConfidence" : false,
       "reason" : "h4",
       "spoken" : [
-        {
-          "length" : 14,
-          "offset" : 0,
-          "text" : "Previous topic"
-        }
+
       ],
       "text" : "Previous topic"
     },
@@ -2387,11 +2323,7 @@
       "lowConfidence" : false,
       "reason" : "h4",
       "spoken" : [
-        {
-          "length" : 10,
-          "offset" : 0,
-          "text" : "Next topic"
-        }
+
       ],
       "text" : "Next topic"
     },
@@ -2423,11 +2355,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 9,
-          "offset" : 0,
-          "text" : "This page"
-        }
+
       ],
       "text" : "This page"
     },
@@ -2477,11 +2405,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 10,
-          "offset" : 0,
-          "text" : "Navigation"
-        }
+
       ],
       "text" : "Navigation"
     },
@@ -2608,7 +2532,7 @@
       "text" : "© 2001 Python Software Foundation. This page is licensed under the Python Software Foundation License Version 2. Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License. See for more information. The Python Software Foundation is a non-profit corporation. Last updated on Nov 11, 2026 (09:19 UTC). ? Created using 9.1.1."
     }
   ],
-  "sentence_count" : 251,
+  "sentence_count" : 232,
   "skipped" : [
     {
       "block_id" : 0,
@@ -2616,6 +2540,20 @@
       "kind" : "nav",
       "reason" : "role=navigation",
       "words" : 68
+    },
+    {
+      "block_id" : 1,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 1
+    },
+    {
+      "block_id" : 3,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h1",
+      "words" : 6
     },
     {
       "block_id" : 12,
@@ -2674,11 +2612,60 @@
       "words" : 31
     },
     {
+      "block_id" : 32,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 2
+    },
+    {
+      "block_id" : 37,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 3
+    },
+    {
+      "block_id" : 40,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 1
+    },
+    {
+      "block_id" : 42,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 4
+    },
+    {
+      "block_id" : 47,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 2
+    },
+    {
+      "block_id" : 53,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 5
+    },
+    {
       "block_id" : 55,
       "confidence" : 0.99,
       "kind" : "code",
       "reason" : "pre",
       "words" : 33
+    },
+    {
+      "block_id" : 57,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 5
     },
     {
       "block_id" : 59,
@@ -2688,11 +2675,81 @@
       "words" : 13
     },
     {
+      "block_id" : 61,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 4
+    },
+    {
+      "block_id" : 64,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 2
+    },
+    {
+      "block_id" : 69,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 2
+    },
+    {
       "block_id" : 73,
       "confidence" : 0.99,
       "kind" : "code",
       "reason" : "pre",
       "words" : 32
+    },
+    {
+      "block_id" : 76,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 2
+    },
+    {
+      "block_id" : 85,
+      "confidence" : 0.9,
+      "kind" : "aside",
+      "reason" : "aside",
+      "words" : 31
+    },
+    {
+      "block_id" : 86,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 3
+    },
+    {
+      "block_id" : 88,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h4",
+      "words" : 2
+    },
+    {
+      "block_id" : 90,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h4",
+      "words" : 2
+    },
+    {
+      "block_id" : 92,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 2
+    },
+    {
+      "block_id" : 95,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 1
     },
     {
       "block_id" : 102,
@@ -2704,7 +2761,7 @@
   ],
   "source" : "022-python-json.html",
   "source_sha256" : "e4ec5e442de9e8f991c4be93120c536e109164ee4dfa382fdcaa7c5eeff4b1a8",
-  "spoken_words" : 3526,
+  "spoken_words" : 3446,
   "validation_failures" : 0,
   "version" : 1
 }

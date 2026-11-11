@@ -102,11 +102,7 @@
       "lowConfidence" : false,
       "reason" : "h1",
       "spoken" : [
-        {
-          "length" : 11,
-          "offset" : 0,
-          "text" : "Alan Turing"
-        }
+
       ],
       "text" : "Alan Turing"
     },
@@ -253,16 +249,7 @@
       "lowConfidence" : false,
       "reason" : "figure",
       "spoken" : [
-        {
-          "length" : 16,
-          "offset" : 0,
-          "text" : "Alan Turing (ca."
-        },
-        {
-          "length" : 27,
-          "offset" : 17,
-          "text" : "1938)[1] Seine Unterschrift"
-        }
+
       ],
       "text" : "Alan Turing (ca. 1938)[1] Seine Unterschrift"
     },
@@ -276,11 +263,7 @@
       "lowConfidence" : false,
       "reason" : "figure",
       "spoken" : [
-        {
-          "length" : 18,
-          "offset" : 0,
-          "text" : "Alan Turing (1951)"
-        }
+
       ],
       "text" : "Alan Turing (1951)"
     },
@@ -439,11 +422,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 16,
-          "offset" : 0,
-          "text" : "Leben und Wirken"
-        }
+
       ],
       "text" : "Leben und Wirken"
     },
@@ -475,11 +454,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 19,
-          "offset" : 0,
-          "text" : "Kindheit und Jugend"
-        }
+
       ],
       "text" : "Kindheit und Jugend"
     },
@@ -661,11 +636,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 37,
-          "offset" : 0,
-          "text" : "Collegezeit und theoretische Arbeiten"
-        }
+
       ],
       "text" : "Collegezeit und theoretische Arbeiten"
     },
@@ -725,11 +696,7 @@
       "lowConfidence" : false,
       "reason" : "figure",
       "spoken" : [
-        {
-          "length" : 164,
-          "offset" : 0,
-          "text" : "1-Band-Turingmaschine: abstraktes Modell eines Rechners, der mit nur drei Operationen (lesen, schreiben und Kopf bewegen) sämtliche berechenbare Probleme lösen kann"
-        }
+
       ],
       "text" : "1-Band-Turingmaschine: abstraktes Modell eines Rechners, der mit nur drei Operationen (lesen, schreiben und Kopf bewegen) sämtliche berechenbare Probleme lösen kann"
     },
@@ -890,11 +857,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 22,
-          "offset" : 0,
-          "text" : "Karriere und Forschung"
-        }
+
       ],
       "text" : "Karriere und Forschung"
     },
@@ -944,11 +907,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 13,
-          "offset" : 0,
-          "text" : "Kryptoanalyse"
-        }
+
       ],
       "text" : "Kryptoanalyse"
     },
@@ -980,11 +939,7 @@
       "lowConfidence" : false,
       "reason" : "figure",
       "spoken" : [
-        {
-          "length" : 37,
-          "offset" : 0,
-          "text" : "Sein ehemaliges Arbeitszimmer in B.P."
-        }
+
       ],
       "text" : "Sein ehemaliges Arbeitszimmer in B.P."
     },
@@ -998,11 +953,7 @@
       "lowConfidence" : false,
       "reason" : "figure",
       "spoken" : [
-        {
-          "length" : 26,
-          "offset" : 0,
-          "text" : "Nachbau einer Turing-Bombe"
-        }
+
       ],
       "text" : "Nachbau einer Turing-Bombe"
     },
@@ -1087,11 +1038,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 44,
-          "offset" : 0,
-          "text" : "Arbeit an frühen Computern – Der Turing-Test"
-        }
+
       ],
       "text" : "Arbeit an frühen Computern – Der Turing-Test"
     },
@@ -1123,11 +1070,7 @@
       "lowConfidence" : false,
       "reason" : "figure",
       "spoken" : [
-        {
-          "length" : 96,
-          "offset" : 0,
-          "text" : "Lochkarten für die Automatic Computing Engine des National Physical Laboratory aus dem Jahr 1950"
-        }
+
       ],
       "text" : "Lochkarten für die Automatic Computing Engine des National Physical Laboratory aus dem Jahr 1950"
     },
@@ -1240,11 +1183,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 61,
-          "offset" : 0,
-          "text" : "Arbeit an mathematischen Problemen der theoretischen Biologie"
-        }
+
       ],
       "text" : "Arbeit an mathematischen Problemen der theoretischen Biologie"
     },
@@ -1319,11 +1258,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 47,
-          "offset" : 0,
-          "text" : "Verfolgung wegen Homosexualität und Turings Tod"
-        }
+
       ],
       "text" : "Verfolgung wegen Homosexualität und Turings Tod"
     },
@@ -1507,11 +1442,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 57,
-          "offset" : 0,
-          "text" : "Offizielle Entschuldigung, Danksagung und Rehabilitierung"
-        }
+
       ],
       "text" : "Offizielle Entschuldigung, Danksagung und Rehabilitierung"
     },
@@ -1798,11 +1729,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 33,
-          "offset" : 0,
-          "text" : "Nachwirkungen der Rehabilitierung"
-        }
+
       ],
       "text" : "Nachwirkungen der Rehabilitierung"
     },
@@ -1925,11 +1852,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 16,
-          "offset" : 0,
-          "text" : "Postume Ehrungen"
-        }
+
       ],
       "text" : "Postume Ehrungen"
     },
@@ -1961,11 +1884,7 @@
       "lowConfidence" : false,
       "reason" : "figure",
       "spoken" : [
-        {
-          "length" : 45,
-          "offset" : 0,
-          "text" : "Statue von Turing an der University of Surrey"
-        }
+
       ],
       "text" : "Statue von Turing an der University of Surrey"
     },
@@ -2229,11 +2148,7 @@
       "lowConfidence" : false,
       "reason" : "figure",
       "spoken" : [
-        {
-          "length" : 69,
-          "offset" : 0,
-          "text" : "Der zu Ehren von Alan Turing benannte Triebzug im Bahnhof von Swansea"
-        }
+
       ],
       "text" : "Der zu Ehren von Alan Turing benannte Triebzug im Bahnhof von Swansea"
     },
@@ -2280,11 +2195,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 13,
-          "offset" : 0,
-          "text" : "Verschiedenes"
-        }
+
       ],
       "text" : "Verschiedenes"
     },
@@ -2316,11 +2227,7 @@
       "lowConfidence" : false,
       "reason" : "figure",
       "spoken" : [
-        {
-          "length" : 27,
-          "offset" : 0,
-          "text" : "Gedenktafel an Turings Haus"
-        }
+
       ],
       "text" : "Gedenktafel an Turings Haus"
     },
@@ -2397,11 +2304,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 5,
-          "offset" : 0,
-          "text" : "Werke"
-        }
+
       ],
       "text" : "Werke"
     },
@@ -2433,11 +2336,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 18,
-          "offset" : 0,
-          "text" : "Veröffentlichungen"
-        }
+
       ],
       "text" : "Veröffentlichungen"
     },
@@ -2797,11 +2696,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 27,
-          "offset" : 0,
-          "text" : "Unveröffentlichte Literatur"
-        }
+
       ],
       "text" : "Unveröffentlichte Literatur"
     },
@@ -2851,11 +2746,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 7,
-          "offset" : 0,
-          "text" : "Patente"
-        }
+
       ],
       "text" : "Patente"
     },
@@ -2905,11 +2796,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 19,
-          "offset" : 0,
-          "text" : "Literatur (Auswahl)"
-        }
+
       ],
       "text" : "Literatur (Auswahl)"
     },
@@ -2941,11 +2828,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 22,
-          "offset" : 0,
-          "text" : "Theorie und Diskussion"
-        }
+
       ],
       "text" : "Theorie und Diskussion"
     },
@@ -3055,11 +2938,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 25,
-          "offset" : 0,
-          "text" : "Geschichte und Biographie"
-        }
+
       ],
       "text" : "Geschichte und Biographie"
     },
@@ -3254,11 +3133,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 12,
-          "offset" : 0,
-          "text" : "Belletristik"
-        }
+
       ],
       "text" : "Belletristik"
     },
@@ -3373,11 +3248,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 15,
-          "offset" : 0,
-          "text" : "Filme (Auswahl)"
-        }
+
       ],
       "text" : "Filme (Auswahl)"
     },
@@ -3517,11 +3388,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 13,
-          "offset" : 0,
-          "text" : "Theaterstücke"
-        }
+
       ],
       "text" : "Theaterstücke"
     },
@@ -3576,11 +3443,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 5,
-          "offset" : 0,
-          "text" : "Musik"
-        }
+
       ],
       "text" : "Musik"
     },
@@ -3635,11 +3498,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 5,
-          "offset" : 0,
-          "text" : "Comic"
-        }
+
       ],
       "text" : "Comic"
     },
@@ -3724,11 +3583,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 8,
-          "offset" : 0,
-          "text" : "Weblinks"
-        }
+
       ],
       "text" : "Weblinks"
     },
@@ -3951,11 +3806,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 15,
-          "offset" : 0,
-          "text" : "Einzelnachweise"
-        }
+
       ],
       "text" : "Einzelnachweise"
     },
@@ -6190,7 +6041,7 @@
       "text" : "Abschnitt hinzufügen"
     }
   ],
-  "sentence_count" : 695,
+  "sentence_count" : 658,
   "skipped" : [
     {
       "block_id" : 1,
@@ -6218,6 +6069,13 @@
       "confidence" : 0.85,
       "kind" : "nav",
       "reason" : "nav",
+      "words" : 2
+    },
+    {
+      "block_id" : 6,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h1",
       "words" : 2
     },
     {
@@ -6249,6 +6107,251 @@
       "words" : 6
     },
     {
+      "block_id" : 15,
+      "confidence" : 0.95,
+      "kind" : "figure",
+      "reason" : "figure",
+      "words" : 6
+    },
+    {
+      "block_id" : 16,
+      "confidence" : 0.95,
+      "kind" : "figure",
+      "reason" : "figure",
+      "words" : 3
+    },
+    {
+      "block_id" : 22,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 3
+    },
+    {
+      "block_id" : 24,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 3
+    },
+    {
+      "block_id" : 31,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 4
+    },
+    {
+      "block_id" : 34,
+      "confidence" : 0.95,
+      "kind" : "figure",
+      "reason" : "figure",
+      "words" : 20
+    },
+    {
+      "block_id" : 39,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 3
+    },
+    {
+      "block_id" : 42,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 1
+    },
+    {
+      "block_id" : 44,
+      "confidence" : 0.95,
+      "kind" : "figure",
+      "reason" : "figure",
+      "words" : 5
+    },
+    {
+      "block_id" : 45,
+      "confidence" : 0.95,
+      "kind" : "figure",
+      "reason" : "figure",
+      "words" : 3
+    },
+    {
+      "block_id" : 48,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 7
+    },
+    {
+      "block_id" : 50,
+      "confidence" : 0.95,
+      "kind" : "figure",
+      "reason" : "figure",
+      "words" : 14
+    },
+    {
+      "block_id" : 54,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 7
+    },
+    {
+      "block_id" : 57,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 6
+    },
+    {
+      "block_id" : 63,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 5
+    },
+    {
+      "block_id" : 75,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 3
+    },
+    {
+      "block_id" : 79,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 2
+    },
+    {
+      "block_id" : 81,
+      "confidence" : 0.95,
+      "kind" : "figure",
+      "reason" : "figure",
+      "words" : 8
+    },
+    {
+      "block_id" : 92,
+      "confidence" : 0.95,
+      "kind" : "figure",
+      "reason" : "figure",
+      "words" : 12
+    },
+    {
+      "block_id" : 94,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 1
+    },
+    {
+      "block_id" : 96,
+      "confidence" : 0.95,
+      "kind" : "figure",
+      "reason" : "figure",
+      "words" : 4
+    },
+    {
+      "block_id" : 98,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 1
+    },
+    {
+      "block_id" : 100,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 1
+    },
+    {
+      "block_id" : 108,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 2
+    },
+    {
+      "block_id" : 111,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 1
+    },
+    {
+      "block_id" : 114,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 2
+    },
+    {
+      "block_id" : 116,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 3
+    },
+    {
+      "block_id" : 119,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 3
+    },
+    {
+      "block_id" : 122,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 1
+    },
+    {
+      "block_id" : 125,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 2
+    },
+    {
+      "block_id" : 128,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 1
+    },
+    {
+      "block_id" : 131,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 1
+    },
+    {
+      "block_id" : 134,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 1
+    },
+    {
+      "block_id" : 137,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 1
+    },
+    {
+      "block_id" : 146,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 1
+    },
+    {
       "block_id" : 195,
       "confidence" : 0.95,
       "kind" : "table",
@@ -6265,7 +6368,7 @@
   ],
   "source" : "042-de-wiki.html",
   "source_sha256" : "c7907f9c05997102545f5f5e220dbb0ff4da067f940bee048f0008eb6c73eb60",
-  "spoken_words" : 7482,
+  "spoken_words" : 7339,
   "validation_failures" : 0,
   "version" : 1
 }

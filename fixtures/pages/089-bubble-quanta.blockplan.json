@@ -318,11 +318,7 @@
       "lowConfidence" : false,
       "reason" : "h1",
       "spoken" : [
-        {
-          "length" : 37,
-          "offset" : 0,
-          "text" : "The Case for a Bubble at Life’s Start"
-        }
+
       ],
       "text" : "The Case for a Bubble at Life’s Start"
     },
@@ -485,16 +481,7 @@
       "lowConfidence" : false,
       "reason" : "figure",
       "spoken" : [
-        {
-          "length" : 63,
-          "offset" : 0,
-          "text" : "Some scientists believe that life began with a lipid container."
-        },
-        {
-          "length" : 26,
-          "offset" : 64,
-          "text" : "Mark Belan/Quanta Magazine"
-        }
+
       ],
       "text" : "Some scientists believe that life began with a lipid container. Mark Belan/Quanta Magazine"
     },
@@ -508,11 +495,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 12,
-          "offset" : 0,
-          "text" : "Introduction"
-        }
+
       ],
       "text" : "Introduction"
     },
@@ -549,11 +532,7 @@
       "lowConfidence" : false,
       "reason" : "aside",
       "spoken" : [
-        {
-          "length" : 152,
-          "offset" : 0,
-          "text" : "By Perri Thaler Science Writing Fellow November 10, 2026 biochemistry biology cells chemistry explainers origins of life Origins of Life Week All topics"
-        }
+
       ],
       "text" : "By Perri Thaler Science Writing Fellow November 10, 2026 biochemistry biology cells chemistry explainers origins of life Origins of Life Week All topics"
     },
@@ -994,21 +973,7 @@
       "lowConfidence" : false,
       "reason" : "aside",
       "spoken" : [
-        {
-          "length" : 40,
-          "offset" : 0,
-          "text" : "Related: Did Life Begin in an RNA World?"
-        },
-        {
-          "length" : 43,
-          "offset" : 41,
-          "text" : "In Warm, Greasy Puddles, the Spark of Life?"
-        },
-        {
-          "length" : 125,
-          "offset" : 85,
-          "text" : "For the First Time, a Cell Built From Scratch Grows and Divides The Cellular Secret to Resisting the Pressure of the Deep Sea"
-        }
+
       ],
       "text" : "Related: Did Life Begin in an RNA World? In Warm, Greasy Puddles, the Spark of Life? For the First Time, a Cell Built From Scratch Grows and Divides The Cellular Secret to Resisting the Pressure of the Deep Sea"
     },
@@ -1106,16 +1071,7 @@
       "lowConfidence" : false,
       "reason" : "aside",
       "spoken" : [
-        {
-          "length" : 26,
-          "offset" : 0,
-          "text" : "Share this article Copied!"
-        },
-        {
-          "length" : 68,
-          "offset" : 27,
-          "text" : "Newsletter Get Quanta Magazine delivered to your inbox Subscribe now"
-        }
+
       ],
       "text" : "Share this article Copied! Newsletter Get Quanta Magazine delivered to your inbox Subscribe now"
     },
@@ -1129,11 +1085,7 @@
       "lowConfidence" : false,
       "reason" : "aside",
       "spoken" : [
-        {
-          "length" : 152,
-          "offset" : 0,
-          "text" : "By Perri Thaler Science Writing Fellow November 10, 2026 biochemistry biology cells chemistry explainers origins of life Origins of Life Week All topics"
-        }
+
       ],
       "text" : "By Perri Thaler Science Writing Fellow November 10, 2026 biochemistry biology cells chemistry explainers origins of life Origins of Life Week All topics"
     },
@@ -1147,16 +1099,7 @@
       "lowConfidence" : false,
       "reason" : "aside",
       "spoken" : [
-        {
-          "length" : 26,
-          "offset" : 0,
-          "text" : "Share this article Copied!"
-        },
-        {
-          "length" : 68,
-          "offset" : 27,
-          "text" : "Newsletter Get Quanta Magazine delivered to your inbox Subscribe now"
-        }
+
       ],
       "text" : "Share this article Copied! Newsletter Get Quanta Magazine delivered to your inbox Subscribe now"
     },
@@ -1206,11 +1149,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 15,
-          "offset" : 0,
-          "text" : "Also in Biology"
-        }
+
       ],
       "text" : "Also in Biology"
     },
@@ -1602,11 +1541,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 23,
-          "offset" : 0,
-          "text" : "Comment on this article"
-        }
+
       ],
       "text" : "Comment on this article"
     },
@@ -1666,11 +1601,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 12,
-          "offset" : 0,
-          "text" : "Next article"
-        }
+
       ],
       "text" : "Next article"
     },
@@ -1788,11 +1719,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 23,
-          "offset" : 0,
-          "text" : "Use your social network"
-        }
+
       ],
       "text" : "Use your social network"
     },
@@ -2031,7 +1958,7 @@
       "text" : "Creating an account means you accept Quanta Magazine's and"
     }
   ],
-  "sentence_count" : 145,
+  "sentence_count" : 128,
   "skipped" : [
     {
       "block_id" : 0,
@@ -2062,16 +1989,100 @@
       "words" : 7
     },
     {
+      "block_id" : 18,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h1",
+      "words" : 8
+    },
+    {
+      "block_id" : 27,
+      "confidence" : 0.95,
+      "kind" : "figure",
+      "reason" : "figure",
+      "words" : 13
+    },
+    {
+      "block_id" : 28,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 1
+    },
+    {
+      "block_id" : 30,
+      "confidence" : 0.9,
+      "kind" : "aside",
+      "reason" : "aside",
+      "words" : 23
+    },
+    {
+      "block_id" : 45,
+      "confidence" : 0.9,
+      "kind" : "aside",
+      "reason" : "aside",
+      "words" : 39
+    },
+    {
+      "block_id" : 49,
+      "confidence" : 0.9,
+      "kind" : "aside",
+      "reason" : "aside",
+      "words" : 14
+    },
+    {
+      "block_id" : 50,
+      "confidence" : 0.9,
+      "kind" : "aside",
+      "reason" : "aside",
+      "words" : 23
+    },
+    {
+      "block_id" : 51,
+      "confidence" : 0.9,
+      "kind" : "aside",
+      "reason" : "aside",
+      "words" : 14
+    },
+    {
+      "block_id" : 54,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 3
+    },
+    {
+      "block_id" : 76,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 4
+    },
+    {
+      "block_id" : 79,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 2
+    },
+    {
       "block_id" : 81,
       "confidence" : 0.85,
       "kind" : "nav",
       "reason" : "nav",
       "words" : 13
+    },
+    {
+      "block_id" : 86,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 4
     }
   ],
   "source" : "089-bubble-quanta.html",
   "source_sha256" : "825226929628202c601e6e8a836b9875b0b04115c5765524eba824b57bd4f60e",
-  "spoken_words" : 1602,
+  "spoken_words" : 1454,
   "validation_failures" : 0,
   "version" : 1
 }

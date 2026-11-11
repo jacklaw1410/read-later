@@ -106,11 +106,7 @@
       "lowConfidence" : false,
       "reason" : "h1",
       "spoken" : [
-        {
-          "length" : 12,
-          "offset" : 0,
-          "text" : "Introduction"
-        }
+
       ],
       "text" : "Introduction"
     },
@@ -160,16 +156,7 @@
       "lowConfidence" : false,
       "reason" : "aside",
       "spoken" : [
-        {
-          "length" : 101,
-          "offset" : 0,
-          "text" : "In this article What you should already know Where to find JavaScript information What is JavaScript?"
-        },
-        {
-          "length" : 107,
-          "offset" : 102,
-          "text" : "JavaScript and Java JavaScript and the ECMAScript specification Getting started with JavaScript What's next"
-        }
+
       ],
       "text" : "In this article What you should already know Where to find JavaScript information What is JavaScript? JavaScript and Java JavaScript and the ECMAScript specification Getting started with JavaScript What's next"
     },
@@ -183,11 +170,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 28,
-          "offset" : 0,
-          "text" : "What you should already know"
-        }
+
       ],
       "text" : "What you should already know"
     },
@@ -252,11 +235,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 36,
-          "offset" : 0,
-          "text" : "Where to find JavaScript information"
-        }
+
       ],
       "text" : "Where to find JavaScript information"
     },
@@ -316,11 +295,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 19,
-          "offset" : 0,
-          "text" : "What is JavaScript?"
-        }
+
       ],
       "text" : "What is JavaScript?"
     },
@@ -441,11 +416,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 19,
-          "offset" : 0,
-          "text" : "JavaScript and Java"
-        }
+
       ],
       "text" : "JavaScript and Java"
     },
@@ -619,56 +590,7 @@
       "lowConfidence" : false,
       "reason" : "figure",
       "spoken" : [
-        {
-          "length" : 32,
-          "offset" : 0,
-          "text" : "JavaScript Java Object-oriented."
-        },
-        {
-          "length" : 40,
-          "offset" : 33,
-          "text" : "No distinction between types of objects."
-        },
-        {
-          "length" : 114,
-          "offset" : 74,
-          "text" : "Inheritance is through the prototype mechanism, and properties and methods can be added to any object dynamically."
-        },
-        {
-          "length" : 12,
-          "offset" : 189,
-          "text" : "Class-based."
-        },
-        {
-          "length" : 96,
-          "offset" : 202,
-          "text" : "Objects are divided into classes and instances with all inheritance through the class hierarchy."
-        },
-        {
-          "length" : 74,
-          "offset" : 299,
-          "text" : "Classes and instances cannot have properties or methods added dynamically."
-        },
-        {
-          "length" : 69,
-          "offset" : 374,
-          "text" : "Variable data types are not declared (dynamic typing, loosely typed)."
-        },
-        {
-          "length" : 69,
-          "offset" : 444,
-          "text" : "Variable data types must be declared (static typing, strongly typed)."
-        },
-        {
-          "length" : 40,
-          "offset" : 514,
-          "text" : "Cannot automatically write to hard disk."
-        },
-        {
-          "length" : 37,
-          "offset" : 555,
-          "text" : "Can automatically write to hard disk."
-        }
+
       ],
       "text" : "JavaScript Java Object-oriented. No distinction between types of objects. Inheritance is through the prototype mechanism, and properties and methods can be added to any object dynamically. Class-based. Objects are divided into classes and instances with all inheritance through the class hierarchy. Classes and instances cannot have properties or methods added dynamically. Variable data types are not declared (dynamic typing, loosely typed). Variable data types must be declared (static typing, strongly typed). Cannot automatically write to hard disk. Can automatically write to hard disk."
     },
@@ -682,11 +604,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 43,
-          "offset" : 0,
-          "text" : "JavaScript and the ECMAScript specification"
-        }
+
       ],
       "text" : "JavaScript and the ECMAScript specification"
     },
@@ -771,11 +689,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 60,
-          "offset" : 0,
-          "text" : "JavaScript documentation versus the ECMAScript specification"
-        }
+
       ],
       "text" : "JavaScript documentation versus the ECMAScript specification"
     },
@@ -881,11 +795,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 31,
-          "offset" : 0,
-          "text" : "Getting started with JavaScript"
-        }
+
       ],
       "text" : "Getting started with JavaScript"
     },
@@ -958,11 +868,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 19,
-          "offset" : 0,
-          "text" : "Opening the console"
-        }
+
       ],
       "text" : "Opening the console"
     },
@@ -1012,11 +918,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 31,
-          "offset" : 0,
-          "text" : "Entering and running JavaScript"
-        }
+
       ],
       "text" : "Entering and running JavaScript"
     },
@@ -1108,11 +1010,7 @@
       "lowConfidence" : false,
       "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 31,
-          "offset" : 0,
-          "text" : "Multi-line input in the console"
-        }
+
       ],
       "text" : "Multi-line input in the console"
     },
@@ -1245,11 +1143,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 11,
-          "offset" : 0,
-          "text" : "What's next"
-        }
+
       ],
       "text" : "What's next"
     },
@@ -1345,11 +1239,7 @@
       "lowConfidence" : false,
       "reason" : "h2",
       "spoken" : [
-        {
-          "length" : 16,
-          "offset" : 0,
-          "text" : "Help improve MDN"
-        }
+
       ],
       "text" : "Help improve MDN"
     },
@@ -1467,101 +1357,7 @@
       "lowConfidence" : false,
       "reason" : "aside",
       "spoken" : [
-        {
-          "length" : 2522,
-          "offset" : 0,
-          "text" : "Filter sidebar Clear filter input JavaScript Tutorials and guides JavaScript Guide Introduction Grammar and types Control flow and error handling Loops and iteration Functions Expressions and operators Numbers and strings Representing dates & times Regular expressions Indexed collections Keyed collections Working with objects Using classes Using promises JavaScript typed arrays Iterators and generators Resource management Internationalization JavaScript modules Using modules on the web Understanding the module graph Modules across platforms Intermediate Language overview JavaScript data structures Equality comparisons and sameness Enumerability and ownership of properties Closures Advanced Inheritance and the prototype chain Meta programming Memory Management Agent communication and coordination References Built-in objects AbstractModuleSource AggregateError Array ArrayBuffer AsyncDisposableStack AsyncFunction AsyncGenerator AsyncGeneratorFunction AsyncIterator Atomics BigInt BigInt64Array BigUint64Array Boolean DataView Date decodeURI() decodeURIComponent() DisposableStack encodeURI() encodeURIComponent() Error escape() eval() EvalError FinalizationRegistry Float16Array Float32Array Float64Array Function Generator GeneratorFunction globalThis Infinity Int8Array Int16Array Int32Array InternalError Intl isFinite() isNaN() Iterator JSON Map Math NaN Number Object parseFloat() parseInt() Promise Proxy RangeError ReferenceError Reflect RegExp Set SharedArrayBuffer String SuppressedError Symbol SyntaxError Temporal TypedArray TypeError Uint8Array Uint8ClampedArray Uint16Array Uint32Array undefined unescape() URIError WeakMap WeakRef WeakSet Expressions & operators Addition (+) Addition assignment (+=) Assignment (=) async function expression async function* expression await Bitwise AND (&) Bitwise AND assignment (&=) Bitwise NOT (~) Bitwise OR (|) Bitwise OR assignment (|=) Bitwise XOR (^) Bitwise XOR assignment (^=) class expression Comma operator (,) Conditional (ternary) operator Decrement (--) delete Destructuring Division (/) Division assignment (/=) Equality (==) Exponentiation (**) Exponentiation assignment (**=) function expression function* expression Greater than (>) Greater than or equal (>=) Grouping operator ( ) import.meta import.meta.resolve() import() import.defer() import.source() in Increment (++) Inequality (!=) instanceof Left shift (<<) Left shift assignment (<<=) Less than (<) Less than or equal (<=) Logical AND (&&) Logical AND assignment (&&=) Logical NOT (!)"
-        },
-        {
-          "length" : 182,
-          "offset" : 2523,
-          "text" : "Logical OR (||) Logical OR assignment (||=) Multiplication (*) Multiplication assignment (*=) new new.target null Nullish coalescing assignment (??=) Nullish coalescing operator (??)"
-        },
-        {
-          "length" : 61,
-          "offset" : 2706,
-          "text" : "Object initializer Operator precedence Optional chaining (?.)"
-        },
-        {
-          "length" : 124,
-          "offset" : 2768,
-          "text" : "Property accessors Remainder (%) Remainder assignment (%=) Right shift (>>) Right shift assignment (>>=) Spread syntax (...)"
-        },
-        {
-          "length" : 961,
-          "offset" : 2893,
-          "text" : "Strict equality (===) Strict inequality (!==) Subtraction (-) Subtraction assignment (-=) super this typeof Unary negation (-) Unary plus (+) Unsigned right shift (>>>) Unsigned right shift assignment (>>>=) void operator yield yield* Statements & declarations async function async function* await using Block statement break class const continue debugger do...while Empty statement export Expression statement for for await...of for...in for...of function function* if...else import Import attributes import defer import source Labeled statement let return switch throw try...catch using var while with Functions Arrow function expressions Default parameters get Method definitions Rest parameters set The arguments object [Symbol.iterator]() callee length Classes constructor extends Private elements Public class fields static Static initialization blocks Regular expressions Backreference: \\1, \\2 Buffer boundary assertion: \\A, \\z, \\Z Capturing group: (...)"
-        },
-        {
-          "length" : 77,
-          "offset" : 3855,
-          "text" : "Character class escape: \\d, \\D, \\w, \\W, \\s, \\S Character class: [...], [^...]"
-        },
-        {
-          "length" : 29,
-          "offset" : 3933,
-          "text" : "Character escape: \\n, \\u{...}"
-        },
-        {
-          "length" : 107,
-          "offset" : 3963,
-          "text" : "Disjunction: | Input boundary assertion: ^, $ Literal character: a, b Lookahead assertion: (?=...), (?!...)"
-        },
-        {
-          "length" : 40,
-          "offset" : 4071,
-          "text" : "Lookbehind assertion: (?<=...), (?<!...)"
-        },
-        {
-          "length" : 24,
-          "offset" : 4112,
-          "text" : "Modifier: (?ims-ims:...)"
-        },
-        {
-          "length" : 65,
-          "offset" : 4137,
-          "text" : "Named backreference: \\k<name> Named capturing group: (?<name>...)"
-        },
-        {
-          "length" : 28,
-          "offset" : 4203,
-          "text" : "Non-capturing group: (?:...)"
-        },
-        {
-          "length" : 86,
-          "offset" : 4232,
-          "text" : "Quantifier: *, +, ?, {n}, {n,}, {n,m} Unicode character class escape: \\p{...}, \\P{...}"
-        },
-        {
-          "length" : 11,
-          "offset" : 4319,
-          "text" : "Wildcard: ."
-        },
-        {
-          "length" : 1657,
-          "offset" : 4331,
-          "text" : "Word boundary assertion: \\b, \\B Errors AggregateError: No Promise in Promise.any was resolved Error: Permission denied to access property \"x\" InternalError: too much recursion RangeError: argument is not a valid code point RangeError: BigInt division by zero RangeError: BigInt negative exponent RangeError: form must be one of 'NFC', 'NFD', 'NFKC', or 'NFKD' RangeError: invalid array length RangeError: invalid date RangeError: precision is out of range RangeError: radix must be an integer RangeError: repeat count must be less than infinity RangeError: repeat count must be non-negative RangeError: x can't be converted to BigInt because it isn't an integer ReferenceError: \"x\" is not defined ReferenceError: assignment to undeclared variable \"x\" ReferenceError: can't access lexical declaration 'X' before initialization ReferenceError: must call super constructor before using 'this' in derived class constructor ReferenceError: super() called twice in derived class constructor SyntaxError: 'arguments'/'eval' can't be defined or assigned to in strict mode code SyntaxError: \"0\"-prefixed octal literals are deprecated SyntaxError: \"use strict\" not allowed in function with non-simple parameters SyntaxError: \"x\" is a reserved identifier SyntaxError: \\ at end of pattern SyntaxError: a declaration in the head of a for-of loop can't have an initializer SyntaxError: applying the 'delete' operator to an unqualified name is deprecated SyntaxError: arguments is not valid in fields SyntaxError: await is only valid in async functions, async generators and modules SyntaxError: await/yield expression can't be used in parameter SyntaxError: cannot use ??"
-        },
-        {
-          "length" : 1942,
-          "offset" : 5989,
-          "text" : "unparenthesized within || and && expressions SyntaxError: character class escape cannot be used in class range in regular expression SyntaxError: continue must be inside loop SyntaxError: duplicate capture group name in regular expression SyntaxError: duplicate formal argument x SyntaxError: for-in loop head declarations may not have initializers SyntaxError: function statement requires a name SyntaxError: functions cannot be labelled SyntaxError: getter and setter for private name #x should either be both static or non-static SyntaxError: getter functions must have no arguments SyntaxError: identifier starts immediately after numeric literal SyntaxError: illegal character SyntaxError: import declarations may only appear at top level of a module SyntaxError: incomplete quantifier in regular expression SyntaxError: invalid assignment left-hand side SyntaxError: invalid BigInt syntax SyntaxError: invalid capture group name in regular expression SyntaxError: invalid character in class in regular expression SyntaxError: invalid class set operation in regular expression SyntaxError: invalid decimal escape in regular expression SyntaxError: invalid identity escape in regular expression SyntaxError: invalid named capture reference in regular expression SyntaxError: invalid property name in regular expression SyntaxError: invalid range in character class SyntaxError: invalid regexp group SyntaxError: invalid regular expression flag \"x\" SyntaxError: invalid unicode escape in regular expression SyntaxError: JSON.parse: bad parsing SyntaxError: label not found SyntaxError: missing : after property id SyntaxError: missing ) after argument list SyntaxError: missing ) after condition SyntaxError: missing ] after element list SyntaxError: missing } after function body SyntaxError: missing } after property list SyntaxError: missing = in const declaration SyntaxError: missing formal parameter SyntaxError: missing name after ."
-        },
-        {
-          "length" : 261,
-          "offset" : 7932,
-          "text" : "operator SyntaxError: missing variable name SyntaxError: negated character class with strings in regular expression SyntaxError: new keyword cannot be used with an optional chain SyntaxError: nothing to repeat SyntaxError: numbers out of order in {} quantifier."
-        },
-        {
-          "length" : 1200,
-          "offset" : 8194,
-          "text" : "SyntaxError: octal escape sequences can't be used in untagged template literals or in strict mode code SyntaxError: parameter after rest parameter SyntaxError: private fields can't be deleted SyntaxError: property name __proto__ appears more than once in object literal SyntaxError: raw bracket is not allowed in regular expression with unicode flag SyntaxError: redeclaration of formal parameter \"x\" SyntaxError: reference to undeclared private field or method #x SyntaxError: rest parameter may not have a default SyntaxError: return not in function SyntaxError: setter functions must have one argument SyntaxError: string literal contains an unescaped line break SyntaxError: super() is only valid in derived class constructors SyntaxError: tagged template cannot be used with optional chain SyntaxError: Unexpected '#' used outside of class body SyntaxError: Unexpected token SyntaxError: unlabeled break must be inside loop or switch SyntaxError: unparenthesized unary expression can't appear on the left-hand side of '**' SyntaxError: use of super property/member accesses only valid within methods or eval code within methods SyntaxError: Using //@ to indicate sourceURL pragmas is deprecated."
-        },
-        {
-          "length" : 2283,
-          "offset" : 9395,
-          "text" : "Use //# instead TypeError: 'caller', 'callee', and 'arguments' properties may not be accessed TypeError: 'x' is not iterable TypeError: \"x\" is (not) \"y\" TypeError: \"x\" is not a constructor TypeError: \"x\" is not a function TypeError: \"x\" is not a non-null object TypeError: \"x\" is read-only TypeError: already executing generator TypeError: BigInt value can't be serialized in JSON TypeError: calling a builtin X constructor without new is forbidden TypeError: can't access/set private field or method: object is not the right class TypeError: can't assign to property \"x\" on \"y\": not an object TypeError: can't convert BigInt to number TypeError: can't convert x to BigInt TypeError: can't define property \"x\": \"obj\" is not extensible TypeError: can't delete non-configurable array element TypeError: can't redefine non-configurable property \"x\" TypeError: can't set prototype of this object TypeError: can't set prototype: it would cause a prototype chain cycle TypeError: cannot use 'in' operator to search for 'x' in 'y' TypeError: class constructors must be invoked with 'new' TypeError: cyclic object value TypeError: derived class constructor returned invalid value x TypeError: getting private setter-only property TypeError: Initializing an object twice is an error with private fields/methods TypeError: invalid 'instanceof' operand 'x' TypeError: invalid Array.prototype.sort argument TypeError: invalid assignment to const \"x\" TypeError: Iterator/AsyncIterator constructor can't be used directly TypeError: matchAll/replaceAll must be called with a global RegExp TypeError: More arguments needed TypeError: null/undefined has no properties TypeError: property \"x\" is non-configurable and can't be deleted TypeError: Reduce of empty array with no initial value TypeError: setting getter-only property \"x\" TypeError: WeakSet key/WeakMap value 'x' must be an object or an unregistered symbol TypeError: X.prototype.y called on incompatible type URIError: malformed URI sequence Warning: -file- is being assigned a //# sourceMappingURL, but already has one Warning: unreachable code after return statement Misc JavaScript technologies overview Execution model Lexical grammar Magic comments Iteration protocols Strict mode Template literals Trailing commas Deprecated features"
-        }
+
       ],
       "text" : "Filter sidebar Clear filter input JavaScript Tutorials and guides JavaScript Guide Introduction Grammar and types Control flow and error handling Loops and iteration Functions Expressions and operators Numbers and strings Representing dates & times Regular expressions Indexed collections Keyed collections Working with objects Using classes Using promises JavaScript typed arrays Iterators and generators Resource management Internationalization JavaScript modules Using modules on the web Understanding the module graph Modules across platforms Intermediate Language overview JavaScript data structures Equality comparisons and sameness Enumerability and ownership of properties Closures Advanced Inheritance and the prototype chain Meta programming Memory Management Agent communication and coordination References Built-in objects AbstractModuleSource AggregateError Array ArrayBuffer AsyncDisposableStack AsyncFunction AsyncGenerator AsyncGeneratorFunction AsyncIterator Atomics BigInt BigInt64Array BigUint64Array Boolean DataView Date decodeURI() decodeURIComponent() DisposableStack encodeURI() encodeURIComponent() Error escape() eval() EvalError FinalizationRegistry Float16Array Float32Array Float64Array Function Generator GeneratorFunction globalThis Infinity Int8Array Int16Array Int32Array InternalError Intl isFinite() isNaN() Iterator JSON Map Math NaN Number Object parseFloat() parseInt() Promise Proxy RangeError ReferenceError Reflect RegExp Set SharedArrayBuffer String SuppressedError Symbol SyntaxError Temporal TypedArray TypeError Uint8Array Uint8ClampedArray Uint16Array Uint32Array undefined unescape() URIError WeakMap WeakRef WeakSet Expressions & operators Addition (+) Addition assignment (+=) Assignment (=) async function expression async function* expression await Bitwise AND (&) Bitwise AND assignment (&=) Bitwise NOT (~) Bitwise OR (|) Bitwise OR assignment (|=) Bitwise XOR (^) Bitwise XOR assignment (^=) class expression Comma operator (,) Conditional (ternary) operator Decrement (--) delete Destructuring Division (/) Division assignment (/=) Equality (==) Exponentiation (**) Exponentiation assignment (**=) function expression function* expression Greater than (>) Greater than or equal (>=) Grouping operator ( ) import.meta import.meta.resolve() import() import.defer() import.source() in Increment (++) Inequality (!=) instanceof Left shift (<<) Left shift assignment (<<=) Less than (<) Less than or equal (<=) Logical AND (&&) Logical AND assignment (&&=) Logical NOT (!) Logical OR (||) Logical OR assignment (||=) Multiplication (*) Multiplication assignment (*=) new new.target null Nullish coalescing assignment (??=) Nullish coalescing operator (??) Object initializer Operator precedence Optional chaining (?.) Property accessors Remainder (%) Remainder assignment (%=) Right shift (>>) Right shift assignment (>>=) Spread syntax (...) Strict equality (===) Strict inequality (!==) Subtraction (-) Subtraction assignment (-=) super this typeof Unary negation (-) Unary plus (+) Unsigned right shift (>>>) Unsigned right shift assignment (>>>=) void operator yield yield* Statements & declarations async function async function* await using Block statement break class const continue debugger do...while Empty statement export Expression statement for for await...of for...in for...of function function* if...else import Import attributes import defer import source Labeled statement let return switch throw try...catch using var while with Functions Arrow function expressions Default parameters get Method definitions Rest parameters set The arguments object [Symbol.iterator]() callee length Classes constructor extends Private elements Public class fields static Static initialization blocks Regular expressions Backreference: \\1, \\2 Buffer boundary assertion: \\A, \\z, \\Z Capturing group: (...) Character class escape: \\d, \\D, \\w, \\W, \\s, \\S Character class: [...], [^...] Character escape: \\n, \\u{...} Disjunction: | Input boundary assertion: ^, $ Literal character: a, b Lookahead assertion: (?=...), (?!...) Lookbehind assertion: (?<=...), (?<!...) Modifier: (?ims-ims:...) Named backreference: \\k<name> Named capturing group: (?<name>...) Non-capturing group: (?:...) Quantifier: *, +, ?, {n}, {n,}, {n,m} Unicode character class escape: \\p{...}, \\P{...} Wildcard: . Word boundary assertion: \\b, \\B Errors AggregateError: No Promise in Promise.any was resolved Error: Permission denied to access property \"x\" InternalError: too much recursion RangeError: argument is not a valid code point RangeError: BigInt division by zero RangeError: BigInt negative exponent RangeError: form must be one of 'NFC', 'NFD', 'NFKC', or 'NFKD' RangeError: invalid array length RangeError: invalid date RangeError: precision is out of range RangeError: radix must be an integer RangeError: repeat count must be less than infinity RangeError: repeat count must be non-negative RangeError: x can't be converted to BigInt because it isn't an integer ReferenceError: \"x\" is not defined ReferenceError: assignment to undeclared variable \"x\" ReferenceError: can't access lexical declaration 'X' before initialization ReferenceError: must call super constructor before using 'this' in derived class constructor ReferenceError: super() called twice in derived class constructor SyntaxError: 'arguments'/'eval' can't be defined or assigned to in strict mode code SyntaxError: \"0\"-prefixed octal literals are deprecated SyntaxError: \"use strict\" not allowed in function with non-simple parameters SyntaxError: \"x\" is a reserved identifier SyntaxError: \\ at end of pattern SyntaxError: a declaration in the head of a for-of loop can't have an initializer SyntaxError: applying the 'delete' operator to an unqualified name is deprecated SyntaxError: arguments is not valid in fields SyntaxError: await is only valid in async functions, async generators and modules SyntaxError: await/yield expression can't be used in parameter SyntaxError: cannot use ?? unparenthesized within || and && expressions SyntaxError: character class escape cannot be used in class range in regular expression SyntaxError: continue must be inside loop SyntaxError: duplicate capture group name in regular expression SyntaxError: duplicate formal argument x SyntaxError: for-in loop head declarations may not have initializers SyntaxError: function statement requires a name SyntaxError: functions cannot be labelled SyntaxError: getter and setter for private name #x should either be both static or non-static SyntaxError: getter functions must have no arguments SyntaxError: identifier starts immediately after numeric literal SyntaxError: illegal character SyntaxError: import declarations may only appear at top level of a module SyntaxError: incomplete quantifier in regular expression SyntaxError: invalid assignment left-hand side SyntaxError: invalid BigInt syntax SyntaxError: invalid capture group name in regular expression SyntaxError: invalid character in class in regular expression SyntaxError: invalid class set operation in regular expression SyntaxError: invalid decimal escape in regular expression SyntaxError: invalid identity escape in regular expression SyntaxError: invalid named capture reference in regular expression SyntaxError: invalid property name in regular expression SyntaxError: invalid range in character class SyntaxError: invalid regexp group SyntaxError: invalid regular expression flag \"x\" SyntaxError: invalid unicode escape in regular expression SyntaxError: JSON.parse: bad parsing SyntaxError: label not found SyntaxError: missing : after property id SyntaxError: missing ) after argument list SyntaxError: missing ) after condition SyntaxError: missing ] after element list SyntaxError: missing } after function body SyntaxError: missing } after property list SyntaxError: missing = in const declaration SyntaxError: missing formal parameter SyntaxError: missing name after . operator SyntaxError: missing variable name SyntaxError: negated character class with strings in regular expression SyntaxError: new keyword cannot be used with an optional chain SyntaxError: nothing to repeat SyntaxError: numbers out of order in {} quantifier. SyntaxError: octal escape sequences can't be used in untagged template literals or in strict mode code SyntaxError: parameter after rest parameter SyntaxError: private fields can't be deleted SyntaxError: property name __proto__ appears more than once in object literal SyntaxError: raw bracket is not allowed in regular expression with unicode flag SyntaxError: redeclaration of formal parameter \"x\" SyntaxError: reference to undeclared private field or method #x SyntaxError: rest parameter may not have a default SyntaxError: return not in function SyntaxError: setter functions must have one argument SyntaxError: string literal contains an unescaped line break SyntaxError: super() is only valid in derived class constructors SyntaxError: tagged template cannot be used with optional chain SyntaxError: Unexpected '#' used outside of class body SyntaxError: Unexpected token SyntaxError: unlabeled break must be inside loop or switch SyntaxError: unparenthesized unary expression can't appear on the left-hand side of '**' SyntaxError: use of super property/member accesses only valid within methods or eval code within methods SyntaxError: Using //@ to indicate sourceURL pragmas is deprecated. Use //# instead TypeError: 'caller', 'callee', and 'arguments' properties may not be accessed TypeError: 'x' is not iterable TypeError: \"x\" is (not) \"y\" TypeError: \"x\" is not a constructor TypeError: \"x\" is not a function TypeError: \"x\" is not a non-null object TypeError: \"x\" is read-only TypeError: already executing generator TypeError: BigInt value can't be serialized in JSON TypeError: calling a builtin X constructor without new is forbidden TypeError: can't access/set private field or method: object is not the right class TypeError: can't assign to property \"x\" on \"y\": not an object TypeError: can't convert BigInt to number TypeError: can't convert x to BigInt TypeError: can't define property \"x\": \"obj\" is not extensible TypeError: can't delete non-configurable array element TypeError: can't redefine non-configurable property \"x\" TypeError: can't set prototype of this object TypeError: can't set prototype: it would cause a prototype chain cycle TypeError: cannot use 'in' operator to search for 'x' in 'y' TypeError: class constructors must be invoked with 'new' TypeError: cyclic object value TypeError: derived class constructor returned invalid value x TypeError: getting private setter-only property TypeError: Initializing an object twice is an error with private fields/methods TypeError: invalid 'instanceof' operand 'x' TypeError: invalid Array.prototype.sort argument TypeError: invalid assignment to const \"x\" TypeError: Iterator/AsyncIterator constructor can't be used directly TypeError: matchAll/replaceAll must be called with a global RegExp TypeError: More arguments needed TypeError: null/undefined has no properties TypeError: property \"x\" is non-configurable and can't be deleted TypeError: Reduce of empty array with no initial value TypeError: setting getter-only property \"x\" TypeError: WeakSet key/WeakMap value 'x' must be an object or an unregistered symbol TypeError: X.prototype.y called on incompatible type URIError: malformed URI sequence Warning: -file- is being assigned a //# sourceMappingURL, but already has one Warning: unreachable code after return statement Misc JavaScript technologies overview Execution model Lexical grammar Magic comments Iteration protocols Strict mode Template literals Trailing commas Deprecated features"
     },
@@ -1679,7 +1475,7 @@
       "text" : "Portions of this content are ©1998–2026 by individual mozilla.org contributors. Content available under a Creative Commons license."
     }
   ],
-  "sentence_count" : 142,
+  "sentence_count" : 98,
   "skipped" : [
     {
       "block_id" : 1,
@@ -1703,11 +1499,102 @@
       "words" : 21
     },
     {
+      "block_id" : 6,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h1",
+      "words" : 1
+    },
+    {
+      "block_id" : 9,
+      "confidence" : 0.9,
+      "kind" : "aside",
+      "reason" : "aside",
+      "words" : 30
+    },
+    {
+      "block_id" : 10,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 5
+    },
+    {
+      "block_id" : 13,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 5
+    },
+    {
+      "block_id" : 16,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 3
+    },
+    {
+      "block_id" : 21,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 3
+    },
+    {
+      "block_id" : 27,
+      "confidence" : 0.95,
+      "kind" : "figure",
+      "reason" : "figure",
+      "words" : 83
+    },
+    {
+      "block_id" : 28,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 5
+    },
+    {
+      "block_id" : 31,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 6
+    },
+    {
+      "block_id" : 36,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 4
+    },
+    {
+      "block_id" : 40,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 3
+    },
+    {
+      "block_id" : 43,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 4
+    },
+    {
       "block_id" : 47,
       "confidence" : 0.99,
       "kind" : "code",
       "reason" : "pre",
       "words" : 3
+    },
+    {
+      "block_id" : 48,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 5
     },
     {
       "block_id" : 53,
@@ -1717,16 +1604,37 @@
       "words" : 25
     },
     {
+      "block_id" : 55,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 2
+    },
+    {
+      "block_id" : 60,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 3
+    },
+    {
       "block_id" : 61,
       "confidence" : 0.7,
       "kind" : "code",
       "reason" : "line-variance",
       "words" : 8
+    },
+    {
+      "block_id" : 67,
+      "confidence" : 0.9,
+      "kind" : "aside",
+      "reason" : "aside",
+      "words" : 1530
     }
   ],
   "source" : "018-javascript.html",
   "source_sha256" : "8755f5ce18d97c6ef06154aa661c4f9b596badbecd89536a4e4cd14986c857da",
-  "spoken_words" : 3194,
+  "spoken_words" : 1502,
   "validation_failures" : 0,
   "version" : 1
 }

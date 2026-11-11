@@ -14,6 +14,10 @@ let package = Package(
         .target(
             name: "ReadLaterUI",
             dependencies: ["ReadLaterCore"]
+        ),
+        .testTarget(
+            name: "ReadLaterUITests",
+            dependencies: ["ReadLaterUI", "ReadLaterCore"]
         )
     ]
 )

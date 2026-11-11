@@ -175,8 +175,24 @@ public enum WordShape: String, Sendable {
 }
 
 public enum TokenShape {
+    /// Strips leading and trailing non-alphanumerics from a tapped token.
+    ///
+    /// A tap resolves to the whitespace-delimited word, which carries its
+    /// punctuation: `attention.` and `("café")` arrive as they appear on the
+    /// page. The dictionary is asked for `attention` and `café`.
+    public static func trimmed(_ token: String) -> String {
+        var slice = Substring(token)
+        while let first = slice.first, !first.isLetter, !first.isNumber {
+            slice = slice.dropFirst()
+        }
+        while let last = slice.last, !last.isLetter, !last.isNumber {
+            slice = slice.dropLast()
+        }
+        return String(slice)
+    }
+
     public static func shape(of token: String) -> WordShape {
-        let trimmed = token.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmed = Self.trimmed(token)
         guard !trimmed.isEmpty else { return .notAWord }
         if trimmed.contains("/") || trimmed.contains("\\") { return .notAWord }
         if trimmed.contains("://") || trimmed.contains("@") && trimmed.contains(".") { return .notAWord }
