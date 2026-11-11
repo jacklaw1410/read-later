@@ -168,6 +168,12 @@ extension Theme {
         NSColor(name: nil) { $0.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua ? NSColor.washHex(0x7FB3D5) : NSColor.washHex(0x334E68) }
     }
 
+    /// The footnote marker's tile. Sits on the page, so it is a surface plus
+    /// a hint of blue, never a second brand fill.
+    static var platformMarkerFill: NSColor {
+        NSColor(name: nil) { $0.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua ? NSColor.washHex(0x2A3138) : NSColor.washHex(0xEEF3F8) }
+    }
+
     static var platformSkipInk: NSColor {
         NSColor(name: nil) { $0.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua ? NSColor.washHex(0xC9CDD2) : NSColor.washHex(0x191C1F) }
     }
@@ -239,6 +245,12 @@ func revealWash(in textView: NSTextView) {
 /// the glyph bounding rect gives the prototype's shape, keeps the layout
 /// untouched, and lets the paused and coincidence states carry an edge rule.
 final class _WashedTextView: NSTextView {
+    /// UTF-16 length of the block text. Anything past it is the footnote
+    /// marker run, which is a target, not a word.
+    var bodyLength = 0 {
+        didSet { if bodyLength != oldValue { needsDisplay = true } }
+    }
+
     var washMarkList: [WashMark] = [] {
         didSet {
             guard washMarkList != oldValue else { return }
@@ -249,6 +261,21 @@ final class _WashedTextView: NSTextView {
     /// Scrolls the enclosing scroll view so the wash word sits about 40 % down
     /// the viewport. Called from the block that currently holds the word, so
     /// only the visible block ever asks, and only when the reader is following.
+    /// Rect of the footnote marker run, in this view's coordinates.
+    func markerRect() -> NSRect? {
+        guard bodyLength > 0, bodyLength < (textStorage?.length ?? 0),
+              let layoutManager, let container = textContainer, let storage = textStorage
+        else { return nil }
+        layoutManager.ensureLayout(for: container)
+        let range = NSRange(location: bodyLength, length: storage.length - bodyLength)
+        let glyphRange = layoutManager.glyphRange(forCharacterRange: range, actualCharacterRange: nil)
+        var box = layoutManager.boundingRect(forGlyphRange: glyphRange, in: container)
+        guard !box.isEmpty else { return nil }
+        box.origin.x += textContainerOrigin.x
+        box.origin.y += textContainerOrigin.y
+        return box
+    }
+
     func revealWash(anchorFraction: CGFloat = 0.5) {
         guard let mark = washMarkList.first(where: { $0.emphasis == .current || $0.emphasis == .paused }),
               let layoutManager, let container = textContainer,
@@ -353,6 +380,28 @@ final class _WashedTextView: NSTextView {
                 ), colour: Theme.platformPausedRing, baseline: box.maxY)
             }
         }
+
+        drawMarkerChip(layoutManager: layoutManager, container: container, storage: storage)
+    }
+
+    /// The footnote marker's chip, drawn under the superscript run that
+    /// follows the block text. The prototype gives the marker its own 26 pt
+    /// tile (`fnmark`), so the reader can see a target without aiming.
+    private func drawMarkerChip(layoutManager: NSLayoutManager, container: NSTextContainer, storage: NSTextStorage) {
+        guard bodyLength > 0, bodyLength < storage.length else { return }
+        let range = NSRange(location: bodyLength, length: storage.length - bodyLength)
+        let glyphRange = layoutManager.glyphRange(forCharacterRange: range, actualCharacterRange: nil)
+        let glyphBox = layoutManager.boundingRect(forGlyphRange: glyphRange, in: container)
+        guard !glyphBox.isEmpty else { return }
+        let height: CGFloat = 20
+        let box = NSRect(
+            x: glyphBox.minX + textContainerOrigin.x - 3,
+            y: glyphBox.minY + textContainerOrigin.y + (glyphBox.height - height) / 2,
+            width: glyphBox.width + 6,
+            height: height
+        )
+        Theme.platformMarkerFill.setFill()
+        NSBezierPath(roundedRect: box, xRadius: 6, yRadius: 6).fill()
     }
 
     /// The paused state's second non-colour cue, in place of a text underline
@@ -397,6 +446,7 @@ struct _WashableTextView: NSViewRepresentable {
         context.coordinator.onTapWord = onTapWord
         context.coordinator.onTapMarker = onTapMarker
         context.coordinator.bodyLength = (text as NSString).length
+        textView.bodyLength = (text as NSString).length
         applyBaseStyle(to: textView)
         context.coordinator.lastText = text
         context.coordinator.lastStyle = style
@@ -486,8 +536,20 @@ struct _WashableTextView: NSViewRepresentable {
             else { return }
             let point = gesture.location(in: view)
             let index = layoutManager.characterIndex(for: point, in: container, fractionOfDistanceBetweenInsertionPoints: nil)
-            // Past the body is the footnote marker, which is a target, not a
-            // word. Checked before the word scan so the tap cannot fall through.
+            // The marker is a target, not a word, and the prototype grows it to
+            // 44 pt for the finger. A tap inside that grown rect counts even
+            // when it lands on the character before the marker.
+            if onTapMarker != nil {
+                let hit = (view as? _WashedTextView)?.markerRect() ?? .zero
+                let grown = hit.insetBy(
+                    dx: -max(0, (44 - hit.width) / 2),
+                    dy: -max(0, (44 - hit.height) / 2)
+                )
+                if !hit.isEmpty, grown.contains(point) {
+                    onTapMarker?()
+                    return
+                }
+            }
             if index >= bodyLength {
                 if onTapMarker != nil { onTapMarker?() }
                 return
@@ -572,6 +634,10 @@ extension Theme {
 
     static var platformBrandInk: UIColor {
         UIColor { $0.userInterfaceStyle == .dark ? UIColor.washHex(0x7FB3D5) : UIColor.washHex(0x334E68) }
+    }
+
+    static var platformMarkerFill: UIColor {
+        UIColor { $0.userInterfaceStyle == .dark ? UIColor.washHex(0x2A3138) : UIColor.washHex(0xEEF3F8) }
     }
 
     static var platformSkipInk: UIColor {
