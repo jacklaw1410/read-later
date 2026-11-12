@@ -111,58 +111,44 @@ struct GlossRendererTests {
         #expect(GlossRenderer.renderLines(gloss: six).count == GlossRenderer.maxLines)
     }
 
-    @Test("an ending that settles the kind of word names it")
-    func suffixLabel() {
-        #expect(GlossRenderer.suffixLabel("abaser") == "n.")
-        #expect(GlossRenderer.suffixLabel("a-listers") == "n.")
-        #expect(GlossRenderer.suffixLabel("abdicative") == "adj.")
-        #expect(GlossRenderer.suffixLabel("abandonedly") == "adv.")
-        // A participle is a form of its base word, so its ending decides
-        // nothing: `ovated` is an adjective because `ovate` is one.
-        #expect(GlossRenderer.suffixLabel("ovated") == nil)
-        #expect(GlossRenderer.suffixLabel("abandoning") == nil)
-        // An ending too short to carry meaning is ignored.
-        #expect(GlossRenderer.suffixLabel("er") == nil)
-    }
-
-    @Test("the pointer label names the tapped word, unless the ending disagrees")
+    @Test("a pointer card wears a label only when both rows agree on the kind")
     func pointerLabelChoice() {
-        // The ending agrees with the pointer: the pointer wins, and the base
-        // word's verb tag goes.
-        #expect(
-            GlossRenderer.pointerLabel(pointer: "n.", base: "vt.", tapped: "abaser") == "n."
-        )
-        #expect(
-            GlossRenderer.pointerLabel(pointer: "adj.", base: "vt.", tapped: "abdicative") == "adj."
-        )
-        // The pointer copies the base's tag on a participle, and the word is an
-        // adjective: the base line's own label stands.
-        #expect(
-            GlossRenderer.pointerLabel(pointer: "vi., vt.", base: "adj.", tapped: "ovated") == "adj."
-        )
-        // No label on the base line: the pointer is the only label there is.
-        #expect(
-            GlossRenderer.pointerLabel(pointer: "n.", base: nil, tapped: "abaculi") == "n."
-        )
+        // Both rows say noun: the label is safe.
+        #expect(GlossRenderer.pointerLabel(pointer: "n.", base: "n.") == .kind("n."))
+        // The base row carries no label, so the pointer is the only kind the
+        // card knows.
+        #expect(GlossRenderer.pointerLabel(pointer: "n.", base: nil) == .kind("n."))
+        // A noun over a verb sense: the pack names the right word and holds
+        // the wrong meaning. No label, so the card cannot mislabel the sense.
+        #expect(GlossRenderer.pointerLabel(pointer: "n.", base: "vt.") == .hide)
+        #expect(GlossRenderer.pointerLabel(pointer: "adj.", base: "vt.") == .hide)
+        // The pointer copies the base tag and the base row names a second
+        // kind: the rows disagree, so neither wins.
+        #expect(GlossRenderer.pointerLabel(pointer: "vi., vt.", base: "adj.") == .hide)
         // No pointer label: nothing to add.
-        #expect(GlossRenderer.pointerLabel(pointer: nil, base: "n.", tapped: "men") == "n.")
+        #expect(GlossRenderer.pointerLabel(pointer: nil, base: "n.") == .kind("n."))
     }
 
-    @Test("one label governs a pointer card, and only the first line wears it")
+    @Test("a hidden label leaves the sense without a kind")
     func pointerCardLabel() {
         #expect(
-            GlossRenderer.render(gloss: "vt. 正式放棄\nvi. 退位, 退出, 辭職", label: "adj.")
+            GlossRenderer.render(gloss: "vt. 正式放棄\nvi. 退位, 退出, 辭職", label: .kind("adj."))
                 == "adj. 正式放棄\n退位, 退出, 辭職"
         )
         // The first line already names the label: it is not repeated.
         #expect(
-            GlossRenderer.render(gloss: "adj. 卵形的\n[醫] 卵圓形的(葉)", label: "adj.")
+            GlossRenderer.render(gloss: "adj. 卵形的\n[醫] 卵圓形的(葉)", label: .kind("adj."))
                 == "adj. 卵形的\n[醫] 卵圓形的(葉)"
         )
         // An untagged base line takes the label.
         #expect(
-            GlossRenderer.render(gloss: "鑲嵌用的小石[玻璃]磚, 嵌塊", label: "n.")
+            GlossRenderer.render(gloss: "鑲嵌用的小石[玻璃]磚, 嵌塊", label: .kind("n."))
                 == "n. 鑲嵌用的小石[玻璃]磚, 嵌塊"
+        )
+        // Hiding the label hides every tag, not just the first.
+        #expect(
+            GlossRenderer.render(gloss: "vt. 正式放棄\nvi. 退位", label: .hide)
+                == "正式放棄\n退位"
         )
     }
 
@@ -201,15 +187,20 @@ struct GlossRendererTests {
         let pointed = try #require(store.displayEntry(for: "ovated"))
         #expect(pointed.tapped == "ovated")
         #expect(pointed.subtitle == "ovate")
-        #expect(pointed.gloss == "adj. 卵形的\n[醫] 卵圓形的(葉)")
+        // The pointer row copies `vi., vt.` from `ovate`; the base row says
+        // adjective. The rows disagree, so the card shows the sense and no
+        // label rather than pick a side.
+        #expect(pointed.gloss == "卵形的\n[醫] 卵圓形的(葉)")
 
-        // A noun over a verb sense: the card must not promise a verb.
+        // A noun over a verb sense: no label, and the base word's own label
+        // does not survive either. The subtitle names the word the sense
+        // belongs to.
         let noun = try #require(store.displayEntry(for: "abaser"))
-        #expect(noun.gloss == "n. 降低...的地位, 貶抑")
+        #expect(noun.gloss == "降低...的地位, 貶抑")
 
-        // An adjective over two verb lines: one label, on the first line.
+        // An adjective over two verb lines: no label anywhere.
         let adjective = try #require(store.displayEntry(for: "abdicative"))
-        #expect(adjective.gloss == "adj. 正式放棄\n退位, 退出, 辭職")
+        #expect(adjective.gloss == "正式放棄\n退位, 退出, 辭職")
 
         // An untagged base line still gets the kind of word.
         let untagged = try #require(store.displayEntry(for: "abaculi"))

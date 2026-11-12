@@ -201,58 +201,46 @@ public enum GlossRenderer {
         return !containsCJK(core)
     }
 
-    /// The part of speech a word's ending names, or nil when the ending says
-    /// nothing about it. Only endings that settle the question are listed:
-    /// `-ed` and `-ing` keep the base word's label, because a participle is
-    /// still a form of that word.
-    public static func suffixLabel(_ word: String) -> String? {
-        var stem = word.lowercased().trimmingCharacters(in: .punctuationCharacters)
-        if stem.hasSuffix("s"), !stem.hasSuffix("ss"), stem.count > 4 {
-            stem = String(stem.dropLast())
-        }
-        let table: [(String, String)] = [
-            ("ingly", "adv."), ("edly", "adv."), ("ly", "adv."),
-            ("iveness", "n."), ("iveness", "n."), ("ness", "n."),
-            ("ment", "n."), ("tion", "n."), ("sion", "n."), ("ity", "n."),
-            ("ance", "n."), ("ence", "n."), ("ship", "n."), ("hood", "n."),
-            ("ist", "n."), ("er", "n."), ("or", "n."),
-            ("ive", "adj."), ("ous", "adj."), ("ful", "adj."), ("less", "adj."),
-            ("able", "adj."), ("ible", "adj."), ("al", "adj."), ("ic", "adj."),
-            ("ish", "adj."), ("ary", "adj."),
-        ]
-        for (suffix, label) in table where stem.hasSuffix(suffix) && stem.count > suffix.count + 2 {
-            return label
-        }
-        return nil
+    /// What a pointer card puts in the label slot.
+    public enum PointerLabel: Sendable, Equatable {
+        /// A kind both rows agree on.
+        case kind(String)
+        /// The rows disagree, so the card shows the sense with no label.
+        case hide
     }
 
     /// The one label a pointer card shows.
     ///
-    /// The pack's pointer row names the tapped word's part of speech, but not
-    /// always truthfully: `ovated` ships `vi., vt.` copied from `ovate`, and
-    /// the word is an adjective. So the pointer label is used when the base
-    /// line carries no label of its own, or when the tapped word's ending
-    /// agrees with it. Otherwise the base line's label stands.
-    public static func pointerLabel(
-        pointer: String?,
-        base: String?,
-        tapped: String
-    ) -> String? {
-        guard let pointer else { return base }
-        guard let base else { return pointer }
-        guard let suffix = suffixLabel(tapped) else { return base }
-        // A run such as `vi., vt.` names more than one kind; the ending names
-        // one, so the ending decides which the reader needs.
-        let named = pointer.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
-        return named.contains(suffix) ? pointer : base
+    /// The pointer row names the tapped word's kind (`n. abase的變形`) and the
+    /// base row names the base word's (`vt.`). When the two disagree, no label
+    /// can be true: `abaser` is a noun and the Chinese it inherits describes
+    /// the verb `abase`. Renaming the label would change the word without
+    /// changing the sense, so the card shows no label and the base word, which
+    /// the subtitle already names, keeps the sense.
+    ///
+    /// The pack also copies the base tag into the pointer row sometimes
+    /// (`ovated` ships `vi., vt.`), so a matching set is not proof. It is only
+    /// the case where a label states something the card can stand behind.
+    public static func pointerLabel(pointer: String?, base: String?) -> PointerLabel {
+        guard let pointer else {
+            return base.map { .kind($0) } ?? .hide
+        }
+        guard let base else { return .kind(pointer) }
+        let kinds = Set(pointer.split(separator: ",").map {
+            $0.trimmingCharacters(in: .whitespaces)
+        })
+        let baseKinds = Set(base.split(separator: ",").map {
+            $0.trimmingCharacters(in: .whitespaces)
+        })
+        return kinds == baseKinds ? .kind(pointer) : .hide
     }
 
     /// The gloss lines as the card shows them: the part-of-speech tag in
     /// front of its sense, untagged lines first with at most one tagged line
     /// after, capped at `maxLines`. Sense order otherwise stays as the source
-    /// gives it. `label` replaces every inline tag: it belongs to the tapped
-    /// word, so it goes on the first line and the others go without.
-    public static func renderLines(gloss: String, label: String? = nil) -> [String] {
+    /// gives it. `label` decides the label slot: `kind` writes one label on
+    /// the first line, `hide` writes none, and nil keeps every inline tag.
+    public static func renderLines(gloss: String, label: PointerLabel? = nil) -> [String] {
         let lines = splitLines(gloss).map(prepare).filter { !$0.text.isEmpty }
         let untagged = lines.filter { !isTagged($0.text) }
         let tagged = lines.filter { isTagged($0.text) }
@@ -267,10 +255,15 @@ public enum GlossRenderer {
             return "\(pos) \(line.text)"
         }
         guard let label, !shown.isEmpty else { return shown }
-        return shown.enumerated().map { index, line in
-            if line.hasPrefix(label) { return line }
-            let text = stripInlinePOS(line)
-            return index == 0 ? "\(label) \(text)" : text
+        switch label {
+        case .hide:
+            return shown.map(stripInlinePOS)
+        case let .kind(kind):
+            return shown.enumerated().map { index, line in
+                if line.hasPrefix(kind) { return line }
+                let text = stripInlinePOS(line)
+                return index == 0 ? "\(kind) \(text)" : text
+            }
         }
     }
 
@@ -283,7 +276,7 @@ public enum GlossRenderer {
     }
 
     /// The exact string the card shows for one gloss.
-    public static func render(gloss: String, label: String? = nil) -> String {
+    public static func render(gloss: String, label: PointerLabel? = nil) -> String {
         renderLines(gloss: gloss, label: label).joined(separator: "\n")
     }
 
