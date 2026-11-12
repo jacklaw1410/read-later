@@ -55,7 +55,9 @@ struct GlossRendererTests {
             GlossRenderer.render(gloss: "(aah 的過去時) abbr.[軍] Armored Artillery Howitzer, 裝甲榴彈炮")
                 == "abbr. [軍] Armored Artillery Howitzer, 裝甲榴彈炮"
         )
-        // A parenthetical without a base form is sense text and stays.
+        // A parenthetical without a base form is sense text and stays. It was
+        // read as a label only because no label was in front of it; the
+        // pointer label now takes that slot.
         #expect(
             GlossRenderer.render(gloss: "(very best) 最好的, 最優秀的, 最酷的")
                 == "(very best) 最好的, 最優秀的, 最酷的"
@@ -109,11 +111,72 @@ struct GlossRendererTests {
         #expect(GlossRenderer.renderLines(gloss: six).count == GlossRenderer.maxLines)
     }
 
+    @Test("an ending that settles the kind of word names it")
+    func suffixLabel() {
+        #expect(GlossRenderer.suffixLabel("abaser") == "n.")
+        #expect(GlossRenderer.suffixLabel("a-listers") == "n.")
+        #expect(GlossRenderer.suffixLabel("abdicative") == "adj.")
+        #expect(GlossRenderer.suffixLabel("abandonedly") == "adv.")
+        // A participle is a form of its base word, so its ending decides
+        // nothing: `ovated` is an adjective because `ovate` is one.
+        #expect(GlossRenderer.suffixLabel("ovated") == nil)
+        #expect(GlossRenderer.suffixLabel("abandoning") == nil)
+        // An ending too short to carry meaning is ignored.
+        #expect(GlossRenderer.suffixLabel("er") == nil)
+    }
+
+    @Test("the pointer label names the tapped word, unless the ending disagrees")
+    func pointerLabelChoice() {
+        // The ending agrees with the pointer: the pointer wins, and the base
+        // word's verb tag goes.
+        #expect(
+            GlossRenderer.pointerLabel(pointer: "n.", base: "vt.", tapped: "abaser") == "n."
+        )
+        #expect(
+            GlossRenderer.pointerLabel(pointer: "adj.", base: "vt.", tapped: "abdicative") == "adj."
+        )
+        // The pointer copies the base's tag on a participle, and the word is an
+        // adjective: the base line's own label stands.
+        #expect(
+            GlossRenderer.pointerLabel(pointer: "vi., vt.", base: "adj.", tapped: "ovated") == "adj."
+        )
+        // No label on the base line: the pointer is the only label there is.
+        #expect(
+            GlossRenderer.pointerLabel(pointer: "n.", base: nil, tapped: "abaculi") == "n."
+        )
+        // No pointer label: nothing to add.
+        #expect(GlossRenderer.pointerLabel(pointer: nil, base: "n.", tapped: "men") == "n.")
+    }
+
+    @Test("one label governs a pointer card, and only the first line wears it")
+    func pointerCardLabel() {
+        #expect(
+            GlossRenderer.render(gloss: "vt. 正式放棄\nvi. 退位, 退出, 辭職", label: "adj.")
+                == "adj. 正式放棄\n退位, 退出, 辭職"
+        )
+        // The first line already names the label: it is not repeated.
+        #expect(
+            GlossRenderer.render(gloss: "adj. 卵形的\n[醫] 卵圓形的(葉)", label: "adj.")
+                == "adj. 卵形的\n[醫] 卵圓形的(葉)"
+        )
+        // An untagged base line takes the label.
+        #expect(
+            GlossRenderer.render(gloss: "鑲嵌用的小石[玻璃]磚, 嵌塊", label: "n.")
+                == "n. 鑲嵌用的小石[玻璃]磚, 嵌塊"
+        )
+    }
+
     @Test("pointer case end to end: tapped spelling stays, base gloss shows")
     func pointerEndToEnd() async throws {
         let tsv = [
             "ovate\t'әuveit\t\ta. 卵形的\\n[醫] 卵圓形的(葉)",
             "ovated\t\t\tvi., vt. ovate的變形",
+            "abaser\t\t\tn. abase的變形",
+            "abase\t\t\tvt. 降低...的地位, 貶抑",
+            "abdicative\t\t\ta. abdicate的變形",
+            "abdicate\t\t\tvt. 正式放棄\\nvi. 退位, 退出, 辭職",
+            "abaculi\t\t\tn. abaculus的變形",
+            "abaculus\t\t\t鑲嵌用的小石[玻璃]磚, 嵌塊",
             "cafe\tka'fei\t\tn. 咖啡館, 酒店",
             "us\tʌs\t\tpron. 我們\\n[經] 美國",
         ].joined(separator: "\n") + "\n"
@@ -139,6 +202,18 @@ struct GlossRendererTests {
         #expect(pointed.tapped == "ovated")
         #expect(pointed.subtitle == "ovate")
         #expect(pointed.gloss == "adj. 卵形的\n[醫] 卵圓形的(葉)")
+
+        // A noun over a verb sense: the card must not promise a verb.
+        let noun = try #require(store.displayEntry(for: "abaser"))
+        #expect(noun.gloss == "n. 降低...的地位, 貶抑")
+
+        // An adjective over two verb lines: one label, on the first line.
+        let adjective = try #require(store.displayEntry(for: "abdicative"))
+        #expect(adjective.gloss == "adj. 正式放棄\n退位, 退出, 辭職")
+
+        // An untagged base line still gets the kind of word.
+        let untagged = try #require(store.displayEntry(for: "abaculi"))
+        #expect(untagged.gloss == "n. 鑲嵌用的小石[玻璃]磚, 嵌塊")
 
         let plain = try #require(store.displayEntry(for: "us"))
         #expect(plain.tapped == "us")

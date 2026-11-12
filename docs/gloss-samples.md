@@ -48,7 +48,7 @@ rule: the tag moves, it does not disappear.
 - card shows:
 
 ```
-(very best) 最好的, 最優秀的, 最酷的
+n. (very best) 最好的, 最優秀的, 最酷的
 ```
 
 ### abaculi
@@ -59,7 +59,7 @@ rule: the tag moves, it does not disappear.
 - card shows:
 
 ```
-鑲嵌用的小石[玻璃]磚, 嵌塊
+n. 鑲嵌用的小石[玻璃]磚, 嵌塊
 ```
 
 ### abandonedly
@@ -70,7 +70,7 @@ rule: the tag moves, it does not disappear.
 - card shows:
 
 ```
-adj. 被拋棄的, 無約束的, 恣意放蕩的
+adv. 被拋棄的, 無約束的, 恣意放蕩的
 ```
 
 ### abaser
@@ -81,7 +81,7 @@ adj. 被拋棄的, 無約束的, 恣意放蕩的
 - card shows:
 
 ```
-vt. 降低...的地位, 降低...的品格, 貶抑, 使謙卑
+n. 降低...的地位, 降低...的品格, 貶抑, 使謙卑
 ```
 
 ### abdicative
@@ -92,8 +92,8 @@ vt. 降低...的地位, 降低...的品格, 貶抑, 使謙卑
 - card shows:
 
 ```
-vt. 正式放棄
-vi. 退位, 退出, 辭職
+adj. 正式放棄
+退位, 退出, 辭職
 ```
 
 

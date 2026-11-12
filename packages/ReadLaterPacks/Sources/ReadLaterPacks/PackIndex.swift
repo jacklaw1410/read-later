@@ -254,10 +254,20 @@ public struct PackIndexStore: Sendable {
         if GlossRenderer.isPointerOnly(stored.gloss),
            let resolved = resolvePointer(from: stored, seen: [Self.normalize(word)])
         {
+            // The pointer row names the tapped word's part of speech. Take it
+            // when it agrees with the word's ending, or when the base line is
+            // untagged. `abaser` is a noun over a verb sense; `ovated` keeps
+            // the base's adjective label.
+            let pointer = GlossRenderer.posPrefix(stored.gloss)
+            let base = GlossRenderer.splitLines(resolved.gloss)
+                .lazy
+                .compactMap { GlossRenderer.posPrefix($0) }
+                .first
+            let label = GlossRenderer.pointerLabel(pointer: pointer, base: base, tapped: word)
             return DisplayEntry(
                 tapped: word,
                 subtitle: resolved.word,
-                gloss: GlossRenderer.render(gloss: resolved.gloss),
+                gloss: GlossRenderer.render(gloss: resolved.gloss, label: label),
                 phonetic: resolved.phonetic,
                 partOfSpeech: resolved.partOfSpeech
             )

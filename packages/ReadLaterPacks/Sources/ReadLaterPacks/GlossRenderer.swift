@@ -201,11 +201,58 @@ public enum GlossRenderer {
         return !containsCJK(core)
     }
 
+    /// The part of speech a word's ending names, or nil when the ending says
+    /// nothing about it. Only endings that settle the question are listed:
+    /// `-ed` and `-ing` keep the base word's label, because a participle is
+    /// still a form of that word.
+    public static func suffixLabel(_ word: String) -> String? {
+        var stem = word.lowercased().trimmingCharacters(in: .punctuationCharacters)
+        if stem.hasSuffix("s"), !stem.hasSuffix("ss"), stem.count > 4 {
+            stem = String(stem.dropLast())
+        }
+        let table: [(String, String)] = [
+            ("ingly", "adv."), ("edly", "adv."), ("ly", "adv."),
+            ("iveness", "n."), ("iveness", "n."), ("ness", "n."),
+            ("ment", "n."), ("tion", "n."), ("sion", "n."), ("ity", "n."),
+            ("ance", "n."), ("ence", "n."), ("ship", "n."), ("hood", "n."),
+            ("ist", "n."), ("er", "n."), ("or", "n."),
+            ("ive", "adj."), ("ous", "adj."), ("ful", "adj."), ("less", "adj."),
+            ("able", "adj."), ("ible", "adj."), ("al", "adj."), ("ic", "adj."),
+            ("ish", "adj."), ("ary", "adj."),
+        ]
+        for (suffix, label) in table where stem.hasSuffix(suffix) && stem.count > suffix.count + 2 {
+            return label
+        }
+        return nil
+    }
+
+    /// The one label a pointer card shows.
+    ///
+    /// The pack's pointer row names the tapped word's part of speech, but not
+    /// always truthfully: `ovated` ships `vi., vt.` copied from `ovate`, and
+    /// the word is an adjective. So the pointer label is used when the base
+    /// line carries no label of its own, or when the tapped word's ending
+    /// agrees with it. Otherwise the base line's label stands.
+    public static func pointerLabel(
+        pointer: String?,
+        base: String?,
+        tapped: String
+    ) -> String? {
+        guard let pointer else { return base }
+        guard let base else { return pointer }
+        guard let suffix = suffixLabel(tapped) else { return base }
+        // A run such as `vi., vt.` names more than one kind; the ending names
+        // one, so the ending decides which the reader needs.
+        let named = pointer.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+        return named.contains(suffix) ? pointer : base
+    }
+
     /// The gloss lines as the card shows them: the part-of-speech tag in
     /// front of its sense, untagged lines first with at most one tagged line
     /// after, capped at `maxLines`. Sense order otherwise stays as the source
-    /// gives it.
-    public static func renderLines(gloss: String) -> [String] {
+    /// gives it. `label` replaces every inline tag: it belongs to the tapped
+    /// word, so it goes on the first line and the others go without.
+    public static func renderLines(gloss: String, label: String? = nil) -> [String] {
         let lines = splitLines(gloss).map(prepare).filter { !$0.text.isEmpty }
         let untagged = lines.filter { !isTagged($0.text) }
         let tagged = lines.filter { isTagged($0.text) }
@@ -215,9 +262,15 @@ public enum GlossRenderer {
         let seen = Set(untagged.map { senseKey($0.text) })
         let fresh = tagged.filter { !seen.contains(senseKey($0.text)) }
         let ordered = untagged.isEmpty ? tagged : untagged + fresh.prefix(1)
-        return ordered.prefix(maxLines).map { line in
+        let shown = ordered.prefix(maxLines).map { line in
             guard let pos = line.pos else { return line.text }
             return "\(pos) \(line.text)"
+        }
+        guard let label, !shown.isEmpty else { return shown }
+        return shown.enumerated().map { index, line in
+            if line.hasPrefix(label) { return line }
+            let text = stripInlinePOS(line)
+            return index == 0 ? "\(label) \(text)" : text
         }
     }
 
@@ -230,8 +283,8 @@ public enum GlossRenderer {
     }
 
     /// The exact string the card shows for one gloss.
-    public static func render(gloss: String) -> String {
-        renderLines(gloss: gloss).joined(separator: "\n")
+    public static func render(gloss: String, label: String? = nil) -> String {
+        renderLines(gloss: gloss, label: label).joined(separator: "\n")
     }
 
     // MARK: - Private
