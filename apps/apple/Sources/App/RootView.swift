@@ -108,6 +108,7 @@ struct ReaderScreen: View {
                             onPlayPause: { session.togglePlay() },
                             onSpeed: { session.setSpeed($0) },
                             onScrub: { session.scrub(toFraction: $0) },
+                            onPreviewScrub: { session.previewScrub(toFraction: $0) },
                             onScrubbingChanged: { scrubbing in
                                 session.isScrubbing = scrubbing
                                 if !scrubbing { session.finishScrubbing() }

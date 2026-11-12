@@ -36,21 +36,22 @@ public struct PlayerProgress: Sendable, Equatable {
 
 /// Docked transport bar: play/pause, scrub track, speed, clock.
 ///
-/// The bar reports gestures through `onScrub` and `onScrubbingChanged`.
-/// It never moves the wash itself. While scrubbing, the caller holds the
-/// wash still and seeks only the audio clock.
+/// The bar reports gestures through `onScrub`, `onPreviewScrub`, and
+/// `onScrubbingChanged`. While scrubbing, the caller holds the wash still.
+/// Drag ticks preview the wash only; the audio seek commits on release, so
+/// one drag costs one synthesizer restart (F19 1.7).
 public struct PlayerBar: View {
     private let progress: PlayerProgress
     private let isPlaying: Bool
     private let onPlayPause: () -> Void
     private let onSpeed: (Float) -> Void
     private let onScrub: (Double) -> Void
+    private let onPreviewScrub: (Double) -> Void
     private let onScrubbingChanged: (Bool) -> Void
 
     /// Live drag position. Shown while the finger is down.
     @State private var scrubFraction: Double?
     @State private var lastFire = Date.distantPast
-    @State private var lastFiredValue: Double?
 
     public init(
         progress: PlayerProgress,
@@ -58,6 +59,7 @@ public struct PlayerBar: View {
         onPlayPause: @escaping () -> Void,
         onSpeed: @escaping (Float) -> Void,
         onScrub: @escaping (Double) -> Void,
+        onPreviewScrub: @escaping (Double) -> Void = { _ in },
         onScrubbingChanged: @escaping (Bool) -> Void
     ) {
         self.progress = progress
@@ -65,6 +67,7 @@ public struct PlayerBar: View {
         self.onPlayPause = onPlayPause
         self.onSpeed = onSpeed
         self.onScrub = onScrub
+        self.onPreviewScrub = onPreviewScrub
         self.onScrubbingChanged = onScrubbingChanged
     }
 
@@ -166,16 +169,18 @@ public struct PlayerBar: View {
                 if scrubFraction == nil {
                     scrubFraction = fraction
                     onScrubbingChanged(true)
-                    fire(fraction)
+                    firePreview(fraction)
                 } else {
                     scrubFraction = fraction
-                    fireThrottled(fraction)
+                    firePreviewThrottled(fraction)
                 }
             }
             .onEnded { value in
                 let fraction = clamped(value.location.x / max(width, 1))
                 scrubFraction = nil
-                fireFinal(fraction)
+                // The commit: one audio seek per drag, at the release word.
+                // Drag ticks only previewed, so no storm precedes this.
+                onScrub(fraction)
                 onScrubbingChanged(false)
             }
     }
@@ -184,22 +189,17 @@ public struct PlayerBar: View {
         min(1, max(0, value))
     }
 
-    /// Report at most every 50 ms during a drag.
-    private func fireThrottled(_ fraction: Double) {
+    /// Preview at most every 50 ms during a drag. The 50 ms throttle stays
+    /// as the fallback even with commit-on-release, so a slow release hand
+    /// cannot flood the wash either.
+    private func firePreviewThrottled(_ fraction: Double) {
         guard Date().timeIntervalSince(lastFire) >= 0.05 else { return }
-        fire(fraction)
+        firePreview(fraction)
     }
 
-    private func fire(_ fraction: Double) {
+    private func firePreview(_ fraction: Double) {
         lastFire = Date()
-        lastFiredValue = fraction
-        onScrub(fraction)
-    }
-
-    /// Report the release position unless the drag already sent it.
-    private func fireFinal(_ fraction: Double) {
-        guard lastFiredValue != fraction else { return }
-        fire(fraction)
+        onPreviewScrub(fraction)
     }
 
     /// Keyboard and VoiceOver step, in words. Seeks without scrub state.

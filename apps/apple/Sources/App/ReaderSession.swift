@@ -150,8 +150,7 @@ final class ReaderSession: ObservableObject {
 
     func scrub(toFraction fraction: Double) {
         guard spoken.totalWords > 0 else { return }
-        let raw = Int((fraction * Double(spoken.totalWords)).rounded())
-        let index = min(max(raw, 0), spoken.totalWords - 1)
+        let index = wordIndex(for: fraction)
         isFinished = false
         wash.wordIndex = index
         wash.isPlaying = false
@@ -166,6 +165,23 @@ final class ReaderSession: ObservableObject {
             latch.stash(index)
         }
         checkpoint()
+    }
+
+    /// Wash preview for an in-flight scrub drag. Moves the highlight only:
+    /// no audio seek, no latch, no checkpoint. The seek commits on release
+    /// through `scrub(toFraction:)`, so one drag costs one restart (F19 1.7).
+    /// Voice boundaries stay frozen while previewing because `advance(to:)`
+    /// drops ticks while `isScrubbing` holds.
+    func previewScrub(toFraction fraction: Double) {
+        guard spoken.totalWords > 0 else { return }
+        let index = wordIndex(for: fraction)
+        wash.wordIndex = index
+        wash.isPlaying = false
+    }
+
+    private func wordIndex(for fraction: Double) -> Int {
+        let raw = Int((fraction * Double(spoken.totalWords)).rounded())
+        return min(max(raw, 0), spoken.totalWords - 1)
     }
 
     func finishScrubbing() {

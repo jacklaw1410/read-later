@@ -28,12 +28,21 @@ public final class AVSpeechController: NSObject, SpeechController {
 
     /// UI speed multiplier. 1.0 is the reference pace, about 140 words per minute.
     /// A change while speaking restarts from the current word, because the
-    /// synthesizer cannot change rate mid-utterance. A change while paused
-    /// applies to later utterances; the paused queue is left untouched.
+    /// synthesizer cannot change rate mid-utterance. Rapid changes coalesce:
+    /// one restart per gesture, not per tick, with the 50 ms delay doubling
+    /// as the throttle fallback (F19 1.7). A change while paused applies to
+    /// later utterances; the paused queue is left untouched.
     public var rate: Float = 1.0 {
         didSet {
             guard rate != oldValue, state == .speaking else { return }
-            restart(fromWord: currentWordIndex)
+            rateSettler.push(rate)
+            rateTask?.cancel()
+            rateTask = Task { [weak self] in
+                try? await Task.sleep(nanoseconds: 50_000_000)
+                guard let self, !Task.isCancelled, self.state == .speaking else { return }
+                guard self.rateSettler.takePending() != nil else { return }
+                self.restart(fromWord: self.currentWordIndex)
+            }
         }
     }
 
@@ -69,6 +78,8 @@ public final class AVSpeechController: NSObject, SpeechController {
     private var prefetchWindow = SpeechQueue.prefetch
     private var headTruncation: HeadTruncation?
     private var currentWordIndex = 0
+    private var rateTask: Task<Void, Never>?
+    private var rateSettler = RateSettler()
     private var epoch = 0
     private var warmedUp = false
     /// Epoch captured when a fill is scheduled, so a stale fill does nothing.
