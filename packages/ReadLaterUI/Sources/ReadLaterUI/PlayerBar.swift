@@ -211,9 +211,17 @@ public struct PlayerBar: View {
 
     // MARK: - Speed
 
+    /// Direct selection: the pill opens the full ladder as a radio list.
+    /// Tap-to-cycle is gone; reaching 1.5 from 1 cost two taps and an
+    /// overshoot wrapped to 0.5 (F19 1.10). The list reads Pace.steps, so
+    /// the D14 pilot measurement moves the options with no view change.
     private var speedButton: some View {
-        Button {
-            onSpeed(Pace.next(after: progress.speed))
+        Menu {
+            Picker("Speed", selection: speedBinding) {
+                ForEach(Pace.steps, id: \.self) { step in
+                    Text(Pace.speedLabel(step)).tag(step)
+                }
+            }
         } label: {
             Text(Pace.speedLabel(progress.speed))
                 .font(Theme.chip())
@@ -223,5 +231,9 @@ public struct PlayerBar: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel("Speed \(String(format: "%g", progress.speed)) times")
+    }
+
+    private var speedBinding: Binding<Float> {
+        Binding(get: { progress.speed }, set: { onSpeed($0) })
     }
 }

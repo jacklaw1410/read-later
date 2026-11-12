@@ -75,6 +75,12 @@ final class PlayerTests: XCTestCase {
         XCTAssertEqual(Pace.next(after: 3), Pace.reference)
     }
 
+    func testLadderSuitsDirectSelection() {
+        XCTAssertEqual(Pace.steps, Pace.steps.sorted())
+        XCTAssertTrue(Pace.steps.contains(Pace.reference))
+        XCTAssertFalse(Pace.steps.isEmpty)
+    }
+
     // MARK: - SpeedStore
 
     private func scratchStore(key: String = "rl-speed-test") throws -> (SpeedStore, UserDefaults) {
