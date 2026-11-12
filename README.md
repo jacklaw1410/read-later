@@ -8,33 +8,178 @@ document. Extraction from the network, pack download and sync are not wired yet.
 The research that produced this design lives in `read-later-research`. That repo is
 append-only evidence; this one is code.
 
-## Layout
+## 1. What this repo is
 
-| Path | Holds |
-|---|---|
-| `apps/apple/` | XcodeGen project, app target, platform code |
-| `packages/ReadLaterCore/` | Block model, extraction, spoken plan, invariant, lookup protocol |
-| `packages/ReadLaterPacks/` | Pack manifest, sha256 verify, install state machine |
-| `packages/ReadLaterStore/` | GRDB schema, migrations, FTS5, oplog |
-| `packages/ReadLaterUI/` | Calm Editorial tokens and shared views |
-| `packages/ReadLaterTestKit/` | Fixture loading and assertions |
-| `contracts/` | Versioned JSON Schemas shared with the research repo |
-| `fixtures/` | 20 committed pages and their expected block plans |
-| `tools/blockplan/` | Dumps a block plan so the research gate can score it |
-| `docs/` | ADRs, provenance |
+One multiplatform app target (`apps/apple`, XcodeGen spec in `project.yml`).
+Four Swift packages hold the model, packs, storage and UI tokens.
+`contracts/` holds versioned JSON Schemas shared with the research repo.
+`fixtures/` holds 20 committed pages and their expected block plans.
+`tools/` holds the block-plan dumper and the pack registry publisher.
 
-## Build
+## 2. Prerequisites
+
+| Tool | Version on this machine | Check with |
+|---|---|---|
+| Xcode | 27.2 (27B52) | `xcodebuild -version` |
+| XcodeGen | 2.46.0 | `xcodegen --version` |
+| Swift | 6.4.2 (Apple) | `swift --version` |
+| Node | v26.13.1 — only for pack publish via `wrangler` | `node --version` |
+
+Install XcodeGen with `brew install xcodegen`.
+The generated `.xcodeproj` is not committed. `project.yml` is the source.
+Run `xcodegen generate` before any `xcodebuild` call, and after any change
+to `project.yml` or to the file list.
+
+## 3. Build and boot on macOS
+
+Work in `apps/apple`.
 
 ```bash
-# packages
-swift test --package-path packages/ReadLaterCore
-
-# app
-cd apps/apple && xcodegen generate
-xcodebuild -project ReadLater.xcodeproj -scheme ReadLater -destination 'platform=macOS' build
+cd apps/apple
+xcodegen generate
+xcodebuild -project ReadLater.xcodeproj -scheme ReadLater \
+  -destination 'platform=macOS' \
+  -derivedDataPath build -configuration Debug \
+  CODE_SIGN_IDENTITY="-" CODE_SIGNING_ALLOWED=YES CODE_SIGNING_REQUIRED=NO build
 ```
 
-The generated `.xcodeproj` is not committed. `project.yml` is the source.
+Success looks like `** BUILD SUCCEEDED **` and this file:
+
+```
+apps/apple/build/Build/Products/Debug/ReadLater.app
+```
+
+Open it with `open` (this registers the launch with LaunchServices, which the
+snapshot harness needs):
+
+```bash
+open -n ./build/Build/Products/Debug/ReadLater.app
+```
+
+## 4. Build and boot on the iOS simulator
+
+Work in `apps/apple`. Use `CODE_SIGNING_ALLOWED=NO` (the `project.yml` default).
+Run `xcodegen generate` first if you have not done so yet.
+
+```bash
+cd apps/apple
+xcodebuild -project ReadLater.xcodeproj -scheme ReadLater \
+  -destination 'platform=iOS Simulator,name=iPhone 17' \
+  -derivedDataPath build -configuration Debug \
+  CODE_SIGNING_ALLOWED=NO build
+open -a Simulator
+xcrun simctl install booted ./build/Build/Products/Debug-iphonesimulator/ReadLater.app
+xcrun simctl launch booted com.readlater.app
+```
+
+If the simulator runtime is missing, download it first (about 7 GB):
+
+```bash
+xcodebuild -downloadPlatform iOS
+```
+
+## 5. Build and run on a physical iPhone
+
+`NOT YET RUN ON THIS MACHINE.` No one has run these steps yet.
+
+You need an Apple Developer team. A free personal team works, but its
+provisioning profile expires after 7 days. Renew it in Xcode when it lapses.
+
+1. Open your team id in Xcode under Settings → Accounts.
+2. In `apps/apple/project.yml`, under the `ReadLater` target `settings`, set
+   `CODE_SIGNING_ALLOWED: YES` and add `DEVELOPMENT_TEAM: <YourTeamID>`.
+3. Regenerate and build against your plugged-in phone:
+
+```bash
+cd apps/apple
+xcodegen generate
+xcodebuild -project ReadLater.xcodeproj -scheme ReadLater \
+  -destination 'platform=iOS,name=<Your iPhone>' \
+  -configuration Debug build
+```
+
+4. On the phone, trust the developer certificate under
+   Settings → General → VPN & Device Management.
+
+Keep `CODE_SIGNING_ALLOWED: NO` in the committed `project.yml`.
+Override signing on the command line or keep the team id in a local
+`Secrets.xcconfig` (gitignored), never in a commit.
+
+## 6. Tests
+
+Work in each package directory. `swift test` covers every package.
+Counts below were observed on 2026-11-12 with Swift 6.4.2.
+
+| Package | Command | Observed |
+|---|---|---|
+| `ReadLaterCore` | `swift test` in `packages/ReadLaterCore` | 56 tests pass |
+| `ReadLaterPacks` | `swift test` in `packages/ReadLaterPacks` | 27 tests pass |
+| `ReadLaterStore` | `swift test` in `packages/ReadLaterStore` | 11 tests pass |
+| `ReadLaterUI` | `swift test` in `packages/ReadLaterUI` | 33 swift-testing + 22 XCTest pass |
+
+```bash
+cd packages/ReadLaterCore && swift test
+cd ../ReadLaterPacks && swift test
+cd ../ReadLaterStore && swift test
+cd ../ReadLaterUI && swift test
+```
+
+`ReadLaterTestKit` is a fixture library, not a test bundle. It has no
+`Package.swift` and no tests of its own.
+There is no Xcode UI-test target. UI coverage lives in `ReadLaterUITests`
+inside the `ReadLaterUI` package.
+
+## 7. The snapshot harness
+
+`SnapshotHarness.swift` drives the real reader session and writes PNGs of the
+running window. It captures entry, entry-progress, reader, playing,
+playing-scrolled, hold, footnote, middle blocks, notes, miss-offer,
+miss-resolved and hit.
+
+Launch it with `open -n` and pass the output directory after `--snapshot`:
+
+```bash
+cd apps/apple
+open -n ./build/Build/Products/Debug/ReadLater.app --args --snapshot /tmp/rlsnap
+```
+
+PNGs land in the directory you name (`/tmp/rlsnap` above).
+Without a directory, they land in a `readlater-snapshots` temp folder.
+Running the binary directly produces no captures. Use `open -n`.
+
+Known limitation: in a `--snapshot` launch, `AVSpeechSynthesizer` starts the
+utterance and then delivers no word-boundary callbacks. The harness advances
+the wash itself (`simulateWash`, DEBUG builds only) at the measured reference
+pace of 429 ms a word. Screenshots show where the voice would be, not live
+speech tracking.
+
+## 8. Troubleshooting
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| `xcodebuild: error: The project 'ReadLater.xcodeproj' does not exist` | `xcodegen generate` never ran, or the file list changed | Run `xcodegen generate` in `apps/apple`, then retry |
+| `Ad Hoc code signing is not allowed with SDK 'iOS 27.2'` | Ad-hoc signing (`CODE_SIGN_IDENTITY="-"` with signing on) against the iOS SDK | Use `CODE_SIGNING_ALLOWED=NO` for simulator builds. Seen in the past; on Xcode 27.2 ad-hoc signing also builds clean |
+| Simulator list is empty or the build asks for a runtime | iOS simulator runtime is not installed | Run `xcodebuild -downloadPlatform iOS` (about 7 GB), then retry |
+| No PNGs appear after a snapshot run | Binary was run directly instead of through LaunchServices | Launch with `open -n … --args --snapshot <dir>`, not by path to the binary |
+| Wash stays on word zero in a `--snapshot` launch | Word-boundary callbacks do not arrive in that launch | Expected. The harness drives the wash itself. See §7 |
+| `error: Could not find Package.swift` in `packages/ReadLaterTestKit` | TestKit is a source library inside the app project, not a package | Do not run `swift test` there. Test it through the packages that use it |
+| `main actor-isolated class method … cannot be called from outside of the actor` in `DictionaryLookup.swift` | Swift 6 language-mode warning | Warning only. The build still succeeds |
+
+## 9. Where things live
+
+```
+apps/apple/          XcodeGen spec, app target, platform code
+packages/ReadLaterCore/   Block model, extraction, spoken plan, invariant, lookup protocol
+packages/ReadLaterPacks/  Pack manifest, sha256 verify, install state machine
+packages/ReadLaterStore/  GRDB schema, migrations, FTS5, oplog
+packages/ReadLaterUI/     Calm Editorial tokens and shared views
+packages/ReadLaterTestKit/ Fixture loading and assertions
+contracts/           Versioned JSON Schemas shared with the research repo
+fixtures/            20 committed pages and their expected block plans
+tools/blockplan/     Dumps a block plan so the research gate can score it
+tools/registry/      Pack publish script (`publish.sh`, needs `wrangler` + Node)
+docs/                ADRs, provenance, extraction.md (how a page becomes blocks)
+```
 
 ## Rules
 

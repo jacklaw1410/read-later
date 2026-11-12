@@ -20,3 +20,6 @@ TestResults/
 
 # Editor
 .vscode/
+
+# Wrangler
+.wrangler/

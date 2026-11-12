@@ -17,9 +17,10 @@ The callback delivers an NSRange per word; the reader maps it with
 map drifted 0 times (`spec/target-design.md` §TTS,
 `spec/state-machines.md` §Truth,
 `evidence/2026-11-10-playback-endurance/`). Rate 1.0 is the reference
-pace at about 140 words per minute. Cold start measured 1,139.7 ms
-against the 700 ms gate, so pre-warm is required; warm start stays
-under 500 ms.
+pace at about 140 words per minute. The synthesizer cold start was
+1,139.7 ms in the harness (1.1–2.6 s across runs), so pre-warm stays
+required; the absolute 700 ms gate is withdrawn and the measure is now
+staged (T0–T7, `spec/device-test-plan.md` D2a–D2c).
 
 The block plan carries each sentence as an `(offset, length, text)`
 slice of its block (`spec/non-prose-classification.md`, block model).

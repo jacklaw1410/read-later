@@ -31,5 +31,9 @@ targets:
     settings:
       CODE_SIGNING_ALLOWED: NO
       GENERATE_INFOPLIST_FILE: YES
+      # XcodeGen ignores the target `bundleId` when Xcode generates the
+      # Info.plist, and falls back to `<prefix>.<target name>`. Set it here so
+      # the built app answers to the id the docs and the device plan use.
+      PRODUCT_BUNDLE_IDENTIFIER: com.readlater.app
       MARKETING_VERSION: "0.1.0"
       CURRENT_PROJECT_VERSION: "1"
