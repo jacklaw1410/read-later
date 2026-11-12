@@ -30,10 +30,12 @@ public enum EntryState: Sendable, Equatable {
 
 /// Every reader-facing string on the entry screen, in one type.
 public enum EntryCopy {
-    public static let linkCaption = "Paste link or text"
+    public static let linkMode = "Link"
+    public static let textMode = "Text"
+    public static let linkCaption = "Paste link"
     public static let linkHint = "The prefilled link opens the sample article. x.com and similar → login wall, paste text instead."
     public static let rawCaption = "Raw text"
-    public static let rawPlaceholder = "Paste a paragraph to override the sample…"
+    public static let rawPlaceholder = "Paste a paragraph to read…"
     public static let open = "Open in Read Later"
     public static let extracting = "Extracting…"
     public static let emptyRefusal = "nothing to open — paste a link or text"
@@ -42,18 +44,41 @@ public enum EntryCopy {
     public static let sampleLink = "https://www.theatlantic.com/reading/slow"
 }
 
+/// One open reads one mode. Link stays first, so a pasted paragraph never
+/// hijacks a link open.
+public enum EntryMode: String, Sendable, CaseIterable {
+    case link
+    case text
+
+    public var title: String {
+        switch self {
+        case .link: return EntryCopy.linkMode
+        case .text: return EntryCopy.textMode
+        }
+    }
+}
+
 /// The input as tapped. `load` only reads this value, never live state,
 /// so an edit during fetch cannot steer the in-flight request.
 struct EntryRequest: Sendable, Equatable {
+    var mode: EntryMode
     var link: String
     var raw: String
 
-    init(linkText: String, rawText: String) {
+    init(mode: EntryMode = .link, linkText: String, rawText: String) {
+        self.mode = mode
         self.link = linkText.trimmingCharacters(in: .whitespacesAndNewlines)
         self.raw = rawText.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    var isEmpty: Bool { link.isEmpty && raw.isEmpty }
+    /// Only the active mode counts. The hidden field keeps its text, but an
+    /// open never reads it.
+    var isEmpty: Bool {
+        switch mode {
+        case .link: return link.isEmpty
+        case .text: return raw.isEmpty
+        }
+    }
 }
 
 /// The first screen. Prefilled link, optional raw text, one button, and a
@@ -63,6 +88,7 @@ public struct EntryView: View {
 
     @State private var linkText = EntryCopy.sampleLink
     @State private var rawText = ""
+    @State private var mode: EntryMode = .link
     @State private var state: EntryState = .idle
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -76,56 +102,67 @@ public struct EntryView: View {
             // the top edge. Two flexible spacers do that without a fixed
             // offset, so a taller window keeps the form centred.
             Spacer(minLength: 24)
-            Text(EntryCopy.linkCaption)
-                .font(Theme.eyebrow())
-                .tracking(Theme.eyebrowTracking)
-                .textCase(.uppercase)
-                .foregroundStyle(Theme.inkSecondary)
-                .accessibilityAddTraits(.isHeader)
-            TextField("Link", text: $linkText)
-                .textFieldStyle(.plain)
-                .font(.system(size: 14))
-                .padding(10)
-                .background(
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(Theme.line, lineWidth: 1)
-                )
-                .padding(.top, 6)
-                .accessibilityLabel("Link")
-                .disabled(isLoading)
-            Text(EntryCopy.linkHint)
-                .font(Theme.caption())
-                .foregroundStyle(Theme.inkSecondary)
-                .padding(.top, 6)
-            Text(EntryCopy.rawCaption)
-                .font(Theme.eyebrow())
-                .tracking(Theme.eyebrowTracking)
-                .textCase(.uppercase)
-                .foregroundStyle(Theme.inkSecondary)
-                .padding(.top, 14)
-                .accessibilityAddTraits(.isHeader)
-            ZStack(alignment: .topLeading) {
-                TextEditor(text: $rawText)
-                    .scrollContentBackground(.hidden)
+            Picker("Input", selection: $mode) {
+                ForEach(EntryMode.allCases, id: \.self) { option in
+                    Text(option.title).tag(option)
+                }
+            }
+            .pickerStyle(.segmented)
+            .disabled(isLoading)
+            .accessibilityLabel("Input type")
+            .padding(.bottom, 10)
+            if mode == .link {
+                Text(EntryCopy.linkCaption)
+                    .font(Theme.eyebrow())
+                    .tracking(Theme.eyebrowTracking)
+                    .textCase(.uppercase)
+                    .foregroundStyle(Theme.inkSecondary)
+                    .accessibilityAddTraits(.isHeader)
+                TextField("Link", text: $linkText)
+                    .textFieldStyle(.plain)
                     .font(.system(size: 14))
-                    .frame(minHeight: 48, maxHeight: 96)
-                    .padding(6)
+                    .padding(10)
                     .background(
                         RoundedRectangle(cornerRadius: 10)
                             .stroke(Theme.line, lineWidth: 1)
                     )
-                    .accessibilityLabel("Raw text")
-                if rawText.isEmpty {
-                    Text(EntryCopy.rawPlaceholder)
+                    .padding(.top, 6)
+                    .accessibilityLabel("Link")
+                    .disabled(isLoading)
+                Text(EntryCopy.linkHint)
+                    .font(Theme.caption())
+                    .foregroundStyle(Theme.inkSecondary)
+                    .padding(.top, 6)
+            } else {
+                Text(EntryCopy.rawCaption)
+                    .font(Theme.eyebrow())
+                    .tracking(Theme.eyebrowTracking)
+                    .textCase(.uppercase)
+                    .foregroundStyle(Theme.inkSecondary)
+                    .accessibilityAddTraits(.isHeader)
+                ZStack(alignment: .topLeading) {
+                    TextEditor(text: $rawText)
+                        .scrollContentBackground(.hidden)
                         .font(.system(size: 14))
-                        .foregroundStyle(Theme.inkSecondary)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 14)
-                        .allowsHitTesting(false)
+                        .frame(minHeight: 48, maxHeight: 96)
+                        .padding(6)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Theme.line, lineWidth: 1)
+                        )
+                        .accessibilityLabel("Raw text")
+                    if rawText.isEmpty {
+                        Text(EntryCopy.rawPlaceholder)
+                            .font(.system(size: 14))
+                            .foregroundStyle(Theme.inkSecondary)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 14)
+                            .allowsHitTesting(false)
+                    }
                 }
+                .padding(.top, 6)
+                .disabled(isLoading)
             }
-            .padding(.top, 6)
-            .disabled(isLoading)
             Button(isLoading ? EntryCopy.extracting : EntryCopy.open) {
                 open()
             }
@@ -206,7 +243,7 @@ public struct EntryView: View {
     }
 
     private func open() {
-        let request = EntryRequest(linkText: linkText, rawText: rawText)
+        let request = EntryRequest(mode: mode, linkText: linkText, rawText: rawText)
         if request.isEmpty {
             state = .refused(EntryCopy.emptyRefusal)
             return
@@ -216,12 +253,13 @@ public struct EntryView: View {
         Task { await load(request) }
     }
 
-    /// The entry path. Raw text wins over the link. The bundled sample is
+    /// The entry path follows the segmented mode. The bundled sample is
     /// recognised here so the demo opens with no network, and a real link is
     /// fetched, extracted, then opened.
     @MainActor
     private func load(_ request: EntryRequest) async {
-        if !request.raw.isEmpty {
+        switch request.mode {
+        case .text:
             state = .loading(stage: .stripping, progress: EntryStage.stripping.progress)
             await reveal(.ready)
             switch ArticleIngress.pasted(request.raw) {
@@ -232,6 +270,8 @@ public struct EntryView: View {
                 state = .refused(error.message)
             }
             return
+        case .link:
+            break
         }
         if request.link == EntryCopy.sampleLink {
             state = .loading(stage: .fetching, progress: EntryStage.fetching.progress)

@@ -100,3 +100,19 @@ import ReadLaterCore
 @Test func blankSnapshotRefuses() {
     #expect(EntryRequest(linkText: "  ", rawText: " \n ").isEmpty)
 }
+
+// MARK: - EntryMode segmented input
+
+@Test func linkIsFirstAndDefault() {
+    #expect(EntryMode.allCases == [.link, .text])
+    #expect(EntryMode.link.title == EntryCopy.linkMode)
+    #expect(EntryMode.text.title == EntryCopy.textMode)
+    #expect(EntryRequest(linkText: "https://example.com/a", rawText: "").mode == .link)
+}
+
+@Test func eachModeReadsOnlyItsField() {
+    #expect(!EntryRequest(mode: .link, linkText: "https://example.com/a", rawText: "").isEmpty)
+    #expect(EntryRequest(mode: .link, linkText: "", rawText: "stray paragraph").isEmpty)
+    #expect(!EntryRequest(mode: .text, linkText: "", rawText: "a paragraph").isEmpty)
+    #expect(EntryRequest(mode: .text, linkText: "https://example.com/a", rawText: "").isEmpty)
+}

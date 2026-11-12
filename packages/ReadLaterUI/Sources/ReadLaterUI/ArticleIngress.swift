@@ -1,8 +1,8 @@
 import Foundation
 import ReadLaterCore
 
-/// What the entry screen accepts. Raw text wins over a link, because a reader
-/// who pastes text has already decided that the link does not work.
+/// What the entry screen accepts. The screen picks one case from its
+/// segmented control, so one open never reads both fields.
 public enum IngressInput: Equatable, Sendable {
     case link(String)
     case text(String)
