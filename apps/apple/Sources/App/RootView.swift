@@ -1,20 +1,52 @@
 import ReadLaterCore
+import ReadLaterStore
 import ReadLaterUI
 import SwiftUI
+
+/// A started article with a saved place, for the launch affordance.
+struct PendingResume: Equatable {
+    let contentHash: String
+    let document: ReadLaterCore.Document
+    let wordIndex: Int
+    let totalWords: Int
+}
 
 /// Holds the open document. One speech controller for the process, so a second
 /// document does not pay the cold start again.
 @MainActor
 final class AppModel: ObservableObject {
     @Published private(set) var session: ReaderSession?
+    @Published private(set) var pendingResume: PendingResume?
 
     private let speech = AVSpeechController()
     private let lookup = PackLookupProvider()
+    private let store: ReadLaterStore.Store?
 
-    func open(_ document: ReadLaterCore.Document) {
+    init() {
+        self.store = Self.openStore()
+        refreshResumeOffer()
+    }
+
+    /// The resume store is best-effort: reading works without it, only the
+    /// launch offer disappears.
+    private static func openStore() -> ReadLaterStore.Store? {
+        guard let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
+            .appendingPathComponent("ReadLater", isDirectory: true)
+        else { return nil }
+        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        return try? ReadLaterStore.Store(
+            databaseURL: dir.appendingPathComponent("store.sqlite"), device: "apple-app")
+    }
+
+    func open(_ document: ReadLaterCore.Document, startWord: Int? = nil) {
+        flushPosition()
         session?.stop()
+        try? store?.save(document: document)
         let next = ReaderSession(document: document, speech: speech, lookupProvider: lookup)
+        next.onProgress = { [weak self] index in self?.recordPosition(index: index) }
+        if let startWord { next.begin(at: startWord) }
         session = next
+        if pendingResume?.document.id == document.id { pendingResume = nil }
         next.warmUp()
         TelemetryHub.shared.record(TelemetryName.articleReady, fields: [
             "title": document.title,
@@ -23,9 +55,51 @@ final class AppModel: ObservableObject {
     }
 
     func closeDocument() {
+        flushPosition()
         session?.stop()
         session = nil
+        refreshResumeOffer()
         TelemetryHub.shared.endRunIfActive(outcome: "closed")
+    }
+
+    /// Opens the offered article at its saved word.
+    func resumePending() {
+        guard let pending = pendingResume else { return }
+        open(pending.document, startWord: pending.wordIndex)
+    }
+
+    /// Drops the launch offer. The next pause re-records, so this only
+    /// silences the current offer.
+    func dismissPending() {
+        guard let pending = pendingResume else { return }
+        try? store?.dismissPosition(contentHash: pending.contentHash)
+        pendingResume = nil
+    }
+
+    /// Writes the current place now. Called on pause-adjacent transitions the
+    /// throttle might miss: close, background, and anywhere the app can die.
+    func flushPosition() {
+        guard let session, let store, session.progress.totalWords > 0 else { return }
+        try? store.recordPosition(of: session.document, wordIndex: session.progress.wordIndex)
+    }
+
+    private func recordPosition(index: Int) {
+        guard let session, let store else { return }
+        try? store.recordPosition(of: session.document, wordIndex: index)
+    }
+
+    private func refreshResumeOffer() {
+        guard let store,
+              let saved = try? store.latestUnfinishedPosition(),
+              let document = try? store.document(id: saved.documentID)
+        else {
+            pendingResume = nil
+            return
+        }
+        let total = SpokenIndex(plan: document.plan).totalWords
+        pendingResume = PendingResume(
+            contentHash: saved.contentHash, document: document,
+            wordIndex: min(saved.wordIndex, max(total - 1, 0)), totalWords: total)
     }
 }
 
@@ -40,8 +114,17 @@ struct RootView: View {
                 ReaderScreen(session: session, onExit: model.closeDocument)
                     .transition(.opacity)
             } else {
-                EntryView(onOpen: model.open)
-                    .transition(.opacity)
+                EntryView(
+                    onOpen: { model.open($0) },
+                    resumeOffer: model.pendingResume.map {
+                        ResumeOffer(
+                            title: $0.document.title, wordIndex: $0.wordIndex,
+                            totalWords: $0.totalWords)
+                    },
+                    onResume: model.resumePending,
+                    onDismiss: model.dismissPending
+                )
+                .transition(.opacity)
             }
         }
         .frame(minWidth: 380, minHeight: 560)
@@ -51,10 +134,13 @@ struct RootView: View {
             switch phase {
             case .background:
                 TelemetryHub.shared.record(TelemetryName.appHide)
+                model.flushPosition()
             case .active:
                 TelemetryHub.shared.record(TelemetryName.appReturn)
             case .inactive:
-                break
+                // Lock and overlays pass through here before background; a
+                // kill in between sends no callback, so the place lands now.
+                model.flushPosition()
             @unknown default:
                 break
             }

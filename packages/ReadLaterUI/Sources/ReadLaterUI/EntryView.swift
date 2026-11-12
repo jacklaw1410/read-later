@@ -28,6 +28,26 @@ public enum EntryState: Sendable, Equatable {
     case refused(String)
 }
 
+/// One-line launch affordance for a started article: which article, where it
+/// stopped. Resume restores the word; dismiss drops the offer until the next
+/// pause re-records. An affordance, not a dialog: the entry form stays usable.
+public struct ResumeOffer: Sendable, Equatable {
+    public var title: String
+    public var wordIndex: Int
+    public var totalWords: Int
+
+    public init(title: String, wordIndex: Int, totalWords: Int) {
+        self.title = title
+        self.wordIndex = wordIndex
+        self.totalWords = totalWords
+    }
+
+    /// "word 12 of 300". The place, in one glance.
+    public var placeLine: String {
+        guard totalWords > 0 else { return title }
+        return "word \(min(wordIndex + 1, totalWords)) of \(totalWords)"
+    }
+}
 /// Every reader-facing string on the entry screen, in one type.
 public enum EntryCopy {
     public static let linkMode = "Link"
@@ -85,6 +105,9 @@ struct EntryRequest: Sendable, Equatable {
 /// progress area that runs the three extraction stages before opening.
 public struct EntryView: View {
     private let onOpen: (ReadLaterCore.Document) -> Void
+    private let resumeOffer: ResumeOffer?
+    private let onResume: (() -> Void)?
+    private let onDismiss: (() -> Void)?
 
     private enum Field {
         case link
@@ -98,16 +121,27 @@ public struct EntryView: View {
     @FocusState private var focused: Field?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    public init(onOpen: @escaping (ReadLaterCore.Document) -> Void) {
+    public init(
+        onOpen: @escaping (ReadLaterCore.Document) -> Void,
+        resumeOffer: ResumeOffer? = nil,
+        onResume: (() -> Void)? = nil,
+        onDismiss: (() -> Void)? = nil
+    ) {
         self.onOpen = onOpen
+        self.resumeOffer = resumeOffer
+        self.onResume = onResume
+        self.onDismiss = onDismiss
     }
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             // The form sits in the optical centre of the window, not against
             // the top edge. Two flexible spacers do that without a fixed
-            // offset, so a taller window keeps the form centred.
+            // offset, so a taller window keeps the form centred. The resume
+            // line sits above the form so a returning reader sees the place
+            // before the entry fields.
             Spacer(minLength: 24)
+
                 .onTapGesture { focused = nil }
             Picker("Input", selection: $mode) {
                 ForEach(EntryMode.allCases, id: \.self) { option in
@@ -127,6 +161,8 @@ public struct EntryView: View {
                     .accessibilityAddTraits(.isHeader)
                 TextField("Link", text: $linkText)
                     .textFieldStyle(.plain)
+            resumeAffordance
+
                     .font(.system(size: 14))
                     .padding(10)
                     .background(
@@ -208,6 +244,29 @@ public struct EntryView: View {
     private var isLoading: Bool {
         if case .loading = state { return true }
         return false
+    }
+
+    @ViewBuilder
+    private var resumeAffordance: some View {
+        if let offer = resumeOffer {
+            HStack(spacing: 8) {
+                Text("Resume “\(offer.title)” · \(offer.placeLine)")
+                    .font(Theme.caption())
+                    .foregroundStyle(Theme.inkSecondary)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+                Spacer(minLength: 4)
+                Button("Resume") { onResume?() }
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(Theme.brand)
+                    .accessibilityLabel("Resume \(offer.title)")
+                Button("Dismiss") { onDismiss?() }
+                    .font(.system(size: 13))
+                    .foregroundStyle(Theme.inkSecondary)
+                    .accessibilityLabel("Dismiss resume offer")
+            }
+            .padding(.bottom, 12)
+        }
     }
 
     private var showsProgress: Bool {

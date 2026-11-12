@@ -88,6 +88,7 @@ import ReadLaterCore
     #expect(EntryCopy.loginWallRefusal == "login wall — paste text instead")
 }
 
+
 // MARK: - EntryRequest tap snapshot
 
 @Test func tapSnapshotTrimsBothFields() {
@@ -115,4 +116,12 @@ import ReadLaterCore
     #expect(EntryRequest(mode: .link, linkText: "", rawText: "stray paragraph").isEmpty)
     #expect(!EntryRequest(mode: .text, linkText: "", rawText: "a paragraph").isEmpty)
     #expect(EntryRequest(mode: .text, linkText: "https://example.com/a", rawText: "").isEmpty)
+}
+// MARK: - ResumeOffer
+
+@Test func resumeOfferPlaceLine() {
+    #expect(ResumeOffer(title: "T", wordIndex: 11, totalWords: 300).placeLine == "word 12 of 300")
+    #expect(ResumeOffer(title: "T", wordIndex: 999, totalWords: 300).placeLine == "word 300 of 300")
+    #expect(ResumeOffer(title: "Only title", wordIndex: 0, totalWords: 0).placeLine == "Only title")
+
 }

@@ -28,6 +28,32 @@ public struct PhraseOccurrence: Sendable, Hashable {
     }
 }
 
+/// Where the reader stopped in one started article.
+///
+/// Keyed by content hash, not document id, so a re-pasted article resumes at
+/// the same word. Local-only: position writes append no changelog row, so a
+/// throttled write during reading never enters sync.
+public struct ReadingPosition: Sendable, Hashable, Equatable {
+    public var contentHash: String
+    public var documentID: UUID
+    public var title: String
+    public var wordIndex: Int
+    public var finished: Bool
+    public var updatedAt: Date
+
+    public init(
+        contentHash: String, documentID: UUID, title: String,
+        wordIndex: Int, finished: Bool, updatedAt: Date
+    ) {
+        self.contentHash = contentHash
+        self.documentID = documentID
+        self.title = title
+        self.wordIndex = wordIndex
+        self.finished = finished
+        self.updatedAt = updatedAt
+    }
+}
+
 /// Local-first SQLite store (GRDB, WAL, foreign keys on).
 ///
 /// Every write appends exactly one `changelog` row in the same transaction.
@@ -107,7 +133,93 @@ public final class Store: Sendable {
         }
     }
 
+    // MARK: - Reading position
+
+    /// The resume key for a document. The plan hash survives a re-paste that
+    /// mints a new document id; the id fallback covers hand-made plans with
+    /// an empty hash (tests, fixtures).
+    public static func resumeKey(for document: Document) -> String {
+        document.plan.sourceSHA256.isEmpty ? "doc:\(document.id.uuidString)" : document.plan.sourceSHA256
+    }
+
     // MARK: - Phrases
+
+    // MARK: - Reading position
+
+    /// Records where reading stands. Upserts on the resume key, so one article
+    /// keeps one row no matter how often it is re-pasted.
+    ///
+    /// Finish rule: the wash reached the last spoken word. Speech `.finished`
+    /// lands on that same word, so the pause path and the finish path agree
+    /// with no manual mark.
+    public func recordPosition(of document: Document, wordIndex: Int, at date: Date = .now) throws {
+        let total = SpokenIndex(plan: document.plan).totalWords
+        let clamped = min(max(wordIndex, 0), max(total - 1, 0))
+        let finished = total > 0 && clamped >= total - 1
+        let hash = Self.resumeKey(for: document)
+        try dbQueue.write { db in
+            try db.execute(sql: """
+                INSERT INTO reading_position(content_hash, document_id, title, word_index, finished, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?)
+                ON CONFLICT(content_hash) DO UPDATE SET
+                    document_id = excluded.document_id,
+                    title = excluded.title,
+                    word_index = excluded.word_index,
+                    finished = excluded.finished,
+                    updated_at = excluded.updated_at
+                """, arguments: [
+                    hash,
+                    document.id.uuidString,
+                    document.title,
+                    clamped,
+                    finished,
+                    date.timeIntervalSinceReferenceDate,
+                ])
+        }
+    }
+
+    public func position(contentHash: String) throws -> ReadingPosition? {
+        try dbQueue.read { db in
+            guard let row = try Row.fetchOne(db, sql: """
+                SELECT content_hash, document_id, title, word_index, finished, updated_at
+                FROM reading_position WHERE content_hash = ?
+                """, arguments: [contentHash]) else { return nil }
+            return try Self.decodePosition(row: row)
+        }
+    }
+
+    /// Fallback for plans with an empty hash, where the key is the document id.
+    public func position(documentID: UUID) throws -> ReadingPosition? {
+        try dbQueue.read { db in
+            guard let row = try Row.fetchOne(db, sql: """
+                SELECT content_hash, document_id, title, word_index, finished, updated_at
+                FROM reading_position WHERE document_id = ?
+                ORDER BY updated_at DESC LIMIT 1
+                """, arguments: [documentID.uuidString]) else { return nil }
+            return try Self.decodePosition(row: row)
+        }
+    }
+
+    /// The newest unfinished article, for the launch affordance. Finished
+    /// articles are skipped: there is nothing to resume.
+    public func latestUnfinishedPosition() throws -> ReadingPosition? {
+        try dbQueue.read { db in
+            guard let row = try Row.fetchOne(db, sql: """
+                SELECT content_hash, document_id, title, word_index, finished, updated_at
+                FROM reading_position WHERE finished = 0
+                ORDER BY updated_at DESC LIMIT 1
+                """) else { return nil }
+            return try Self.decodePosition(row: row)
+        }
+    }
+
+    /// Dismisses the launch affordance. The next pause re-records, so this
+    /// only silences the current offer.
+    public func dismissPosition(contentHash: String) throws {
+        try dbQueue.write { db in
+            try db.execute(sql: "DELETE FROM reading_position WHERE content_hash = ?", arguments: [contentHash])
+        }
+    }
 
     public func save(phrase: Phrase) throws {
         guard let payload = encodedJSON(phrase) else {
@@ -233,6 +345,22 @@ public final class Store: Sendable {
             id: id, phraseID: phraseID, documentID: documentID,
             blockID: blockID, charOffset: charOffset,
             createdAt: Date(timeIntervalSinceReferenceDate: createdAt))
+    }
+
+    static func decodePosition(row: Row) throws -> ReadingPosition {
+        let hash: String = row["content_hash"]
+        let documentString: String = row["document_id"]
+        let title: String = row["title"]
+        let wordIndex: Int = row["word_index"]
+        let finished: Bool = row["finished"]
+        let updatedAt: Double = row["updated_at"]
+        guard let documentID = UUID(uuidString: documentString) else {
+            throw StoreError.planDecodingFailed
+        }
+        return ReadingPosition(
+            contentHash: hash, documentID: documentID, title: title,
+            wordIndex: wordIndex, finished: finished,
+            updatedAt: Date(timeIntervalSinceReferenceDate: updatedAt))
     }
 }
 
