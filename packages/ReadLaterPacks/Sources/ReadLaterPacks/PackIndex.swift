@@ -145,7 +145,7 @@ public enum PackIndexBuilder {
     }
 
     private static func bindText(_ stmt: OpaquePointer, _ index: Int32, _ value: String) {
-        value.withCString { ptr in
+        _ = value.withCString { ptr in
             sqlite3_bind_text(stmt, index, ptr, -1, unsafeBitCast(-1, to: sqlite3_destructor_type.self))
         }
     }
@@ -156,6 +156,25 @@ public enum PackIndexBuilder {
         } else {
             sqlite3_bind_null(stmt, index)
         }
+    }
+}
+
+/// What the card shows for one tapped word. The tapped spelling is always
+/// the headword; `subtitle` carries the stored headword when it differs
+/// (accent normalisation) or the base word a pointer gloss resolves to.
+public struct DisplayEntry: Sendable, Equatable {
+    public var tapped: String
+    public var subtitle: String?
+    public var gloss: String
+    public var phonetic: String?
+    public var partOfSpeech: String?
+
+    public init(tapped: String, subtitle: String?, gloss: String, phonetic: String?, partOfSpeech: String?) {
+        self.tapped = tapped
+        self.subtitle = subtitle
+        self.gloss = gloss
+        self.phonetic = phonetic
+        self.partOfSpeech = partOfSpeech
     }
 }
 
@@ -179,7 +198,7 @@ public struct PackIndexStore: Sendable {
         var stmt: OpaquePointer?
         guard sqlite3_prepare_v2(db, "SELECT word, phonetic, pos, gloss FROM words WHERE key = ? LIMIT 1", -1, &stmt, nil) == SQLITE_OK, let stmt else { return nil }
         defer { sqlite3_finalize(stmt) }
-        key.withCString { ptr in
+        _ = key.withCString { ptr in
             sqlite3_bind_text(stmt, 1, ptr, -1, unsafeBitCast(-1, to: sqlite3_destructor_type.self))
         }
         guard sqlite3_step(stmt) == SQLITE_ROW else { return nil }
@@ -221,5 +240,44 @@ public struct PackIndexStore: Sendable {
         if tapped.lowercased() == stored.lowercased() { return nil }
         guard normalize(tapped) == normalize(stored) else { return nil }
         return stored
+    }
+
+    /// The card-ready entry for a tapped word. Applies the three gloss rules
+    /// (spec/dictionary-packs.md §4): a pointer gloss resolves through the
+    /// base word with the tapped spelling kept as the headword, mixed entries
+    /// show untagged lines first with at most one tagged line, and grammar
+    /// parentheticals never reach the card. Pointer resolution follows at
+    /// most four hops and stops on a loop; when the base word is missing, the
+    /// tapped word's own gloss is shown cleaned.
+    public func displayEntry(for word: String) -> DisplayEntry? {
+        guard let stored = entry(for: word) else { return nil }
+        if GlossRenderer.isPointerOnly(stored.gloss),
+           let resolved = resolvePointer(from: stored, seen: [Self.normalize(word)])
+        {
+            return DisplayEntry(
+                tapped: word,
+                subtitle: resolved.word,
+                gloss: GlossRenderer.render(gloss: resolved.gloss),
+                phonetic: resolved.phonetic,
+                partOfSpeech: resolved.partOfSpeech
+            )
+        }
+        return DisplayEntry(
+            tapped: word,
+            subtitle: Self.accentSubtitle(tapped: word, stored: stored.word),
+            gloss: GlossRenderer.render(gloss: stored.gloss),
+            phonetic: stored.phonetic,
+            partOfSpeech: stored.partOfSpeech
+        )
+    }
+
+    private func resolvePointer(from entry: PackEntry, seen: Set<String>, hops: Int = 4) -> PackEntry? {
+        guard hops > 0, let base = GlossRenderer.pointerBaseWord(in: entry.gloss) else { return nil }
+        let key = Self.normalize(base)
+        guard !key.isEmpty, !seen.contains(key), let next = self.entry(for: base) else { return nil }
+        if GlossRenderer.isPointerOnly(next.gloss) {
+            return resolvePointer(from: next, seen: seen.union([key]), hops: hops - 1)
+        }
+        return next
     }
 }

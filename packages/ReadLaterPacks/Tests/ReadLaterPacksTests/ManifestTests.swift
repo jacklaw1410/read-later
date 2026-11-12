@@ -176,4 +176,14 @@ struct AllowlistTests {
         #expect(VersionCompare.compare("0.2.0", "0.10.0") == .orderedAscending)
         #expect(VersionCompare.compare("1.0", "1.0.0") == .orderedSame)
     }
+
+    @Test("a newer remote version is an update, same or older is not")
+    func updateDetection() {
+        #expect(PackUpdate.isUpdateAvailable(installed: "2026-11-10.1", remote: "2026-11-10.2"))
+        #expect(!PackUpdate.isUpdateAvailable(installed: "2026-11-10.2", remote: "2026-11-10.2"))
+        #expect(!PackUpdate.isUpdateAvailable(installed: "2026-11-11.1", remote: "2026-11-10.2"))
+        // Numeric, not lexical: .10 beats .2.
+        #expect(PackUpdate.isUpdateAvailable(installed: "2026-11-10.2", remote: "2026-11-10.10"))
+        #expect(!PackUpdate.isUpdateAvailable(installed: "2026-11-10.10", remote: "2026-11-10.2"))
+    }
 }

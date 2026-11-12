@@ -40,7 +40,7 @@ struct DemoPack: Sendable {
             guard !headword.isEmpty else { continue }
             entries[headword] = LookupResult(
                 word: fields[0],
-                gloss: fields[3],
+                gloss: GlossRenderer.render(gloss: fields[3]),
                 phonetic: fields[2].isEmpty ? nil : fields[2],
                 partOfSpeech: fields[1].isEmpty ? nil : fields[1],
                 source: .pack

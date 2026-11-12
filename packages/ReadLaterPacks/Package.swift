@@ -16,6 +16,11 @@ let package = Package(
             name: "ReadLaterPacks",
             dependencies: ["CGzip"]
         ),
-        .testTarget(name: "ReadLaterPacksTests", dependencies: ["ReadLaterPacks"])
+        .testTarget(name: "ReadLaterPacksTests", dependencies: ["ReadLaterPacks"]),
+        .executableTarget(
+            name: "gloss-samples",
+            dependencies: ["ReadLaterPacks"],
+            path: "Tools/gloss-samples"
+        ),
     ]
 )

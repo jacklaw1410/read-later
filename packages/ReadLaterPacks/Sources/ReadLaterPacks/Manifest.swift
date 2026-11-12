@@ -183,3 +183,11 @@ public enum VersionCompare {
         version.split(whereSeparator: { !$0.isNumber }).compactMap { Int($0) }
     }
 }
+
+/// Update detection: the registry version is newer than the installed one.
+/// Numeric, so `2026-11-10.10` beats `2026-11-10.2`.
+public enum PackUpdate {
+    public static func isUpdateAvailable(installed: String, remote: String) -> Bool {
+        VersionCompare.compare(remote, installed) == .orderedDescending
+    }
+}

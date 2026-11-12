@@ -321,4 +321,47 @@ struct PackFileInstallTests {
         #expect(PackCardCopy.message(for: state) == "Dictionary could not be read — try again.")
         #expect(!FileManager.default.fileExists(atPath: archiveURL(in: directory).path))
     }
+
+    @Test("success deletes the archive, keeping the index")
+    func successDeletesArchive() async throws {
+        let build = try packTestDirectory()
+        let source = try syntheticArchive(syntheticLexicalTSV(), in: build, id: "dictionary.en-zh-HK.lexical")
+        let bytes = try Data(contentsOf: source)
+        let manifest = try packTestManifest(data: bytes)
+
+        let directory = try packTestDirectory()
+        let state = await PackService.install(
+            manifest: manifest,
+            archiveURL: URL(string: "https://example.com/pack.gz")!,
+            directory: directory,
+            appVersion: "0.1.0",
+            download: passthroughDownload(bytes)
+        )
+        #expect(state == .installed(version: manifest.version))
+        #expect(!FileManager.default.fileExists(atPath: archiveURL(in: directory).path))
+        let sqlite = directory.appendingPathComponent("dictionary.en-zh-HK.lexical.sqlite")
+        #expect(FileManager.default.fileExists(atPath: sqlite.path))
+        #expect(PackIndexStore(sqliteURL: sqlite).entry(for: "serendipity") != nil)
+    }
+
+    @Test("pause keeps the partial file so resume still works")
+    func pauseKeepsPartial() async throws {
+        let data = Data(repeating: 0x41, count: 1_000_000)
+        let manifest = try packTestManifest(data: data)
+        let directory = try packTestDirectory()
+        let installer = PackInstaller(
+            manifest: manifest,
+            downloadFile: { _, destination, _, _ in
+                try Data("partial".utf8).write(to: destination)
+                try await Task.sleep(nanoseconds: 2_000_000_000)
+            }
+        )
+        let task = Task {
+            await installer.start(url: URL(string: "https://example.com/pack.gz")!, directory: directory)
+        }
+        try await Task.sleep(nanoseconds: 200_000_000)
+        #expect(await installer.cancel() == .paused)
+        #expect(await task.value == .paused)
+        #expect(FileManager.default.fileExists(atPath: archiveURL(in: directory).path))
+    }
 }

@@ -208,6 +208,11 @@ public actor PackInstaller {
             discard(archive)
             return move(to: .failedCorrupt)
         }
+        // The archive has served its purpose: the index is built. Removing it
+        // gives the disk back; a later update downloads its own archive. A
+        // paused download keeps its partial file so resume still works — this
+        // line only runs on success.
+        try? FileManager.default.removeItem(at: archive)
         return move(to: .installed(version: manifest.version))
     }
 
