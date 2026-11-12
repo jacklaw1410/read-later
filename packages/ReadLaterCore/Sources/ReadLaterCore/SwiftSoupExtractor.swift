@@ -31,17 +31,10 @@ public struct SwiftSoupExtractor: Extractor {
         let title = (try? doc.title()) ?? ""
         let bodyChars = bodyText.count
         let bodyWords = SpokenPlanEngine.wordCount(in: bodyText)
-        let bodyLinkElements = (try? body.select("a")) ?? Elements()
-        var bodyLinkCount = 0
-        var bodyLinkChars = 0
-        for link in bodyLinkElements {
-            bodyLinkCount += 1
-            bodyLinkChars += ((try? link.text()) ?? "").count
-        }
-        let bodyParagraphs = ((try? body.select("p")) ?? Elements()).array()
-            .filter { (((try? $0.text()) ?? "").trimmingCharacters(in: .whitespacesAndNewlines)).count > 0 }
-            .count
-
+        // The root-scoped counts below decide the class. Only one whole-body
+        // count survives: the link characters the no-blocks fallback needs.
+        let bodyLinkChars = ((try? body.select("a")) ?? Elements()).array()
+            .reduce(0) { $0 + (((try? $1.text()) ?? "").count) }
         let lowered = html.lowercased()
 
         // A wall is decided by the response and the markup, not by the body text. A paywall

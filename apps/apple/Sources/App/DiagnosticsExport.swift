@@ -73,7 +73,7 @@ enum DiagnosticsExport {
         formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         return Summary(
             schema: "rl-diagnostics-1",
-            buildSHA: BuildInfo.gitSHA,
+            buildSHA: (info?["GitSHA"] as? String) ?? "unknown",
             bundleID: Bundle.main.bundleIdentifier ?? "unknown",
             appVersion: (info?["CFBundleShortVersionString"] as? String) ?? "unknown",
             buildNumber: (info?["CFBundleVersion"] as? String) ?? "unknown",
