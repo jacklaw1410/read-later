@@ -31,7 +31,7 @@ public enum EntryState: Sendable, Equatable {
 /// Every reader-facing string on the entry screen, in one type.
 public enum EntryCopy {
     public static let linkCaption = "Paste link or text"
-    public static let linkHint = "x.com and similar → login wall, paste text instead"
+    public static let linkHint = "The prefilled link opens the sample article. x.com and similar → login wall, paste text instead."
     public static let rawCaption = "Raw text"
     public static let rawPlaceholder = "Paste a paragraph to override the sample…"
     public static let open = "Open in Read Later"
@@ -195,28 +195,58 @@ public struct EntryView: View {
             state = .refused(EntryCopy.emptyRefusal)
             return
         }
-        if raw.isEmpty && link.contains("x.com") {
-            state = .refused(EntryCopy.loginWallRefusal)
-            return
-        }
-        let document: ReadLaterCore.Document? =
-            raw.isEmpty ? ArticleLibrary.demo : PasteLoader.document(from: raw, title: nil)
-        guard let document else {
-            state = .refused(EntryCopy.emptyRefusal)
-            return
-        }
-        runStages(thenOpen: document)
+        guard !isLoading else { return }
+        Task { await load(link: link, raw: raw) }
     }
 
-    private func runStages(thenOpen document: ReadLaterCore.Document) {
-        state = .loading(stage: .fetching, progress: EntryStage.fetching.progress)
-        Task {
-            try? await Task.sleep(for: .milliseconds(350))
+    /// The entry path. Raw text wins over the link. The bundled sample is
+    /// recognised here so the demo opens with no network, and a real link is
+    /// fetched, extracted, then opened.
+    @MainActor
+    private func load(link: String, raw: String) async {
+        if !raw.isEmpty {
             state = .loading(stage: .stripping, progress: EntryStage.stripping.progress)
-            try? await Task.sleep(for: .milliseconds(350))
-            state = .loading(stage: .ready, progress: EntryStage.ready.progress)
-            try? await Task.sleep(for: .milliseconds(500))
-            onOpen(document)
+            await reveal(.ready)
+            switch ArticleIngress.pasted(raw) {
+            case .success(let document):
+                onOpen(document)
+            case .failure(let error):
+                state = .refused(error.message)
+            }
+            return
         }
+        if link == EntryCopy.sampleLink {
+            state = .loading(stage: .fetching, progress: EntryStage.fetching.progress)
+            await reveal(.stripping)
+            await reveal(.ready)
+            onOpen(ArticleLibrary.demo)
+            return
+        }
+
+        state = .loading(stage: .fetching, progress: EntryStage.fetching.progress)
+        let fetched = await ArticleIngress.fetch(link)
+        guard case .success(let page) = fetched else {
+            if case .failure(let error) = fetched {
+                state = .refused(error.message)
+            }
+            return
+        }
+        state = .loading(stage: .stripping, progress: EntryStage.stripping.progress)
+        switch ArticleIngress.read(page) {
+        case .success(let document):
+            await reveal(.ready)
+            onOpen(document)
+        case .failure(let error):
+            state = .refused(error.message)
+        }
+    }
+
+    /// Holds a stage long enough to be seen. Two stages can finish in the same
+    /// millisecond on a cached page, and a progress rule that never moves tells
+    /// the reader nothing.
+    @MainActor
+    private func reveal(_ stage: EntryStage) async {
+        state = .loading(stage: stage, progress: stage.progress)
+        try? await Task.sleep(for: .milliseconds(180))
     }
 }

@@ -104,7 +104,8 @@ public struct SwiftSoupExtractor: Extractor {
         return ExtractionResult(
             pageClass: .usable,
             blocks: blocks,
-            reason: "usable: \(blocks.count) blocks from \(source)"
+            reason: "usable: \(blocks.count) blocks from \(source)",
+            title: title.split(whereSeparator: { $0.isWhitespace }).joined(separator: " ")
         )
     }
 

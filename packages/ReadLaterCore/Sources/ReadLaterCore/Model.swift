@@ -166,11 +166,16 @@ public struct ExtractionResult: Sendable {
     public var pageClass: PageClass
     public var blocks: [Block]
     public var reason: String
+    /// The page's `<title>`, trimmed. Empty when the page has none. The reader
+    /// shows this at the top of an article, so the extractor keeps it here
+    /// instead of making the caller parse the HTML a second time.
+    public var title: String
 
-    public init(pageClass: PageClass, blocks: [Block] = [], reason: String) {
+    public init(pageClass: PageClass, blocks: [Block] = [], reason: String, title: String = "") {
         self.pageClass = pageClass
         self.blocks = blocks
         self.reason = reason
+        self.title = title
     }
 
     public var isUsable: Bool { pageClass == .usable }
