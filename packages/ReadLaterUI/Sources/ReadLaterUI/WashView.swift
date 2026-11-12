@@ -806,7 +806,7 @@ final class _WashedTextView: UITextView {
     }
 
     private func drawWashChips(in rect: CGRect) {
-        guard let storage = textStorage else { return }
+        let storage: NSTextStorage = textStorage
         let manager = layoutManager
         let container = textContainer
         manager.ensureLayout(for: container)
@@ -889,7 +889,7 @@ final class _WashedTextView: UITextView {
         let y = baseline - 1
         var x = box.minX
         while x < box.maxX {
-            CGRect(x: x, y: y, width: 1.5, height: 1.5).fill()
+            UIRectFill(CGRect(x: x, y: y, width: 1.5, height: 1.5))
             x += 4
         }
     }

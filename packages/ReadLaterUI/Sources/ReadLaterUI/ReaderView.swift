@@ -275,11 +275,11 @@ private struct ViewportHeightKey: PreferenceKey {
 
 private extension View {
     /// Tracks whether the scroll offset moves under the reader's finger.
-    /// `onScrollPhaseChange` is iOS 17 / macOS 15; below that the reader
+    /// `onScrollPhaseChange` is iOS 18 / macOS 15; below that the reader
     /// never reports user-driven, so a deliberate scroll cannot hold.
     @ViewBuilder
     func trackUserDriving(_ driving: Binding<Bool>) -> some View {
-        if #available(macOS 15, iOS 17, *) {
+        if #available(macOS 15, iOS 18, *) {
             self.onScrollPhaseChange { _, phase in
                 driving.wrappedValue = phase == .interacting || phase == .decelerating
             }
