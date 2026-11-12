@@ -180,7 +180,7 @@ contracts/           Versioned JSON Schemas shared with the research repo
 fixtures/            20 committed pages and their expected block plans
 tools/blockplan/     Dumps a block plan so the research gate can score it
 tools/registry/      Pack publish script (`publish.sh`, needs `wrangler` + Node)
-docs/                ADRs, provenance, extraction.md (how a page becomes blocks)
+docs/                ADRs and provenance. Extraction flow: research repo spec/extraction-flow.md
 ```
 
 ## Rules
