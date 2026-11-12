@@ -2708,17 +2708,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
+      "confidence" : 0.9,
       "id" : 80,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "kind" : "nav",
+      "lowConfidence" : false,
+      "reason" : "ui-control",
       "spoken" : [
-        {
-          "length" : 4,
-          "offset" : 0,
-          "text" : "Save"
-        }
+
       ],
       "text" : "Save"
     },
@@ -2726,17 +2722,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
+      "confidence" : 0.9,
       "id" : 81,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "kind" : "nav",
+      "lowConfidence" : false,
+      "reason" : "ui-control",
       "spoken" : [
-        {
-          "length" : 5,
-          "offset" : 0,
-          "text" : "Share"
-        }
+
       ],
       "text" : "Share"
     },
@@ -2755,7 +2747,7 @@
       "text" : "PREFER AEON ON GOOGLESYNDICATE THIS ESSAY"
     }
   ],
-  "sentence_count" : 332,
+  "sentence_count" : 330,
   "skipped" : [
     {
       "block_id" : 0,
@@ -2856,6 +2848,20 @@
       "words" : 7
     },
     {
+      "block_id" : 80,
+      "confidence" : 0.9,
+      "kind" : "nav",
+      "reason" : "ui-control",
+      "words" : 1
+    },
+    {
+      "block_id" : 81,
+      "confidence" : 0.9,
+      "kind" : "nav",
+      "reason" : "ui-control",
+      "words" : 1
+    },
+    {
       "block_id" : 82,
       "confidence" : 0.75,
       "kind" : "nav",
@@ -2865,7 +2871,7 @@
   ],
   "source" : "061-halifax-essay.html",
   "source_sha256" : "2905651ae204ff5ac5c7aa0760350d4b77dabb9792bf451b9fcaee0a7a4b4e20",
-  "spoken_words" : 5323,
+  "spoken_words" : 5321,
   "validation_failures" : 0,
   "version" : 1
 }

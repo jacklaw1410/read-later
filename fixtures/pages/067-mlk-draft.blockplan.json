@@ -86,17 +86,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
+      "confidence" : 0.9,
       "id" : 5,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "kind" : "nav",
+      "lowConfidence" : false,
+      "reason" : "ui-control",
       "spoken" : [
-        {
-          "length" : 5,
-          "offset" : 0,
-          "text" : "Share"
-        }
+
       ],
       "text" : "Share"
     },
@@ -823,7 +819,7 @@
       "text" : "More about: African American History African American History Museum American History Auctions Civil Rights History Martin Luther King, Jr. Race and Ethnicity Washington, D.C."
     }
   ],
-  "sentence_count" : 61,
+  "sentence_count" : 60,
   "skipped" : [
     {
       "block_id" : 1,
@@ -838,6 +834,13 @@
       "kind" : "heading",
       "reason" : "h2",
       "words" : 41
+    },
+    {
+      "block_id" : 5,
+      "confidence" : 0.9,
+      "kind" : "nav",
+      "reason" : "ui-control",
+      "words" : 1
     },
     {
       "block_id" : 7,
@@ -898,7 +901,7 @@
   ],
   "source" : "067-mlk-draft.html",
   "source_sha256" : "89de77e6920acc14f973ca9345c36e3144ae26610a0f0e0e53a723c351ec6591",
-  "spoken_words" : 1111,
+  "spoken_words" : 1110,
   "validation_failures" : 0,
   "version" : 1
 }

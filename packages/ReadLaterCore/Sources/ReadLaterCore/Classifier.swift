@@ -35,6 +35,21 @@ public enum Classifier {
         "code", "pre", "hljs", "highlight", "syntax", "sourcecode",
     ]
 
+    /// One-word UI controls (plus the two two-word logins) that are never
+    /// article prose. A block whose whole normalised text is one of these is
+    /// chrome, not content. The list is fixed and reported with every sweep;
+    /// a wider list is not safer (`Comment` is already the riskiest entry).
+    static let uiControls: Set<String> = [
+        "save", "share", "listen", "subscribe", "follow", "print",
+        "comment", "sign in", "log in", "close",
+        "like", "bookmark", "download", "menu", "search", "sign up",
+    ]
+
+    /// True when the block's whole normalised text is one fixed UI control.
+    static func isUIControl(_ text: String) -> Bool {
+        uiControls.contains(text.lowercased())
+    }
+
     /// - Parameters:
     ///   - tag: Lowercased element name.
     ///   - classNames: The element's class list.
@@ -106,6 +121,9 @@ public enum Classifier {
         case "li":
             return Classification(kind: .list, confidence: 0.9, reason: "li")
         case "p", "dt", "dd":
+            if isUIControl(trimmed) {
+                return Classification(kind: .nav, confidence: 0.9, reason: "ui-control")
+            }
             if cjkRatio(in: trimmed) >= 0.3 {
                 return Classification(kind: .cjk, confidence: 0.85, reason: "cjk-ratio")
             }
@@ -129,6 +147,9 @@ public enum Classifier {
     ) -> Classification {
         guard !text.isEmpty else {
             return Classification(kind: .prose, confidence: 0.5, reason: "empty")
+        }
+        if isUIControl(text) {
+            return Classification(kind: .nav, confidence: 0.9, reason: "ui-control")
         }
         let resolved = lines ?? splitLines(text)
         if hasPromptPrefix(resolved) {

@@ -181,7 +181,7 @@
       "source_url": "https://www.zhihu.com/explore",
       "sha256": "a3eaa13ab42da7c86f135c0d117e0e23292448eed40f6e65c739e56313ce6bf2",
       "bytes": 218118,
-      "expected_page_class": "failed",
+      "expected_page_class": "not-an-article",
       "group": "non-english-mixed",
       "research_path": "pins/040-zhihu.html"
     }

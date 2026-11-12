@@ -47,6 +47,25 @@ public struct SwiftSoupExtractor: Extractor {
         if let marker = Self.wallMarker(in: lowered, title: title.lowercased()) {
             throw ExtractionError.walled(reason: "wall marker: \(marker)")
         }
+        // A login or app screen is `not-an-article`, not `unrendered`. The
+        // js-shell check below fires on the same short-body shape (pin 64,
+        // Tumblr login, 284 chars), so this runs first. Mirrors the gate's
+        // `is_short_chrome` login/app prongs: body under 300 chars with login
+        // or app words in the title and body together. The catalogue prong is
+        // deliberately not mirrored; it needs its own measurement.
+        if bodyChars < 300 {
+            let combined = "\(title) \(bodyText)"
+            if Self.matchesLoginChrome(combined) {
+                throw ExtractionError.notAnArticle(
+                    reason: "login-chrome: body \(bodyChars) chars"
+                )
+            }
+            if Self.matchesAppChrome(combined) {
+                throw ExtractionError.notAnArticle(
+                    reason: "app-chrome: body \(bodyChars) chars"
+                )
+            }
+        }
         if bodyChars < 200 && (html.count >= 8000 || Self.containsSPAMarker(lowered)) {
             throw ExtractionError.unrendered(
                 reason: "js-shell: body \(bodyChars) chars, html \(html.count) chars"
@@ -158,6 +177,22 @@ public struct SwiftSoupExtractor: Extractor {
     }
 
     // MARK: - Gate markers
+
+    /// The gate's `is_short_chrome` word lists, copied exactly
+    /// (`read-later-research/gate/extraction_gate.py`).
+    static func matchesLoginChrome(_ text: String) -> Bool {
+        let pattern = #"\b(log in|login|sign up|register)\b"#
+        return (try? NSRegularExpression(pattern: pattern, options: .caseInsensitive))
+            .map { $0.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)) != nil }
+            ?? false
+    }
+
+    static func matchesAppChrome(_ text: String) -> Bool {
+        let pattern = #"(to run this app|whiteboard)"#
+        return (try? NSRegularExpression(pattern: pattern, options: .caseInsensitive))
+            .map { $0.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)) != nil }
+            ?? false
+    }
 
     /// A JS shell: tiny body text plus a large HTML payload or a known
     /// single-page-app marker. Checked before walls so a shell cannot pass.

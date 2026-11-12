@@ -22,17 +22,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
+      "confidence" : 0.9,
       "id" : 1,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "kind" : "nav",
+      "lowConfidence" : false,
+      "reason" : "ui-control",
       "spoken" : [
-        {
-          "length" : 4,
-          "offset" : 0,
-          "text" : "Menu"
-        }
+
       ],
       "text" : "Menu"
     },
@@ -583,17 +579,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
+      "confidence" : 0.9,
       "id" : 32,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "kind" : "nav",
+      "lowConfidence" : false,
+      "reason" : "ui-control",
       "spoken" : [
-        {
-          "length" : 9,
-          "offset" : 0,
-          "text" : "Subscribe"
-        }
+
       ],
       "text" : "Subscribe"
     },
@@ -663,8 +655,15 @@
       "text" : "MDDI (P) 046/10/2025. Published by SPH Media Limited, Co. Regn. No.202120748H. Copyright © 2026 SPH Media Limited. All rights reserved."
     }
   ],
-  "sentence_count" : 38,
+  "sentence_count" : 36,
   "skipped" : [
+    {
+      "block_id" : 1,
+      "confidence" : 0.9,
+      "kind" : "nav",
+      "reason" : "ui-control",
+      "words" : 1
+    },
     {
       "block_id" : 2,
       "confidence" : 0.85,
@@ -687,6 +686,13 @@
       "words" : 3
     },
     {
+      "block_id" : 32,
+      "confidence" : 0.9,
+      "kind" : "nav",
+      "reason" : "ui-control",
+      "words" : 1
+    },
+    {
       "block_id" : 34,
       "confidence" : 0.75,
       "kind" : "nav",
@@ -696,7 +702,7 @@
   ],
   "source" : "078-italian-schools.html",
   "source_sha256" : "ebbd36768c8ba91edf4625476999a67f5bcd173c954495c18c80495f5ae6d362",
-  "spoken_words" : 281,
+  "spoken_words" : 279,
   "validation_failures" : 0,
   "version" : 1
 }
