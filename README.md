@@ -24,6 +24,7 @@ Four Swift packages hold the model, packs, storage and UI tokens.
 | XcodeGen | 2.46.0 | `xcodegen --version` |
 | Swift | 6.4.2 (Apple) | `swift --version` |
 | Node | v26.13.1 — only for pack publish via `wrangler` | `node --version` |
+| Rust | 1.99.1 | `cargo --version` |
 
 Install XcodeGen with `brew install xcodegen`.
 The generated `.xcodeproj` is not committed. `project.yml` is the source.
@@ -205,18 +206,18 @@ tools/blockplan/     Dumps a block plan so the research gate can score it
 tools/registry/      Pack publish script (`publish.sh`, needs `wrangler` + Node)
 docs/                ADRs, provenance and the design system. Extraction flow: research repo spec/extraction-flow.md
 design/tokens.json   The only source for colour, type, space, radius, size and motion
-tools/tokens/        Generator for every platform, plus the stale-file check
+tools/tokens/        Rust generator for every platform, plus the stale-file check
 ```
 
 ## 10. Design system
 
-`design/tokens.json` holds the Calm Editorial values. `tools/tokens/generate.py`
-writes Swift, CSS, Kotlin and XAML from that one file. A view reads a semantic
-name, never a literal.
+`design/tokens.json` holds the Calm Editorial values. The Rust tool in
+`tools/tokens` writes Swift, CSS, Kotlin and XAML from that one file. A view
+reads a semantic name, never a literal.
 
 ```bash
-python3 tools/tokens/generate.py     # write every platform file
-./tools/tokens/check.sh              # fail when a file is stale
+cargo run --release --manifest-path tools/tokens/Cargo.toml            # write
+cargo run --release --manifest-path tools/tokens/Cargo.toml -- --check # verify
 ```
 
 The layers, the portability boundary and the steps to add a platform are in

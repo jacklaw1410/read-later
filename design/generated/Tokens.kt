@@ -1,11 +1,10 @@
-// Generated from design/tokens.json by tools/tokens/generate.py. Do not edit.
+// Generated from design/tokens.json by tools/tokens (readlater-tokens). Do not edit.
 package app.readlater.design
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 

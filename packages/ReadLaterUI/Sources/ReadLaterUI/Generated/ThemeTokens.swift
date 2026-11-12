@@ -1,4 +1,4 @@
-// Generated from design/tokens.json by tools/tokens/generate.py. Do not edit.
+// Generated from design/tokens.json by tools/tokens (readlater-tokens). Do not edit.
 // A view reads these names. A value change happens in the JSON.
 
 import SwiftUI

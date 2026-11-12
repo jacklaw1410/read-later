@@ -1,4 +1,4 @@
-<!-- Generated from design/tokens.json by tools/tokens/generate.py. Do not edit. -->
+<!-- Generated from design/tokens.json by tools/tokens (readlater-tokens). Do not edit. -->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">

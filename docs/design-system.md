@@ -8,17 +8,28 @@ changes in one place. Every platform reads the result.
 | Path | Role |
 |---|---|
 | `design/tokens.json` | The only source. Primitive values, semantic roles, platform symbol bindings. |
-| `tools/tokens/generate.py` | Reads the JSON. Writes every platform file. Fails on a bad reference. |
-| `tools/tokens/check.sh` | Fails when a generated file is stale. Run before a commit that touches `design/`. |
+| `tools/tokens/` | Rust tool. Reads the JSON. Writes every platform file. Fails on a bad reference. |
+| `tools/tokens/Cargo.lock` | Committed, so a build uses the exact same crates. |
 | `packages/ReadLaterUI/Sources/ReadLaterUI/Generated/ThemeTokens.swift` | Swift tokens. SwiftUI reads these. |
 | `packages/ReadLaterUI/Sources/ReadLaterUI/Theme.swift` | Resolver plus UIKit and AppKit adapters. Hand-written, on purpose. |
 | `design/generated/tokens.css` | CSS variables. For prototypes, docs and a future web surface. |
 | `design/generated/Tokens.kt` | Jetpack Compose colours, dp sizes, sp type sizes, motion. |
 | `design/generated/Tokens.xaml` | WinUI 3 theme dictionaries, doubles for size, motion in milliseconds. |
 
-`tools/tokens/generate.py --check` exits non-zero when a file is out of date.
-The build does not run it, because the generator needs Python. Run
-`tools/tokens/check.sh` by hand or in CI.
+`readlater-tokens --check` exits non-zero when a file is out of date. The build
+does not run it, so run it by hand or in CI before a commit.
+
+```bash
+cargo run --release --manifest-path tools/tokens/Cargo.toml            # write
+cargo run --release --manifest-path tools/tokens/Cargo.toml -- --check # verify
+```
+
+The tool finds the repo root by walking up to the directory that holds
+`design/tokens.json`. It writes nothing in `--check` mode, so it is safe to run
+against a clean tree.
+
+Tooling is Rust. A shell script that grows past a few lines becomes a Rust
+binary, because a binary has types, a test surface and no shell-quoting bug.
 
 ## 2 · Layers
 
@@ -59,8 +70,8 @@ from `Theme`, reader-specific geometry stays local.
 Change a value:
 
 1. Edit `design/tokens.json`.
-2. Run `python3 tools/tokens/generate.py`.
-3. Run `./tools/tokens/check.sh`. It must pass.
+2. Run `cargo run --release --manifest-path tools/tokens/Cargo.toml`.
+3. Run the same command with `-- --check`. It must pass.
 4. Build the app. Take snapshots. Compare them.
 
 Compare snapshots with `apps/apple/Sources/App/SnapshotHarness.swift`:
@@ -77,9 +88,9 @@ Add a semantic role:
 
 Add a platform:
 
-1. Add a `platform.<name>` block that names its output path and symbol template.
-2. Add one emitter in `generate.py` that reads `semantic` only.
-3. Add the file to `check.sh` if it needs a syntax check.
+1. Add one emitter module in `tools/tokens/src/emit/` that reads `semantic` only.
+2. Add its output to `emit::emit_all`.
+3. Add a check in the same emitter if the format needs one, as XAML does.
 4. Do not add platform values to the JSON. The JSON holds no geometry that
    belongs to one platform.
 
@@ -98,6 +109,7 @@ Kotlin and XAML output as correct-by-construction until a project builds it.
 ## 6 · Rules for agents
 
 - Never edit a file under `Generated/` or `design/generated/`. Edit the JSON.
+- Write a tool in Rust. Do not add a Python script or a shell script.
 - Never write a hex, a point size or a radius in a view. Add a role.
 - Keep one Swift symbol per semantic role. The generator rejects a duplicate.
 - A token change is a design change. Show the owner the snapshot that proves it.

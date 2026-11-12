@@ -22,6 +22,12 @@ Build, test, device and troubleshooting instructions:
 
 Design values come from `design/tokens.json` only. A view reads a semantic
 name, never a hex or a point. After a token edit, run
-`python3 tools/tokens/generate.py`, then `./tools/tokens/check.sh`. Do not edit
-a file under `Generated/` or `design/generated/`. Layers and the portability
+`cargo run --release --manifest-path tools/tokens/Cargo.toml`, then run it again
+with `-- --check`. Do not edit a file under `Generated/` or
+`design/generated/`. Layers and the portability
 boundary: [`docs/design-system.md`](docs/design-system.md).
+
+## Tooling
+
+Write a tool in Rust. Do not add a Python script or a shell script. A one-line
+command in a doc is fine; a program is a crate under `tools/`.
