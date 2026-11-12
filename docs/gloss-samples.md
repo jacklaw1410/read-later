@@ -8,7 +8,7 @@ shows at most 4 gloss lines, in source order.
 Reproduce the list:
 
 ```bash
-swift run --package-path packages/ReadLaterPacks gloss-samples pack.gz
+swift run --package-path packages/ReadLaterPacks gloss-samples dictionary.en-zh-HK.lexical.pack.gz
 ```
 
 Selection rule (fixed; alphabetical over the pack's headwords):
@@ -70,7 +70,7 @@ rule: the tag moves, it does not disappear.
 - card shows:
 
 ```
-a. 被拋棄的, 無約束的, 恣意放蕩的
+adj. 被拋棄的, 無約束的, 恣意放蕩的
 ```
 
 ### abaser
@@ -128,7 +128,7 @@ n. 馬尼拉麻, 麻蕉
 - card shows:
 
 ```
-a. 非細菌性的
+adj. 非細菌性的
 [醫] 非細菌性的; 無細菌的
 ```
 
@@ -239,7 +239,7 @@ n. 咖啡館, 酒店
 n. 水, 雨水, 海水, 水位, 水面, 流水
 vt. 給...澆水, 供以水, 注入水, 使溼
 vi. 流淚, 流口水, 加水
-a. 水的, 水上的, 水生的, 含水的
+adj. 水的, 水上的, 水生的, 含水的
 ```
 
 
@@ -265,6 +265,6 @@ n. 咖啡館, 酒店
 
 ```
 n. 陳腔濫調, 凸印版
-a. 陳腐的
+adj. 陳腐的
 ```
 

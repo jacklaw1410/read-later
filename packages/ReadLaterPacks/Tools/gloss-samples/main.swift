@@ -287,14 +287,26 @@ struct Main {
         for (title, samples) in groups {
             body += "<h2>\(esc(title))</h2>\n"
             for s in samples {
-                body += "<article class=\"card\">\n"
+                // The card carries the headword as its key, so a mark survives
+                // a reload and travels back as text.
+                body += "<article class=\"card\" data-word=\"\(esc(s.headword))\">\n"
                 body += "<h3 lang=\"en\">\(esc(s.headword))</h3>\n"
                 if let sub = s.subtitle { body += "<p class=\"sub\" lang=\"en\">\(esc(sub))</p>\n" }
                 let meta = [s.phonetic, s.partOfSpeech].filter { !$0.isEmpty }.joined(separator: " · ")
                 if !meta.isEmpty { body += "<p class=\"meta\" lang=\"en\">\(esc(meta))</p>\n" }
                 body += "<div class=\"gloss\">"
                 body += s.cardGloss.split(separator: "\n").map { "<p>\(esc(String($0)))</p>" }.joined()
-                body += "</div>\n</article>\n"
+                body += "</div>\n"
+                body += """
+                <div class="marks" role="group" aria-label="Mark this card">
+                <button type="button" data-mark="ok">Right</button>
+                <button type="button" data-mark="change">Change</button>
+                <button type="button" data-mark="wrong">Wrong</button>
+                </div>
+                <input class="note-input" type="text" placeholder="What is wrong (optional)" aria-label="Note for this card">
+                </article>
+
+                """
             }
         }
         let html = """
@@ -316,12 +328,79 @@ struct Main {
         .gloss { font-size: 0.95rem; margin-top: 0.5rem; }
         .gloss p { margin: 0.25rem 0; }
         .note { color: #666; font-size: 0.85rem; }
+        .marks { display: flex; gap: 0.5rem; margin-top: 0.75rem; font-family: -apple-system, sans-serif; }
+        .marks button { flex: 1; padding: 0.5rem 0.25rem; font-size: 0.85rem; border: 1px solid #ccc; border-radius: 8px; background: #fff; color: #333; }
+        .marks button[aria-pressed="true"] { border-color: #334E68; background: #334E68; color: #fff; }
+        .note-input { margin-top: 0.5rem; width: 100%; box-sizing: border-box; padding: 0.5rem; font-size: 0.85rem; border: 1px solid #ddd; border-radius: 8px; font-family: -apple-system, sans-serif; }
+        .bar { position: sticky; bottom: 0; display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; margin: 2rem -1rem 0; background: #FFFCF7; border-top: 1px solid #ddd; font-family: -apple-system, sans-serif; }
+        .bar button { padding: 0.5rem 0.9rem; font-size: 0.9rem; border-radius: 8px; border: 1px solid #334E68; background: #334E68; color: #fff; }
+        .bar button.secondary { background: #fff; color: #334E68; }
+        .bar span { font-size: 0.85rem; color: #666; }
         </style>
         </head>
         <body>
         <h1>Gloss sample sheet — 20 headwords</h1>
-        <p class="note">Rendered by the lookup path (<code>PackIndexStore.displayEntry</code>). The card shows at most \(GlossRenderer.maxLines) lines. Judge whether each gloss reads right in Traditional Chinese.</p>
+        <p class="note">Rendered by the lookup path (<code>PackIndexStore.displayEntry</code>). The card shows at most \(GlossRenderer.maxLines) lines. Judge whether each gloss reads right in Traditional Chinese. Marks stay on this device; Copy marks puts them on the clipboard as text.</p>
         \(body)
+        <div class="bar">
+        <span id="count">0 / 20 marked</span>
+        <button type="button" id="copy">Copy marks</button>
+        <button type="button" class="secondary" id="reset">Reset</button>
+        </div>
+        <script>
+        const KEY = "gloss-marks-v1";
+        const cards = Array.from(document.querySelectorAll(".card"));
+        const state = JSON.parse(localStorage.getItem(KEY) || "{}");
+        function save() { localStorage.setItem(KEY, JSON.stringify(state)); }
+        function paint(card) {
+          const word = card.dataset.word;
+          const entry = state[word] || {};
+          card.querySelectorAll("[data-mark]").forEach(function (b) {
+            b.setAttribute("aria-pressed", String(b.dataset.mark === entry.mark));
+          });
+          const input = card.querySelector(".note-input");
+          if (input.value !== (entry.note || "")) input.value = entry.note || "";
+          card.style.borderColor = entry.mark ? "#334E68" : "#ddd";
+        }
+        function count() {
+          const n = cards.filter(function (c) { const e = state[c.dataset.word]; return e && e.mark; }).length;
+          document.getElementById("count").textContent = n + " / " + cards.length + " marked";
+        }
+        cards.forEach(function (card) {
+          card.querySelectorAll("[data-mark]").forEach(function (b) {
+            b.addEventListener("click", function () {
+              const word = card.dataset.word;
+              state[word] = state[word] || {};
+              state[word].mark = state[word].mark === b.dataset.mark ? "" : b.dataset.mark;
+              save(); paint(card); count();
+            });
+          });
+          card.querySelector(".note-input").addEventListener("input", function (event) {
+            const word = card.dataset.word;
+            state[word] = state[word] || {};
+            state[word].note = event.target.value;
+            save(); count();
+          });
+          paint(card);
+        });
+        document.getElementById("copy").addEventListener("click", async function () {
+          const rows = cards.map(function (c) {
+            const e = state[c.dataset.word] || {};
+            return { word: c.dataset.word, mark: e.mark || "", note: e.note || "" };
+          });
+          const text = JSON.stringify(rows, null, 2);
+          try { await navigator.clipboard.writeText(text); this.textContent = "Copied"; }
+          catch (error) { window.prompt("Copy these marks", text); }
+          const button = this;
+          setTimeout(function () { button.textContent = "Copy marks"; }, 1500);
+        });
+        document.getElementById("reset").addEventListener("click", function () {
+          if (!window.confirm("Clear every mark on this device?")) return;
+          Object.keys(state).forEach(function (k) { delete state[k]; });
+          save(); cards.forEach(paint); count();
+        });
+        count();
+        </script>
         </body>
         </html>
 
