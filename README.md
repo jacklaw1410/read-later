@@ -80,26 +80,44 @@ xcodebuild -downloadPlatform iOS
 
 ## 5. Build and run on a physical iPhone
 
-`NOT YET RUN ON THIS MACHINE.` No one has run these steps yet.
+**Run on 2026-11-12:** build succeeded, install succeeded, first launch was
+denied until the profile was trusted on the phone.
 
 You need an Apple Developer team. A free personal team works, but its
 provisioning profile expires after 7 days. Renew it in Xcode when it lapses.
 
-1. Open your team id in Xcode under Settings → Accounts.
-2. In `apps/apple/project.yml`, under the `ReadLater` target `settings`, set
-   `CODE_SIGNING_ALLOWED: YES` and add `DEVELOPMENT_TEAM: <YourTeamID>`.
-3. Regenerate and build against your plugged-in phone:
+1. Read the team id from the Xcode account, not from the certificate.
+
+```bash
+plutil -p ~/Library/Preferences/com.apple.dt.Xcode.plist \
+  | grep -A4 IDEProvisioningTeamByIdentifier
+```
+
+2. Build. `-allowProvisioningUpdates` lets xcodebuild register the App ID and
+   create the profile; without it the build fails with `No profiles … were
+   found`.
 
 ```bash
 cd apps/apple
 xcodegen generate
 xcodebuild -project ReadLater.xcodeproj -scheme ReadLater \
   -destination 'platform=iOS,name=<Your iPhone>' \
-  -configuration Debug build
+  -configuration Debug \
+  DEVELOPMENT_TEAM=<YourTeamID> CODE_SIGN_STYLE=Automatic \
+  CODE_SIGNING_ALLOWED=YES -allowProvisioningUpdates build
+```
+
+3. Install and launch:
+
+```bash
+APP=~/Library/Developer/Xcode/DerivedData/ReadLater-*/Build/Products/Debug-iphoneos/ReadLater.app
+xcrun devicectl device install app --device <UDID> "$APP"
+xcrun devicectl device process launch --device <UDID> app.readlater.reader
 ```
 
 4. On the phone, trust the developer certificate under
-   Settings → General → VPN & Device Management.
+   Settings → General → VPN & Device Management. Until then the launch fails
+   with `… its profile has not been explicitly trusted by the user`.
 
 Keep `CODE_SIGNING_ALLOWED: NO` in the committed `project.yml`.
 Override signing on the command line or keep the team id in a local
@@ -164,7 +182,10 @@ speech tracking.
 | Wash stays on word zero in a `--snapshot` launch | Word-boundary callbacks do not arrive in that launch | Expected. The harness drives the wash itself. See §7 |
 | `error: Could not find Package.swift` in `packages/ReadLaterTestKit` | TestKit is a source library inside the app project, not a package | Do not run `swift test` there. Test it through the packages that use it |
 | `The app identifier "…" cannot be registered to your development team because it is not available` | the bundle id is already registered to another Apple team; ids are unique across all accounts | Change `PRODUCT_BUNDLE_IDENTIFIER` in `project.yml` to a unique id, then `xcodegen generate` |
-| `No profiles for '…' were found` | Xcode has not created a profile for this bundle id and team | Set `DEVELOPMENT_TEAM` and `CODE_SIGN_STYLE=Automatic`; with a free personal team the profile lasts 7 days |
+| `No profiles for '…' were found` | Xcode has not created a profile for this bundle id and team | Add `-allowProvisioningUpdates` so xcodebuild can register the App ID |
+| `No Account for Team "…"` | the value came from the certificate name, not from the Xcode account | Use the `teamID` from `IDEProvisioningTeamByIdentifier` in `com.apple.dt.Xcode.plist` |
+| `Unable to find a destination matching … name:JL` | Xcode has not listed the phone yet: locked, asleep, or not trusted | Unlock and trust the phone, then check `xcrun devicectl list devices` and use `-destination 'id=<UDID>'` |
+| `… its profile has not been explicitly trusted by the user` | the free-team profile needs one manual trust on the device | Settings → General → VPN & Device Management → Apple Development → Trust |
 | `main actor-isolated class method … cannot be called from outside of the actor` in `DictionaryLookup.swift` | Swift 6 language-mode warning | Warning only. The build still succeeds |
 
 ## 9. Where things live

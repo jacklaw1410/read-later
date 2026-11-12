@@ -77,48 +77,78 @@ xcodebuild -downloadPlatform iOS
 
 ## Physical iPhone
 
-`NOT YET RUN ON THIS MACHINE.`
+**Run on 2026-11-12:** build succeeded, install succeeded, first launch was
+denied until the profile was trusted on the phone.
 
 You need an Apple Developer team. A free personal team works, but its
 provisioning profile expires after 7 days.
 
 ### Values
 
-| Build setting | Value |
+| Build setting | Value on this machine |
 |---|---|
 | `CODE_SIGN_STYLE` | `Automatic` |
-| `DEVELOPMENT_TEAM` | your 10-character team id |
+| `DEVELOPMENT_TEAM` | `Z9LTZAW4H3` |
 | `PRODUCT_BUNDLE_IDENTIFIER` | `app.readlater.reader` |
 
-Find the team id from the signing certificate:
+Read the team id from the Xcode account, not from the certificate:
 
 ```bash
-security find-identity -v -p codesigning
-# 1) EE1... "Apple Development: you@example.com (ANQ2AUKWYY)"
-#                                              ^^^^^^^^^^ team id
+plutil -p ~/Library/Preferences/com.apple.dt.Xcode.plist \
+  | grep -A4 IDEProvisioningTeamByIdentifier
+# "teamID" => "Z9LTZAW4H3"
+# "teamName" => "Hon Man Law (Personal Team)"
 ```
 
-Xcode shows the same id under Settings → Accounts → your Apple ID → the team
-row. The bundle id must be unique across all Apple accounts, not just yours.
-`com.readlater.app` was already registered to another team, so Xcode answered
-`The app identifier "com.readlater.app" cannot be registered to your
-development team because it is not available.` If `app.readlater.reader` is
-rejected the same way, append the team id: `app.readlater.anq2aukwyy`.
+The `(XXXXXXXXXX)` inside a certificate name is **not** the team id. On this
+machine the certificate says `(ANQ2AUKWYY)` while the team is `Z9LTZAW4H3`.
+Passing the certificate value fails with `No Account for Team "ANQ2AUKWYY"`.
+
+The bundle id must be unique across all Apple accounts. `com.readlater.app` was
+already registered to another team, so Xcode answered `The app identifier …
+cannot be registered to your development team because it is not available`.
 
 ### Build
+
+`-allowProvisioningUpdates` is required. Without it xcodebuild refuses to create
+the App ID and the profile:
+
+```
+error: No profiles for 'app.readlater.reader' were found … Automatic signing is
+disabled and unable to generate a profile.
+```
 
 ```bash
 cd apps/apple
 xcodegen generate
 xcodebuild -project ReadLater.xcodeproj -scheme ReadLater \
-  -destination 'platform=iOS,name=<Your iPhone>' \
+  -destination 'platform=iOS,name=JL' \
   -configuration Debug \
-  DEVELOPMENT_TEAM=<YourTeamID> CODE_SIGN_STYLE=Automatic \
-  CODE_SIGNING_ALLOWED=YES build
+  DEVELOPMENT_TEAM=Z9LTZAW4H3 CODE_SIGN_STYLE=Automatic \
+  CODE_SIGNING_ALLOWED=YES -allowProvisioningUpdates build
 ```
 
-Then on the phone, trust the developer certificate under
-Settings → General → VPN & Device Management.
+If `name=JL` fails with `Unable to find a destination`, the phone is not in
+Xcode's list yet. Check it, then use the UDID instead of the name:
+
+```bash
+xcrun devicectl list devices
+xcodebuild … -destination 'id=00008140-0001352A14BB001C' …
+```
+
+### Install and launch
+
+```bash
+APP=~/Library/Developer/Xcode/DerivedData/ReadLater-*/Build/Products/Debug-iphoneos/ReadLater.app
+xcrun devicectl device install app --device 00008140-0001352A14BB001C "$APP"
+xcrun devicectl device process launch --device 00008140-0001352A14BB001C app.readlater.reader
+```
+
+The first launch fails with `… its profile has not been explicitly trusted by
+the user`. Trust it on the phone:
+
+**Settings → General → VPN & Device Management → Apple Development: <your email>
+→ Trust.** Then launch again.
 
 Do not commit the team id. Keep `CODE_SIGNING_ALLOWED: NO` committed, and
 override signing on the command line. The signing pane in Xcode writes to the
