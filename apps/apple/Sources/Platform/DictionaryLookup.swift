@@ -4,9 +4,6 @@ import ReadLaterCore
 #if os(macOS)
 import CoreServices
 #endif
-#if canImport(UIKit)
-import UIKit
-#endif
 
 /// Apple built-in dictionary lookup. Never touches the network.
 ///
@@ -15,6 +12,11 @@ import UIKit
 /// not a gloss here: it is a miss, and the pack offer or the pack itself
 /// answers instead. Reading a blob of English dictionary prose aloud on a
 /// screen that promises a Chinese gloss is worse than showing the miss card.
+///
+/// On iOS the system exposes existence only. `dictionaryHasDefinition` says
+/// "yes" for nearly every common word, so treating it as a hit answered every
+/// tap with an empty card and the pack never ran. A tap with no gloss text is
+/// a miss here; the pack is the only source that can render on this platform.
 public struct AppleDictionaryLookup: LookupProvider, Sendable {
     public init() {}
 
@@ -28,13 +30,9 @@ public struct AppleDictionaryLookup: LookupProvider, Sendable {
             return .hit(LookupResult(word: token, gloss: gloss, source: .apple))
         }
         return .miss(.notInDictionary)
-        #elseif canImport(UIKit)
-        if UIReferenceLibraryViewController.dictionaryHasDefinition(forTerm: token) {
-            // iOS exposes existence only; the gloss renders in the system view.
-            return .hit(LookupResult(word: token, gloss: "", source: .apple))
-        }
-        return .miss(.notInDictionary)
         #else
+        // No API returns the iOS definition text, and an empty gloss is not a
+        // gloss. The pack answers instead.
         return .miss(.notInDictionary)
         #endif
     }
