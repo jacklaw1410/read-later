@@ -86,10 +86,16 @@ struct EntryRequest: Sendable, Equatable {
 public struct EntryView: View {
     private let onOpen: (ReadLaterCore.Document) -> Void
 
+    private enum Field {
+        case link
+        case raw
+    }
+
     @State private var linkText = EntryCopy.sampleLink
     @State private var rawText = ""
     @State private var mode: EntryMode = .link
     @State private var state: EntryState = .idle
+    @FocusState private var focused: Field?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     public init(onOpen: @escaping (ReadLaterCore.Document) -> Void) {
@@ -102,6 +108,7 @@ public struct EntryView: View {
             // the top edge. Two flexible spacers do that without a fixed
             // offset, so a taller window keeps the form centred.
             Spacer(minLength: 24)
+                .onTapGesture { focused = nil }
             Picker("Input", selection: $mode) {
                 ForEach(EntryMode.allCases, id: \.self) { option in
                     Text(option.title).tag(option)
@@ -129,6 +136,9 @@ public struct EntryView: View {
                     .padding(.top, 6)
                     .accessibilityLabel("Link")
                     .disabled(isLoading)
+                    .focused($focused, equals: .link)
+                    .submitLabel(.go)
+                    .onSubmit { open() }
                 Text(EntryCopy.linkHint)
                     .font(Theme.caption())
                     .foregroundStyle(Theme.inkSecondary)
@@ -151,6 +161,7 @@ public struct EntryView: View {
                                 .stroke(Theme.line, lineWidth: 1)
                         )
                         .accessibilityLabel("Raw text")
+                        .focused($focused, equals: .raw)
                     if rawText.isEmpty {
                         Text(EntryCopy.rawPlaceholder)
                             .font(.system(size: 14))
@@ -173,6 +184,7 @@ public struct EntryView: View {
             progressArea
                 .padding(.top, 14)
             Spacer(minLength: 0)
+                .onTapGesture { focused = nil }
             Text(EntryCopy.footer)
                 .font(Theme.caption())
                 .foregroundStyle(Theme.inkSecondary)
@@ -182,6 +194,14 @@ public struct EntryView: View {
         .padding(.horizontal, Theme.screenGutter)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(Theme.paper)
+        .toolbar {
+            // Return inserts a newline in the editor, so it needs its own
+            // dismiss path. The link field uses submitLabel(.go) instead.
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("Done") { focused = nil }
+            }
+        }
         .onAppear { TelemetryHub.shared.markEntryReady() }
     }
 
@@ -249,6 +269,9 @@ public struct EntryView: View {
             return
         }
         guard !isLoading else { return }
+        // The keyboard has done its job once the request leaves. Dismiss it
+        // here so the progress rule is visible on small screens.
+        focused = nil
         TelemetryHub.shared.record(TelemetryName.tap)
         Task { await load(request) }
     }
