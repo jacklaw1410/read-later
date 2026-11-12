@@ -177,7 +177,7 @@ public struct EntryView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
             }
             .frame(height: 3)
-            .animation(reduceMotion ? nil : .easeInOut(duration: 0.3), value: shownProgress)
+            .animation(reduceMotion ? nil : ThemeMotion.entryProgress, value: shownProgress)
             Text(showsProgress ? progressLabel : " ")
                 .font(Theme.caption())
                 .foregroundStyle(Theme.inkSecondary)

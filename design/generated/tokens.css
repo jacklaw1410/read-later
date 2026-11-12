@@ -17,31 +17,31 @@
   --rule-ring: #8A6D1B;
   --mark-selected: #DCE9F5;
   --mark-saved: #9A3412;
-  --mark-savedFill: #FFF0E6;
+  --mark-saved-fill: #FFF0E6;
   --skip-surface: #F7F3EC;
   --skip-border: #E7E0D9;
   --skip-ink: #191C1F;
   --chip-surface: #EFE7D3;
   --chip-ink: #7A6A3A;
   --chip-border: #E0D3B0;
-  --code-inlineSurface: #F1EDE4;
+  --code-inline-surface: #F1EDE4;
   --mark-coincide: #B45309;
   --veil-scrim: #191C1F47;
   --hold-surface: #FFF0E6;
   --hold-ink: #9A3412;
   --hold-border: #FDBA74;
 
-  --inlineGap: 4px;
+  --inline-gap: 4px;
 
-  --controlGap: 8px;
+  --control-gap: 8px;
 
-  --stackGap: 12px;
+  --stack-gap: 12px;
 
-  --paragraphGap: 16px;
+  --paragraph-gap: 16px;
 
-  --screenGutter: 20px;
+  --screen-gutter: 20px;
 
-  --breathingRoom: 32px;
+  --breathing-room: 32px;
 
   --radius-chip: 4px;
 
@@ -55,11 +55,11 @@
 
   --radius-pill: 999px;
 
-  --size-minTarget: 44px;
+  --size-min-target: 44px;
 
-  --size-maxLineWidth: 640px;
+  --size-max-line-width: 640px;
 
-  --size-playerBar: 58px;
+  --size-player-bar: 58px;
 
   --size-chrome: 44px;
 
@@ -72,8 +72,8 @@
   --motion-screen: 180ms;
   --motion-screen-ease: cubic-bezier(0.42, 0, 0.58, 1);
 
-  --motion-entryProgress: 300ms;
-  --motion-entryProgress-ease: cubic-bezier(0.42, 0, 0.58, 1);
+  --motion-entry-progress: 300ms;
+  --motion-entry-progress-ease: cubic-bezier(0.42, 0, 0.58, 1);
 
   --type-body-size: 19px;
   --type-body-line: 31px;
@@ -87,7 +87,7 @@
 
   --type-player-size: 15px;
 
-  --type-lookupWord-size: 22px;
+  --type-lookup-word-size: 22px;
 
   --type-gloss-size: 17px;
 
@@ -122,14 +122,14 @@
     --rule-ring: #C9A94E;
     --mark-selected: #2C4A66;
     --mark-saved: #FDBA74;
-    --mark-savedFill: #3A2A1F;
+    --mark-saved-fill: #3A2A1F;
     --skip-surface: #1B1F24;
     --skip-border: #2C333A;
     --skip-ink: #C9CDD2;
     --chip-surface: #2E2A20;
     --chip-ink: #D8C48C;
     --chip-border: #453D2A;
-    --code-inlineSurface: #23282E;
+    --code-inline-surface: #23282E;
     --mark-coincide: #F59E0B;
     --veil-scrim: #00000047;
     --hold-surface: #3A2A1F;
@@ -155,14 +155,14 @@
   --rule-ring: #8A6D1B;
   --mark-selected: #DCE9F5;
   --mark-saved: #9A3412;
-  --mark-savedFill: #FFF0E6;
+  --mark-saved-fill: #FFF0E6;
   --skip-surface: #F7F3EC;
   --skip-border: #E7E0D9;
   --skip-ink: #191C1F;
   --chip-surface: #EFE7D3;
   --chip-ink: #7A6A3A;
   --chip-border: #E0D3B0;
-  --code-inlineSurface: #F1EDE4;
+  --code-inline-surface: #F1EDE4;
   --mark-coincide: #B45309;
   --veil-scrim: #191C1F47;
   --hold-surface: #FFF0E6;
@@ -187,14 +187,14 @@
   --rule-ring: #C9A94E;
   --mark-selected: #2C4A66;
   --mark-saved: #FDBA74;
-  --mark-savedFill: #3A2A1F;
+  --mark-saved-fill: #3A2A1F;
   --skip-surface: #1B1F24;
   --skip-border: #2C333A;
   --skip-ink: #C9CDD2;
   --chip-surface: #2E2A20;
   --chip-ink: #D8C48C;
   --chip-border: #453D2A;
-  --code-inlineSurface: #23282E;
+  --code-inline-surface: #23282E;
   --mark-coincide: #F59E0B;
   --veil-scrim: #00000047;
   --hold-surface: #3A2A1F;

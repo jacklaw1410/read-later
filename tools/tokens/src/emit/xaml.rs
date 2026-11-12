@@ -82,20 +82,16 @@ pub fn emit(doc: &Doc) -> Result<String, String> {
             pascal(role),
             spec.duration
         ));
+        // KeySpline is not a resource type, so WinUI gets the four numbers and
+        // builds the spline where it animates.
         if let Some([x1, y1, x2, y2]) = spec.curve.cubic() {
             let key = pascal(role);
-            lines.push(format!("    <KeySpline x:Key=\"Motion{}Ease\">", key));
-            lines.push(format!(
-                "        <KeySpline.ControlPoint1><Point X=\"{}\" Y=\"{}\" /></KeySpline.ControlPoint1>",
-                trim_float(x1),
-                trim_float(y1)
-            ));
-            lines.push(format!(
-                "        <KeySpline.ControlPoint2><Point X=\"{}\" Y=\"{}\" /></KeySpline.ControlPoint2>",
-                trim_float(x2),
-                trim_float(y2)
-            ));
-            lines.push("    </KeySpline>".to_string());
+            for (axis, value) in [("X1", x1), ("Y1", y1), ("X2", x2), ("Y2", y2)] {
+                lines.push(format!(
+                    "    <x:Double x:Key=\"Motion{key}Ease{axis}\">{}</x:Double>",
+                    trim_float(value)
+                ));
+            }
         }
     }
     lines.push("</ResourceDictionary>".to_string());

@@ -101,18 +101,18 @@
     <x:Double x:Key="TypeMonoSize">11</x:Double>
     <x:Int32 x:Key="MotionWash">150</x:Int32>
     <x:Int32 x:Key="MotionSheet">180</x:Int32>
-    <KeySpline x:Key="MotionSheetEase">
-        <KeySpline.ControlPoint1><Point X="0.42" Y="0" /></KeySpline.ControlPoint1>
-        <KeySpline.ControlPoint2><Point X="0.58" Y="1" /></KeySpline.ControlPoint2>
-    </KeySpline>
+    <x:Double x:Key="MotionSheetEaseX1">0.42</x:Double>
+    <x:Double x:Key="MotionSheetEaseY1">0</x:Double>
+    <x:Double x:Key="MotionSheetEaseX2">0.58</x:Double>
+    <x:Double x:Key="MotionSheetEaseY2">1</x:Double>
     <x:Int32 x:Key="MotionScreen">180</x:Int32>
-    <KeySpline x:Key="MotionScreenEase">
-        <KeySpline.ControlPoint1><Point X="0.42" Y="0" /></KeySpline.ControlPoint1>
-        <KeySpline.ControlPoint2><Point X="0.58" Y="1" /></KeySpline.ControlPoint2>
-    </KeySpline>
+    <x:Double x:Key="MotionScreenEaseX1">0.42</x:Double>
+    <x:Double x:Key="MotionScreenEaseY1">0</x:Double>
+    <x:Double x:Key="MotionScreenEaseX2">0.58</x:Double>
+    <x:Double x:Key="MotionScreenEaseY2">1</x:Double>
     <x:Int32 x:Key="MotionEntryProgress">300</x:Int32>
-    <KeySpline x:Key="MotionEntryProgressEase">
-        <KeySpline.ControlPoint1><Point X="0.42" Y="0" /></KeySpline.ControlPoint1>
-        <KeySpline.ControlPoint2><Point X="0.58" Y="1" /></KeySpline.ControlPoint2>
-    </KeySpline>
+    <x:Double x:Key="MotionEntryProgressEaseX1">0.42</x:Double>
+    <x:Double x:Key="MotionEntryProgressEaseY1">0</x:Double>
+    <x:Double x:Key="MotionEntryProgressEaseX2">0.58</x:Double>
+    <x:Double x:Key="MotionEntryProgressEaseY2">1</x:Double>
 </ResourceDictionary>

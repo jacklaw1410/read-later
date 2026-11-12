@@ -32,6 +32,7 @@ final class AppModel: ObservableObject {
 struct RootView: View {
     @StateObject private var model = AppModel()
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         Group {
@@ -45,7 +46,7 @@ struct RootView: View {
         }
         .frame(minWidth: 380, minHeight: 560)
         .background(Theme.paper)
-        .animation(.easeInOut(duration: 0.18), value: model.session == nil)
+        .animation(reduceMotion ? nil : ThemeMotion.screen, value: model.session == nil)
         .onChange(of: scenePhase) { _, phase in
             switch phase {
             case .background:
@@ -75,6 +76,7 @@ struct ReaderScreen: View {
 
     @ObservedObject private var registry = PackRegistry.shared
     @Environment(\.openURL) private var openURL
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var showSettings = false
 
     var body: some View {
@@ -217,6 +219,7 @@ struct ReaderScreen: View {
                     )
                 }
             }
+            .animation(reduceMotion ? nil : ThemeMotion.sheet, value: session.card == nil)
             .zIndex(2)
         }
 

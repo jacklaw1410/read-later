@@ -37,9 +37,22 @@ pub fn pascal(role: &str) -> String {
     parts(role).iter().map(|part| upper_first(part)).collect()
 }
 
-/// `page.paper` becomes `page-paper`. CSS variables.
+/// `page.paper` becomes `page-paper`, `minTarget` becomes `min-target`. CSS
+/// custom properties are lower case by convention, and a role written in camel
+/// case must not leak a capital into a stylesheet.
 pub fn kebab(role: &str) -> String {
-    role.replace('.', "-")
+    let mut out = String::new();
+    for character in role.chars() {
+        if character == '.' {
+            out.push('-');
+        } else if character.is_ascii_uppercase() {
+            out.push('-');
+            out.push(character.to_ascii_lowercase());
+        } else {
+            out.push(character);
+        }
+    }
+    out
 }
 
 /// `#FFFCF7` becomes `0xFFFCF7`, the form Swift wants.
@@ -72,9 +85,12 @@ mod tests {
     }
 
     #[test]
-    fn kebab_only_replaces_dots() {
+    fn kebab_lowercases_a_camel_case_role() {
         assert_eq!(kebab("wash.fill"), "wash-fill");
         assert_eq!(kebab("page.raised"), "page-raised");
+        assert_eq!(kebab("minTarget"), "min-target");
+        assert_eq!(kebab("entry-progress"), "entry-progress");
+        assert_eq!(kebab("motion.entryProgress"), "motion-entry-progress");
     }
 
     #[test]
