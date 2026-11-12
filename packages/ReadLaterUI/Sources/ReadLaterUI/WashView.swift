@@ -71,12 +71,48 @@ func slotAt(slots: [WordSlot], utf16Index: Int) -> WordSlot? {
     return nil
 }
 
+/// Target content offset that puts the wash mid-line at `anchorFraction` of
+/// the viewport. Nil when already inside the dead band, so the page does
+/// not jitter while the wash moves inside the comfortable middle.
+/// Pure so tests cover the dead band without a scroll view.
+public func washScrollTarget(
+    washMidY: CGFloat,
+    viewportOriginY: CGFloat,
+    viewportHeight: CGFloat,
+    maxOffset: CGFloat,
+    anchorFraction: CGFloat = 0.5,
+    deadBand: CGFloat = 32
+) -> CGFloat? {
+    let target = min(max(washMidY - viewportHeight * anchorFraction, 0), maxOffset)
+    guard abs(target - viewportOriginY) > deadBand else { return nil }
+    return target
+}
+
+/// The chip behind one word: the type's own box, not the line box. A washed
+/// word is drawn from its font's ascent and descent, so a 19 pt word on a
+/// 31 pt line gets a 23 pt chip. Pure so tests pin the word-not-slab rule.
+public func washChipBox(
+    glyphBox: CGRect,
+    origin: CGPoint,
+    ascender: CGFloat,
+    descender: CGFloat,
+    sidePad: CGFloat = 2
+) -> CGRect {
+    let height = ascender - descender
+    return CGRect(
+        x: glyphBox.minX + origin.x - sidePad,
+        y: glyphBox.minY + origin.y + (glyphBox.height - height) / 2,
+        width: glyphBox.width + sidePad * 2,
+        height: height
+    )
+}
+
 /// One platform text view for a block of reader text.
 ///
-/// The wash draws with temporary attributes (macOS) or with an
-/// attributed-string swap of the changed ranges only (iOS). The base string
-/// is built once per text change. The wash never changes layout: no font
-/// change, no padding, no baseline shift.
+/// The wash draws with temporary attributes plus a painted chip (macOS), or
+/// with an ink-only attributed-string swap plus a painted chip (iOS). The
+/// base string is built once per text change. The wash never changes layout:
+/// no font change, no padding, no baseline shift.
 public struct WashableText: View {
     private var text: String
     private var slots: [WordSlot]
@@ -662,32 +698,200 @@ extension Theme {
     }
 }
 
-/// Attributes for one emphasis. Applied to the changed ranges only; the base
-/// string stays cached in the coordinator.
+/// Attributes for one emphasis. Ink only: the wash itself is painted as a
+/// chip in `_WashedTextView.draw(_:)`, because a text background attribute
+/// fills the whole 31 pt line box and turns a 19 pt word into a slab.
 func washAttributes(for emphasis: WordEmphasis) -> [NSAttributedString.Key: Any] {
     switch emphasis {
     case .none:
         return [:]
     case .current:
-        return [
-            .backgroundColor: Theme.platformWashBackground,
-            .foregroundColor: Theme.platformWashForeground,
-        ]
+        return [.foregroundColor: Theme.platformWashForeground]
     case .paused:
         return [
-            .backgroundColor: Theme.platformPausedWash,
             .foregroundColor: Theme.platformInk,
             .underlineStyle: NSUnderlineStyle.single.rawValue | NSUnderlineStyle.patternDot.rawValue,
             .underlineColor: Theme.platformPausedRing,
         ]
     case .selected:
-        return [.backgroundColor: Theme.platformSelectionWash]
+        return [:]
     case .coincide:
         return [
-            .backgroundColor: Theme.platformSelectionWash,
             .underlineStyle: NSUnderlineStyle.single.rawValue,
             .underlineColor: Theme.platformCoincidenceRing,
         ]
+    }
+}
+
+/// The chip behind one word: fill, and an inset ring when the state has one.
+/// Mirrors the macOS `washChip`. The four states are told apart by fill and
+/// ring, never by alpha alone.
+func washChip(for emphasis: WordEmphasis) -> (fill: UIColor, ring: UIColor?, ringWidth: CGFloat)? {
+    switch emphasis {
+    case .current:
+        return (Theme.platformWashBackground, nil, 0)
+    case .paused:
+        return (Theme.platformPausedWash, Theme.platformPausedRing, 1.5)
+    case .selected:
+        return (Theme.platformSelectionWash, nil, 0)
+    case .coincide:
+        return (Theme.platformSelectionWash, Theme.platformCoincidenceRing, 2)
+    case .none:
+        return nil
+    }
+}
+
+/// Keeps the wash word inside the enclosing scroll view. Free function so the
+/// representable can call it without owning the subclass type.
+@MainActor
+func revealWash(in textView: UITextView, anchorFraction: CGFloat = 0.5) {
+    (textView as? _WashedTextView)?.revealWash(anchorFraction: anchorFraction)
+}
+
+/// A `UITextView` that knows its wash marks and can scroll its enclosing
+/// scroll view to them. Mirrors the macOS `_WashedTextView.revealWash`:
+/// per-tick, glyph-rect based, with a 32 pt dead band.
+final class _WashedTextView: UITextView {
+    /// UTF-16 length of the block text. Anything past it is the footnote
+    /// marker run, which is a target, not a word.
+    var bodyLength = 0
+
+    var washMarkList: [WashMark] = [] {
+        didSet {
+            if washMarkList != oldValue { setNeedsDisplay() }
+        }
+    }
+
+    /// Scrolls the enclosing scroll view so the wash word sits at
+    /// `anchorFraction` of the viewport. Called from the block that currently
+    /// holds the word, so only the visible block ever asks, and only when the
+    /// reader is following.
+    func revealWash(anchorFraction: CGFloat = 0.5) {        guard let mark = washMarkList.first(where: { $0.emphasis == .current || $0.emphasis == .paused }),
+              mark.range.length > 0,
+              let scrollView = enclosingScrollView()
+        else { return }
+
+        let glyphRange = layoutManager.glyphRange(forCharacterRange: mark.range, actualCharacterRange: nil)
+        var box = layoutManager.boundingRect(forGlyphRange: glyphRange, in: textContainer)
+        guard !box.isEmpty else { return }
+        box.origin.x += textContainerInset.left
+        box.origin.y += textContainerInset.top
+        let inScroll = convert(box, to: scrollView)
+
+        let maxOffset = max(0, scrollView.contentSize.height - scrollView.bounds.height)
+        guard let target = washScrollTarget(
+            washMidY: inScroll.midY,
+            viewportOriginY: scrollView.bounds.origin.y,
+            viewportHeight: scrollView.bounds.height,
+            maxOffset: maxOffset,
+            anchorFraction: anchorFraction
+        ) else { return }
+        scrollView.setContentOffset(CGPoint(x: scrollView.contentOffset.x, y: target), animated: false)
+    }
+
+    private func enclosingScrollView() -> UIScrollView? {
+        var view = superview
+        while let current = view {
+            if let scrollView = current as? UIScrollView { return scrollView }
+            view = current.superview
+        }
+        return nil
+    }
+
+    /// The chips go under the text. Painting here runs before the text
+    /// system draws the glyphs, so the wash sits behind the ink it marks.
+    override func draw(_ rect: CGRect) {
+        drawWashChips(in: rect)
+        super.draw(rect)
+    }
+
+    private func drawWashChips(in rect: CGRect) {
+        guard let storage = textStorage else { return }
+        let manager = layoutManager
+        let container = textContainer
+        manager.ensureLayout(for: container)
+        let origin = CGPoint(x: textContainerInset.left, y: textContainerInset.top)
+
+        for mark in washMarkList {
+            guard mark.range.length > 0,
+                  NSMaxRange(mark.range) <= storage.length,
+                  let chip = washChip(for: mark.emphasis)
+            else { continue }
+
+            let glyphRange = manager.glyphRange(forCharacterRange: mark.range, actualCharacterRange: nil)
+            let glyphBox = manager.boundingRect(forGlyphRange: glyphRange, in: container)
+            guard !glyphBox.isEmpty else { continue }
+
+            let font = storage.attribute(.font, at: mark.range.location, effectiveRange: nil) as? UIFont
+                ?? UIFont.systemFont(ofSize: 17)
+            let box = washChipBox(
+                glyphBox: glyphBox,
+                origin: origin,
+                ascender: font.ascender,
+                descender: font.descender
+            )
+            guard box.intersects(rect) else { continue }
+
+            let path = UIBezierPath(roundedRect: box, cornerRadius: Theme.chipRadius)
+            chip.fill.setFill()
+            path.fill()
+
+            if let ring = chip.ring {
+                // An inset ring, as the prototype draws it: a shape cue that
+                // survives greyscale, so which word holds the voice never
+                // depends on telling amber from grey amber.
+                let inner = UIBezierPath(
+                    roundedRect: box.insetBy(dx: chip.ringWidth / 2, dy: chip.ringWidth / 2),
+                    cornerRadius: Theme.chipRadius
+                )
+                ring.setStroke()
+                inner.lineWidth = chip.ringWidth
+                inner.stroke()
+            }
+
+            if mark.emphasis == .paused {
+                drawDottedUnderline(in: CGRect(
+                    x: box.minX + 3,
+                    y: box.minY,
+                    width: box.width - 6,
+                    height: box.height
+                ), colour: Theme.platformPausedRing, baseline: box.maxY)
+            }
+        }
+
+        drawMarkerChip(manager: manager, container: container, storage: storage)
+    }
+
+    /// The footnote marker's chip, drawn under the superscript run that
+    /// follows the block text. The prototype gives the marker its own 26 pt
+    /// tile, so the reader can see a target without aiming.
+    private func drawMarkerChip(manager: NSLayoutManager, container: NSTextContainer, storage: NSTextStorage) {
+        guard bodyLength > 0, bodyLength < storage.length else { return }
+        let range = NSRange(location: bodyLength, length: storage.length - bodyLength)
+        let glyphRange = manager.glyphRange(forCharacterRange: range, actualCharacterRange: nil)
+        let glyphBox = manager.boundingRect(forGlyphRange: glyphRange, in: container)
+        guard !glyphBox.isEmpty else { return }
+        let height: CGFloat = 20
+        let box = CGRect(
+            x: glyphBox.minX + textContainerInset.left - 3,
+            y: glyphBox.minY + textContainerInset.top + (glyphBox.height - height) / 2,
+            width: glyphBox.width + 6,
+            height: height
+        )
+        Theme.platformMarkerFill.setFill()
+        UIBezierPath(roundedRect: box, cornerRadius: 6).fill()
+    }
+
+    /// The paused state's second non-colour cue, in place of a text underline
+    /// attribute: a dotted rule under the word.
+    private func drawDottedUnderline(in box: CGRect, colour: UIColor, baseline: CGFloat) {
+        colour.setFill()
+        let y = baseline - 1
+        var x = box.minX
+        while x < box.maxX {
+            CGRect(x: x, y: y, width: 1.5, height: 1.5).fill()
+            x += 4
+        }
     }
 }
 
@@ -706,7 +910,7 @@ struct _WashableTextView: UIViewRepresentable {
     func makeCoordinator() -> Coordinator { Coordinator() }
 
     func makeUIView(context: Context) -> UITextView {
-        let textView = UITextView(usingTextLayoutManager: false)
+        let textView = _WashedTextView(usingTextLayoutManager: false)
         textView.isEditable = false
         textView.isSelectable = false
         textView.isScrollEnabled = false
@@ -722,6 +926,11 @@ struct _WashableTextView: UIViewRepresentable {
         context.coordinator.rebuildBase(text: text, style: style, tone: tone, marker: marker)
         textView.attributedText = context.coordinator.baseText
         context.coordinator.applyMarks(marks)
+        (textView as? _WashedTextView)?.washMarkList = marks
+        if followsWash {
+            context.coordinator.lastRevealedMarks = marks
+            DispatchQueue.main.async { revealWash(in: textView) }
+        }
         return textView
     }
 
@@ -741,6 +950,11 @@ struct _WashableTextView: UIViewRepresentable {
             context.coordinator.lastMarks = []
         }
         context.coordinator.applyMarks(marks)
+        (textView as? _WashedTextView)?.washMarkList = marks
+        if followsWash, marks != context.coordinator.lastRevealedMarks {
+            context.coordinator.lastRevealedMarks = marks
+            DispatchQueue.main.async { revealWash(in: textView) }
+        }
     }
 
     func sizeThatFits(_ proposal: ProposedViewSize, uiView: UITextView, context _: Context) -> CGSize? {
@@ -763,6 +977,7 @@ struct _WashableTextView: UIViewRepresentable {
         var lastTone: WashableTextTone?
         var lastMarker: String?
         var lastMarks: [WashMark] = []
+        var lastRevealedMarks: [WashMark] = []
 
         func rebuildBase(
             text: String,
