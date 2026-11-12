@@ -4,8 +4,11 @@ package app.readlater.design
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.animation.core.CubicBezierEasing
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 
 /** Semantic colours. The component layer is Compose; these are layer 2. */
@@ -93,6 +96,7 @@ object Space {
     val innerRadius = 8.dp
     val buttonRadius = 10.dp
     val cardRadius = 12.dp
+    // provisional: sheet
     val sheetRadius = 16.dp
     val pillRadius = 999.dp
     val minTarget = 44.dp
@@ -113,15 +117,24 @@ object TypeScale {
     val lookupWordSize = 22.sp
     val glossSize = 17.sp
     val chipSize = 10.sp
+    /** Tracking in em: multiply by the size. */
+    val chipTracking = 0.088.em
+    val eyebrowSize = 11.sp
+    /** Tracking in em: multiply by the size. */
+    val eyebrowTracking = 0.08.em
     val codeSize = 12.sp
     val noteSize = 14.sp
     val monoSize = 11.sp
 }
 
-/** Layer 2 motion durations in milliseconds. */
+/** Layer 2 motion: milliseconds plus the curve, not its name. */
 object Motion {
     const val wash = 150L
+    val washEasing = LinearEasing
     const val sheet = 180L
+    val sheetEasing = CubicBezierEasing(0.42f, 0f, 0.58f, 1f)
     const val screen = 180L
+    val screenEasing = CubicBezierEasing(0.42f, 0f, 0.58f, 1f)
     const val entryProgress = 300L
+    val entryProgressEasing = CubicBezierEasing(0.42f, 0f, 0.58f, 1f)
 }

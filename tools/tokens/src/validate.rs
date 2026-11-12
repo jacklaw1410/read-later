@@ -19,6 +19,46 @@ pub fn resolve_color<'a>(doc: &'a Doc, value: &ColorRef) -> Result<&'a str, Stri
     resolve(&doc.primitive.color, value.primitive())
 }
 
+/// Roles marked `provisional`: a mock value that may ship but must not be
+/// forgotten. Every emitter marks them; `--check` prints this list.
+pub fn provisional(doc: &Doc) -> Vec<String> {
+    let mut out = Vec::new();
+    for (role, entry) in &doc.semantic.color {
+        if entry.status.as_deref() == Some("provisional") {
+            out.push(format!("color.{role}"));
+        }
+    }
+    for (role, spec) in &doc.semantic.typography {
+        if spec.status.as_deref() == Some("provisional") {
+            out.push(format!("typography.{role}"));
+        }
+    }
+    for (group, roles) in [
+        ("space", &doc.semantic.space),
+        ("radius", &doc.semantic.radius),
+        ("size", &doc.semantic.size),
+    ] {
+        for (role, spec) in roles {
+            if spec.status.as_deref() == Some("provisional") {
+                out.push(format!("{group}.{role}"));
+            }
+        }
+    }
+    for (role, spec) in &doc.semantic.motion {
+        if spec.status.as_deref() == Some("provisional") {
+            out.push(format!("motion.{role}"));
+        }
+    }
+    out
+}
+
+fn check_status(role: &str, status: Option<&str>) -> Result<(), String> {
+    match status {
+        None | Some("stable") | Some("provisional") => Ok(()),
+        Some(other) => Err(format!("{role}: unknown status {other:?}")),
+    }
+}
+
 pub fn validate(doc: &Doc) -> Result<(), String> {
     for (role, entry) in &doc.semantic.color {
         for (mode, value) in [("light", &entry.light), ("dark", &entry.dark)] {
@@ -29,6 +69,19 @@ pub fn validate(doc: &Doc) -> Result<(), String> {
                 return Err(format!("{role}.{mode}: alpha {alpha} is outside 0..1"));
             }
         }
+    }
+
+    for (role, entry) in &doc.semantic.color {
+        check_status(role, entry.status.as_deref())?;
+    }
+    for (role, spec) in doc
+        .semantic
+        .space
+        .iter()
+        .chain(&doc.semantic.radius)
+        .chain(&doc.semantic.size)
+    {
+        check_status(role, spec.status.as_deref())?;
     }
 
     let swift = &doc.platform.swift.names;
@@ -70,6 +123,19 @@ pub fn validate(doc: &Doc) -> Result<(), String> {
         if !matches!(spec.family.as_str(), "serif" | "sans" | "mono") {
             return Err(format!("{role}: unknown family {:?}", spec.family));
         }
+        check_status(role, spec.status.as_deref())?;
+        if let Some(tracking) = spec.tracking
+            && !(0.0..=0.5).contains(&tracking)
+        {
+            return Err(format!(
+                "{role}: tracking {tracking}em is outside 0..0.5em"
+            ));
+        }
+        if let Some(case) = spec.case_rule.as_deref()
+            && case != "uppercase"
+        {
+            return Err(format!("{role}: unknown case {case:?}"));
+        }
     }
 
     let body = doc
@@ -83,10 +149,33 @@ pub fn validate(doc: &Doc) -> Result<(), String> {
 
     for (role, spec) in &doc.semantic.motion {
         if !matches!(
-            spec.curve.as_str(),
+            spec.curve.name.as_str(),
             "linear" | "easeIn" | "easeOut" | "easeInOut"
         ) {
-            return Err(format!("{role}: unknown curve {:?}", spec.curve));
+            return Err(format!("{role}: unknown curve {:?}", spec.curve.name));
+        }
+        check_status(role, spec.status.as_deref())?;
+        if spec.duration == 0 {
+            return Err(format!("{role}: duration must be greater than zero"));
+        }
+        match (spec.curve.name.as_str(), spec.curve.cubic()) {
+            ("linear", Some(_)) => {
+                return Err(format!("{role}: linear takes no cubic points"));
+            }
+            ("linear", None) => {}
+            (_, None) => {
+                return Err(format!(
+                    "{role}: curve {:?} needs [x1, y1, x2, y2]",
+                    spec.curve.name
+                ));
+            }
+            (_, Some([x1, _, x2, _])) => {
+                // x must stay in 0..1 to keep the curve a function. y may
+                // overshoot, so a spring needs no new shape.
+                if !(0.0..=1.0).contains(&x1) || !(0.0..=1.0).contains(&x2) {
+                    return Err(format!("{role}: cubic x values must be in 0..1"));
+                }
+            }
         }
     }
 
@@ -118,7 +207,7 @@ mod tests {
                   "minTarget": {{ "value": 44, "description": "" }},
                   "maxLineWidth": {{ "value": 640, "description": "" }}
                 }},
-                "motion": {{ "wash": {{ "duration": 150, "curve": "linear" }} }}
+                "motion": {{ "wash": {{ "duration": 150, "curve": {{ "name": "linear" }} }} }}
               }},
               "platform": {{ "swift": {{ "names": {swift_names} }} }}
             }}"##
@@ -160,6 +249,99 @@ mod tests {
         let doc = doc(r#"{ "page.paper": "paper" }"#, colors);
         let error = validate(&doc).unwrap_err();
         assert!(error.contains("sand.99"), "{error}");
+    }
+
+    fn custom(typography: &str, motion: &str, radius: &str) -> Doc {
+        let json = format!(
+            r##"{{
+              "primitive": {{ "color": {{ "sand.50": "#FFFCF7" }} }},
+              "semantic": {{
+                "color": {{ "page.paper": {{ "light": "sand.50", "dark": "sand.50", "description": "" }} }},
+                "typography": {typography},
+                "space": {{ "stackGap": {{ "value": 12, "description": "" }} }},
+                "radius": {radius},
+                "size": {{
+                  "minTarget": {{ "value": 44, "description": "" }},
+                  "maxLineWidth": {{ "value": 640, "description": "" }}
+                }},
+                "motion": {motion}
+              }},
+              "platform": {{ "swift": {{ "names": {{ "page.paper": "paper" }} }} }}
+            }}"##
+        );
+        Doc::parse(&json).expect("fixture parses")
+    }
+
+    const BODY: &str =
+        r#"{ "body": { "family": "serif", "size": 19, "line": 31, "weight": "regular" } }"#;
+    const RADIUS: &str = r#"{ "card": { "value": 12, "description": "" } }"#;
+    const WASH: &str = r#"{ "wash": { "duration": 150, "curve": { "name": "linear" } } }"#;
+
+    #[test]
+    fn a_provisional_role_is_listed_but_legal() {
+        let radius =
+            r#"{ "sheet": { "value": 16, "description": "mock", "status": "provisional" } }"#;
+        let doc = custom(BODY, WASH, radius);
+        assert!(validate(&doc).is_ok());
+        assert_eq!(provisional(&doc), vec!["radius.sheet".to_string()]);
+    }
+
+    #[test]
+    fn an_unknown_status_is_rejected() {
+        let radius = r#"{ "card": { "value": 16, "description": "", "status": "maybe" } }"#;
+        let doc = custom(BODY, WASH, radius);
+        let error = validate(&doc).unwrap_err();
+        assert!(error.contains("maybe"), "{error}");
+    }
+
+    #[test]
+    fn tracking_is_measured_in_em() {
+        let typography = r#"{
+          "body": { "family": "serif", "size": 19, "line": 31, "weight": "regular" },
+          "chip": { "family": "mono", "size": 10, "weight": "bold", "tracking": 0.088,
+                    "case": "uppercase", "description": "" }
+        }"#;
+        assert!(validate(&custom(typography, WASH, RADIUS)).is_ok());
+
+        let too_wide = typography.replace("0.088", "2.0");
+        let error = validate(&custom(&too_wide, WASH, RADIUS)).unwrap_err();
+        assert!(error.contains("tracking"), "{error}");
+
+        let bad_case = typography.replace("uppercase", "capitalise");
+        let error = validate(&custom(&bad_case, WASH, RADIUS)).unwrap_err();
+        assert!(error.contains("case"), "{error}");
+    }
+
+    #[test]
+    fn a_curve_needs_its_points() {
+        let named_only = r#"{ "sheet": { "duration": 180, "curve": { "name": "easeInOut" } } }"#;
+        let error = validate(&custom(BODY, named_only, RADIUS)).unwrap_err();
+        assert!(error.contains("cubic") || error.contains("x1"), "{error}");
+
+        let points = r#"{ "sheet": { "duration": 180, "curve": { "name": "easeInOut",
+                        "cubic": [0.42, 0.0, 0.58, 1.0] } } }"#;
+        assert!(validate(&custom(BODY, points, RADIUS)).is_ok());
+
+        // y may overshoot: a spring needs no new shape.
+        let overshoot = r#"{ "sheet": { "duration": 180, "curve": { "name": "easeOut",
+                          "cubic": [0.2, 1.6, 0.4, 1.0] } } }"#;
+        assert!(validate(&custom(BODY, overshoot, RADIUS)).is_ok());
+    }
+
+    #[test]
+    fn a_cubic_x_outside_the_unit_interval_is_rejected() {
+        let points = r#"{ "sheet": { "duration": 180, "curve": { "name": "easeInOut",
+                        "cubic": [1.2, 0.0, 0.58, 1.0] } } }"#;
+        let error = validate(&custom(BODY, points, RADIUS)).unwrap_err();
+        assert!(error.contains("0..1"), "{error}");
+    }
+
+    #[test]
+    fn linear_takes_no_points() {
+        let points = r#"{ "wash": { "duration": 150, "curve": { "name": "linear",
+                        "cubic": [0.0, 0.0, 1.0, 1.0] } } }"#;
+        let error = validate(&custom(BODY, points, RADIUS)).unwrap_err();
+        assert!(error.contains("linear"), "{error}");
     }
 
     #[test]

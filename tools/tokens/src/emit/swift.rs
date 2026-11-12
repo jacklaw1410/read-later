@@ -35,7 +35,11 @@ pub fn emit(doc: &Doc) -> Result<String, String> {
             .ok_or_else(|| format!("swift binding missing for {role}"))?;
         let light = resolve_color(doc, &entry.light)?;
         let dark = resolve_color(doc, &entry.dark)?;
-        let doc_line = format!("    /// `{role}`. {}", entry.description);
+        let doc_line = format!(
+            "    /// `{role}`.{} {}",
+            provisional(entry.status.as_deref()),
+            entry.description
+        );
         lines.push(doc_line.trim_end().to_string());
 
         let mut call = format!(
@@ -81,7 +85,11 @@ pub fn emit(doc: &Doc) -> Result<String, String> {
         let weight = spec.weight.as_str();
         let size = spec.size;
 
-        let doc_line = format!("    /// `{role}`. {}", spec.description);
+        let doc_line = format!(
+            "    /// `{role}`.{} {}",
+            provisional(spec.status.as_deref()),
+            spec.description
+        );
         lines.push(doc_line.trim_end().to_string());
         lines.push(format!(
             "    static func {symbol}() -> Font {{ .system(size: {size}, weight: .{weight}, design: .{design}){digits} }}"
@@ -91,6 +99,20 @@ pub fn emit(doc: &Doc) -> Result<String, String> {
         if let Some(line) = spec.line {
             lines.push(format!("    static let {symbol}Line: CGFloat = {line}"));
         }
+        if let Some(tracking) = spec.tracking {
+            // SwiftUI takes points; the JSON holds em, so the size is applied
+            // here and a view reads one number.
+            // Rounded to a thousandth: 0.088 * 10 must print as 0.88.
+            let points = ((tracking * f64::from(size)) * 1000.0).round() / 1000.0;
+            lines.push(format!(
+                "    /// `{role}` tracking, in points: {}em at {size}.",
+                trim_float(tracking)
+            ));
+            lines.push(format!(
+                "    static let {symbol}Tracking: CGFloat = {}",
+                trim_float(points)
+            ));
+        }
         lines.push(String::new());
     }
 
@@ -98,7 +120,11 @@ pub fn emit(doc: &Doc) -> Result<String, String> {
     lines.push(String::new());
 
     for (role, spec) in &doc.semantic.space {
-        lines.push(format!("    /// `{role}`. {}", spec.description));
+        lines.push(format!(
+            "    /// `{role}`.{} {}",
+            provisional(spec.status.as_deref()),
+            spec.description
+        ));
         lines.push(format!(
             "    public static let {role}: CGFloat = {}",
             spec.value
@@ -106,7 +132,11 @@ pub fn emit(doc: &Doc) -> Result<String, String> {
         lines.push(String::new());
     }
     for (role, spec) in &doc.semantic.radius {
-        lines.push(format!("    /// `radius.{role}`. {}", spec.description));
+        lines.push(format!(
+            "    /// `radius.{role}`.{} {}",
+            provisional(spec.status.as_deref()),
+            spec.description
+        ));
         lines.push(format!(
             "    public static let {role}Radius: CGFloat = {}",
             spec.value
@@ -117,7 +147,11 @@ pub fn emit(doc: &Doc) -> Result<String, String> {
         if role == "minTarget" || role == "maxLineWidth" {
             continue; // named exactly below
         }
-        lines.push(format!("    /// `size.{role}`. {}", spec.description));
+        lines.push(format!(
+            "    /// `size.{role}`.{} {}",
+            provisional(spec.status.as_deref()),
+            spec.description
+        ));
         lines.push(format!(
             "    public static let {role}: CGFloat = {}",
             spec.value
@@ -131,7 +165,11 @@ pub fn emit(doc: &Doc) -> Result<String, String> {
             .size
             .get(role)
             .ok_or_else(|| format!("size.{role} is required"))?;
-        lines.push(format!("    /// `size.{role}`. {}", spec.description));
+        lines.push(format!(
+            "    /// `size.{role}`.{} {}",
+            provisional(spec.status.as_deref()),
+            spec.description
+        ));
         lines.push(format!(
             "    public static let {role}: CGFloat = {}",
             spec.value
@@ -150,5 +188,48 @@ pub fn emit(doc: &Doc) -> Result<String, String> {
         "    public static let bodyLineSpacing: CGFloat = {spacing}"
     ));
     lines.push("}".to_string());
+
+    lines.push(String::new());
+    lines.push("/// Motion, layer 2. Built from the numbers, not from a name.".to_string());
+    lines.push("public enum ThemeMotion {".to_string());
+    for (role, spec) in &doc.semantic.motion {
+        let seconds = format!("{:.3}", f64::from(spec.duration) / 1000.0);
+        let animation = match spec.curve.cubic() {
+            Some([x1, y1, x2, y2]) => format!(
+                "Animation.timingCurve({}, {}, {}, {}, duration: {seconds})",
+                trim_float(x1),
+                trim_float(y1),
+                trim_float(x2),
+                trim_float(y2)
+            ),
+            None => format!("Animation.linear(duration: {seconds})"),
+        };
+        lines.push(format!(
+            "    /// `motion.{role}`.{} {}",
+            provisional(spec.status.as_deref()),
+            spec.curve.name
+        ));
+        lines.push(format!("    public static let {role} = {animation}"));
+        lines.push(String::new());
+    }
+    lines.push("}".to_string());
     Ok(lines.join("\n") + "\n")
+}
+
+fn provisional(status: Option<&str>) -> &'static str {
+    if status == Some("provisional") {
+        " Provisional."
+    } else {
+        ""
+    }
+}
+
+/// `0.42` prints as `0.42`, not `0.4200`.
+fn trim_float(value: f64) -> String {
+    let text = format!("{value}");
+    if text.contains('.') {
+        text.trim_end_matches('0').trim_end_matches('.').to_string()
+    } else {
+        text
+    }
 }

@@ -67,6 +67,9 @@ fn run(check: bool) -> Result<(), String> {
         fs::read_to_string(&tokens).map_err(|error| format!("{}: {error}", tokens.display()))?;
     let doc = Doc::parse(&text)?;
     validate::validate(&doc)?;
+    for role in validate::provisional(&doc) {
+        println!("tokens: provisional {role}");
+    }
 
     let outputs = emit::emit_all(&doc)?;
     let mut stale: Vec<&str> = Vec::new();
@@ -147,6 +150,43 @@ mod repo_tests {
             }
         }
         assert!(stale.is_empty(), "stale: {stale:?}");
+    }
+
+    /// A view reads a token. A literal tracking value in a view is the drift
+    /// the chip role exists to stop.
+    #[test]
+    fn no_view_hardcodes_tracking() {
+        let sources = root().join("packages/ReadLaterUI/Sources");
+        let mut offenders: Vec<String> = Vec::new();
+        walk(&sources, &mut |path, text| {
+            if path.to_string_lossy().contains("/Generated/") {
+                return;
+            }
+            for line in text.lines() {
+                if let Some(rest) = line.split_once(".tracking(").map(|(_, rest)| rest)
+                    && !rest.trim_start().starts_with("Theme.")
+                {
+                    offenders.push(format!("{}: {}", path.display(), line.trim()));
+                }
+            }
+        });
+        assert!(offenders.is_empty(), "hardcoded tracking: {offenders:#?}");
+    }
+
+    fn walk(dir: &Path, visit: &mut impl FnMut(&Path, &str)) {
+        let Ok(entries) = fs::read_dir(dir) else {
+            return;
+        };
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if path.is_dir() {
+                walk(&path, visit);
+            } else if path.extension().is_some_and(|ext| ext == "swift")
+                && let Ok(text) = fs::read_to_string(&path)
+            {
+                visit(&path, &text);
+            }
+        }
     }
 
     #[test]

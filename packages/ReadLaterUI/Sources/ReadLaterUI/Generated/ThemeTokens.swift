@@ -154,9 +154,17 @@ public extension Theme {
     static func gloss() -> Font { .system(size: 17, weight: .regular, design: .default) }
     static let glossSize: CGFloat = 17
 
-    /// `chip`. Skip chip label, uppercase, tracked.
+    /// `chip`. Skip chip label. Tracking is in em, so it scales with the size.
     static func chip() -> Font { .system(size: 10, weight: .bold, design: .monospaced) }
     static let chipSize: CGFloat = 10
+    /// `chip` tracking, in points: 0.088em at 10.
+    static let chipTracking: CGFloat = 0.88
+
+    /// `eyebrow`. Small caps label above a field or a block.
+    static func eyebrow() -> Font { .system(size: 11, weight: .bold, design: .monospaced) }
+    static let eyebrowSize: CGFloat = 11
+    /// `eyebrow` tracking, in points: 0.08em at 11.
+    static let eyebrowTracking: CGFloat = 0.88
 
     /// `code`. Code block.
     static func code() -> Font { .system(size: 12, weight: .regular, design: .monospaced) }
@@ -202,7 +210,7 @@ public extension Theme {
     /// `radius.card`. Card, skip shell, sheet.
     public static let cardRadius: CGFloat = 12
 
-    /// `radius.sheet`. Sheet top, mock value.
+    /// `radius.sheet`. Provisional. Sheet top.
     public static let sheetRadius: CGFloat = 16
 
     /// `radius.pill`. Capsule.
@@ -222,4 +230,20 @@ public extension Theme {
 
     /// The body line box, minus the type size.
     public static let bodyLineSpacing: CGFloat = 12
+}
+
+/// Motion, layer 2. Built from the numbers, not from a name.
+public enum ThemeMotion {
+    /// `motion.wash`. linear
+    public static let wash = Animation.linear(duration: 0.150)
+
+    /// `motion.sheet`. easeInOut
+    public static let sheet = Animation.timingCurve(0.42, 0, 0.58, 1, duration: 0.180)
+
+    /// `motion.screen`. easeInOut
+    public static let screen = Animation.timingCurve(0.42, 0, 0.58, 1, duration: 0.180)
+
+    /// `motion.entryProgress`. easeInOut
+    public static let entryProgress = Animation.timingCurve(0.42, 0, 0.58, 1, duration: 0.300)
+
 }

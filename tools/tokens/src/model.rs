@@ -39,6 +39,10 @@ pub struct ColorRole {
     pub dark: ColorRef,
     #[serde(default)]
     pub description: String,
+    /// `provisional` says the value is a mock. Every emitter marks it, so a
+    /// platform team cannot read it as settled.
+    #[serde(default)]
+    pub status: Option<String>,
 }
 
 /// A role points at a primitive, or at a primitive plus an alpha.
@@ -74,8 +78,17 @@ pub struct TypeRole {
     pub weight: String,
     #[serde(rename = "monospacedDigit", default)]
     pub monospaced_digit: bool,
+    /// Letter spacing in em. Em, not points: a chip that scales with the system
+    /// text size must keep its tracking.
+    #[serde(default)]
+    pub tracking: Option<f64>,
+    /// `uppercase` is a display rule, not a text transform.
+    #[serde(rename = "case", default)]
+    pub case_rule: Option<String>,
     #[serde(default)]
     pub description: String,
+    #[serde(default)]
+    pub status: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -83,13 +96,33 @@ pub struct ScalarRole {
     pub value: u32,
     #[serde(default)]
     pub description: String,
+    #[serde(default)]
+    pub status: Option<String>,
 }
 
 #[derive(Deserialize)]
 pub struct MotionRole {
     pub duration: u32,
-    /// Named, not coded: each platform maps the name to its own easing API.
-    pub curve: String,
+    pub curve: Curve,
+    #[serde(default)]
+    pub status: Option<String>,
+}
+
+/// A named curve plus the numbers behind it. The name is for reading; the
+/// points are for building. A platform that only gets a name picks its own
+/// default, and four defaults are four feels.
+#[derive(Deserialize)]
+pub struct Curve {
+    pub name: String,
+    /// `[x1, y1, x2, y2]`. Absent for `linear`.
+    #[serde(default)]
+    pub cubic: Option<[f64; 4]>,
+}
+
+impl Curve {
+    pub fn cubic(&self) -> Option<[f64; 4]> {
+        self.cubic
+    }
 }
 
 #[derive(Deserialize)]

@@ -25,6 +25,7 @@ public struct HoldBadge: View {
                         .fontWeight(.semibold)
                 }
                 .font(Theme.chip())
+                .tracking(Theme.chipTracking)
                 .foregroundStyle(Theme.holdInk)
                 .padding(.horizontal, 12)
                 .frame(minHeight: 44)

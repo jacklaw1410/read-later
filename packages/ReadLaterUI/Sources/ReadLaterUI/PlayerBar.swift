@@ -217,6 +217,7 @@ public struct PlayerBar: View {
         } label: {
             Text(Pace.speedLabel(progress.speed))
                 .font(Theme.chip())
+                .tracking(Theme.chipTracking)
                 .foregroundStyle(Theme.ink)
                 .frame(minWidth: 44, minHeight: 44)
         }

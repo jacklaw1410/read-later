@@ -308,6 +308,7 @@ struct SkipChip: View {
     var body: some View {
         Text(text.uppercased())
             .font(Theme.chip())
+            .tracking(Theme.chipTracking)
             .foregroundStyle(Theme.chipInk)
             .padding(.horizontal, 8)
             .padding(.vertical, 3)
