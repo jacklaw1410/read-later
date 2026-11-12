@@ -8,7 +8,14 @@ let package = Package(
         .library(name: "ReadLaterPacks", targets: ["ReadLaterPacks"])
     ],
     targets: [
-        .target(name: "ReadLaterPacks"),
+        .target(
+            name: "CGzip",
+            linkerSettings: [.linkedLibrary("z")]
+        ),
+        .target(
+            name: "ReadLaterPacks",
+            dependencies: ["CGzip"]
+        ),
         .testTarget(name: "ReadLaterPacksTests", dependencies: ["ReadLaterPacks"])
     ]
 )
