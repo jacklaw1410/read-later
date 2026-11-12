@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Calm Editorial specimen · layers 1–2</title>
+<link rel="stylesheet" href="../generated/tokens.css">
+<style>
+body{font-family:system-ui,sans-serif;margin:0 auto;max-width:64rem;padding:1rem;line-height:1.5}
+.banner{border:0.125rem solid currentColor;padding:0.5rem 1rem;font-weight:bold}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(13rem,1fr));gap:1rem}
+.cell{border:0.0625rem solid currentColor;padding:0.5rem}
+.sw{height:3rem}
+.stack{padding:1.5rem}
+.stack .stack{margin-top:1rem}
+.row{display:flex;align-items:center;gap:1rem;margin:0.5rem 0}
+.bar{height:1.5rem}
+.demo{border:0.0625rem solid currentColor;padding:1rem;margin:1rem 0}
+.prose{max-width:40rem}
+a{color:inherit}
+</style>
+</head>
+<body>
+<p class="banner">Specimen from 54f6b16 on 2026-11-12. Source design/tokens.json.</p>
+<h1>Calm Editorial specimen</h1>
+<p>Layers 1 and 2 from <b>design/tokens.json</b>. Every swatch, bar and row reads the linked CSS file. This page holds no colour, no point size, no platform value.</p>
+<h2>1 · Mode switch</h2>
+<p>Mode governs every colour. Same roles, light and dark.</p>
+<h3>light</h3>
+<div data-theme="light">
+<div class="grid">
+<div class="cell" data-role="page.paper"><div class="sw" style="background:var(--page-paper)"></div><div><b>page.paper</b></div><div>Reader and entry background.</div></div>
+<div class="cell" data-role="page.surface"><div class="sw" style="background:var(--page-surface)"></div><div><b>page.surface</b></div><div>Card, player bar, chrome.</div></div>
+<div class="cell" data-role="page.raised"><div class="sw" style="background:var(--page-raised)"></div><div><b>page.raised</b></div><div>Hold badge fill, mono chip.</div></div>
+<div class="cell" data-role="text.body"><div class="sw" style="background:var(--text-body)"></div><div><b>text.body</b></div><div>Prose ink.</div></div>
+<div class="cell" data-role="text.meta"><div class="sw" style="background:var(--text-meta)"></div><div><b>text.meta</b></div><div>Subhead, clock, provenance.</div></div>
+<div class="cell" data-role="line.hair"><div class="sw" style="background:var(--line-hair)"></div><div><b>line.hair</b></div><div>Divider, field border.</div></div>
+<div class="cell" data-role="brand.link"><div class="sw" style="background:var(--brand-link)"></div><div><b>brand.link</b></div><div>Quote rule, track fill, marker ink.</div></div>
+<div class="cell" data-role="action.fill"><div class="sw" style="background:var(--action-fill)"></div><div><b>action.fill</b></div><div>Primary button fill. Stays dark in both modes so white ink keeps its contrast.</div></div>
+<div class="cell" data-role="action.ink"><div class="sw" style="background:var(--action-ink)"></div><div><b>action.ink</b></div><div>Ink on a primary button.</div></div>
+<div class="cell" data-role="ghost.fill"><div class="sw" style="background:var(--ghost-fill)"></div><div><b>ghost.fill</b></div><div>Secondary button fill on a card.</div></div>
+<div class="cell" data-role="wash.fill"><div class="sw" style="background:var(--wash-fill)"></div><div><b>wash.fill</b></div><div>The word the voice is on.</div></div>
+<div class="cell" data-role="wash.ink"><div class="sw" style="background:var(--wash-ink)"></div><div><b>wash.ink</b></div><div>Ink inside the wash.</div></div>
+<div class="cell" data-role="rule.paused"><div class="sw" style="background:var(--rule-paused)"></div><div><b>rule.paused</b></div><div>Frozen wash fill while paused.</div></div>
+<div class="cell" data-role="rule.ring"><div class="sw" style="background:var(--rule-ring)"></div><div><b>rule.ring</b></div><div>Frozen wash ring while paused.</div></div>
+<div class="cell" data-role="mark.selected"><div class="sw" style="background:var(--mark-selected)"></div><div><b>mark.selected</b></div><div>The word the reader tapped.</div></div>
+<div class="cell" data-role="mark.saved"><div class="sw" style="background:var(--mark-saved)"></div><div><b>mark.saved</b></div><div>Saved-phrase rule. Tier 2.</div></div>
+<div class="cell" data-role="mark.savedFill"><div class="sw" style="background:var(--mark-saved-fill)"></div><div><b>mark.savedFill</b></div><div>Saved-phrase fill. Tier 2.</div></div>
+<div class="cell" data-role="skip.surface"><div class="sw" style="background:var(--skip-surface)"></div><div><b>skip.surface</b></div><div>A block the voice skips: it keeps its own surface.</div></div>
+<div class="cell" data-role="skip.border"><div class="sw" style="background:var(--skip-border)"></div><div><b>skip.border</b></div><div>Skip block edge.</div></div>
+<div class="cell" data-role="skip.ink"><div class="sw" style="background:var(--skip-ink)"></div><div><b>skip.ink</b></div><div>Reduced ink inside a skip block.</div></div>
+<div class="cell" data-role="chip.surface"><div class="sw" style="background:var(--chip-surface)"></div><div><b>chip.surface</b></div><div>Skip chip tile.</div></div>
+<div class="cell" data-role="chip.ink"><div class="sw" style="background:var(--chip-ink)"></div><div><b>chip.ink</b></div><div>Skip chip label.</div></div>
+<div class="cell" data-role="chip.border"><div class="sw" style="background:var(--chip-border)"></div><div><b>chip.border</b></div><div>Skip chip edge.</div></div>
+<div class="cell" data-role="code.inlineSurface"><div class="sw" style="background:var(--code-inline-surface)"></div><div><b>code.inlineSurface</b></div><div>Inline code fill.</div></div>
+<div class="cell" data-role="mark.coincide"><div class="sw" style="background:var(--mark-coincide)"></div><div><b>mark.coincide</b></div><div>Ring when the tap lands on the spoken word.</div></div>
+<div class="cell" data-role="veil.scrim"><div class="sw" style="background:var(--veil-scrim)"></div><div><b>veil.scrim</b></div><div>Card dim.</div></div>
+<div class="cell" data-role="hold.surface"><div class="sw" style="background:var(--hold-surface)"></div><div><b>hold.surface</b></div><div>Hold badge fill.</div></div>
+<div class="cell" data-role="hold.ink"><div class="sw" style="background:var(--hold-ink)"></div><div><b>hold.ink</b></div><div>Hold badge ink.</div></div>
+<div class="cell" data-role="hold.border"><div class="sw" style="background:var(--hold-border)"></div><div><b>hold.border</b></div><div>Hold badge edge.</div></div>
+</div>
+</div>
+<h3>dark</h3>
+<div data-theme="dark">
+<div class="grid">
+<div class="cell" data-role="page.paper"><div class="sw" style="background:var(--page-paper)"></div><div><b>page.paper</b></div><div>Reader and entry background.</div></div>
+<div class="cell" data-role="page.surface"><div class="sw" style="background:var(--page-surface)"></div><div><b>page.surface</b></div><div>Card, player bar, chrome.</div></div>
+<div class="cell" data-role="page.raised"><div class="sw" style="background:var(--page-raised)"></div><div><b>page.raised</b></div><div>Hold badge fill, mono chip.</div></div>
+<div class="cell" data-role="text.body"><div class="sw" style="background:var(--text-body)"></div><div><b>text.body</b></div><div>Prose ink.</div></div>
+<div class="cell" data-role="text.meta"><div class="sw" style="background:var(--text-meta)"></div><div><b>text.meta</b></div><div>Subhead, clock, provenance.</div></div>
+<div class="cell" data-role="line.hair"><div class="sw" style="background:var(--line-hair)"></div><div><b>line.hair</b></div><div>Divider, field border.</div></div>
+<div class="cell" data-role="brand.link"><div class="sw" style="background:var(--brand-link)"></div><div><b>brand.link</b></div><div>Quote rule, track fill, marker ink.</div></div>
+<div class="cell" data-role="action.fill"><div class="sw" style="background:var(--action-fill)"></div><div><b>action.fill</b></div><div>Primary button fill. Stays dark in both modes so white ink keeps its contrast.</div></div>
+<div class="cell" data-role="action.ink"><div class="sw" style="background:var(--action-ink)"></div><div><b>action.ink</b></div><div>Ink on a primary button.</div></div>
+<div class="cell" data-role="ghost.fill"><div class="sw" style="background:var(--ghost-fill)"></div><div><b>ghost.fill</b></div><div>Secondary button fill on a card.</div></div>
+<div class="cell" data-role="wash.fill"><div class="sw" style="background:var(--wash-fill)"></div><div><b>wash.fill</b></div><div>The word the voice is on.</div></div>
+<div class="cell" data-role="wash.ink"><div class="sw" style="background:var(--wash-ink)"></div><div><b>wash.ink</b></div><div>Ink inside the wash.</div></div>
+<div class="cell" data-role="rule.paused"><div class="sw" style="background:var(--rule-paused)"></div><div><b>rule.paused</b></div><div>Frozen wash fill while paused.</div></div>
+<div class="cell" data-role="rule.ring"><div class="sw" style="background:var(--rule-ring)"></div><div><b>rule.ring</b></div><div>Frozen wash ring while paused.</div></div>
+<div class="cell" data-role="mark.selected"><div class="sw" style="background:var(--mark-selected)"></div><div><b>mark.selected</b></div><div>The word the reader tapped.</div></div>
+<div class="cell" data-role="mark.saved"><div class="sw" style="background:var(--mark-saved)"></div><div><b>mark.saved</b></div><div>Saved-phrase rule. Tier 2.</div></div>
+<div class="cell" data-role="mark.savedFill"><div class="sw" style="background:var(--mark-saved-fill)"></div><div><b>mark.savedFill</b></div><div>Saved-phrase fill. Tier 2.</div></div>
+<div class="cell" data-role="skip.surface"><div class="sw" style="background:var(--skip-surface)"></div><div><b>skip.surface</b></div><div>A block the voice skips: it keeps its own surface.</div></div>
+<div class="cell" data-role="skip.border"><div class="sw" style="background:var(--skip-border)"></div><div><b>skip.border</b></div><div>Skip block edge.</div></div>
+<div class="cell" data-role="skip.ink"><div class="sw" style="background:var(--skip-ink)"></div><div><b>skip.ink</b></div><div>Reduced ink inside a skip block.</div></div>
+<div class="cell" data-role="chip.surface"><div class="sw" style="background:var(--chip-surface)"></div><div><b>chip.surface</b></div><div>Skip chip tile.</div></div>
+<div class="cell" data-role="chip.ink"><div class="sw" style="background:var(--chip-ink)"></div><div><b>chip.ink</b></div><div>Skip chip label.</div></div>
+<div class="cell" data-role="chip.border"><div class="sw" style="background:var(--chip-border)"></div><div><b>chip.border</b></div><div>Skip chip edge.</div></div>
+<div class="cell" data-role="code.inlineSurface"><div class="sw" style="background:var(--code-inline-surface)"></div><div><b>code.inlineSurface</b></div><div>Inline code fill.</div></div>
+<div class="cell" data-role="mark.coincide"><div class="sw" style="background:var(--mark-coincide)"></div><div><b>mark.coincide</b></div><div>Ring when the tap lands on the spoken word.</div></div>
+<div class="cell" data-role="veil.scrim"><div class="sw" style="background:var(--veil-scrim)"></div><div><b>veil.scrim</b></div><div>Card dim.</div></div>
+<div class="cell" data-role="hold.surface"><div class="sw" style="background:var(--hold-surface)"></div><div><b>hold.surface</b></div><div>Hold badge fill.</div></div>
+<div class="cell" data-role="hold.ink"><div class="sw" style="background:var(--hold-ink)"></div><div><b>hold.ink</b></div><div>Hold badge ink.</div></div>
+<div class="cell" data-role="hold.border"><div class="sw" style="background:var(--hold-border)"></div><div><b>hold.border</b></div><div>Hold badge edge.</div></div>
+</div>
+</div>
+<h3>Layer 1 · primitives</h3>
+<p>Raw values, no meaning. Each swatch borrows the first semantic role that shows it; <b>black</b> only appears under the scrim, so its swatch is the scrim.</p>
+<div data-theme="light">
+<div class="grid">
+<div class="cell" data-primitive="white"><div class="sw" style="background:var(--page-surface)"></div><div><b>white</b></div></div>
+<div class="cell" data-primitive="black"><div class="sw" style="background:var(--veil-scrim)"></div><div><b>black</b></div></div>
+<div class="cell" data-primitive="sand.50"><div class="sw" style="background:var(--page-paper)"></div><div><b>sand.50</b></div></div>
+<div class="cell" data-primitive="sand.100"><div class="sw" style="background:var(--page-raised)"></div><div><b>sand.100</b></div></div>
+<div class="cell" data-primitive="sand.150"><div class="sw" style="background:var(--skip-surface)"></div><div><b>sand.150</b></div></div>
+<div class="cell" data-primitive="sand.175"><div class="sw" style="background:var(--code-inline-surface)"></div><div><b>sand.175</b></div></div>
+<div class="cell" data-primitive="sand.250"><div class="sw" style="background:var(--line-hair)"></div><div><b>sand.250</b></div></div>
+<div class="cell" data-primitive="ink.0"><div class="sw" style="background:var(--page-surface)"></div><div><b>ink.0</b></div></div>
+<div class="cell" data-primitive="ink.200"><div class="sw" style="background:var(--text-body)"></div><div><b>ink.200</b></div></div>
+<div class="cell" data-primitive="ink.300"><div class="sw" style="background:var(--skip-ink)"></div><div><b>ink.300</b></div></div>
+<div class="cell" data-primitive="ink.500"><div class="sw" style="background:var(--text-meta)"></div><div><b>ink.500</b></div></div>
+<div class="cell" data-primitive="ink.600"><div class="sw" style="background:var(--text-meta)"></div><div><b>ink.600</b></div></div>
+<div class="cell" data-primitive="ink.700"><div class="sw" style="background:var(--line-hair)"></div><div><b>ink.700</b></div></div>
+<div class="cell" data-primitive="ink.750"><div class="sw" style="background:var(--ghost-fill)"></div><div><b>ink.750</b></div></div>
+<div class="cell" data-primitive="ink.760"><div class="sw" style="background:var(--code-inline-surface)"></div><div><b>ink.760</b></div></div>
+<div class="cell" data-primitive="ink.780"><div class="sw" style="background:var(--skip-border)"></div><div><b>ink.780</b></div></div>
+<div class="cell" data-primitive="ink.800"><div class="sw" style="background:var(--page-surface)"></div><div><b>ink.800</b></div></div>
+<div class="cell" data-primitive="ink.820"><div class="sw" style="background:var(--skip-surface)"></div><div><b>ink.820</b></div></div>
+<div class="cell" data-primitive="ink.850"><div class="sw" style="background:var(--page-raised)"></div><div><b>ink.850</b></div></div>
+<div class="cell" data-primitive="ink.900"><div class="sw" style="background:var(--text-body)"></div><div><b>ink.900</b></div></div>
+<div class="cell" data-primitive="ink.950"><div class="sw" style="background:var(--page-paper)"></div><div><b>ink.950</b></div></div>
+<div class="cell" data-primitive="blue.100"><div class="sw" style="background:var(--mark-selected)"></div><div><b>blue.100</b></div></div>
+<div class="cell" data-primitive="blue.300"><div class="sw" style="background:var(--brand-link)"></div><div><b>blue.300</b></div></div>
+<div class="cell" data-primitive="blue.650"><div class="sw" style="background:var(--action-fill)"></div><div><b>blue.650</b></div></div>
+<div class="cell" data-primitive="blue.700"><div class="sw" style="background:var(--brand-link)"></div><div><b>blue.700</b></div></div>
+<div class="cell" data-primitive="blue.750"><div class="sw" style="background:var(--mark-selected)"></div><div><b>blue.750</b></div></div>
+<div class="cell" data-primitive="amber.100"><div class="sw" style="background:var(--mark-saved-fill)"></div><div><b>amber.100</b></div></div>
+<div class="cell" data-primitive="amber.200"><div class="sw" style="background:var(--wash-fill)"></div><div><b>amber.200</b></div></div>
+<div class="cell" data-primitive="amber.250"><div class="sw" style="background:var(--rule-paused)"></div><div><b>amber.250</b></div></div>
+<div class="cell" data-primitive="amber.300"><div class="sw" style="background:var(--mark-saved)"></div><div><b>amber.300</b></div></div>
+<div class="cell" data-primitive="amber.400"><div class="sw" style="background:var(--rule-ring)"></div><div><b>amber.400</b></div></div>
+<div class="cell" data-primitive="amber.500"><div class="sw" style="background:var(--mark-coincide)"></div><div><b>amber.500</b></div></div>
+<div class="cell" data-primitive="amber.600"><div class="sw" style="background:var(--mark-coincide)"></div><div><b>amber.600</b></div></div>
+<div class="cell" data-primitive="amber.700"><div class="sw" style="background:var(--wash-fill)"></div><div><b>amber.700</b></div></div>
+<div class="cell" data-primitive="amber.750"><div class="sw" style="background:var(--rule-ring)"></div><div><b>amber.750</b></div></div>
+<div class="cell" data-primitive="amber.800"><div class="sw" style="background:var(--wash-ink)"></div><div><b>amber.800</b></div></div>
+<div class="cell" data-primitive="amber.900"><div class="sw" style="background:var(--mark-saved)"></div><div><b>amber.900</b></div></div>
+<div class="cell" data-primitive="amber.950"><div class="sw" style="background:var(--hold-border)"></div><div><b>amber.950</b></div></div>
+<div class="cell" data-primitive="amber.975"><div class="sw" style="background:var(--rule-paused)"></div><div><b>amber.975</b></div></div>
+<div class="cell" data-primitive="olive.200"><div class="sw" style="background:var(--chip-surface)"></div><div><b>olive.200</b></div></div>
+<div class="cell" data-primitive="olive.250"><div class="sw" style="background:var(--chip-border)"></div><div><b>olive.250</b></div></div>
+<div class="cell" data-primitive="olive.600"><div class="sw" style="background:var(--chip-ink)"></div><div><b>olive.600</b></div></div>
+<div class="cell" data-primitive="olive.850"><div class="sw" style="background:var(--chip-surface)"></div><div><b>olive.850</b></div></div>
+<div class="cell" data-primitive="olive.900"><div class="sw" style="background:var(--chip-border)"></div><div><b>olive.900</b></div></div>
+<div class="cell" data-primitive="amber.150"><div class="sw" style="background:var(--chip-ink)"></div><div><b>amber.150</b></div></div>
+<div class="cell" data-primitive="amber.850"><div class="sw" style="background:var(--mark-saved-fill)"></div><div><b>amber.850</b></div></div>
+</div>
+</div>
+<h2>2 · Page and text</h2>
+<p>Foundation before accents.</p>
+<div data-theme="light">
+<div class="demo" style="background:var(--page-paper)">
+<div><b>page.paper</b> · Reader and entry background.</div>
+<div class="stack" style="background:var(--page-surface)">
+<div><b>page.surface</b> · Card, player bar, chrome.</div>
+<div class="stack" style="background:var(--page-raised)">
+<div><b>page.raised</b> · Hold badge fill, mono chip.</div>
+</div>
+</div>
+<p class="prose" style="color:var(--text-body);font-size:var(--type-body-size)">Body text reads here. The wash will mark the spoken word.</p>
+<p style="color:var(--text-meta);font-size:var(--type-caption-size)">Meta line · provenance · clock</p>
+<hr style="border-color:var(--line-hair)">
+<div>line.hair · Divider, field border.</div>
+</div>
+</div>
+<h2>3 · Voice and tap</h2>
+<p>Core product interaction.</p>
+<div data-theme="light">
+<div class="demo" style="background:var(--page-paper);color:var(--text-body);font-size:var(--type-body-size)">
+<span>The voice is </span><span style="background:var(--wash-fill);color:var(--wash-ink)">on this word</span><span>, the reader </span><span style="background:var(--mark-selected)">tapped that one</span><span>, and </span><span style="background:var(--wash-fill);color:var(--wash-ink);outline:0.125rem solid var(--mark-coincide)">this one is both</span><span>.</span>
+</div>
+<ul>
+<li><b>wash.fill</b> plus <b>wash.ink</b> · the spoken word.</li>
+<li><b>mark.selected</b> · the tapped word.</li>
+<li><b>mark.coincide</b> · ring when the tap lands on the spoken word.</li>
+</ul>
+<div class="demo" style="background:var(--page-paper);color:var(--text-body);font-size:var(--type-body-size)">
+<span>Audio paused: </span><span style="background:var(--rule-paused);outline:0.125rem solid var(--rule-ring)">the wash freezes here</span><span>.</span>
+</div>
+<ul>
+<li><b>rule.paused</b> plus <b>rule.ring</b> · the frozen wash.</li>
+</ul>
+</div>
+<h2>4 · Actions and marks</h2>
+<p>Controls after reading states.</p>
+<div data-theme="light">
+<div class="demo" style="background:var(--page-surface)">
+<div class="row"><span style="background:var(--action-fill);color:var(--action-ink);padding:0.5rem 1rem;border-radius:var(--radius-button)">Listen</span><span><b>action.fill</b> plus <b>action.ink</b> · primary button. The fill stays dark in both modes so white ink keeps its contrast.</span></div>
+<div class="row"><span style="background:var(--ghost-fill);color:var(--text-body);padding:0.5rem 1rem;border-radius:var(--radius-button)">Later</span><span><b>ghost.fill</b> · secondary button fill on a card.</span></div>
+<div class="row"><span style="color:var(--brand-link)"><u>Quoted passage</u></span><span><b>brand.link</b> · quote rule, track fill, marker ink.</span></div>
+<div class="row"><span style="background:var(--mark-saved-fill);border-left:0.25rem solid var(--mark-saved);padding:0.5rem 1rem">Kept for study</span><span><b>mark.saved</b> plus <b>mark.savedFill</b> · tier 2, not part of the flow.</span></div>
+</div>
+</div>
+<h2>6 · Type ramp</h2>
+<p>Editorial voice. Every role at its real size from the CSS variables.</p>
+<div data-theme="light">
+<div class="demo" style="background:var(--page-paper);color:var(--text-body)">
+<div class="row" data-type="body"><span style="font-size:var(--type-body-size)">Ag</span><span><b>body</b> · size 19 · serif regular · Reader prose.</span></div>
+<div class="row" data-type="title"><span style="font-size:var(--type-title-size)">Ag</span><span><b>title</b> · size 28 · serif semibold · Article title.</span></div>
+<div class="row" data-type="heading"><span style="font-size:var(--type-heading-size)">Ag</span><span><b>heading</b> · size 22 · serif semibold · Heading block.</span></div>
+<div class="row" data-type="caption"><span style="font-size:var(--type-caption-size)">Ag</span><span><b>caption</b> · size 13 · sans regular · Meta line, provenance.</span></div>
+<div class="row" data-type="player"><span style="font-size:var(--type-player-size)">Ag</span><span><b>player</b> · size 15 · sans regular · Player clock.</span></div>
+<div class="row" data-type="lookupWord"><span style="font-size:var(--type-lookup-word-size)">Ag</span><span><b>lookupWord</b> · size 22 · serif medium · Tapped word in the card.</span></div>
+<div class="row" data-type="gloss"><span style="font-size:var(--type-gloss-size)">Ag</span><span><b>gloss</b> · size 17 · sans regular · Gloss text, Traditional Chinese.</span></div>
+<div class="row" data-type="chip"><span style="font-size:var(--type-chip-size)">Ag</span><span><b>chip</b> · size 10 · mono bold · tracking 0.088 em · Skip chip label. Tracking is in em, so it scales with the size.</span></div>
+<div class="row" data-type="eyebrow"><span style="font-size:var(--type-eyebrow-size)">Ag</span><span><b>eyebrow</b> · size 11 · mono bold · tracking 0.08 em · Small caps label above a field or a block.</span></div>
+<div class="row" data-type="code"><span style="font-size:var(--type-code-size)">Ag</span><span><b>code</b> · size 12 · mono regular · Code block.</span></div>
+<div class="row" data-type="note"><span style="font-size:var(--type-note-size)">Ag</span><span><b>note</b> · size 14 · sans regular · Footnote body.</span></div>
+<div class="row" data-type="mono"><span style="font-size:var(--type-mono-size)">Ag</span><span><b>mono</b> · size 11 · mono regular · NOTES label, footnote marker.</span></div>
+</div>
+</div>
+<h2>7 · Space and measure</h2>
+<p>Rhythm needs a bar. Each bar is the step itself, from the CSS variable.</p>
+<div data-theme="light">
+<div class="demo" style="background:var(--page-paper);color:var(--text-body)">
+<div class="row" data-space="inlineGap"><div class="bar" style="width:var(--inline-gap);background:var(--brand-link)"></div><span><b>inlineGap</b> · step 4 · Chip inset, tight pairs.</span></div>
+<div class="row" data-space="controlGap"><div class="bar" style="width:var(--control-gap);background:var(--brand-link)"></div><span><b>controlGap</b> · step 8 · Adjacent controls.</span></div>
+<div class="row" data-space="stackGap"><div class="bar" style="width:var(--stack-gap);background:var(--brand-link)"></div><span><b>stackGap</b> · step 12 · Card rows.</span></div>
+<div class="row" data-space="paragraphGap"><div class="bar" style="width:var(--paragraph-gap);background:var(--brand-link)"></div><span><b>paragraphGap</b> · step 16 · Between reader blocks.</span></div>
+<div class="row" data-space="screenGutter"><div class="bar" style="width:var(--screen-gutter);background:var(--brand-link)"></div><span><b>screenGutter</b> · step 20 · Page side margin, card padding.</span></div>
+<div class="row" data-space="breathingRoom"><div class="bar" style="width:var(--breathing-room);background:var(--brand-link)"></div><span><b>breathingRoom</b> · step 32 · Top room above the title.</span></div>
+<div class="row" data-space="maxLineWidth"><div class="bar" style="width:100%;max-width:var(--size-max-line-width);background:var(--brand-link)"></div><span><b>maxLineWidth</b> · step 640 · Reading measure.</span></div>
+</div>
+</div>
+<h2>8 · Radius and size</h2>
+<p>Shape beside scale.</p>
+<div data-theme="light">
+<div class="demo" style="background:var(--page-paper);color:var(--text-body)">
+<div class="row" data-radius="chip"><div class="sw" style="width:6rem;background:var(--page-raised);border-radius:var(--radius-chip)"></div><span><b>chip</b> · step 4 · Wash chip.</span></div>
+<div class="row" data-radius="inner"><div class="sw" style="width:6rem;background:var(--page-raised);border-radius:var(--radius-inner)"></div><span><b>inner</b> · step 8 · Skip inner table.</span></div>
+<div class="row" data-radius="button"><div class="sw" style="width:6rem;background:var(--page-raised);border-radius:var(--radius-button)"></div><span><b>button</b> · step 10 · Buttons and fields.</span></div>
+<div class="row" data-radius="card"><div class="sw" style="width:6rem;background:var(--page-raised);border-radius:var(--radius-card)"></div><span><b>card</b> · step 12 · Card, skip shell, sheet.</span></div>
+<div class="row" data-radius="sheet"><div class="sw" style="width:6rem;background:var(--page-raised);border-radius:var(--radius-sheet)"></div><span><b>sheet</b> · step 16 · provisional · Sheet top.</span></div>
+<div class="row" data-radius="pill"><div class="sw" style="width:6rem;background:var(--page-raised);border-radius:var(--radius-pill)"></div><span><b>pill</b> · step 999 · Capsule.</span></div>
+<div class="row" data-size="minTarget"><div style="width:var(--size-min-target);height:var(--size-min-target);background:var(--action-fill)"></div><span><b>minTarget</b> · step 44 · Smallest control, both axes.</span></div>
+<div class="row" data-size="playerBar"><div style="width:100%;height:var(--size-player-bar);background:var(--page-surface);border:0.0625rem solid currentColor"></div><span><b>playerBar</b> · step 58 · Bar height, including the 44 pt hit row.</span></div>
+<div class="row" data-size="chrome"><div style="width:100%;height:var(--size-chrome);background:var(--page-raised);border:0.0625rem solid currentColor"></div><span><b>chrome</b> · step 44 · Reader top bar.</span></div>
+</div>
+</div>
+<h2>9 · Motion</h2>
+<p>Time after static form. Trigger names come from the token descriptions.</p>
+<div data-theme="light">
+<div class="demo" style="background:var(--page-paper);color:var(--text-body)">
+<div class="row" data-motion="wash"><span><b>wash</b> · 150 ms · Wash word swap. · linear</span></div>
+<div class="row" data-motion="sheet"><span><b>sheet</b> · 180 ms · Card in and out. · cubic 0.42, 0, 0.58, 1</span></div>
+<div class="row" data-motion="screen"><span><b>screen</b> · 180 ms · Screen swap. · cubic 0.42, 0, 0.58, 1</span></div>
+<div class="row" data-motion="entryProgress"><span><b>entryProgress</b> · 300 ms · Entry progress bar. · cubic 0.42, 0, 0.58, 1</span></div>
+</div>
+</div>
+</body>
+</html>

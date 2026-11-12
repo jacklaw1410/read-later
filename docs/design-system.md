@@ -15,6 +15,8 @@ changes in one place. Every platform reads the result.
 | `design/generated/tokens.css` | CSS variables. For prototypes, docs and a future web surface. |
 | `design/generated/Tokens.kt` | Jetpack Compose colours, dp sizes, sp type sizes, motion durations and `CubicBezierEasing`. |
 | `design/generated/Tokens.xaml` | WinUI 3 theme dictionaries, doubles for size, motion in milliseconds, spline points as doubles. |
+| `design/specimen/specimen.html` | Generated specimen page. Layers 1–2, no literals; reads `../generated/tokens.css`. |
+| `design/specimen/index.html` | Generated entry point. Links the specimen, the CSS, the docs and the pinned research pages. |
 
 `readlater-tokens --check` exits non-zero when a file is out of date. The build
 does not run it, so run it by hand or in CI before a commit.

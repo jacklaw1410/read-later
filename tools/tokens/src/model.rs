@@ -104,6 +104,10 @@ pub struct ScalarRole {
 pub struct MotionRole {
     pub duration: u32,
     pub curve: Curve,
+    /// What the motion drives. The specimen names the trigger from here, so
+    /// the page cannot invent one.
+    #[serde(default)]
+    pub description: String,
     #[serde(default)]
     pub status: Option<String>,
 }

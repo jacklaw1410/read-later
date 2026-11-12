@@ -5,6 +5,7 @@ use crate::model::Doc;
 
 pub mod css;
 pub mod kotlin;
+pub mod specimen;
 pub mod swift;
 pub mod xaml;
 
@@ -18,7 +19,7 @@ pub struct Output {
     pub text: String,
 }
 
-pub fn emit_all(doc: &Doc) -> Result<Vec<Output>, String> {
+pub fn emit_all(doc: &Doc, fresh: &specimen::Freshness) -> Result<Vec<Output>, String> {
     Ok(vec![
         Output {
             path: "packages/ReadLaterUI/Sources/ReadLaterUI/Generated/ThemeTokens.swift",
@@ -35,6 +36,14 @@ pub fn emit_all(doc: &Doc) -> Result<Vec<Output>, String> {
         Output {
             path: "design/generated/Tokens.xaml",
             text: xaml::emit(doc)?,
+        },
+        Output {
+            path: "design/specimen/specimen.html",
+            text: specimen::emit_specimen(doc, fresh)?,
+        },
+        Output {
+            path: "design/specimen/index.html",
+            text: specimen::emit_index(fresh)?,
         },
     ])
 }
