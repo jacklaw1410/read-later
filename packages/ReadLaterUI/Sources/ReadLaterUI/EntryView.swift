@@ -42,6 +42,20 @@ public enum EntryCopy {
     public static let sampleLink = "https://www.theatlantic.com/reading/slow"
 }
 
+/// The input as tapped. `load` only reads this value, never live state,
+/// so an edit during fetch cannot steer the in-flight request.
+struct EntryRequest: Sendable, Equatable {
+    var link: String
+    var raw: String
+
+    init(linkText: String, rawText: String) {
+        self.link = linkText.trimmingCharacters(in: .whitespacesAndNewlines)
+        self.raw = rawText.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    var isEmpty: Bool { link.isEmpty && raw.isEmpty }
+}
+
 /// The first screen. Prefilled link, optional raw text, one button, and a
 /// progress area that runs the three extraction stages before opening.
 public struct EntryView: View {
@@ -78,6 +92,7 @@ public struct EntryView: View {
                 )
                 .padding(.top, 6)
                 .accessibilityLabel("Link")
+                .disabled(isLoading)
             Text(EntryCopy.linkHint)
                 .font(Theme.caption())
                 .foregroundStyle(Theme.inkSecondary)
@@ -110,6 +125,7 @@ public struct EntryView: View {
                 }
             }
             .padding(.top, 6)
+            .disabled(isLoading)
             Button(isLoading ? EntryCopy.extracting : EntryCopy.open) {
                 open()
             }
@@ -190,26 +206,25 @@ public struct EntryView: View {
     }
 
     private func open() {
-        let link = linkText.trimmingCharacters(in: .whitespacesAndNewlines)
-        let raw = rawText.trimmingCharacters(in: .whitespacesAndNewlines)
-        if link.isEmpty && raw.isEmpty {
+        let request = EntryRequest(linkText: linkText, rawText: rawText)
+        if request.isEmpty {
             state = .refused(EntryCopy.emptyRefusal)
             return
         }
         guard !isLoading else { return }
         TelemetryHub.shared.record(TelemetryName.tap)
-        Task { await load(link: link, raw: raw) }
+        Task { await load(request) }
     }
 
     /// The entry path. Raw text wins over the link. The bundled sample is
     /// recognised here so the demo opens with no network, and a real link is
     /// fetched, extracted, then opened.
     @MainActor
-    private func load(link: String, raw: String) async {
-        if !raw.isEmpty {
+    private func load(_ request: EntryRequest) async {
+        if !request.raw.isEmpty {
             state = .loading(stage: .stripping, progress: EntryStage.stripping.progress)
             await reveal(.ready)
-            switch ArticleIngress.pasted(raw) {
+            switch ArticleIngress.pasted(request.raw) {
             case .success(let document):
                 TelemetryHub.shared.record(TelemetryName.readerOpen, fields: ["source": "pasted"])
                 onOpen(document)
@@ -218,7 +233,7 @@ public struct EntryView: View {
             }
             return
         }
-        if link == EntryCopy.sampleLink {
+        if request.link == EntryCopy.sampleLink {
             state = .loading(stage: .fetching, progress: EntryStage.fetching.progress)
             await reveal(.stripping)
             await reveal(.ready)
@@ -233,7 +248,7 @@ public struct EntryView: View {
         }
 
         state = .loading(stage: .fetching, progress: EntryStage.fetching.progress)
-        let fetched = await ArticleIngress.fetch(link)
+        let fetched = await ArticleIngress.fetch(request.link)
         guard case .success(let page) = fetched else {
             if case .failure(let error) = fetched {
                 state = .refused(error.message)

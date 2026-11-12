@@ -87,3 +87,16 @@ import ReadLaterCore
     #expect(EntryCopy.emptyRefusal == "nothing to open — paste a link or text")
     #expect(EntryCopy.loginWallRefusal == "login wall — paste text instead")
 }
+
+// MARK: - EntryRequest tap snapshot
+
+@Test func tapSnapshotTrimsBothFields() {
+    let request = EntryRequest(linkText: "  https://example.com/a  ", rawText: "  hello  \n")
+    #expect(request.link == "https://example.com/a")
+    #expect(request.raw == "hello")
+    #expect(!request.isEmpty)
+}
+
+@Test func blankSnapshotRefuses() {
+    #expect(EntryRequest(linkText: "  ", rawText: " \n ").isEmpty)
+}
