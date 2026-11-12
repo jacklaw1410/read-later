@@ -126,6 +126,14 @@
           "description": "The block's own text, normalised.",
           "type": "string"
         },
+        "image_url": {
+          "description": "Image reference for image and figure blocks, as written in src (first srcset candidate when src is absent). Unresolved against any base; no loader reads it yet. Absent for every other kind.",
+          "type": "string"
+        },
+        "alt": {
+          "description": "The alt text as written, for the caption well and accessibility. Absent when the element carried no alt.",
+          "type": "string"
+        },
         "children": {
           "description": "Nested blocks, e.g. figure > img + figcaption.",
           "type": "array",

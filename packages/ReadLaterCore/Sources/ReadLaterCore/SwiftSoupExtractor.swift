@@ -275,8 +275,17 @@ private struct BlockWalker {
             if Self.isLayoutTable(element) {
                 try processContainer(element, tag: tag)
             } else {
-                try processLeaf(element, tag: tag)
+                try processTable(element, tag: tag)
             }
+            return
+        }
+        // F19 1.13: a list keeps its item boundaries. One block per item,
+        // as siblings, so the wash marks one item at a time and a later
+        // renderer can number ordinals without the voice saying them.
+        // The old path took element.text() whole and joined every item
+        // with spaces, losing ordinals, bullets and the boundaries.
+        if tag == "ul" || tag == "ol" || tag == "dl" {
+            try processList(element, tag: tag)
             return
         }
         if Self.containerTags.contains(tag) {
@@ -313,7 +322,11 @@ private struct BlockWalker {
 
     mutating func processLeaf(_ element: Element, tag: String) throws {
         let text = Self.normalise((try? element.text()) ?? "")
-        guard !text.isEmpty else { return }
+        // F19 1.14: a bare img carries no text, so the old guard dropped it
+        // and the image path stayed dead. Capture src/srcset/alt instead;
+        // the block keeps the reference and the placeholder keeps the caption.
+        let imageRef = Self.imageRef(of: element, tag: tag)
+        guard !text.isEmpty || imageRef.url != nil else { return }
         if tag != "pre" && tag != "code" {
             // Older pages break paragraphs with `<br /><br />` inside one `<p>`, and
             // the text API turns each break into a space. Split on the breaks so each
@@ -351,8 +364,118 @@ private struct BlockWalker {
                 linkTextChars: linkChars,
                 lines: Self.lines((try? element.text(trimAndNormaliseWhitespace: false)) ?? "")
             ),
-            text: text
+            text: text,
+            imageURL: imageRef.url,
+            alt: imageRef.alt
         )
+    }
+
+    /// One row per `tr`, as children of the table block.
+    ///
+    /// F19 1.15, minimal honest degradation: a data table keeps its row
+    /// structure instead of flattening to prose. Each row joins its cells
+    /// with a comma — a separator the voice can read as a pause, without
+    /// chanting markup. Rows stay kind `.table`, so the voice still skips
+    /// them and the reader still renders the row grid from the children.
+    /// The parent keeps the whole text so nothing is lost. Small on purpose:
+    /// the row mechanics reuse the list item work (units with structure,
+    /// spoken only when their kind speaks).
+    mutating func processTable(_ element: Element, tag: String) throws {
+        let text = Self.normalise((try? element.text()) ?? "")
+        guard !text.isEmpty else { return }
+        var linkChars = 0
+        if let links = try? element.select("a") {
+            for link in links {
+                linkChars += ((try? link.text()) ?? "").count
+            }
+        }
+        let verdict = Classifier.classify(
+            tag: tag,
+            classNames: classes(of: element),
+            role: role(of: element),
+            text: text,
+            linkTextChars: linkChars,
+            lines: Self.lines((try? element.text(trimAndNormaliseWhitespace: false)) ?? "")
+        )
+        let parentID = nextID
+        nextID += 1
+        var children: [Block] = []
+        for row in ((try? element.select("tr")) ?? Elements()).array() {
+            let cells = ((try? row.select("th, td")) ?? Elements()).array().map {
+                Self.normalise((try? $0.text()) ?? "")
+            }.filter { !$0.isEmpty }
+            guard !cells.isEmpty else { continue }
+            children.append(Block(
+                id: nextID,
+                kind: .table,
+                confidence: 0.9,
+                reason: "tr",
+                text: cells.joined(separator: ", ")
+            ))
+            nextID += 1
+        }
+        blocks.append(Block(
+            id: parentID,
+            kind: verdict.kind,
+            confidence: verdict.confidence,
+            reason: verdict.reason,
+            text: text,
+            children: children
+        ))
+    }
+
+    /// One block per list item, as siblings in document order.
+    ///
+    /// An item's own text becomes its block; a nested list recurses after
+    /// its parent item so reading order holds. Stray text directly inside
+    /// the list (malformed markup) becomes one block from the run.
+    mutating func processList(_ element: Element, tag: String) throws {
+        var run = InlineRun()
+        for node in element.getChildNodes() {
+            if let textNode = node as? TextNode {
+                run.add(textNode.text())
+                continue
+            }
+            guard let child = node as? Element else { continue }
+            let childTag = child.tagNameNormal()
+            if childTag == "li" || childTag == "dt" || childTag == "dd" {
+                emitRun(&run, element: element, tag: tag)
+                try processListItem(child)
+            } else if childTag == "ul" || childTag == "ol" || childTag == "dl" {
+                emitRun(&run, element: element, tag: tag)
+                try processList(child, tag: childTag)
+            } else if Self.isBlockPosition(child) {
+                emitRun(&run, element: element, tag: tag)
+                try process(child)
+            } else {
+                run.add(inline: child)
+            }
+        }
+        emitRun(&run, element: element, tag: tag)
+    }
+
+    /// One item: its own inline text first, then any nested list, in order.
+    mutating func processListItem(_ element: Element) throws {
+        let tag = element.tagNameNormal()
+        var run = InlineRun()
+        for node in element.getChildNodes() {
+            if let textNode = node as? TextNode {
+                run.add(textNode.text())
+                continue
+            }
+            guard let child = node as? Element else { continue }
+            let childTag = child.tagNameNormal()
+            if childTag == "ul" || childTag == "ol" || childTag == "dl" {
+                emitRun(&run, element: element, tag: tag)
+                try processList(child, tag: childTag)
+            } else if Self.isBlockPosition(child) {
+                emitRun(&run, element: element, tag: tag)
+                try process(child)
+            } else {
+                run.add(inline: child)
+            }
+        }
+        emitRun(&run, element: element, tag: tag)
     }
 
     /// Walks a container in document order. Text and inline markup between block
@@ -396,15 +519,57 @@ private struct BlockWalker {
         }
     }
 
-    mutating func emit(_ verdict: Classification, text: String) {
+    mutating func emit(_ verdict: Classification, text: String, imageURL: String? = nil, alt: String? = nil) {
         blocks.append(Block(
             id: nextID,
             kind: verdict.kind,
             confidence: verdict.confidence,
             reason: verdict.reason,
-            text: text
+            text: text,
+            imageURL: imageURL,
+            alt: alt
         ))
         nextID += 1
+    }
+
+    // MARK: - Image references (F19 1.14)
+    //
+    // The block keeps the URL and the alt text; nothing fetches them. The
+    // loader slice will resolve relative URLs, pick a srcset candidate for
+    // the display width, and cache — all through this one seam.
+
+    /// The image reference for a leaf that can carry one: the element itself
+    /// when it is an `img`, else its first descendant `img` (a `figure`
+    /// wrapping one). Prefers `src`; falls back to the first `srcset`
+    /// candidate. URLs stay as written — no base resolution yet.
+    static func imageRef(of element: Element, tag: String) -> (url: String?, alt: String?) {
+        let img: Element?
+        if tag == "img" {
+            img = element
+        } else if tag == "figure" {
+            img = ((try? element.select("img")) ?? Elements()).array().first
+        } else {
+            return (nil, nil)
+        }
+        guard let img else { return (nil, nil) }
+        let alt = (try? img.attr("alt")).flatMap { $0.isEmpty ? nil : $0 }
+        if let src = try? img.attr("src"), !src.isEmpty {
+            return (src, alt)
+        }
+        if let srcset = try? img.attr("srcset"), !srcset.isEmpty {
+            return (firstSrcsetURL(srcset), alt)
+        }
+        return (nil, alt)
+    }
+
+    /// First URL in a `srcset` list (`"a.jpg 1x, b.jpg 2x"` → `"a.jpg"`).
+    static func firstSrcsetURL(_ srcset: String) -> String? {
+        for candidate in srcset.split(separator: ",") {
+            let url = candidate.split(separator: " ", omittingEmptySubsequences: true)
+                .first.map(String.init) ?? ""
+            if !url.isEmpty { return url }
+        }
+        return nil
     }
 
     // MARK: - Element helpers

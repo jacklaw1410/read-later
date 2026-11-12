@@ -113,6 +113,52 @@ public enum ContentRoot {
             for sibling in siblings where sibling != top {
                 if skipTags.contains(sibling.tagNameNormal()) { continue }
                 if isUnlikely(sibling) { continue }
+                let tag = sibling.tagNameNormal()
+                // F19 1.9: headings speak, so a heading beside the article
+                // root is a landmark, not chrome. Short text is expected;
+                // the unlikely filter above still drops rail headings.
+                if ["h1", "h2", "h3", "h4", "h5", "h6"].contains(tag) {
+                    if !normalise((try? sibling.text()) ?? "").isEmpty {
+                        roots.append(sibling)
+                    }
+                    continue
+                }
+                // F19 1.14: a figure beside the article root carries the
+                // argument on pages where images matter. Keep it when it
+                // holds an image or real text; classed rails stay out above.
+                if tag == "figure" || tag == "img" {
+                    let hasImg = tag == "img" || !(((try? sibling.select("img")) ?? Elements()).isEmpty())
+                    let text = normalise((try? sibling.text()) ?? "")
+                    if hasImg || text.count >= 40 {
+                        roots.append(sibling)
+                    }
+                    continue
+                }
+                // F19 1.13: a list beside the article root is content, not
+                // chrome. Link-dense menu lists stay out via the density
+                // check; the unlikely filter above already drops classed rails.
+                if ["ul", "ol", "dl"].contains(tag) {
+                    let text = normalise((try? sibling.text()) ?? "")
+                    let items = ((try? sibling.select("li, dt, dd")) ?? Elements())
+                        .array()
+                        .filter {
+                            !normalise((try? $0.text()) ?? "").isEmpty
+                        }
+                        .count
+                    if (items >= 2 || text.count >= 40) && linkDensity(of: sibling) < 0.5 {
+                        roots.append(sibling)
+                    }
+                    continue
+                }
+                // F19 1.15: a data table beside the article root keeps its
+                // rows instead of flattening. process() sorts layout frames
+                // from data tables, so the root rule only asks for real text.
+                if tag == "table" {
+                    if normalise((try? sibling.text()) ?? "").count >= 40 {
+                        roots.append(sibling)
+                    }
+                    continue
+                }
                 let siblingScore = scores[ObjectIdentifier(sibling)] ?? 0
                 if siblingScore >= topScore * 0.2 {
                     roots.append(sibling)
@@ -124,6 +170,14 @@ public enum ContentRoot {
                         roots.append(sibling)
                     }
                 }
+            }
+            // Siblings iterate in document order but `top` was prepended, so
+            // a heading before the first paragraph would read after it.
+            // Restore document order: the wash and the voice follow this list.
+            let order = siblings.map { ObjectIdentifier($0) }
+            roots.sort {
+                (order.firstIndex(of: ObjectIdentifier($0)) ?? 0)
+                    < (order.firstIndex(of: ObjectIdentifier($1)) ?? 0)
             }
         }
         return roots

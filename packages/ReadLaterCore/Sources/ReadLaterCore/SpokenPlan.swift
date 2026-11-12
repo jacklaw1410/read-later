@@ -7,16 +7,17 @@ import Foundation
 enum SpokenPlanEngine {
     /// Kinds that render reduced-ink and contribute zero utterances.
     ///
-    /// Copied from `read-later-research/spec/inline-content-rules.md`, row by
-    /// row. A heading is a landmark a reader scans, not a stop in the voice;
-    /// a figure's text is a caption; a pull quote repeats the body. Speaking
-    /// any of them puts words in the time-left figure that the reader never
-    /// hears as prose.
+    /// F19 1.9 (2026-11-13, decided): headings speak, so `.heading` is not
+    /// here. It was removed from this set in the same change that gave
+    /// headings spoken slots; the research spec still lists headings as
+    /// never-spoken and needs the amendment
+    /// (`spec/inline-content-rules.md:30`,
+    /// `spec/non-prose-classification.md` failure mode 6).
     ///
-    /// Everything else speaks: prose, quote, list, cjk.
+    /// Everything else speaks: prose, quote, list, cjk, heading.
     static let neverSpoken: Set<BlockKind> = [
         .code, .table, .image, .figure, .math, .embed, .nav,
-        .heading, .pullQuote, .aside, .footnoteMarker, .footnoteBody,
+        .pullQuote, .aside, .footnoteMarker, .footnoteBody,
     ]
 
     /// Abbreviations whose period never ends a sentence. Multi-part entries
