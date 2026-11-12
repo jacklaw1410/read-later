@@ -123,6 +123,22 @@ public enum ContentRoot {
                     }
                     continue
                 }
+                // F19 1.13: a list beside the article root is content, not
+                // chrome. Link-dense menu lists stay out via the density
+                // check; the unlikely filter above already drops classed rails.
+                if ["ul", "ol", "dl"].contains(tag) {
+                    let text = normalise((try? sibling.text()) ?? "")
+                    let items = ((try? sibling.select("li, dt, dd")) ?? Elements())
+                        .array()
+                        .filter {
+                            !normalise((try? $0.text()) ?? "").isEmpty
+                        }
+                        .count
+                    if (items >= 2 || text.count >= 40) && linkDensity(of: sibling) < 0.5 {
+                        roots.append(sibling)
+                    }
+                    continue
+                }
                 let siblingScore = scores[ObjectIdentifier(sibling)] ?? 0
                 if siblingScore >= topScore * 0.2 {
                     roots.append(sibling)

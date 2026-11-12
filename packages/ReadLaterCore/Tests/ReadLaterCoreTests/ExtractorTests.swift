@@ -32,6 +32,44 @@ private func longSentence(_ subject: String) -> String {
     #expect(!plan.skipped.contains { $0.kind == .heading })
 }
 
+@Test func listKeepsOneBlockPerItem() throws {
+    // F19 §1.13 shape: an ol of four items and a ul of five. The old
+    // walker joined each list into one block with spaces; now every
+    // item is its own block so the wash marks one item at a time.
+    let html = page(
+        """
+        <p>\(longSentence("The opening paragraph of the article"))</p>
+        <ol>
+        <li>\(longSentence("First the reader opens the article"))</li>
+        <li>\(longSentence("Then the voice starts at the top"))</li>
+        <li>\(longSentence("Next the wash follows each word"))</li>
+        <li>\(longSentence("Finally the place survives a relaunch"))</li>
+        </ol>
+        <ul>
+        <li>Calm surfaces</li>
+        <li>Spoken headings</li>
+        <li>Honest tables</li>
+        <li>Lazy images</li>
+        <li>Kept places</li>
+        </ul>
+        <p>\(longSentence("The closing paragraph of the article"))</p>
+        """
+    )
+    let result = try SwiftSoupExtractor().extract(html: html, source: "test", httpStatus: 200)
+    let items = result.blocks.filter { $0.kind == .list }
+    #expect(items.count == 9)
+    #expect(items.contains { $0.text.hasPrefix("First the reader opens") })
+    #expect(items.contains { $0.text.hasPrefix("Finally the place survives") })
+    #expect(items.contains { $0.text == "Calm surfaces" })
+    let plan = SpokenPlanBuilder.build(blocks: result.blocks, source: "test", sourceSHA256: "abc")
+    let spokenItems = plan.blocks.filter { $0.kind == .list && !$0.spoken.isEmpty }
+    #expect(spokenItems.count == 9)
+    let index = SpokenIndex(blocks: plan.blocks)
+    for item in spokenItems {
+        #expect(index.byBlock[item.id] != nil)
+    }
+}
+
 @Test func tableFramePageKeepsTheProse() throws {
     let html = page(
         """

@@ -279,6 +279,15 @@ private struct BlockWalker {
             }
             return
         }
+        // F19 1.13: a list keeps its item boundaries. One block per item,
+        // as siblings, so the wash marks one item at a time and a later
+        // renderer can number ordinals without the voice saying them.
+        // The old path took element.text() whole and joined every item
+        // with spaces, losing ordinals, bullets and the boundaries.
+        if tag == "ul" || tag == "ol" || tag == "dl" {
+            try processList(element, tag: tag)
+            return
+        }
         if Self.containerTags.contains(tag) {
             try processContainer(element, tag: tag)
         } else if Self.leafTags.contains(tag) {
@@ -353,6 +362,60 @@ private struct BlockWalker {
             ),
             text: text
         )
+    }
+
+    /// One block per list item, as siblings in document order.
+    ///
+    /// An item's own text becomes its block; a nested list recurses after
+    /// its parent item so reading order holds. Stray text directly inside
+    /// the list (malformed markup) becomes one block from the run.
+    mutating func processList(_ element: Element, tag: String) throws {
+        var run = InlineRun()
+        for node in element.getChildNodes() {
+            if let textNode = node as? TextNode {
+                run.add(textNode.text())
+                continue
+            }
+            guard let child = node as? Element else { continue }
+            let childTag = child.tagNameNormal()
+            if childTag == "li" || childTag == "dt" || childTag == "dd" {
+                emitRun(&run, element: element, tag: tag)
+                try processListItem(child)
+            } else if childTag == "ul" || childTag == "ol" || childTag == "dl" {
+                emitRun(&run, element: element, tag: tag)
+                try processList(child, tag: childTag)
+            } else if Self.isBlockPosition(child) {
+                emitRun(&run, element: element, tag: tag)
+                try process(child)
+            } else {
+                run.add(inline: child)
+            }
+        }
+        emitRun(&run, element: element, tag: tag)
+    }
+
+    /// One item: its own inline text first, then any nested list, in order.
+    mutating func processListItem(_ element: Element) throws {
+        let tag = element.tagNameNormal()
+        var run = InlineRun()
+        for node in element.getChildNodes() {
+            if let textNode = node as? TextNode {
+                run.add(textNode.text())
+                continue
+            }
+            guard let child = node as? Element else { continue }
+            let childTag = child.tagNameNormal()
+            if childTag == "ul" || childTag == "ol" || childTag == "dl" {
+                emitRun(&run, element: element, tag: tag)
+                try processList(child, tag: childTag)
+            } else if Self.isBlockPosition(child) {
+                emitRun(&run, element: element, tag: tag)
+                try process(child)
+            } else {
+                run.add(inline: child)
+            }
+        }
+        emitRun(&run, element: element, tag: tag)
     }
 
     /// Walks a container in document order. Text and inline markup between block
