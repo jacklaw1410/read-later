@@ -11,204 +11,6 @@
       "reason" : "shape-unsure",
       "spoken" : [
         {
-          "length" : 20,
-          "offset" : 0,
-          "text" : "Skip to main content"
-        }
-      ],
-      "text" : "Skip to main content"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 1,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 40,
-          "offset" : 0,
-          "text" : "Your source for the latest research news"
-        }
-      ],
-      "text" : "Your source for the latest research news"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 2,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 7,
-          "offset" : 0,
-          "text" : "Follow:"
-        }
-      ],
-      "text" : "Follow:"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 3,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 8,
-          "offset" : 0,
-          "text" : "Facebook"
-        }
-      ],
-      "text" : "Facebook"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 4,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 9,
-          "offset" : 0,
-          "text" : "X/Twitter"
-        }
-      ],
-      "text" : "X/Twitter"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 5,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 10,
-          "offset" : 0,
-          "text" : "Subscribe:"
-        }
-      ],
-      "text" : "Subscribe:"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 6,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 9,
-          "offset" : 0,
-          "text" : "RSS Feeds"
-        }
-      ],
-      "text" : "RSS Feeds"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 7,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 10,
-          "offset" : 0,
-          "text" : "Newsletter"
-        }
-      ],
-      "text" : "Newsletter"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 8,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 4,
-          "offset" : 0,
-          "text" : "New!"
-        }
-      ],
-      "text" : "New!"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 9,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 16,
-          "offset" : 0,
-          "text" : "email newsletter"
-        }
-      ],
-      "text" : "email newsletter"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 10,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 22,
-          "offset" : 0,
-          "text" : "Sign up for our free ."
-        }
-      ],
-      "text" : "Sign up for our free ."
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 11,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
           "length" : 12,
           "offset" : 0,
           "text" : "Science News"
@@ -221,7 +23,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 12,
+      "id" : 1,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -239,7 +41,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 13,
+      "id" : 2,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h1",
@@ -253,7 +55,7 @@
 
       ],
       "confidence" : 0.8,
-      "id" : 14,
+      "id" : 3,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "dl",
@@ -281,7 +83,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 15,
+      "id" : 4,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -299,7 +101,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 16,
+      "id" : 5,
       "kind" : "figure",
       "lowConfidence" : false,
       "reason" : "figure",
@@ -313,7 +115,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 17,
+      "id" : 6,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -336,7 +138,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 18,
+      "id" : 7,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -364,7 +166,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 19,
+      "id" : 8,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -387,7 +189,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 20,
+      "id" : 9,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -405,7 +207,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 21,
+      "id" : 10,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -433,7 +235,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 22,
+      "id" : 11,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -456,7 +258,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 23,
+      "id" : 12,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -474,7 +276,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 24,
+      "id" : 13,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -492,7 +294,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 25,
+      "id" : 14,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -510,7 +312,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 26,
+      "id" : 15,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -533,7 +335,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 27,
+      "id" : 16,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -556,7 +358,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 28,
+      "id" : 17,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -574,7 +376,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 29,
+      "id" : 18,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -597,7 +399,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 30,
+      "id" : 19,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -615,7 +417,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 31,
+      "id" : 20,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -638,7 +440,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 32,
+      "id" : 21,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -661,7 +463,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 33,
+      "id" : 22,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -679,7 +481,7 @@
 
       ],
       "confidence" : 0.8,
-      "id" : 34,
+      "id" : 23,
       "kind" : "nav",
       "lowConfidence" : false,
       "reason" : "class=nav",
@@ -693,7 +495,7 @@
 
       ],
       "confidence" : 0.8,
-      "id" : 35,
+      "id" : 24,
       "kind" : "nav",
       "lowConfidence" : false,
       "reason" : "class=nav",
@@ -707,7 +509,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 36,
+      "id" : 25,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -725,7 +527,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 37,
+      "id" : 26,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -748,7 +550,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 38,
+      "id" : 27,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -766,7 +568,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 39,
+      "id" : 28,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ol",
@@ -794,7 +596,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 40,
+      "id" : 29,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -812,7 +614,7 @@
 
       ],
       "confidence" : 0.8,
-      "id" : 41,
+      "id" : 30,
       "kind" : "nav",
       "lowConfidence" : false,
       "reason" : "class=nav",
@@ -826,7 +628,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 42,
+      "id" : 31,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -864,25 +666,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 43,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 12,
-          "offset" : 0,
-          "text" : "ScienceDaily"
-        }
-      ],
-      "text" : "ScienceDaily"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 44,
+      "id" : 32,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -903,24 +687,24 @@
           "text" : "Scientists discover a giant 66-pound rodent that lived 34 million years ago."
         },
         {
-          "length" : 1,
+          "length" : 13,
           "offset" : 117,
-          "text" : "."
+          "text" : "ScienceDaily."
         },
         {
           "length" : 87,
-          "offset" : 119,
+          "offset" : 131,
           "text" : "Retrieved November 10, 2026 from www.sciencedaily.com/releases/2026/11/261110042532.htm"
         }
       ],
-      "text" : "McGill University. (2026, November 10). Scientists discover a giant 66-pound rodent that lived 34 million years ago. . Retrieved November 10, 2026 from www.sciencedaily.com/releases/2026/11/261110042532.htm"
+      "text" : "McGill University. (2026, November 10). Scientists discover a giant 66-pound rodent that lived 34 million years ago. ScienceDaily. Retrieved November 10, 2026 from www.sciencedaily.com/releases/2026/11/261110042532.htm"
     },
     {
       "children" : [
 
       ],
       "confidence" : 0.6,
-      "id" : 45,
+      "id" : 33,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -953,7 +737,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 46,
+      "id" : 34,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -967,7 +751,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 47,
+      "id" : 35,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -985,7 +769,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 48,
+      "id" : 36,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -1002,17 +786,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 49,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 37,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 65,
-          "offset" : 0,
-          "text" : "Scientists Found Homo Erectus 200,000 Years Earlier Than Expected"
-        }
+
       ],
       "text" : "Scientists Found Homo Erectus 200,000 Years Earlier Than Expected"
     },
@@ -1021,7 +801,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 50,
+      "id" : 38,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -1032,51 +812,29 @@
           "text" : "Oct."
         },
         {
-          "length" : 9,
+          "length" : 89,
           "offset" : 5,
-          "text" : "8, 2026 "
-        }
-      ],
-      "text" : "Oct. 8, 2026 "
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 51,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 79,
-          "offset" : 0,
-          "text" : "New fossils from South Africa are reshaping the story of early human evolution."
+          "text" : "8, 2026  New fossils from South Africa are reshaping the story of early human evolution."
         },
         {
           "length" : 122,
-          "offset" : 80,
+          "offset" : 95,
           "text" : "Researchers have described 18 hominin fossils from Drimolen Cave, including an adult Homo erectus skull fragment dated ..."
         }
       ],
-      "text" : "New fossils from South Africa are reshaping the story of early human evolution. Researchers have described 18 hominin fossils from Drimolen Cave, including an adult Homo erectus skull fragment dated ..."
+      "text" : "Oct. 8, 2026  New fossils from South Africa are reshaping the story of early human evolution. Researchers have described 18 hominin fossils from Drimolen Cave, including an adult Homo erectus skull fragment dated ..."
     },
     {
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 52,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 39,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 71,
-          "offset" : 0,
-          "text" : "New Giant Salamander Species Discovered in 3.5-Million-Year-Old Fossils"
-        }
+
       ],
       "text" : "New Giant Salamander Species Discovered in 3.5-Million-Year-Old Fossils"
     },
@@ -1085,57 +843,35 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 53,
+      "id" : 40,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
       "spoken" : [
         {
-          "length" : 15,
+          "length" : 146,
           "offset" : 0,
-          "text" : "July 23, 2026 "
-        }
-      ],
-      "text" : "July 23, 2026 "
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 54,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 130,
-          "offset" : 0,
-          "text" : "Fossils discovered in Japan more than two decades ago have finally been identified as a new genus and species of giant salamander."
+          "text" : "July 23, 2026  Fossils discovered in Japan more than two decades ago have finally been identified as a new genus and species of giant salamander."
         },
         {
           "length" : 69,
-          "offset" : 131,
+          "offset" : 147,
           "text" : "Limnospondylus ajimuensis lived around 3.5 million years ago in a ..."
         }
       ],
-      "text" : "Fossils discovered in Japan more than two decades ago have finally been identified as a new genus and species of giant salamander. Limnospondylus ajimuensis lived around 3.5 million years ago in a ..."
+      "text" : "July 23, 2026  Fossils discovered in Japan more than two decades ago have finally been identified as a new genus and species of giant salamander. Limnospondylus ajimuensis lived around 3.5 million years ago in a ..."
     },
     {
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 55,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 41,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 84,
-          "offset" : 0,
-          "text" : "Scientists Discover Giant Sea Predator Tylosaurus Rex That Terrorized Ancient Oceans"
-        }
+
       ],
       "text" : "Scientists Discover Giant Sea Predator Tylosaurus Rex That Terrorized Ancient Oceans"
     },
@@ -1144,57 +880,35 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 56,
+      "id" : 42,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
       "spoken" : [
         {
-          "length" : 14,
+          "length" : 199,
           "offset" : 0,
-          "text" : "May 23, 2026 "
-        }
-      ],
-      "text" : "May 23, 2026 "
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 57,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 184,
-          "offset" : 0,
-          "text" : "A colossal new sea predator named Tylosaurus rex has been identified from fossils found in Texas, revealing a brutal 43-foot-long hunter that ruled ancient oceans 80 million years ago."
+          "text" : "May 23, 2026  A colossal new sea predator named Tylosaurus rex has been identified from fossils found in Texas, revealing a brutal 43-foot-long hunter that ruled ancient oceans 80 million years ago."
         },
         {
           "length" : 17,
-          "offset" : 185,
+          "offset" : 200,
           "text" : "The discovery ..."
         }
       ],
-      "text" : "A colossal new sea predator named Tylosaurus rex has been identified from fossils found in Texas, revealing a brutal 43-foot-long hunter that ruled ancient oceans 80 million years ago. The discovery ..."
+      "text" : "May 23, 2026  A colossal new sea predator named Tylosaurus rex has been identified from fossils found in Texas, revealing a brutal 43-foot-long hunter that ruled ancient oceans 80 million years ago. The discovery ..."
     },
     {
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 58,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 43,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 78,
-          "offset" : 0,
-          "text" : "Scientists Discover Giant “last Titan” Dinosaur, Southeast Asia’s Largest Ever"
-        }
+
       ],
       "text" : "Scientists Discover Giant “last Titan” Dinosaur, Southeast Asia’s Largest Ever"
     },
@@ -1203,57 +917,35 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 59,
+      "id" : 44,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
       "spoken" : [
         {
-          "length" : 14,
+          "length" : 111,
           "offset" : 0,
-          "text" : "May 15, 2026 "
-        }
-      ],
-      "text" : "May 15, 2026 "
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 60,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 96,
-          "offset" : 0,
-          "text" : "A massive new dinosaur discovered in Thailand is rewriting Southeast Asia’s prehistoric history."
+          "text" : "May 15, 2026  A massive new dinosaur discovered in Thailand is rewriting Southeast Asia’s prehistoric history."
         },
         {
           "length" : 104,
-          "offset" : 97,
+          "offset" : 112,
           "text" : "The newly named Nagatitan chaiyaphumensis was a colossal long-necked sauropod that weighed around 27 ..."
         }
       ],
-      "text" : "A massive new dinosaur discovered in Thailand is rewriting Southeast Asia’s prehistoric history. The newly named Nagatitan chaiyaphumensis was a colossal long-necked sauropod that weighed around 27 ..."
+      "text" : "May 15, 2026  A massive new dinosaur discovered in Thailand is rewriting Southeast Asia’s prehistoric history. The newly named Nagatitan chaiyaphumensis was a colossal long-necked sauropod that weighed around 27 ..."
     },
     {
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 61,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 45,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 76,
-          "offset" : 0,
-          "text" : "These 545-Million-Year-Old Fossil Trails Just Rewrote the Story of Evolution"
-        }
+
       ],
       "text" : "These 545-Million-Year-Old Fossil Trails Just Rewrote the Story of Evolution"
     },
@@ -1262,57 +954,35 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 62,
+      "id" : 46,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
       "spoken" : [
         {
-          "length" : 15,
+          "length" : 195,
           "offset" : 0,
-          "text" : "June 27, 2025 "
-        }
-      ],
-      "text" : "June 27, 2025 "
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 63,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 179,
-          "offset" : 0,
-          "text" : "A groundbreaking study suggests that the famous Cambrian explosion—the dramatic burst of diverse animal life—might have actually started millions of years earlier than we thought."
+          "text" : "June 27, 2025  A groundbreaking study suggests that the famous Cambrian explosion—the dramatic burst of diverse animal life—might have actually started millions of years earlier than we thought."
         },
         {
           "length" : 16,
-          "offset" : 180,
+          "offset" : 196,
           "text" : "By analyzing ..."
         }
       ],
-      "text" : "A groundbreaking study suggests that the famous Cambrian explosion—the dramatic burst of diverse animal life—might have actually started millions of years earlier than we thought. By analyzing ..."
+      "text" : "June 27, 2025  A groundbreaking study suggests that the famous Cambrian explosion—the dramatic burst of diverse animal life—might have actually started millions of years earlier than we thought. By analyzing ..."
     },
     {
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 64,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 47,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 79,
-          "offset" : 0,
-          "text" : "Famous Sterkfontein Caves Deposit 1 Million Years Older Than Previously Thought"
-        }
+
       ],
       "text" : "Famous Sterkfontein Caves Deposit 1 Million Years Older Than Previously Thought"
     },
@@ -1321,84 +991,44 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 65,
+      "id" : 48,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
       "spoken" : [
         {
-          "length" : 15,
+          "length" : 144,
           "offset" : 0,
-          "text" : "June 27, 2022 "
-        }
-      ],
-      "text" : "June 27, 2022 "
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 66,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 128,
-          "offset" : 0,
-          "text" : "Fossils found at the Sterkfontein Caves in South Africa reveal nearly four million years of hominin and environmental evolution."
+          "text" : "June 27, 2022  Fossils found at the Sterkfontein Caves in South Africa reveal nearly four million years of hominin and environmental evolution."
         },
         {
           "length" : 63,
-          "offset" : 129,
+          "offset" : 145,
           "text" : "The Sterkfontein Cave has become famous for the hundreds of ..."
         }
       ],
-      "text" : "Fossils found at the Sterkfontein Caves in South Africa reveal nearly four million years of hominin and environmental evolution. The Sterkfontein Cave has become famous for the hundreds of ..."
+      "text" : "June 27, 2022  Fossils found at the Sterkfontein Caves in South Africa reveal nearly four million years of hominin and environmental evolution. The Sterkfontein Cave has become famous for the hundreds of ..."
     },
     {
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 67,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 49,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 16,
-          "offset" : 0,
-          "text" : "SCITECHDAILY.com"
-        }
-      ],
-      "text" : "SCITECHDAILY.com"
-    },
-    {
-      "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 68,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 11,
-          "offset" : 0,
-          "text" : "TRENDING AT"
-        }
-      ],
-      "text" : "TRENDING AT"
+      "text" : "TRENDING AT SCITECHDAILY.com"
     },
     {
       "children" : [
 
       ],
       "confidence" : 0.98,
-      "id" : 69,
+      "id" : 50,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1416,7 +1046,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 70,
+      "id" : 51,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1434,7 +1064,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 71,
+      "id" : 52,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1457,7 +1087,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 72,
+      "id" : 53,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1474,62 +1104,22 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 73,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 54,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 5,
-          "offset" : 0,
-          "text" : "Print"
-        }
-      ],
-      "text" : "Print"
-    },
-    {
-      "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 74,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 5,
-          "offset" : 0,
-          "text" : "Email"
-        }
-      ],
-      "text" : "Email"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 75,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 5,
-          "offset" : 0,
-          "text" : "Share"
-        }
-      ],
-      "text" : "Share"
+      "text" : "Print Email Share"
     },
     {
       "children" : [
 
       ],
       "confidence" : 0.95,
-      "id" : 76,
+      "id" : 55,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -1543,7 +1133,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 77,
+      "id" : 56,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -1561,7 +1151,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 78,
+      "id" : 57,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -1584,7 +1174,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 79,
+      "id" : 58,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -1598,7 +1188,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 80,
+      "id" : 59,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -1615,17 +1205,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 81,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 60,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 16,
-          "offset" : 0,
-          "text" : "PLANTS & ANIMALS"
-        }
+
       ],
       "text" : "PLANTS & ANIMALS"
     },
@@ -1633,17 +1219,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 82,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 61,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 7,
-          "offset" : 0,
-          "text" : "Organic"
-        }
+
       ],
       "text" : "Organic"
     },
@@ -1651,17 +1233,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 83,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 62,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 6,
-          "offset" : 0,
-          "text" : "Nature"
-        }
+
       ],
       "text" : "Nature"
     },
@@ -1669,17 +1247,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 84,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 63,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 18,
-          "offset" : 0,
-          "text" : "Endangered Animals"
-        }
+
       ],
       "text" : "Endangered Animals"
     },
@@ -1687,17 +1261,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 85,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 64,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 15,
-          "offset" : 0,
-          "text" : "EARTH & CLIMATE"
-        }
+
       ],
       "text" : "EARTH & CLIMATE"
     },
@@ -1705,17 +1275,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 86,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 65,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 7,
-          "offset" : 0,
-          "text" : "Ecology"
-        }
+
       ],
       "text" : "Ecology"
     },
@@ -1723,17 +1289,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 87,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 66,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 5,
-          "offset" : 0,
-          "text" : "Water"
-        }
+
       ],
       "text" : "Water"
     },
@@ -1741,17 +1303,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 88,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 67,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 23,
-          "offset" : 0,
-          "text" : "Environmental Awareness"
-        }
+
       ],
       "text" : "Environmental Awareness"
     },
@@ -1759,17 +1317,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 89,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 68,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 15,
-          "offset" : 0,
-          "text" : "FOSSILS & RUINS"
-        }
+
       ],
       "text" : "FOSSILS & RUINS"
     },
@@ -1777,17 +1331,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 90,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 69,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 7,
-          "offset" : 0,
-          "text" : "Fossils"
-        }
+
       ],
       "text" : "Fossils"
     },
@@ -1795,17 +1345,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 91,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 70,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 12,
-          "offset" : 0,
-          "text" : "Early Humans"
-        }
+
       ],
       "text" : "Early Humans"
     },
@@ -1813,17 +1359,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 92,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 71,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 14,
-          "offset" : 0,
-          "text" : "Lost Treasures"
-        }
+
       ],
       "text" : "Lost Treasures"
     },
@@ -1832,7 +1374,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 93,
+      "id" : 72,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -1845,17 +1387,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 94,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 73,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 16,
-          "offset" : 0,
-          "text" : "PLANTS & ANIMALS"
-        }
+
       ],
       "text" : "PLANTS & ANIMALS"
     },
@@ -1863,17 +1401,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 95,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 74,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 88,
-          "offset" : 0,
-          "text" : "Paleontologists Discover “one-in-a-Million” Fossil With 450-Million-Year-Old Soft Tissue"
-        }
+
       ],
       "text" : "Paleontologists Discover “one-in-a-Million” Fossil With 450-Million-Year-Old Soft Tissue"
     },
@@ -1881,17 +1415,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 96,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 75,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 69,
-          "offset" : 0,
-          "text" : "Scientists Discover a Surprising Link Between Acorns and Lyme Disease"
-        }
+
       ],
       "text" : "Scientists Discover a Surprising Link Between Acorns and Lyme Disease"
     },
@@ -1899,17 +1429,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 97,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 76,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 80,
-          "offset" : 0,
-          "text" : "Ancient Siberian Tomb Reveals Surprising Secrets of Cannabis Use 2,800 Years Ago"
-        }
+
       ],
       "text" : "Ancient Siberian Tomb Reveals Surprising Secrets of Cannabis Use 2,800 Years Ago"
     },
@@ -1917,17 +1443,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 98,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 77,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 15,
-          "offset" : 0,
-          "text" : "EARTH & CLIMATE"
-        }
+
       ],
       "text" : "EARTH & CLIMATE"
     },
@@ -1935,17 +1457,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 99,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 78,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 78,
-          "offset" : 0,
-          "text" : "Human Bodies Produce 2 Billion Metric Tons of CO2 a Year Just by Staying Alive"
-        }
+
       ],
       "text" : "Human Bodies Produce 2 Billion Metric Tons of CO2 a Year Just by Staying Alive"
     },
@@ -1953,17 +1471,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 100,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 79,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 63,
-          "offset" : 0,
-          "text" : "Scientists Discover a Hidden Oxygen Reservoir Deep Inside Earth"
-        }
+
       ],
       "text" : "Scientists Discover a Hidden Oxygen Reservoir Deep Inside Earth"
     },
@@ -1971,17 +1485,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 101,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 80,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 70,
-          "offset" : 0,
-          "text" : "Something Strange Is Happening Beneath a Volcano Near 2 Million People"
-        }
+
       ],
       "text" : "Something Strange Is Happening Beneath a Volcano Near 2 Million People"
     },
@@ -1989,17 +1499,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 102,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 81,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 15,
-          "offset" : 0,
-          "text" : "FOSSILS & RUINS"
-        }
+
       ],
       "text" : "FOSSILS & RUINS"
     },
@@ -2007,17 +1513,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 103,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 82,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 62,
-          "offset" : 0,
-          "text" : "DNA on the Shroud of Turin Reveals Centuries of Hidden Secrets"
-        }
+
       ],
       "text" : "DNA on the Shroud of Turin Reveals Centuries of Hidden Secrets"
     },
@@ -2025,17 +1527,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 104,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 83,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 68,
-          "offset" : 0,
-          "text" : "Scientists Just Found Dinosaur Blood That Survived 115 Million Years"
-        }
+
       ],
       "text" : "Scientists Just Found Dinosaur Blood That Survived 115 Million Years"
     },
@@ -2043,493 +1541,310 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 105,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 84,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 65,
-          "offset" : 0,
-          "text" : "400,000-Year-Old Teeth Reveal a Stunning Twist in Human Evolution"
-        }
+
       ],
       "text" : "400,000-Year-Old Teeth Reveal a Stunning Twist in Human Evolution"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.8,
-      "id" : 106,
-      "kind" : "nav",
-      "lowConfidence" : false,
-      "reason" : "class=navbar",
-      "spoken" : [
-
-      ],
-      "text" : "Toggle navigation Menu SD SD Home Page Top Science News Latest News Home Home Page Top Science News Latest News Health View all the latest top news in the health sciences, or browse the topics below: Health & Medicine Allergy Cancer Cold and Flu Diabetes Heart Disease ... more topics Mind & Brain ADD and ADHD Alzheimer's Headaches Intelligence Psychology ... more topics Living Well Parenting Child Development Stress Nutrition Fitness ... more topics Tech View all the latest top news in the physical sciences & technology, or browse the topics below: Matter & Energy Chemistry Fossil Fuels Nanotechnology Physics Solar Energy ... more topics Space & Time Black Holes Dark Matter Extrasolar Planets Solar System Space Telescopes ... more topics Computers & Math Artificial Intelligence Mathematics Quantum Computers Robotics Virtual Reality ... more topics Enviro View all the latest top news in the environmental sciences, or browse the topics below: Plants & Animals Agriculture and Food Biology Biotechnology Extinction Microbes and More ... more topics Earth & Climate Climate Earthquakes Geology Global Warming Pollution ... more topics Fossils & Ruins Anthropology Archaeology Dinosaurs Evolution Paleontology ... more topics Society View all the latest top news in the social sciences & education, or browse the topics below: Science & Society Arts & Culture Economics Privacy Issues Public Health Sports ... more topics Business & Industry Computers & Internet Energy & Resources Engineering Medical Technology Transportation ... more topics Education & Learning Creativity Educational Psychology Infant & Preschool Learning Disorders STEM Education ... more topics Quirky Top News Human Quirks Odd Creatures Bizarre Things Weird World"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 107,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 18,
-          "offset" : 0,
-          "text" : "Free Subscriptions"
-        }
-      ],
-      "text" : "Free Subscriptions"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.98,
-      "id" : 108,
-      "kind" : "prose",
-      "lowConfidence" : false,
-      "reason" : "p",
-      "spoken" : [
-        {
-          "length" : 82,
-          "offset" : 0,
-          "text" : "Stay informed with ScienceDaily's free email newsletter, updated daily and weekly."
-        },
-        {
-          "length" : 46,
-          "offset" : 83,
-          "text" : "Or view our many newsfeeds in your RSS reader:"
-        }
-      ],
-      "text" : "Stay informed with ScienceDaily's free email newsletter, updated daily and weekly. Or view our many newsfeeds in your RSS reader:"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.95,
-      "id" : 109,
-      "kind" : "list",
-      "lowConfidence" : false,
-      "reason" : "ul",
-      "spoken" : [
-        {
-          "length" : 26,
-          "offset" : 0,
-          "text" : "Email Newsletter RSS Feeds"
-        }
-      ],
-      "text" : "Email Newsletter RSS Feeds"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 110,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 9,
-          "offset" : 0,
-          "text" : "Follow Us"
-        }
-      ],
-      "text" : "Follow Us"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.98,
-      "id" : 111,
-      "kind" : "prose",
-      "lowConfidence" : false,
-      "reason" : "p",
-      "spoken" : [
-        {
-          "length" : 75,
-          "offset" : 0,
-          "text" : "Keep up to date with the latest news from ScienceDaily via social networks:"
-        }
-      ],
-      "text" : "Keep up to date with the latest news from ScienceDaily via social networks:"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.95,
-      "id" : 112,
-      "kind" : "list",
-      "lowConfidence" : false,
-      "reason" : "ul",
-      "spoken" : [
-        {
-          "length" : 20,
-          "offset" : 0,
-          "text" : "Facebook X / Twitter"
-        }
-      ],
-      "text" : "Facebook X / Twitter"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 113,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 14,
-          "offset" : 0,
-          "text" : "Have Feedback?"
-        }
-      ],
-      "text" : "Have Feedback?"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.98,
-      "id" : 114,
-      "kind" : "prose",
-      "lowConfidence" : false,
-      "reason" : "p",
-      "spoken" : [
-        {
-          "length" : 89,
-          "offset" : 0,
-          "text" : "Tell us what you think of ScienceDaily -- we welcome both positive and negative comments."
-        },
-        {
-          "length" : 33,
-          "offset" : 90,
-          "text" : "Have any problems using the site?"
-        },
-        {
-          "length" : 10,
-          "offset" : 124,
-          "text" : "Questions?"
-        }
-      ],
-      "text" : "Tell us what you think of ScienceDaily -- we welcome both positive and negative comments. Have any problems using the site? Questions?"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.95,
-      "id" : 115,
-      "kind" : "list",
-      "lowConfidence" : false,
-      "reason" : "ul",
-      "spoken" : [
-        {
-          "length" : 25,
-          "offset" : 0,
-          "text" : "Leave Feedback Contact Us"
-        }
-      ],
-      "text" : "Leave Feedback Contact Us"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 116,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 15,
-          "offset" : 0,
-          "text" : "About This Site"
-        }
-      ],
-      "text" : "About This Site"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 117,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 5,
-          "offset" : 0,
-          "text" : "Staff"
-        }
-      ],
-      "text" : "Staff"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 118,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 10,
-          "offset" : 0,
-          "text" : "Contribute"
-        }
-      ],
-      "text" : "Contribute"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 119,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 9,
-          "offset" : 0,
-          "text" : "Advertise"
-        }
-      ],
-      "text" : "Advertise"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 120,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 14,
-          "offset" : 0,
-          "text" : "Privacy Policy"
-        }
-      ],
-      "text" : "Privacy Policy"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 121,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 16,
-          "offset" : 0,
-          "text" : "Editorial Policy"
-        }
-      ],
-      "text" : "Editorial Policy"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 122,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 12,
-          "offset" : 0,
-          "text" : "Terms of Use"
-        }
-      ],
-      "text" : "Terms of Use"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 123,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 11,
-          "offset" : 0,
-          "text" : "| | | | | |"
-        }
-      ],
-      "text" : "| | | | | |"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 124,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 32,
-          "offset" : 0,
-          "text" : "Copyright 1995-2026 ScienceDaily"
-        }
-      ],
-      "text" : "Copyright 1995-2026 ScienceDaily"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 125,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 37,
-          "offset" : 0,
-          "text" : "or by other parties, where indicated."
-        },
-        {
-          "length" : 49,
-          "offset" : 38,
-          "text" : "All rights controlled by their respective owners."
-        },
-        {
-          "length" : 48,
-          "offset" : 88,
-          "text" : "Content on this website is for information only."
-        },
-        {
-          "length" : 67,
-          "offset" : 137,
-          "text" : "It is not intended to provide medical or other professional advice."
-        },
-        {
-          "length" : 96,
-          "offset" : 205,
-          "text" : "Views expressed here do not necessarily reflect those of ScienceDaily, contributors or partners."
-        },
-        {
-          "length" : 83,
-          "offset" : 302,
-          "text" : "Financial support for ScienceDaily comes from advertisements and referral programs."
-        }
-      ],
-      "text" : "or by other parties, where indicated. All rights controlled by their respective owners. Content on this website is for information only. It is not intended to provide medical or other professional advice. Views expressed here do not necessarily reflect those of ScienceDaily, contributors or partners. Financial support for ScienceDaily comes from advertisements and referral programs."
     }
   ],
-  "sentence_count" : 161,
+  "sentence_count" : 81,
   "skipped" : [
     {
-      "block_id" : 13,
+      "block_id" : 2,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h1",
       "words" : 12
     },
     {
-      "block_id" : 16,
+      "block_id" : 5,
       "confidence" : 0.95,
       "kind" : "figure",
       "reason" : "figure",
       "words" : 36
     },
     {
-      "block_id" : 34,
+      "block_id" : 23,
       "confidence" : 0.8,
       "kind" : "nav",
       "reason" : "class=nav",
       "words" : 20
     },
     {
-      "block_id" : 35,
+      "block_id" : 24,
       "confidence" : 0.8,
       "kind" : "nav",
       "reason" : "class=nav",
       "words" : 13
     },
     {
-      "block_id" : 41,
+      "block_id" : 30,
       "confidence" : 0.8,
       "kind" : "nav",
       "reason" : "class=nav",
       "words" : 3
     },
     {
-      "block_id" : 46,
+      "block_id" : 34,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
       "words" : 2
     },
     {
-      "block_id" : 76,
+      "block_id" : 37,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 9
+    },
+    {
+      "block_id" : 39,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 8
+    },
+    {
+      "block_id" : 41,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 11
+    },
+    {
+      "block_id" : 43,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 10
+    },
+    {
+      "block_id" : 45,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 10
+    },
+    {
+      "block_id" : 47,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 11
+    },
+    {
+      "block_id" : 49,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 3
+    },
+    {
+      "block_id" : 54,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 3
+    },
+    {
+      "block_id" : 55,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
       "words" : 1
     },
     {
-      "block_id" : 79,
+      "block_id" : 58,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
       "words" : 2
     },
     {
-      "block_id" : 93,
+      "block_id" : 60,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 3
+    },
+    {
+      "block_id" : 61,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 1
+    },
+    {
+      "block_id" : 62,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 1
+    },
+    {
+      "block_id" : 63,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 2
+    },
+    {
+      "block_id" : 64,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 3
+    },
+    {
+      "block_id" : 65,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 1
+    },
+    {
+      "block_id" : 66,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 1
+    },
+    {
+      "block_id" : 67,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 2
+    },
+    {
+      "block_id" : 68,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 3
+    },
+    {
+      "block_id" : 69,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 1
+    },
+    {
+      "block_id" : 70,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 2
+    },
+    {
+      "block_id" : 71,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 2
+    },
+    {
+      "block_id" : 72,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
       "words" : 3
     },
     {
-      "block_id" : 106,
-      "confidence" : 0.8,
+      "block_id" : 73,
+      "confidence" : 0.75,
       "kind" : "nav",
-      "reason" : "class=navbar",
-      "words" : 265
+      "reason" : "link-density",
+      "words" : 3
+    },
+    {
+      "block_id" : 74,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 8
+    },
+    {
+      "block_id" : 75,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 10
+    },
+    {
+      "block_id" : 76,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 12
+    },
+    {
+      "block_id" : 77,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 3
+    },
+    {
+      "block_id" : 78,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 15
+    },
+    {
+      "block_id" : 79,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 9
+    },
+    {
+      "block_id" : 80,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 11
+    },
+    {
+      "block_id" : 81,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 3
+    },
+    {
+      "block_id" : 82,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 11
+    },
+    {
+      "block_id" : 83,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 10
+    },
+    {
+      "block_id" : 84,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 9
     }
   ],
   "source" : "095-sciencedaily.html",
   "source_sha256" : "4549043fb3be2e0188c79ac6e2eb0349ddec4ecf440dd671fdcaf1a393c155ab",
-  "spoken_words" : 1443,
+  "spoken_words" : 1074,
   "validation_failures" : 0,
   "version" : 1
 }

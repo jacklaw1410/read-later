@@ -4,473 +4,8 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 0,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 7,
-          "offset" : 0,
-          "text" : "× CLOSE"
-        }
-      ],
-      "text" : "× CLOSE"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 1,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 10,
-          "offset" : 0,
-          "text" : "Philosophy"
-        }
-      ],
-      "text" : "Philosophy"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 2,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 7,
-          "offset" : 0,
-          "text" : "Science"
-        }
-      ],
-      "text" : "Science"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 3,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 10,
-          "offset" : 0,
-          "text" : "Psychology"
-        }
-      ],
-      "text" : "Psychology"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 4,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 7,
-          "offset" : 0,
-          "text" : "Society"
-        }
-      ],
-      "text" : "Society"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 5,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 7,
-          "offset" : 0,
-          "text" : "Culture"
-        }
-      ],
-      "text" : "Culture"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 6,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 6,
-          "offset" : 0,
-          "text" : "Essays"
-        }
-      ],
-      "text" : "Essays"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 7,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 6,
-          "offset" : 0,
-          "text" : "Videos"
-        }
-      ],
-      "text" : "Videos"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 8,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 7,
-          "offset" : 0,
-          "text" : "Popular"
-        }
-      ],
-      "text" : "Popular"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 9,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 5,
-          "offset" : 0,
-          "text" : "About"
-        }
-      ],
-      "text" : "About"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 10,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 6,
-          "offset" : 0,
-          "text" : "DONATE"
-        }
-      ],
-      "text" : "DONATE"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 11,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 10,
-          "offset" : 0,
-          "text" : "NEWSLETTER"
-        }
-      ],
-      "text" : "NEWSLETTER"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 12,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 4,
-          "offset" : 0,
-          "text" : "MENU"
-        }
-      ],
-      "text" : "MENU"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 13,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 1,
-          "offset" : 0,
-          "text" : "/"
-        }
-      ],
-      "text" : "/"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 14,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 1,
-          "offset" : 0,
-          "text" : "/"
-        }
-      ],
-      "text" : "/"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 15,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 6,
-          "offset" : 0,
-          "text" : "DONATE"
-        }
-      ],
-      "text" : "DONATE"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 16,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 1,
-          "offset" : 0,
-          "text" : "/"
-        }
-      ],
-      "text" : "/"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 17,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 10,
-          "offset" : 0,
-          "text" : "NEWSLETTER"
-        }
-      ],
-      "text" : "NEWSLETTER"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 18,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 1,
-          "offset" : 0,
-          "text" : "/"
-        }
-      ],
-      "text" : "/"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 19,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 7,
-          "offset" : 0,
-          "text" : "SIGN IN"
-        }
-      ],
-      "text" : "SIGN IN"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 20,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 1,
-          "offset" : 0,
-          "text" : "/"
-        }
-      ],
-      "text" : "/"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 21,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 1,
-          "offset" : 0,
-          "text" : "i"
-        }
-      ],
-      "text" : "i"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.95,
-      "id" : 22,
-      "kind" : "heading",
-      "lowConfidence" : false,
-      "reason" : "h1",
-      "spoken" : [
-
-      ],
-      "text" : "The wholehearted life"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.95,
-      "id" : 23,
-      "kind" : "heading",
-      "lowConfidence" : false,
-      "reason" : "h2",
-      "spoken" : [
-
-      ],
-      "text" : "Roshi Joan Halifax is an original, generous, gritty and profound Buddhist teacher. How does she look back on her life?"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.98,
-      "id" : 24,
-      "kind" : "prose",
-      "lowConfidence" : false,
-      "reason" : "p",
-      "spoken" : [
-        {
-          "length" : 18,
-          "offset" : 0,
-          "text" : "by Ben Daitz + BIO"
-        }
-      ],
-      "text" : "by Ben Daitz + BIO"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 25,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 13,
-          "offset" : 0,
-          "text" : "Joan Halifax."
-        },
-        {
-          "length" : 23,
-          "offset" : 14,
-          "text" : "Photo by Kodo Noah Roen"
-        }
-      ],
-      "text" : "Joan Halifax. Photo by Kodo Noah Roen"
-    },
-    {
-      "children" : [
-
-      ],
       "confidence" : 0.9,
-      "id" : 26,
+      "id" : 0,
       "kind" : "aside",
       "lowConfidence" : false,
       "reason" : "aside",
@@ -484,7 +19,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 27,
+      "id" : 1,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -502,7 +37,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 28,
+      "id" : 2,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -520,7 +55,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 29,
+      "id" : 3,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -553,7 +88,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 30,
+      "id" : 4,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -581,7 +116,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 31,
+      "id" : 5,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -609,7 +144,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 32,
+      "id" : 6,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -657,7 +192,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 33,
+      "id" : 7,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -705,7 +240,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 34,
+      "id" : 8,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -723,7 +258,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 35,
+      "id" : 9,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -746,7 +281,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 36,
+      "id" : 10,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -789,7 +324,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 37,
+      "id" : 11,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -822,7 +357,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 38,
+      "id" : 12,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -855,7 +390,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 39,
+      "id" : 13,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -883,7 +418,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 40,
+      "id" : 14,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -916,7 +451,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 41,
+      "id" : 15,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -949,7 +484,7 @@
 
       ],
       "confidence" : 0.85,
-      "id" : 42,
+      "id" : 16,
       "kind" : "pull-quote",
       "lowConfidence" : false,
       "reason" : "pullquote-class",
@@ -963,7 +498,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 43,
+      "id" : 17,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -991,7 +526,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 44,
+      "id" : 18,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1034,7 +569,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 45,
+      "id" : 19,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1077,7 +612,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 46,
+      "id" : 20,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1120,7 +655,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 47,
+      "id" : 21,
       "kind" : "figure",
       "lowConfidence" : false,
       "reason" : "figure",
@@ -1134,7 +669,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 48,
+      "id" : 22,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1177,7 +712,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 49,
+      "id" : 23,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1210,7 +745,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 50,
+      "id" : 24,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1248,7 +783,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 51,
+      "id" : 25,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1306,7 +841,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 52,
+      "id" : 26,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1349,7 +884,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 53,
+      "id" : 27,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1382,7 +917,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 54,
+      "id" : 28,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1405,7 +940,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 55,
+      "id" : 29,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1428,7 +963,7 @@
 
       ],
       "confidence" : 0.85,
-      "id" : 56,
+      "id" : 30,
       "kind" : "pull-quote",
       "lowConfidence" : false,
       "reason" : "pullquote-class",
@@ -1442,7 +977,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 57,
+      "id" : 31,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1475,7 +1010,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 58,
+      "id" : 32,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1538,7 +1073,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 59,
+      "id" : 33,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1581,7 +1116,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 60,
+      "id" : 34,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1619,7 +1154,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 61,
+      "id" : 35,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1677,7 +1212,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 62,
+      "id" : 36,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1720,7 +1255,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 63,
+      "id" : 37,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1778,7 +1313,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 64,
+      "id" : 38,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1811,7 +1346,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 65,
+      "id" : 39,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1854,7 +1389,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 66,
+      "id" : 40,
       "kind" : "figure",
       "lowConfidence" : false,
       "reason" : "figure",
@@ -1868,7 +1403,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 67,
+      "id" : 41,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1896,7 +1431,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 68,
+      "id" : 42,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1929,7 +1464,7 @@
 
       ],
       "confidence" : 0.85,
-      "id" : 69,
+      "id" : 43,
       "kind" : "pull-quote",
       "lowConfidence" : false,
       "reason" : "pullquote-class",
@@ -1943,7 +1478,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 70,
+      "id" : 44,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2001,7 +1536,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 71,
+      "id" : 45,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2049,7 +1584,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 72,
+      "id" : 46,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2092,7 +1627,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 73,
+      "id" : 47,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2110,7 +1645,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 74,
+      "id" : 48,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2158,7 +1693,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 75,
+      "id" : 49,
       "kind" : "figure",
       "lowConfidence" : false,
       "reason" : "figure",
@@ -2172,7 +1707,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 76,
+      "id" : 50,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2210,7 +1745,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 77,
+      "id" : 51,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2243,7 +1778,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 78,
+      "id" : 52,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2286,7 +1821,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 79,
+      "id" : 53,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2324,7 +1859,7 @@
 
       ],
       "confidence" : 0.85,
-      "id" : 80,
+      "id" : 54,
       "kind" : "pull-quote",
       "lowConfidence" : false,
       "reason" : "pullquote-class",
@@ -2338,7 +1873,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 81,
+      "id" : 55,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2376,7 +1911,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 82,
+      "id" : 56,
       "kind" : "figure",
       "lowConfidence" : false,
       "reason" : "figure",
@@ -2390,7 +1925,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 83,
+      "id" : 57,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2423,7 +1958,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 84,
+      "id" : 58,
       "kind" : "figure",
       "lowConfidence" : false,
       "reason" : "figure",
@@ -2437,7 +1972,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 85,
+      "id" : 59,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2470,7 +2005,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 86,
+      "id" : 60,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2498,7 +2033,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 87,
+      "id" : 61,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2531,7 +2066,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 88,
+      "id" : 62,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2574,7 +2109,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 89,
+      "id" : 63,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2632,7 +2167,7 @@
 
       ],
       "confidence" : 0.85,
-      "id" : 90,
+      "id" : 64,
       "kind" : "pull-quote",
       "lowConfidence" : false,
       "reason" : "pullquote-class",
@@ -2646,7 +2181,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 91,
+      "id" : 65,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2709,7 +2244,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 92,
+      "id" : 66,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2767,7 +2302,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 93,
+      "id" : 67,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2800,7 +2335,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 94,
+      "id" : 68,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2823,7 +2358,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 95,
+      "id" : 69,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2861,7 +2396,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 96,
+      "id" : 70,
       "kind" : "figure",
       "lowConfidence" : false,
       "reason" : "figure",
@@ -2875,7 +2410,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 97,
+      "id" : 71,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2898,7 +2433,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 98,
+      "id" : 72,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2941,7 +2476,7 @@
 
       ],
       "confidence" : 0.85,
-      "id" : 99,
+      "id" : 73,
       "kind" : "pull-quote",
       "lowConfidence" : false,
       "reason" : "pullquote-class",
@@ -2955,7 +2490,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 100,
+      "id" : 74,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2993,7 +2528,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 101,
+      "id" : 75,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -3011,7 +2546,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 102,
+      "id" : 76,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -3094,7 +2629,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 103,
+      "id" : 77,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -3141,62 +2676,22 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 104,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 78,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 25,
-          "offset" : 0,
-          "text" : "Meaning and the good life"
-        }
+
       ],
-      "text" : "Meaning and the good life"
+      "text" : "Meaning and the good lifeAgeing and deathSpirituality"
     },
     {
       "children" : [
 
       ],
       "confidence" : 0.6,
-      "id" : 105,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 16,
-          "offset" : 0,
-          "text" : "Ageing and death"
-        }
-      ],
-      "text" : "Ageing and death"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 106,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 12,
-          "offset" : 0,
-          "text" : "Spirituality"
-        }
-      ],
-      "text" : "Spirituality"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 107,
+      "id" : 79,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -3214,7 +2709,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 108,
+      "id" : 80,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -3232,7 +2727,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 109,
+      "id" : 81,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -3249,400 +2744,128 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 110,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 21,
-          "offset" : 0,
-          "text" : "PREFER AEON ON GOOGLE"
-        }
-      ],
-      "text" : "PREFER AEON ON GOOGLE"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 111,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 20,
-          "offset" : 0,
-          "text" : "SYNDICATE THIS ESSAY"
-        }
-      ],
-      "text" : "SYNDICATE THIS ESSAY"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 112,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 180,
-          "offset" : 0,
-          "text" : "Save essayMental health Under the mkone tree When I returned to Kenya, where I grew up, I found biomedicine and traditional medicine in conversation about mental health Priya Basil"
-        }
-      ],
-      "text" : "Save essayMental health Under the mkone tree When I returned to Kenya, where I grew up, I found biomedicine and traditional medicine in conversation about mental health Priya Basil"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 113,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 150,
-          "offset" : 0,
-          "text" : "Save essayDeath The good death It’s a modern dream that we can plan a good and peaceful death but what can we really do to meet the end of all we are?"
-        },
-        {
-          "length" : 11,
-          "offset" : 151,
-          "text" : "Mary Talbot"
-        }
-      ],
-      "text" : "Save essayDeath The good death It’s a modern dream that we can plan a good and peaceful death but what can we really do to meet the end of all we are? Mary Talbot"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 114,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 109,
-          "offset" : 0,
-          "text" : "Save essayDeath The be all and end all Being with someone in death entails more than just physical wellbeing."
-        },
-        {
-          "length" : 49,
-          "offset" : 110,
-          "text" : "Can end-of-life care make space for spirituality?"
-        },
-        {
-          "length" : 19,
-          "offset" : 160,
-          "text" : "Christopher Harding"
-        }
-      ],
-      "text" : "Save essayDeath The be all and end all Being with someone in death entails more than just physical wellbeing. Can end-of-life care make space for spirituality? Christopher Harding"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 115,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 188,
-          "offset" : 0,
-          "text" : "Save essayPhilosophy of religion Compassionate time On his final journey through Asia, Thomas Merton found some peace in the dialectic between refusing the world and loving it Drew Calvert"
-        }
-      ],
-      "text" : "Save essayPhilosophy of religion Compassionate time On his final journey through Asia, Thomas Merton found some peace in the dialectic between refusing the world and loving it Drew Calvert"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 116,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 165,
-          "offset" : 0,
-          "text" : "Save essayReligion The wanderer stilled Leaving Europe as a young woman, Martine Batchelor was transformed by an encounter with Buddhist meditation Martine Batchelor"
-        }
-      ],
-      "text" : "Save essayReligion The wanderer stilled Leaving Europe as a young woman, Martine Batchelor was transformed by an encounter with Buddhist meditation Martine Batchelor"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 117,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 191,
-          "offset" : 0,
-          "text" : "Save essayPsychiatry and psychotherapy Couched in kindness Jakucho Setouchi is a revered nun and famous novelist, yet few know how psychoanalysis shaped her spiritual life Christopher Harding"
-        }
-      ],
-      "text" : "Save essayPsychiatry and psychotherapy Couched in kindness Jakucho Setouchi is a revered nun and famous novelist, yet few know how psychoanalysis shaped her spiritual life Christopher Harding"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.85,
-      "id" : 118,
+      "confidence" : 0.75,
+      "id" : 82,
       "kind" : "nav",
-      "lowConfidence" : false,
-      "reason" : "nav",
+      "lowConfidence" : true,
+      "reason" : "link-density",
       "spoken" : [
 
       ],
-      "text" : "EssaysVideos"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.85,
-      "id" : 119,
-      "kind" : "nav",
-      "lowConfidence" : false,
-      "reason" : "nav",
-      "spoken" : [
-
-      ],
-      "text" : "AboutContactSupport"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.85,
-      "id" : 120,
-      "kind" : "nav",
-      "lowConfidence" : false,
-      "reason" : "nav",
-      "spoken" : [
-
-      ],
-      "text" : "RSS FeedDonateCommunity Guidelines"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.98,
-      "id" : 121,
-      "kind" : "prose",
-      "lowConfidence" : false,
-      "reason" : "p",
-      "spoken" : [
-        {
-          "length" : 11,
-          "offset" : 0,
-          "text" : "Follow Aeon"
-        }
-      ],
-      "text" : "Follow Aeon"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.98,
-      "id" : 122,
-      "kind" : "prose",
-      "lowConfidence" : false,
-      "reason" : "p",
-      "spoken" : [
-        {
-          "length" : 34,
-          "offset" : 0,
-          "text" : "© Aeon Media Group Ltd. 2012-2026."
-        },
-        {
-          "length" : 15,
-          "offset" : 35,
-          "text" : "Privacy Policy."
-        },
-        {
-          "length" : 13,
-          "offset" : 51,
-          "text" : "Terms of Use."
-        }
-      ],
-      "text" : "© Aeon Media Group Ltd. 2012-2026. Privacy Policy. Terms of Use."
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.98,
-      "id" : 123,
-      "kind" : "prose",
-      "lowConfidence" : false,
-      "reason" : "p",
-      "spoken" : [
-        {
-          "length" : 115,
-          "offset" : 0,
-          "text" : "Aeon is published by registered charity Aeon Media Group Ltd in association with Aeon America, a 501(c)(3) charity."
-        }
-      ],
-      "text" : "Aeon is published by registered charity Aeon Media Group Ltd in association with Aeon America, a 501(c)(3) charity."
+      "text" : "PREFER AEON ON GOOGLESYNDICATE THIS ESSAY"
     }
   ],
-  "sentence_count" : 376,
+  "sentence_count" : 332,
   "skipped" : [
     {
-      "block_id" : 22,
-      "confidence" : 0.95,
-      "kind" : "heading",
-      "reason" : "h1",
-      "words" : 3
-    },
-    {
-      "block_id" : 23,
-      "confidence" : 0.95,
-      "kind" : "heading",
-      "reason" : "h2",
-      "words" : 20
-    },
-    {
-      "block_id" : 26,
+      "block_id" : 0,
       "confidence" : 0.9,
       "kind" : "aside",
       "reason" : "aside",
       "words" : 64
     },
     {
-      "block_id" : 42,
+      "block_id" : 16,
       "confidence" : 0.85,
       "kind" : "pull-quote",
       "reason" : "pullquote-class",
       "words" : 15
     },
     {
-      "block_id" : 47,
+      "block_id" : 21,
       "confidence" : 0.95,
       "kind" : "figure",
       "reason" : "figure",
       "words" : 14
     },
     {
-      "block_id" : 56,
+      "block_id" : 30,
       "confidence" : 0.85,
       "kind" : "pull-quote",
       "reason" : "pullquote-class",
       "words" : 16
     },
     {
-      "block_id" : 66,
+      "block_id" : 40,
       "confidence" : 0.95,
       "kind" : "figure",
       "reason" : "figure",
       "words" : 12
     },
     {
-      "block_id" : 69,
+      "block_id" : 43,
       "confidence" : 0.85,
       "kind" : "pull-quote",
       "reason" : "pullquote-class",
       "words" : 19
     },
     {
-      "block_id" : 75,
+      "block_id" : 49,
       "confidence" : 0.95,
       "kind" : "figure",
       "reason" : "figure",
       "words" : 12
     },
     {
-      "block_id" : 80,
+      "block_id" : 54,
       "confidence" : 0.85,
       "kind" : "pull-quote",
       "reason" : "pullquote-class",
       "words" : 16
     },
     {
-      "block_id" : 82,
+      "block_id" : 56,
       "confidence" : 0.95,
       "kind" : "figure",
       "reason" : "figure",
       "words" : 14
     },
     {
-      "block_id" : 84,
+      "block_id" : 58,
       "confidence" : 0.95,
       "kind" : "figure",
       "reason" : "figure",
       "words" : 20
     },
     {
-      "block_id" : 90,
+      "block_id" : 64,
       "confidence" : 0.85,
       "kind" : "pull-quote",
       "reason" : "pullquote-class",
       "words" : 19
     },
     {
-      "block_id" : 96,
+      "block_id" : 70,
       "confidence" : 0.95,
       "kind" : "figure",
       "reason" : "figure",
       "words" : 16
     },
     {
-      "block_id" : 99,
+      "block_id" : 73,
       "confidence" : 0.85,
       "kind" : "pull-quote",
       "reason" : "pullquote-class",
       "words" : 19
     },
     {
-      "block_id" : 118,
-      "confidence" : 0.85,
+      "block_id" : 78,
+      "confidence" : 0.75,
       "kind" : "nav",
-      "reason" : "nav",
-      "words" : 1
+      "reason" : "link-density",
+      "words" : 7
     },
     {
-      "block_id" : 119,
-      "confidence" : 0.85,
+      "block_id" : 82,
+      "confidence" : 0.75,
       "kind" : "nav",
-      "reason" : "nav",
-      "words" : 1
-    },
-    {
-      "block_id" : 120,
-      "confidence" : 0.85,
-      "kind" : "nav",
-      "reason" : "nav",
-      "words" : 3
+      "reason" : "link-density",
+      "words" : 6
     }
   ],
   "source" : "061-halifax-essay.html",
   "source_sha256" : "2905651ae204ff5ac5c7aa0760350d4b77dabb9792bf451b9fcaee0a7a4b4e20",
-  "spoken_words" : 5576,
+  "spoken_words" : 5323,
   "validation_failures" : 0,
   "version" : 1
 }

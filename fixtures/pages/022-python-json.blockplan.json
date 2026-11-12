@@ -4,54 +4,8 @@
       "children" : [
 
       ],
-      "confidence" : 0.85,
+      "confidence" : 0.95,
       "id" : 0,
-      "kind" : "nav",
-      "lowConfidence" : false,
-      "reason" : "role=navigation",
-      "spoken" : [
-
-      ],
-      "text" : "Theme Auto Light Dark Table of Contents json — JSON encoder and decoder Basic Usage Encoders and Decoders Exceptions Standard Compliance and Interoperability Character Encodings Infinite and NaN Number Values Repeated Names Within an Object Top-level Non-Object, Non-Array Values Implementation Limitations Command-line interface Command-line options Previous topic email.iterators: Iterators Next topic mailbox — Manipulate mailboxes in various formats This page Report a bug Improve this page Show source"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.95,
-      "id" : 1,
-      "kind" : "heading",
-      "lowConfidence" : false,
-      "reason" : "h3",
-      "spoken" : [
-
-      ],
-      "text" : "Navigation"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.95,
-      "id" : 2,
-      "kind" : "list",
-      "lowConfidence" : false,
-      "reason" : "ul",
-      "spoken" : [
-        {
-          "length" : 178,
-          "offset" : 0,
-          "text" : "index modules | next | previous | Python » 3.15.2 documentation » The Python standard library » Internet Data Handling » json — JSON encoder and decoder | Theme Auto Light Dark |"
-        }
-      ],
-      "text" : "index modules | next | previous | Python » 3.15.2 documentation » The Python standard library » Internet Data Handling » json — JSON encoder and decoder | Theme Auto Light Dark |"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.95,
-      "id" : 3,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h1",
@@ -65,7 +19,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 4,
+      "id" : 1,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -83,7 +37,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 5,
+      "id" : 2,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -101,7 +55,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 6,
+      "id" : 3,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -119,7 +73,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 7,
+      "id" : 4,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -147,7 +101,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 8,
+      "id" : 5,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -165,7 +119,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 9,
+      "id" : 6,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -193,7 +147,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 10,
+      "id" : 7,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -211,7 +165,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 11,
+      "id" : 8,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -229,7 +183,7 @@
 
       ],
       "confidence" : 0.99,
-      "id" : 12,
+      "id" : 9,
       "kind" : "code",
       "lowConfidence" : false,
       "reason" : "pre",
@@ -243,7 +197,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 13,
+      "id" : 10,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -261,7 +215,7 @@
 
       ],
       "confidence" : 0.99,
-      "id" : 14,
+      "id" : 11,
       "kind" : "code",
       "lowConfidence" : false,
       "reason" : "pre",
@@ -275,7 +229,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 15,
+      "id" : 12,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -293,7 +247,7 @@
 
       ],
       "confidence" : 0.99,
-      "id" : 16,
+      "id" : 13,
       "kind" : "code",
       "lowConfidence" : false,
       "reason" : "pre",
@@ -307,7 +261,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 17,
+      "id" : 14,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -325,7 +279,7 @@
 
       ],
       "confidence" : 0.99,
-      "id" : 18,
+      "id" : 15,
       "kind" : "code",
       "lowConfidence" : false,
       "reason" : "pre",
@@ -339,7 +293,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 19,
+      "id" : 16,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -357,7 +311,7 @@
 
       ],
       "confidence" : 0.99,
-      "id" : 20,
+      "id" : 17,
       "kind" : "code",
       "lowConfidence" : false,
       "reason" : "pre",
@@ -371,7 +325,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 21,
+      "id" : 18,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -389,7 +343,7 @@
 
       ],
       "confidence" : 0.99,
-      "id" : 22,
+      "id" : 19,
       "kind" : "code",
       "lowConfidence" : false,
       "reason" : "pre",
@@ -403,7 +357,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 23,
+      "id" : 20,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -421,7 +375,7 @@
 
       ],
       "confidence" : 0.99,
-      "id" : 24,
+      "id" : 21,
       "kind" : "code",
       "lowConfidence" : false,
       "reason" : "pre",
@@ -435,7 +389,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 25,
+      "id" : 22,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -453,7 +407,7 @@
 
       ],
       "confidence" : 0.99,
-      "id" : 26,
+      "id" : 23,
       "kind" : "code",
       "lowConfidence" : false,
       "reason" : "pre",
@@ -467,7 +421,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 27,
+      "id" : 24,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -485,7 +439,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 28,
+      "id" : 25,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -503,7 +457,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 29,
+      "id" : 26,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -531,7 +485,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 30,
+      "id" : 27,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -549,7 +503,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 31,
+      "id" : 28,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -572,7 +526,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 32,
+      "id" : 29,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -586,7 +540,7 @@
 
       ],
       "confidence" : 0.8,
-      "id" : 33,
+      "id" : 30,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "dl",
@@ -769,7 +723,7 @@
 
       ],
       "confidence" : 0.8,
-      "id" : 34,
+      "id" : 31,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "dl",
@@ -792,7 +746,7 @@
 
       ],
       "confidence" : 0.8,
-      "id" : 35,
+      "id" : 32,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "dl",
@@ -985,7 +939,7 @@
 
       ],
       "confidence" : 0.8,
-      "id" : 36,
+      "id" : 33,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "dl",
@@ -1018,7 +972,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 37,
+      "id" : 34,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -1032,7 +986,7 @@
 
       ],
       "confidence" : 0.8,
-      "id" : 38,
+      "id" : 35,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "dl",
@@ -1190,7 +1144,7 @@
 
       ],
       "confidence" : 0.8,
-      "id" : 39,
+      "id" : 36,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "dl",
@@ -1353,7 +1307,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 40,
+      "id" : 37,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -1367,7 +1321,7 @@
 
       ],
       "confidence" : 0.8,
-      "id" : 41,
+      "id" : 38,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "dl",
@@ -1410,7 +1364,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 42,
+      "id" : 39,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -1424,7 +1378,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 43,
+      "id" : 40,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1452,7 +1406,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 44,
+      "id" : 41,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1475,7 +1429,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 45,
+      "id" : 42,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -1493,7 +1447,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 46,
+      "id" : 43,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1511,7 +1465,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 47,
+      "id" : 44,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h3",
@@ -1525,7 +1479,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 48,
+      "id" : 45,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1543,7 +1497,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 49,
+      "id" : 46,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1561,7 +1515,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 50,
+      "id" : 47,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1579,7 +1533,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 51,
+      "id" : 48,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1607,7 +1561,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 52,
+      "id" : 49,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1630,7 +1584,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 53,
+      "id" : 50,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h3",
@@ -1644,7 +1598,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 54,
+      "id" : 51,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1667,7 +1621,7 @@
 
       ],
       "confidence" : 0.99,
-      "id" : 55,
+      "id" : 52,
       "kind" : "code",
       "lowConfidence" : false,
       "reason" : "pre",
@@ -1681,7 +1635,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 56,
+      "id" : 53,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1704,7 +1658,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 57,
+      "id" : 54,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h3",
@@ -1718,7 +1672,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 58,
+      "id" : 55,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1741,7 +1695,7 @@
 
       ],
       "confidence" : 0.99,
-      "id" : 59,
+      "id" : 56,
       "kind" : "code",
       "lowConfidence" : false,
       "reason" : "pre",
@@ -1755,7 +1709,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 60,
+      "id" : 57,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1773,7 +1727,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 61,
+      "id" : 58,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h3",
@@ -1787,7 +1741,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 62,
+      "id" : 59,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1810,7 +1764,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 63,
+      "id" : 60,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1828,7 +1782,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 64,
+      "id" : 61,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h3",
@@ -1842,7 +1796,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 65,
+      "id" : 62,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1860,7 +1814,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 66,
+      "id" : 63,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -1878,7 +1832,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 67,
+      "id" : 64,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1896,7 +1850,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 68,
+      "id" : 65,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1924,7 +1878,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 69,
+      "id" : 66,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -1938,7 +1892,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 70,
+      "id" : 67,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1956,7 +1910,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 71,
+      "id" : 68,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1979,7 +1933,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 72,
+      "id" : 69,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1997,7 +1951,7 @@
 
       ],
       "confidence" : 0.99,
-      "id" : 73,
+      "id" : 70,
       "kind" : "code",
       "lowConfidence" : false,
       "reason" : "pre",
@@ -2011,7 +1965,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 74,
+      "id" : 71,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2034,7 +1988,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 75,
+      "id" : 72,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2057,7 +2011,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 76,
+      "id" : 73,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h3",
@@ -2071,7 +2025,7 @@
 
       ],
       "confidence" : 0.8,
-      "id" : 77,
+      "id" : 74,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "dl",
@@ -2089,7 +2043,7 @@
 
       ],
       "confidence" : 0.8,
-      "id" : 78,
+      "id" : 75,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "dl",
@@ -2112,7 +2066,7 @@
 
       ],
       "confidence" : 0.8,
-      "id" : 79,
+      "id" : 76,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "dl",
@@ -2135,7 +2089,7 @@
 
       ],
       "confidence" : 0.8,
-      "id" : 80,
+      "id" : 77,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "dl",
@@ -2158,7 +2112,7 @@
 
       ],
       "confidence" : 0.8,
-      "id" : 81,
+      "id" : 78,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "dl",
@@ -2181,7 +2135,7 @@
 
       ],
       "confidence" : 0.8,
-      "id" : 82,
+      "id" : 79,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "dl",
@@ -2204,7 +2158,7 @@
 
       ],
       "confidence" : 0.8,
-      "id" : 83,
+      "id" : 80,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "dl",
@@ -2222,7 +2176,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 84,
+      "id" : 81,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2240,7 +2194,7 @@
 
       ],
       "confidence" : 0.9,
-      "id" : 85,
+      "id" : 82,
       "kind" : "aside",
       "lowConfidence" : false,
       "reason" : "aside",
@@ -2254,7 +2208,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 86,
+      "id" : 83,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h3",
@@ -2268,7 +2222,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 87,
+      "id" : 84,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -2286,7 +2240,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 88,
+      "id" : 85,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h4",
@@ -2300,7 +2254,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 89,
+      "id" : 86,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2318,7 +2272,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 90,
+      "id" : 87,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h4",
@@ -2332,7 +2286,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 91,
+      "id" : 88,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2350,7 +2304,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 92,
+      "id" : 89,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h3",
@@ -2364,7 +2318,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 93,
+      "id" : 90,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -2382,7 +2336,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 94,
+      "id" : 91,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -2394,374 +2348,210 @@
         }
       ],
       "text" : "«"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.95,
-      "id" : 95,
-      "kind" : "heading",
-      "lowConfidence" : false,
-      "reason" : "h3",
-      "spoken" : [
-
-      ],
-      "text" : "Navigation"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.95,
-      "id" : 96,
-      "kind" : "list",
-      "lowConfidence" : false,
-      "reason" : "ul",
-      "spoken" : [
-        {
-          "length" : 178,
-          "offset" : 0,
-          "text" : "index modules | next | previous | Python » 3.15.2 documentation » The Python standard library » Internet Data Handling » json — JSON encoder and decoder | Theme Auto Light Dark |"
-        }
-      ],
-      "text" : "index modules | next | previous | Python » 3.15.2 documentation » The Python standard library » Internet Data Handling » json — JSON encoder and decoder | Theme Auto Light Dark |"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 97,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 9,
-          "offset" : 0,
-          "text" : "Copyright"
-        }
-      ],
-      "text" : "Copyright"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 98,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 19,
-          "offset" : 0,
-          "text" : "History and License"
-        }
-      ],
-      "text" : "History and License"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 99,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 14,
-          "offset" : 0,
-          "text" : "Please donate."
-        }
-      ],
-      "text" : "Please donate."
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 100,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 11,
-          "offset" : 0,
-          "text" : "Found a bug"
-        }
-      ],
-      "text" : "Found a bug"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 101,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 6,
-          "offset" : 0,
-          "text" : "Sphinx"
-        }
-      ],
-      "text" : "Sphinx"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.8,
-      "id" : 102,
-      "kind" : "nav",
-      "lowConfidence" : false,
-      "reason" : "class=footer",
-      "spoken" : [
-
-      ],
-      "text" : "© 2001 Python Software Foundation. This page is licensed under the Python Software Foundation License Version 2. Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License. See for more information. The Python Software Foundation is a non-profit corporation. Last updated on Nov 11, 2026 (09:19 UTC). ? Created using 9.1.1."
     }
   ],
-  "sentence_count" : 232,
+  "sentence_count" : 225,
   "skipped" : [
     {
       "block_id" : 0,
-      "confidence" : 0.85,
-      "kind" : "nav",
-      "reason" : "role=navigation",
-      "words" : 68
-    },
-    {
-      "block_id" : 1,
-      "confidence" : 0.95,
-      "kind" : "heading",
-      "reason" : "h3",
-      "words" : 1
-    },
-    {
-      "block_id" : 3,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h1",
       "words" : 6
     },
     {
-      "block_id" : 12,
+      "block_id" : 9,
       "confidence" : 0.99,
       "kind" : "code",
       "reason" : "pre",
       "words" : 56
     },
     {
-      "block_id" : 14,
+      "block_id" : 11,
       "confidence" : 0.99,
       "kind" : "code",
       "reason" : "pre",
       "words" : 14
     },
     {
-      "block_id" : 16,
+      "block_id" : 13,
       "confidence" : 0.99,
       "kind" : "code",
       "reason" : "pre",
       "words" : 16
     },
     {
-      "block_id" : 18,
+      "block_id" : 15,
       "confidence" : 0.99,
       "kind" : "code",
       "reason" : "pre",
       "words" : 37
     },
     {
-      "block_id" : 20,
+      "block_id" : 17,
       "confidence" : 0.99,
       "kind" : "code",
       "reason" : "pre",
       "words" : 32
     },
     {
-      "block_id" : 22,
+      "block_id" : 19,
       "confidence" : 0.99,
       "kind" : "code",
       "reason" : "pre",
       "words" : 67
     },
     {
-      "block_id" : 24,
+      "block_id" : 21,
       "confidence" : 0.99,
       "kind" : "code",
       "reason" : "pre",
       "words" : 54
     },
     {
-      "block_id" : 26,
+      "block_id" : 23,
       "confidence" : 0.99,
       "kind" : "code",
       "reason" : "pre",
       "words" : 31
     },
     {
-      "block_id" : 32,
+      "block_id" : 29,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
       "words" : 2
+    },
+    {
+      "block_id" : 34,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 3
     },
     {
       "block_id" : 37,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
-      "words" : 3
-    },
-    {
-      "block_id" : 40,
-      "confidence" : 0.95,
-      "kind" : "heading",
-      "reason" : "h2",
       "words" : 1
     },
     {
-      "block_id" : 42,
+      "block_id" : 39,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
       "words" : 4
     },
     {
-      "block_id" : 47,
+      "block_id" : 44,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h3",
       "words" : 2
     },
     {
-      "block_id" : 53,
+      "block_id" : 50,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h3",
       "words" : 5
     },
     {
-      "block_id" : 55,
+      "block_id" : 52,
       "confidence" : 0.99,
       "kind" : "code",
       "reason" : "pre",
       "words" : 33
     },
     {
-      "block_id" : 57,
+      "block_id" : 54,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h3",
       "words" : 5
     },
     {
-      "block_id" : 59,
+      "block_id" : 56,
       "confidence" : 0.99,
       "kind" : "code",
       "reason" : "pre",
       "words" : 13
     },
     {
-      "block_id" : 61,
+      "block_id" : 58,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h3",
       "words" : 4
     },
     {
-      "block_id" : 64,
+      "block_id" : 61,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h3",
       "words" : 2
     },
     {
-      "block_id" : 69,
+      "block_id" : 66,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
       "words" : 2
     },
     {
-      "block_id" : 73,
+      "block_id" : 70,
       "confidence" : 0.99,
       "kind" : "code",
       "reason" : "pre",
       "words" : 32
     },
     {
-      "block_id" : 76,
+      "block_id" : 73,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h3",
       "words" : 2
     },
     {
-      "block_id" : 85,
+      "block_id" : 82,
       "confidence" : 0.9,
       "kind" : "aside",
       "reason" : "aside",
       "words" : 31
     },
     {
-      "block_id" : 86,
+      "block_id" : 83,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h3",
       "words" : 3
     },
     {
-      "block_id" : 88,
+      "block_id" : 85,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h4",
       "words" : 2
     },
     {
-      "block_id" : 90,
+      "block_id" : 87,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h4",
       "words" : 2
     },
     {
-      "block_id" : 92,
+      "block_id" : 89,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h3",
       "words" : 2
-    },
-    {
-      "block_id" : 95,
-      "confidence" : 0.95,
-      "kind" : "heading",
-      "reason" : "h3",
-      "words" : 1
-    },
-    {
-      "block_id" : 102,
-      "confidence" : 0.8,
-      "kind" : "nav",
-      "reason" : "class=footer",
-      "words" : 58
     }
   ],
   "source" : "022-python-json.html",
   "source_sha256" : "e4ec5e442de9e8f991c4be93120c536e109164ee4dfa382fdcaa7c5eeff4b1a8",
-  "spoken_words" : 3446,
+  "spoken_words" : 3370,
   "validation_failures" : 0,
   "version" : 1
 }

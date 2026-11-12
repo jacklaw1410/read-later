@@ -6,102 +6,6 @@
       ],
       "confidence" : 0.95,
       "id" : 0,
-      "kind" : "list",
-      "lowConfidence" : false,
-      "reason" : "ul",
-      "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "Skip to main content Skip to search"
-        }
-      ],
-      "text" : "Skip to main content Skip to search"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.85,
-      "id" : 1,
-      "kind" : "nav",
-      "lowConfidence" : false,
-      "reason" : "nav",
-      "spoken" : [
-
-      ],
-      "text" : "HTML HTML: Markup language HTML reference Elements Global attributes Attributes See all… HTML guides Responsive images HTML cheatsheet Date & time formats See all… Markup languages SVG MathML XML CSS CSS: Styling language CSS reference Properties Selectors At-rules Values See all… CSS guides Box model Animations Flexbox Colors See all… Layout cookbook Column layouts Centering an element Card component See all… JavaScriptJS JavaScript: Scripting language JS reference Standard built-in objects Expressions & operators Statements & declarations Functions See all… JS guides Control flow & error handling Loops and iteration Working with objects Using classes See all… Web APIs Web APIs: Programming interfaces Web API reference File system API Fetch API Geolocation API HTML DOM API Push API Service worker API See all… Web API guides Using the Web animation API Using the Fetch API Working with the History API Using the Web speech API Using web workers All All web technology Technologies Accessibility HTTP URI Web extensions WebAssembly WebDriver See all… Topics Media Performance Privacy Security Progressive web apps Learn Learn web development Frontend developer course Getting started modules Core modules MDN Curriculum Check out the video course from Scrimba, our partner Learn HTML Structuring content with HTML module Learn CSS CSS styling basics module CSS layout module Learn JavaScript Dynamic scripting with JavaScript module Tools Discover our tools Playground HTTP Observatory Border-image generator Border-radius generator Box-shadow generator Color format converter Color mixer Shape generator About Get to know MDN better About MDN Advertise with us Community MDN on GitHub Blog"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 2,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 14,
-          "offset" : 0,
-          "text" : "Toggle sidebar"
-        }
-      ],
-      "text" : "Toggle sidebar"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.8,
-      "id" : 3,
-      "kind" : "nav",
-      "lowConfidence" : false,
-      "reason" : "class=breadcrumbs",
-      "spoken" : [
-
-      ],
-      "text" : "Web JavaScript Guide Introduction"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.7,
-      "id" : 4,
-      "kind" : "list",
-      "lowConfidence" : true,
-      "reason" : "short-lines",
-      "spoken" : [
-        {
-          "length" : 27,
-          "offset" : 0,
-          "text" : "Theme OS default Light Dark"
-        }
-      ],
-      "text" : "Theme OS default Light Dark"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.75,
-      "id" : 5,
-      "kind" : "code",
-      "lowConfidence" : true,
-      "reason" : "symbol-density",
-      "spoken" : [
-
-      ],
-      "text" : "English (US) Remember language Learn more Deutsch English (US) Español Français 日本語 한국어 Português (do Brasil) Русский 中文 (简体) 正體中文 (繁體)"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.95,
-      "id" : 6,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h1",
@@ -115,7 +19,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 7,
+      "id" : 1,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -133,7 +37,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 8,
+      "id" : 2,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -151,7 +55,7 @@
 
       ],
       "confidence" : 0.9,
-      "id" : 9,
+      "id" : 3,
       "kind" : "aside",
       "lowConfidence" : false,
       "reason" : "aside",
@@ -165,7 +69,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 10,
+      "id" : 4,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -179,7 +83,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 11,
+      "id" : 5,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -197,7 +101,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 12,
+      "id" : 6,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -230,7 +134,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 13,
+      "id" : 7,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -244,7 +148,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 14,
+      "id" : 8,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -262,7 +166,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 15,
+      "id" : 9,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -290,7 +194,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 16,
+      "id" : 10,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -304,7 +208,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 17,
+      "id" : 11,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -332,7 +236,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 18,
+      "id" : 12,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -355,7 +259,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 19,
+      "id" : 13,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -388,7 +292,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 20,
+      "id" : 14,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -411,7 +315,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 21,
+      "id" : 15,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -425,7 +329,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 22,
+      "id" : 16,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -453,7 +357,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 23,
+      "id" : 17,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -491,7 +395,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 24,
+      "id" : 18,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -524,7 +428,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 25,
+      "id" : 19,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -562,7 +466,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 26,
+      "id" : 20,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -585,7 +489,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 27,
+      "id" : 21,
       "kind" : "figure",
       "lowConfidence" : false,
       "reason" : "figure",
@@ -599,7 +503,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 28,
+      "id" : 22,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -613,7 +517,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 29,
+      "id" : 23,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -646,7 +550,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 30,
+      "id" : 24,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -684,7 +588,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 31,
+      "id" : 25,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h3",
@@ -698,7 +602,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 32,
+      "id" : 26,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -721,7 +625,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 33,
+      "id" : 27,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -744,7 +648,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 34,
+      "id" : 28,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -772,7 +676,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 35,
+      "id" : 29,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -790,7 +694,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 36,
+      "id" : 30,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -804,7 +708,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 37,
+      "id" : 31,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -827,7 +731,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 38,
+      "id" : 32,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -845,7 +749,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 39,
+      "id" : 33,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -863,7 +767,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 40,
+      "id" : 34,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h3",
@@ -877,7 +781,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 41,
+      "id" : 35,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -895,7 +799,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 42,
+      "id" : 36,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -913,7 +817,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 43,
+      "id" : 37,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h3",
@@ -927,7 +831,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 44,
+      "id" : 38,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -950,7 +854,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 45,
+      "id" : 39,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -967,6 +871,121 @@
         }
       ],
       "text" : "The console works the exact same way as eval: the last expression entered is returned. For the sake of simplicity, it can be imagined that every time something is entered into the console, it is actually surrounded by console.log around eval, like so:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 40,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 2,
+          "offset" : 0,
+          "text" : "js"
+        }
+      ],
+      "text" : "js"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.99,
+      "id" : 41,
+      "kind" : "code",
+      "lowConfidence" : false,
+      "reason" : "pre",
+      "spoken" : [
+
+      ],
+      "text" : "console.log(eval(\"3 + 5\"));"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 42,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h3",
+      "spoken" : [
+
+      ],
+      "text" : "Multi-line input in the console"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 43,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 140,
+          "offset" : 0,
+          "text" : "By default, if you press Enter (or Return, depending on your keyboard) after entering a line of code, then the string you typed is executed."
+        },
+        {
+          "length" : 26,
+          "offset" : 141,
+          "text" : "To enter multi-line input:"
+        }
+      ],
+      "text" : "By default, if you press Enter (or Return, depending on your keyboard) after entering a line of code, then the string you typed is executed. To enter multi-line input:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.95,
+      "id" : 44,
+      "kind" : "list",
+      "lowConfidence" : false,
+      "reason" : "ul",
+      "spoken" : [
+        {
+          "length" : 162,
+          "offset" : 0,
+          "text" : "If the string you typed was incomplete (for example, you typed function foo() {) then the console will treat Enter as a line break, and let you type another line."
+        },
+        {
+          "length" : 125,
+          "offset" : 163,
+          "text" : "If you hold down Shift while pressing Enter, then the console will treat this as a line break, and let you type another line."
+        },
+        {
+          "length" : 157,
+          "offset" : 289,
+          "text" : "In Firefox only, you can activate multi-line input mode, in which you can enter multiple lines in a mini-editor, then run the whole thing when you are ready."
+        }
+      ],
+      "text" : "If the string you typed was incomplete (for example, you typed function foo() {) then the console will treat Enter as a line break, and let you type another line. If you hold down Shift while pressing Enter, then the console will treat this as a line break, and let you type another line. In Firefox only, you can activate multi-line input mode, in which you can enter multiple lines in a mini-editor, then run the whole thing when you are ready."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 45,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 113,
+          "offset" : 0,
+          "text" : "To get started with writing JavaScript, open the console, copy the following code, and paste it in at the prompt:"
+        }
+      ],
+      "text" : "To get started with writing JavaScript, open the console, copy the following code, and paste it in at the prompt:"
     },
     {
       "children" : [
@@ -998,121 +1017,6 @@
       "spoken" : [
 
       ],
-      "text" : "console.log(eval(\"3 + 5\"));"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.95,
-      "id" : 48,
-      "kind" : "heading",
-      "lowConfidence" : false,
-      "reason" : "h3",
-      "spoken" : [
-
-      ],
-      "text" : "Multi-line input in the console"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.98,
-      "id" : 49,
-      "kind" : "prose",
-      "lowConfidence" : false,
-      "reason" : "p",
-      "spoken" : [
-        {
-          "length" : 140,
-          "offset" : 0,
-          "text" : "By default, if you press Enter (or Return, depending on your keyboard) after entering a line of code, then the string you typed is executed."
-        },
-        {
-          "length" : 26,
-          "offset" : 141,
-          "text" : "To enter multi-line input:"
-        }
-      ],
-      "text" : "By default, if you press Enter (or Return, depending on your keyboard) after entering a line of code, then the string you typed is executed. To enter multi-line input:"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.95,
-      "id" : 50,
-      "kind" : "list",
-      "lowConfidence" : false,
-      "reason" : "ul",
-      "spoken" : [
-        {
-          "length" : 162,
-          "offset" : 0,
-          "text" : "If the string you typed was incomplete (for example, you typed function foo() {) then the console will treat Enter as a line break, and let you type another line."
-        },
-        {
-          "length" : 125,
-          "offset" : 163,
-          "text" : "If you hold down Shift while pressing Enter, then the console will treat this as a line break, and let you type another line."
-        },
-        {
-          "length" : 157,
-          "offset" : 289,
-          "text" : "In Firefox only, you can activate multi-line input mode, in which you can enter multiple lines in a mini-editor, then run the whole thing when you are ready."
-        }
-      ],
-      "text" : "If the string you typed was incomplete (for example, you typed function foo() {) then the console will treat Enter as a line break, and let you type another line. If you hold down Shift while pressing Enter, then the console will treat this as a line break, and let you type another line. In Firefox only, you can activate multi-line input mode, in which you can enter multiple lines in a mini-editor, then run the whole thing when you are ready."
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.98,
-      "id" : 51,
-      "kind" : "prose",
-      "lowConfidence" : false,
-      "reason" : "p",
-      "spoken" : [
-        {
-          "length" : 113,
-          "offset" : 0,
-          "text" : "To get started with writing JavaScript, open the console, copy the following code, and paste it in at the prompt:"
-        }
-      ],
-      "text" : "To get started with writing JavaScript, open the console, copy the following code, and paste it in at the prompt:"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 52,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 2,
-          "offset" : 0,
-          "text" : "js"
-        }
-      ],
-      "text" : "js"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.99,
-      "id" : 53,
-      "kind" : "code",
-      "lowConfidence" : false,
-      "reason" : "pre",
-      "spoken" : [
-
-      ],
       "text" : "(function () { \"use strict\"; /* Start of your code */ function greetMe(yourName) { alert(`Hello ${yourName}`); } greetMe(\"World\"); /* End of your code */ })();"
     },
     {
@@ -1120,7 +1024,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 54,
+      "id" : 48,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1138,7 +1042,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 55,
+      "id" : 49,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -1152,7 +1056,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 56,
+      "id" : 50,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1170,7 +1074,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 57,
+      "id" : 51,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1193,7 +1097,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 58,
+      "id" : 52,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ol",
@@ -1216,7 +1120,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 59,
+      "id" : 53,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -1234,7 +1138,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 60,
+      "id" : 54,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -1247,31 +1151,67 @@
       "children" : [
 
       ],
-      "confidence" : 0.7,
-      "id" : 61,
-      "kind" : "code",
+      "confidence" : 0.6,
+      "id" : 55,
+      "kind" : "prose",
       "lowConfidence" : true,
-      "reason" : "line-variance",
+      "reason" : "shape-unsure",
       "spoken" : [
-
+        {
+          "length" : 29,
+          "offset" : 0,
+          "text" : "Was this page helpful to you?"
+        }
       ],
-      "text" : "Was this page helpful to you? Yes No"
+      "text" : "Was this page helpful to you?"
     },
     {
       "children" : [
 
       ],
       "confidence" : 0.6,
-      "id" : 62,
+      "id" : 56,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
       "spoken" : [
         {
-          "length" : 23,
+          "length" : 3,
           "offset" : 0,
-          "text" : "Learn how to contribute"
+          "text" : "Yes"
         }
+      ],
+      "text" : "Yes"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 57,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 2,
+          "offset" : 0,
+          "text" : "No"
+        }
+      ],
+      "text" : "No"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.75,
+      "id" : 58,
+      "kind" : "nav",
+      "lowConfidence" : true,
+      "reason" : "link-density",
+      "spoken" : [
+
       ],
       "text" : "Learn how to contribute"
     },
@@ -1280,7 +1220,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 63,
+      "id" : 59,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1297,237 +1237,56 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 64,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 60,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 24,
-          "offset" : 0,
-          "text" : "View this page on GitHub"
-        }
-      ],
-      "text" : "View this page on GitHub"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 65,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 34,
-          "offset" : 0,
-          "text" : "Report a problem with this content"
-        }
-      ],
-      "text" : "Report a problem with this content"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 66,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 1,
-          "offset" : 0,
-          "text" : "•"
-        }
-      ],
-      "text" : "•"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.9,
-      "id" : 67,
-      "kind" : "aside",
-      "lowConfidence" : false,
-      "reason" : "aside",
+      "reason" : "link-density",
       "spoken" : [
 
       ],
-      "text" : "Filter sidebar Clear filter input JavaScript Tutorials and guides JavaScript Guide Introduction Grammar and types Control flow and error handling Loops and iteration Functions Expressions and operators Numbers and strings Representing dates & times Regular expressions Indexed collections Keyed collections Working with objects Using classes Using promises JavaScript typed arrays Iterators and generators Resource management Internationalization JavaScript modules Using modules on the web Understanding the module graph Modules across platforms Intermediate Language overview JavaScript data structures Equality comparisons and sameness Enumerability and ownership of properties Closures Advanced Inheritance and the prototype chain Meta programming Memory Management Agent communication and coordination References Built-in objects AbstractModuleSource AggregateError Array ArrayBuffer AsyncDisposableStack AsyncFunction AsyncGenerator AsyncGeneratorFunction AsyncIterator Atomics BigInt BigInt64Array BigUint64Array Boolean DataView Date decodeURI() decodeURIComponent() DisposableStack encodeURI() encodeURIComponent() Error escape() eval() EvalError FinalizationRegistry Float16Array Float32Array Float64Array Function Generator GeneratorFunction globalThis Infinity Int8Array Int16Array Int32Array InternalError Intl isFinite() isNaN() Iterator JSON Map Math NaN Number Object parseFloat() parseInt() Promise Proxy RangeError ReferenceError Reflect RegExp Set SharedArrayBuffer String SuppressedError Symbol SyntaxError Temporal TypedArray TypeError Uint8Array Uint8ClampedArray Uint16Array Uint32Array undefined unescape() URIError WeakMap WeakRef WeakSet Expressions & operators Addition (+) Addition assignment (+=) Assignment (=) async function expression async function* expression await Bitwise AND (&) Bitwise AND assignment (&=) Bitwise NOT (~) Bitwise OR (|) Bitwise OR assignment (|=) Bitwise XOR (^) Bitwise XOR assignment (^=) class expression Comma operator (,) Conditional (ternary) operator Decrement (--) delete Destructuring Division (/) Division assignment (/=) Equality (==) Exponentiation (**) Exponentiation assignment (**=) function expression function* expression Greater than (>) Greater than or equal (>=) Grouping operator ( ) import.meta import.meta.resolve() import() import.defer() import.source() in Increment (++) Inequality (!=) instanceof Left shift (<<) Left shift assignment (<<=) Less than (<) Less than or equal (<=) Logical AND (&&) Logical AND assignment (&&=) Logical NOT (!) Logical OR (||) Logical OR assignment (||=) Multiplication (*) Multiplication assignment (*=) new new.target null Nullish coalescing assignment (??=) Nullish coalescing operator (??) Object initializer Operator precedence Optional chaining (?.) Property accessors Remainder (%) Remainder assignment (%=) Right shift (>>) Right shift assignment (>>=) Spread syntax (...) Strict equality (===) Strict inequality (!==) Subtraction (-) Subtraction assignment (-=) super this typeof Unary negation (-) Unary plus (+) Unsigned right shift (>>>) Unsigned right shift assignment (>>>=) void operator yield yield* Statements & declarations async function async function* await using Block statement break class const continue debugger do...while Empty statement export Expression statement for for await...of for...in for...of function function* if...else import Import attributes import defer import source Labeled statement let return switch throw try...catch using var while with Functions Arrow function expressions Default parameters get Method definitions Rest parameters set The arguments object [Symbol.iterator]() callee length Classes constructor extends Private elements Public class fields static Static initialization blocks Regular expressions Backreference: \\1, \\2 Buffer boundary assertion: \\A, \\z, \\Z Capturing group: (...) Character class escape: \\d, \\D, \\w, \\W, \\s, \\S Character class: [...], [^...] Character escape: \\n, \\u{...} Disjunction: | Input boundary assertion: ^, $ Literal character: a, b Lookahead assertion: (?=...), (?!...) Lookbehind assertion: (?<=...), (?<!...) Modifier: (?ims-ims:...) Named backreference: \\k<name> Named capturing group: (?<name>...) Non-capturing group: (?:...) Quantifier: *, +, ?, {n}, {n,}, {n,m} Unicode character class escape: \\p{...}, \\P{...} Wildcard: . Word boundary assertion: \\b, \\B Errors AggregateError: No Promise in Promise.any was resolved Error: Permission denied to access property \"x\" InternalError: too much recursion RangeError: argument is not a valid code point RangeError: BigInt division by zero RangeError: BigInt negative exponent RangeError: form must be one of 'NFC', 'NFD', 'NFKC', or 'NFKD' RangeError: invalid array length RangeError: invalid date RangeError: precision is out of range RangeError: radix must be an integer RangeError: repeat count must be less than infinity RangeError: repeat count must be non-negative RangeError: x can't be converted to BigInt because it isn't an integer ReferenceError: \"x\" is not defined ReferenceError: assignment to undeclared variable \"x\" ReferenceError: can't access lexical declaration 'X' before initialization ReferenceError: must call super constructor before using 'this' in derived class constructor ReferenceError: super() called twice in derived class constructor SyntaxError: 'arguments'/'eval' can't be defined or assigned to in strict mode code SyntaxError: \"0\"-prefixed octal literals are deprecated SyntaxError: \"use strict\" not allowed in function with non-simple parameters SyntaxError: \"x\" is a reserved identifier SyntaxError: \\ at end of pattern SyntaxError: a declaration in the head of a for-of loop can't have an initializer SyntaxError: applying the 'delete' operator to an unqualified name is deprecated SyntaxError: arguments is not valid in fields SyntaxError: await is only valid in async functions, async generators and modules SyntaxError: await/yield expression can't be used in parameter SyntaxError: cannot use ?? unparenthesized within || and && expressions SyntaxError: character class escape cannot be used in class range in regular expression SyntaxError: continue must be inside loop SyntaxError: duplicate capture group name in regular expression SyntaxError: duplicate formal argument x SyntaxError: for-in loop head declarations may not have initializers SyntaxError: function statement requires a name SyntaxError: functions cannot be labelled SyntaxError: getter and setter for private name #x should either be both static or non-static SyntaxError: getter functions must have no arguments SyntaxError: identifier starts immediately after numeric literal SyntaxError: illegal character SyntaxError: import declarations may only appear at top level of a module SyntaxError: incomplete quantifier in regular expression SyntaxError: invalid assignment left-hand side SyntaxError: invalid BigInt syntax SyntaxError: invalid capture group name in regular expression SyntaxError: invalid character in class in regular expression SyntaxError: invalid class set operation in regular expression SyntaxError: invalid decimal escape in regular expression SyntaxError: invalid identity escape in regular expression SyntaxError: invalid named capture reference in regular expression SyntaxError: invalid property name in regular expression SyntaxError: invalid range in character class SyntaxError: invalid regexp group SyntaxError: invalid regular expression flag \"x\" SyntaxError: invalid unicode escape in regular expression SyntaxError: JSON.parse: bad parsing SyntaxError: label not found SyntaxError: missing : after property id SyntaxError: missing ) after argument list SyntaxError: missing ) after condition SyntaxError: missing ] after element list SyntaxError: missing } after function body SyntaxError: missing } after property list SyntaxError: missing = in const declaration SyntaxError: missing formal parameter SyntaxError: missing name after . operator SyntaxError: missing variable name SyntaxError: negated character class with strings in regular expression SyntaxError: new keyword cannot be used with an optional chain SyntaxError: nothing to repeat SyntaxError: numbers out of order in {} quantifier. SyntaxError: octal escape sequences can't be used in untagged template literals or in strict mode code SyntaxError: parameter after rest parameter SyntaxError: private fields can't be deleted SyntaxError: property name __proto__ appears more than once in object literal SyntaxError: raw bracket is not allowed in regular expression with unicode flag SyntaxError: redeclaration of formal parameter \"x\" SyntaxError: reference to undeclared private field or method #x SyntaxError: rest parameter may not have a default SyntaxError: return not in function SyntaxError: setter functions must have one argument SyntaxError: string literal contains an unescaped line break SyntaxError: super() is only valid in derived class constructors SyntaxError: tagged template cannot be used with optional chain SyntaxError: Unexpected '#' used outside of class body SyntaxError: Unexpected token SyntaxError: unlabeled break must be inside loop or switch SyntaxError: unparenthesized unary expression can't appear on the left-hand side of '**' SyntaxError: use of super property/member accesses only valid within methods or eval code within methods SyntaxError: Using //@ to indicate sourceURL pragmas is deprecated. Use //# instead TypeError: 'caller', 'callee', and 'arguments' properties may not be accessed TypeError: 'x' is not iterable TypeError: \"x\" is (not) \"y\" TypeError: \"x\" is not a constructor TypeError: \"x\" is not a function TypeError: \"x\" is not a non-null object TypeError: \"x\" is read-only TypeError: already executing generator TypeError: BigInt value can't be serialized in JSON TypeError: calling a builtin X constructor without new is forbidden TypeError: can't access/set private field or method: object is not the right class TypeError: can't assign to property \"x\" on \"y\": not an object TypeError: can't convert BigInt to number TypeError: can't convert x to BigInt TypeError: can't define property \"x\": \"obj\" is not extensible TypeError: can't delete non-configurable array element TypeError: can't redefine non-configurable property \"x\" TypeError: can't set prototype of this object TypeError: can't set prototype: it would cause a prototype chain cycle TypeError: cannot use 'in' operator to search for 'x' in 'y' TypeError: class constructors must be invoked with 'new' TypeError: cyclic object value TypeError: derived class constructor returned invalid value x TypeError: getting private setter-only property TypeError: Initializing an object twice is an error with private fields/methods TypeError: invalid 'instanceof' operand 'x' TypeError: invalid Array.prototype.sort argument TypeError: invalid assignment to const \"x\" TypeError: Iterator/AsyncIterator constructor can't be used directly TypeError: matchAll/replaceAll must be called with a global RegExp TypeError: More arguments needed TypeError: null/undefined has no properties TypeError: property \"x\" is non-configurable and can't be deleted TypeError: Reduce of empty array with no initial value TypeError: setting getter-only property \"x\" TypeError: WeakSet key/WeakMap value 'x' must be an object or an unregistered symbol TypeError: X.prototype.y called on incompatible type URIError: malformed URI sequence Warning: -file- is being assigned a //# sourceMappingURL, but already has one Warning: unreachable code after return statement Misc JavaScript technologies overview Execution model Lexical grammar Magic comments Iteration protocols Strict mode Template literals Trailing commas Deprecated features"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.98,
-      "id" : 68,
-      "kind" : "prose",
-      "lowConfidence" : false,
-      "reason" : "p",
-      "spoken" : [
-        {
-          "length" : 37,
-          "offset" : 0,
-          "text" : "Your blueprint for a better internet."
-        }
-      ],
-      "text" : "Your blueprint for a better internet."
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.8,
-      "id" : 69,
-      "kind" : "list",
-      "lowConfidence" : false,
-      "reason" : "dl",
-      "spoken" : [
-        {
-          "length" : 70,
-          "offset" : 0,
-          "text" : "MDN About Blog Mozilla careers Advertise with us MDN Plus Product help"
-        }
-      ],
-      "text" : "MDN About Blog Mozilla careers Advertise with us MDN Plus Product help"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.8,
-      "id" : 70,
-      "kind" : "list",
-      "lowConfidence" : false,
-      "reason" : "dl",
-      "spoken" : [
-        {
-          "length" : 89,
-          "offset" : 0,
-          "text" : "Contribute MDN Community Community resources Writing guidelines MDN Discord MDN on GitHub"
-        }
-      ],
-      "text" : "Contribute MDN Community Community resources Writing guidelines MDN Discord MDN on GitHub"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.8,
-      "id" : 71,
-      "kind" : "list",
-      "lowConfidence" : false,
-      "reason" : "dl",
-      "spoken" : [
-        {
-          "length" : 86,
-          "offset" : 0,
-          "text" : "Developers Web technologies Learn web development Guides Tutorials Glossary Hacks blog"
-        }
-      ],
-      "text" : "Developers Web technologies Learn web development Guides Tutorials Glossary Hacks blog"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.95,
-      "id" : 72,
-      "kind" : "list",
-      "lowConfidence" : false,
-      "reason" : "ul",
-      "spoken" : [
-        {
-          "length" : 82,
-          "offset" : 0,
-          "text" : "Website Privacy Notice Telemetry Settings Legal Community Participation Guidelines"
-        }
-      ],
-      "text" : "Website Privacy Notice Telemetry Settings Legal Community Participation Guidelines"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.98,
-      "id" : 73,
-      "kind" : "prose",
-      "lowConfidence" : false,
-      "reason" : "p",
-      "spoken" : [
-        {
-          "length" : 79,
-          "offset" : 0,
-          "text" : "Portions of this content are ©1998–2026 by individual mozilla.org contributors."
-        },
-        {
-          "length" : 51,
-          "offset" : 80,
-          "text" : "Content available under a Creative Commons license."
-        }
-      ],
-      "text" : "Portions of this content are ©1998–2026 by individual mozilla.org contributors. Content available under a Creative Commons license."
+      "text" : "View this page on GitHub • Report a problem with this content"
     }
   ],
-  "sentence_count" : 98,
+  "sentence_count" : 87,
   "skipped" : [
     {
-      "block_id" : 1,
-      "confidence" : 0.85,
-      "kind" : "nav",
-      "reason" : "nav",
-      "words" : 251
-    },
-    {
-      "block_id" : 3,
-      "confidence" : 0.8,
-      "kind" : "nav",
-      "reason" : "class=breadcrumbs",
-      "words" : 4
-    },
-    {
-      "block_id" : 5,
-      "confidence" : 0.75,
-      "kind" : "code",
-      "reason" : "symbol-density",
-      "words" : 21
-    },
-    {
-      "block_id" : 6,
+      "block_id" : 0,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h1",
       "words" : 1
     },
     {
-      "block_id" : 9,
+      "block_id" : 3,
       "confidence" : 0.9,
       "kind" : "aside",
       "reason" : "aside",
       "words" : 30
     },
     {
+      "block_id" : 4,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 5
+    },
+    {
+      "block_id" : 7,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h2",
+      "words" : 5
+    },
+    {
       "block_id" : 10,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
-      "words" : 5
+      "words" : 3
     },
     {
-      "block_id" : 13,
-      "confidence" : 0.95,
-      "kind" : "heading",
-      "reason" : "h2",
-      "words" : 5
-    },
-    {
-      "block_id" : 16,
+      "block_id" : 15,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
@@ -1536,105 +1295,98 @@
     {
       "block_id" : 21,
       "confidence" : 0.95,
-      "kind" : "heading",
-      "reason" : "h2",
-      "words" : 3
-    },
-    {
-      "block_id" : 27,
-      "confidence" : 0.95,
       "kind" : "figure",
       "reason" : "figure",
       "words" : 83
     },
     {
-      "block_id" : 28,
+      "block_id" : 22,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
       "words" : 5
     },
     {
-      "block_id" : 31,
+      "block_id" : 25,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h3",
       "words" : 6
     },
     {
-      "block_id" : 36,
+      "block_id" : 30,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
       "words" : 4
     },
     {
-      "block_id" : 40,
+      "block_id" : 34,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h3",
       "words" : 3
     },
     {
-      "block_id" : 43,
+      "block_id" : 37,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h3",
       "words" : 4
     },
     {
-      "block_id" : 47,
+      "block_id" : 41,
       "confidence" : 0.99,
       "kind" : "code",
       "reason" : "pre",
       "words" : 3
     },
     {
-      "block_id" : 48,
+      "block_id" : 42,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h3",
       "words" : 5
     },
     {
-      "block_id" : 53,
+      "block_id" : 47,
       "confidence" : 0.99,
       "kind" : "code",
       "reason" : "pre",
       "words" : 25
     },
     {
-      "block_id" : 55,
+      "block_id" : 49,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
       "words" : 2
     },
     {
-      "block_id" : 60,
+      "block_id" : 54,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
       "words" : 3
     },
     {
-      "block_id" : 61,
-      "confidence" : 0.7,
-      "kind" : "code",
-      "reason" : "line-variance",
-      "words" : 8
+      "block_id" : 58,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
     },
     {
-      "block_id" : 67,
-      "confidence" : 0.9,
-      "kind" : "aside",
-      "reason" : "aside",
-      "words" : 1530
+      "block_id" : 60,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 12
     }
   ],
   "source" : "018-javascript.html",
   "source_sha256" : "8755f5ce18d97c6ef06154aa661c4f9b596badbecd89536a4e4cd14986c857da",
-  "spoken_words" : 1502,
+  "spoken_words" : 1413,
   "validation_failures" : 0,
   "version" : 1
 }

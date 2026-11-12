@@ -4,184 +4,8 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
+      "confidence" : 0.98,
       "id" : 0,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 20,
-          "offset" : 0,
-          "text" : "Skip to main content"
-        }
-      ],
-      "text" : "Skip to main content"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 1,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 6,
-          "offset" : 0,
-          "text" : "Search"
-        }
-      ],
-      "text" : "Search"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 2,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 4,
-          "offset" : 0,
-          "text" : "Shop"
-        }
-      ],
-      "text" : "Shop"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 3,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 11,
-          "offset" : 0,
-          "text" : "Newsletters"
-        }
-      ],
-      "text" : "Newsletters"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 4,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 5,
-          "offset" : 0,
-          "text" : "Renew"
-        }
-      ],
-      "text" : "Renew"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 5,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 11,
-          "offset" : 0,
-          "text" : "Give a Gift"
-        }
-      ],
-      "text" : "Give a Gift"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 6,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 9,
-          "offset" : 0,
-          "text" : "Subscribe"
-        }
-      ],
-      "text" : "Subscribe"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 7,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 10,
-          "offset" : 0,
-          "text" : "Membership"
-        }
-      ],
-      "text" : "Membership"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.85,
-      "id" : 8,
-      "kind" : "nav",
-      "lowConfidence" : false,
-      "reason" : "nav",
-      "spoken" : [
-
-      ],
-      "text" : "i Subscribe Give a Gift Renew Sections Smart News History Science Innovation Arts & Culture Travel At the Smithsonian More from Smithsonian magazine Newsletters Photo Contest Podcast Videos Our Partners Smithsonian Store Smithsonian Journeys"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.98,
-      "id" : 9,
-      "kind" : "prose",
-      "lowConfidence" : false,
-      "reason" : "p",
-      "spoken" : [
-        {
-          "length" : 54,
-          "offset" : 0,
-          "text" : "Subscribe to Smithsonian magazine and get a FREE tote."
-        }
-      ],
-      "text" : "Subscribe to Smithsonian magazine and get a FREE tote."
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.98,
-      "id" : 10,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -199,7 +23,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 11,
+      "id" : 1,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h1",
@@ -213,7 +37,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 12,
+      "id" : 2,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -227,7 +51,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 13,
+      "id" : 3,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -245,7 +69,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 14,
+      "id" : 4,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -263,25 +87,57 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 15,
+      "id" : 5,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
       "spoken" : [
         {
-          "length" : 58,
+          "length" : 5,
           "offset" : 0,
-          "text" : "Share Copy linkEmailSMSFacebookXRedditLinkedInBlueskyPrint"
+          "text" : "Share"
         }
       ],
-      "text" : "Share Copy linkEmailSMSFacebookXRedditLinkedInBlueskyPrint"
+      "text" : "Share"
     },
     {
       "children" : [
 
       ],
       "confidence" : 0.6,
-      "id" : 16,
+      "id" : 6,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 9,
+          "offset" : 0,
+          "text" : "Copy link"
+        }
+      ],
+      "text" : "Copy link"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.75,
+      "id" : 7,
+      "kind" : "nav",
+      "lowConfidence" : true,
+      "reason" : "link-density",
+      "spoken" : [
+
+      ],
+      "text" : "EmailSMSFacebookXRedditLinkedInBlueskyPrint"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 8,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -299,7 +155,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 17,
+      "id" : 9,
       "kind" : "figure",
       "lowConfidence" : false,
       "reason" : "figure",
@@ -313,7 +169,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 18,
+      "id" : 10,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -331,7 +187,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 19,
+      "id" : 11,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -359,7 +215,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 20,
+      "id" : 12,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -392,7 +248,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 21,
+      "id" : 13,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -415,7 +271,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 22,
+      "id" : 14,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -443,7 +299,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 23,
+      "id" : 15,
       "kind" : "figure",
       "lowConfidence" : false,
       "reason" : "figure",
@@ -457,7 +313,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 24,
+      "id" : 16,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -485,7 +341,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 25,
+      "id" : 17,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -503,7 +359,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 26,
+      "id" : 18,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -526,7 +382,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 27,
+      "id" : 19,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -554,7 +410,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 28,
+      "id" : 20,
       "kind" : "figure",
       "lowConfidence" : false,
       "reason" : "figure",
@@ -568,7 +424,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 29,
+      "id" : 21,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -586,7 +442,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 30,
+      "id" : 22,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -609,7 +465,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 31,
+      "id" : 23,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -627,7 +483,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 32,
+      "id" : 24,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -650,7 +506,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 33,
+      "id" : 25,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -678,7 +534,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 34,
+      "id" : 26,
       "kind" : "figure",
       "lowConfidence" : false,
       "reason" : "figure",
@@ -692,7 +548,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 35,
+      "id" : 27,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -725,7 +581,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 36,
+      "id" : 28,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -753,7 +609,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 37,
+      "id" : 29,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -776,7 +632,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 38,
+      "id" : 30,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -799,7 +655,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 39,
+      "id" : 31,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -817,7 +673,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 40,
+      "id" : 32,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -845,7 +701,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 41,
+      "id" : 33,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -873,7 +729,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 42,
+      "id" : 34,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h3",
@@ -887,7 +743,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 43,
+      "id" : 35,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -925,7 +781,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 44,
+      "id" : 36,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -943,7 +799,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 45,
+      "id" : 37,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h3",
@@ -957,7 +813,7 @@
 
       ],
       "confidence" : 0.85,
-      "id" : 46,
+      "id" : 38,
       "kind" : "nav",
       "lowConfidence" : false,
       "reason" : "nav",
@@ -965,291 +821,75 @@
 
       ],
       "text" : "More about: African American History African American History Museum American History Auctions Civil Rights History Martin Luther King, Jr. Race and Ethnicity Washington, D.C."
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.98,
-      "id" : 47,
-      "kind" : "prose",
-      "lowConfidence" : false,
-      "reason" : "p",
-      "spoken" : [
-        {
-          "length" : 9,
-          "offset" : 0,
-          "text" : "Follow Us"
-        }
-      ],
-      "text" : "Follow Us"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.98,
-      "id" : 48,
-      "kind" : "prose",
-      "lowConfidence" : false,
-      "reason" : "p",
-      "spoken" : [
-        {
-          "length" : 7,
-          "offset" : 0,
-          "text" : "Explore"
-        }
-      ],
-      "text" : "Explore"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.95,
-      "id" : 49,
-      "kind" : "list",
-      "lowConfidence" : false,
-      "reason" : "ul",
-      "spoken" : [
-        {
-          "length" : 106,
-          "offset" : 0,
-          "text" : "Smart News History Science Innovation Arts & Culture Travel At the Smithsonian Photo Contest Podcast Video"
-        }
-      ],
-      "text" : "Smart News History Science Innovation Arts & Culture Travel At the Smithsonian Photo Contest Podcast Video"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.98,
-      "id" : 50,
-      "kind" : "prose",
-      "lowConfidence" : false,
-      "reason" : "p",
-      "spoken" : [
-        {
-          "length" : 12,
-          "offset" : 0,
-          "text" : "Subscription"
-        }
-      ],
-      "text" : "Subscription"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.95,
-      "id" : 51,
-      "kind" : "list",
-      "lowConfidence" : false,
-      "reason" : "ul",
-      "spoken" : [
-        {
-          "length" : 45,
-          "offset" : 0,
-          "text" : "Subscribe Give a gift Renew Manage My Account"
-        }
-      ],
-      "text" : "Subscribe Give a gift Renew Manage My Account"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.98,
-      "id" : 52,
-      "kind" : "prose",
-      "lowConfidence" : false,
-      "reason" : "p",
-      "spoken" : [
-        {
-          "length" : 11,
-          "offset" : 0,
-          "text" : "Newsletters"
-        }
-      ],
-      "text" : "Newsletters"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.95,
-      "id" : 53,
-      "kind" : "list",
-      "lowConfidence" : false,
-      "reason" : "ul",
-      "spoken" : [
-        {
-          "length" : 7,
-          "offset" : 0,
-          "text" : "Sign Up"
-        }
-      ],
-      "text" : "Sign Up"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.98,
-      "id" : 54,
-      "kind" : "prose",
-      "lowConfidence" : false,
-      "reason" : "p",
-      "spoken" : [
-        {
-          "length" : 5,
-          "offset" : 0,
-          "text" : "About"
-        }
-      ],
-      "text" : "About"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.95,
-      "id" : 55,
-      "kind" : "list",
-      "lowConfidence" : false,
-      "reason" : "ul",
-      "spoken" : [
-        {
-          "length" : 133,
-          "offset" : 0,
-          "text" : "About Us Advertising Contact Us Content Licensing FAQ Feedback Internships & Employment Member Services Smithsonian Institution Staff"
-        }
-      ],
-      "text" : "About Us Advertising Contact Us Content Licensing FAQ Feedback Internships & Employment Member Services Smithsonian Institution Staff"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.98,
-      "id" : 56,
-      "kind" : "prose",
-      "lowConfidence" : false,
-      "reason" : "p",
-      "spoken" : [
-        {
-          "length" : 12,
-          "offset" : 0,
-          "text" : "Our Partners"
-        }
-      ],
-      "text" : "Our Partners"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.95,
-      "id" : 57,
-      "kind" : "list",
-      "lowConfidence" : false,
-      "reason" : "ul",
-      "spoken" : [
-        {
-          "length" : 115,
-          "offset" : 0,
-          "text" : "Smithsonian.com Smithsonian Store Smithsonian Journeys Smithsonian Channel Smithsonian Books Smithsonian Membership"
-        }
-      ],
-      "text" : "Smithsonian.com Smithsonian Store Smithsonian Journeys Smithsonian Channel Smithsonian Books Smithsonian Membership"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.98,
-      "id" : 58,
-      "kind" : "prose",
-      "lowConfidence" : false,
-      "reason" : "p",
-      "spoken" : [
-        {
-          "length" : 148,
-          "offset" : 0,
-          "text" : "© 2026 Smithsonian Magazine Privacy Statement [9/17/26] Cookie Policy [5/20/25] Terms of Use Advertising Notice Your Privacy Choices Cookie Settings"
-        }
-      ],
-      "text" : "© 2026 Smithsonian Magazine Privacy Statement [9/17/26] Cookie Policy [5/20/25] Terms of Use Advertising Notice Your Privacy Choices Cookie Settings"
     }
   ],
-  "sentence_count" : 81,
+  "sentence_count" : 61,
   "skipped" : [
     {
-      "block_id" : 8,
-      "confidence" : 0.85,
-      "kind" : "nav",
-      "reason" : "nav",
-      "words" : 34
-    },
-    {
-      "block_id" : 11,
+      "block_id" : 1,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h1",
       "words" : 29
     },
     {
-      "block_id" : 12,
+      "block_id" : 2,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
       "words" : 41
     },
     {
-      "block_id" : 17,
+      "block_id" : 7,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 1
+    },
+    {
+      "block_id" : 9,
       "confidence" : 0.95,
       "kind" : "figure",
       "reason" : "figure",
       "words" : 49
     },
     {
-      "block_id" : 23,
+      "block_id" : 15,
       "confidence" : 0.95,
       "kind" : "figure",
       "reason" : "figure",
       "words" : 25
     },
     {
-      "block_id" : 28,
+      "block_id" : 20,
       "confidence" : 0.95,
       "kind" : "figure",
       "reason" : "figure",
       "words" : 10
     },
     {
-      "block_id" : 34,
+      "block_id" : 26,
       "confidence" : 0.95,
       "kind" : "figure",
       "reason" : "figure",
       "words" : 23
     },
     {
-      "block_id" : 42,
+      "block_id" : 34,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h3",
       "words" : 4
     },
     {
-      "block_id" : 45,
+      "block_id" : 37,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h3",
       "words" : 9
     },
     {
-      "block_id" : 46,
+      "block_id" : 38,
       "confidence" : 0.85,
       "kind" : "nav",
       "reason" : "nav",
@@ -1258,7 +898,7 @@
   ],
   "source" : "067-mlk-draft.html",
   "source_sha256" : "89de77e6920acc14f973ca9345c36e3144ae26610a0f0e0e53a723c351ec6591",
-  "spoken_words" : 1215,
+  "spoken_words" : 1111,
   "validation_failures" : 0,
   "version" : 1
 }

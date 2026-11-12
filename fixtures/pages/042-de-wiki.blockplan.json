@@ -4,72 +4,8 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
+      "confidence" : 0.85,
       "id" : 0,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 19,
-          "offset" : 0,
-          "text" : "Zum Inhalt springen"
-        }
-      ],
-      "text" : "Zum Inhalt springen"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.85,
-      "id" : 1,
-      "kind" : "nav",
-      "lowConfidence" : false,
-      "reason" : "nav",
-      "spoken" : [
-
-      ],
-      "text" : "Hauptmenü Hauptmenü In die Seitenleiste verschieben Verbergen Navigation Hauptseite Themenportale Zufälliger Artikel Spezialseiten Mitmachen Artikel verbessern Neuen Artikel anlegen Autorenportal Hilfe Letzte Änderungen Kontakt"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 2,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 5,
-          "offset" : 0,
-          "text" : "Suche"
-        }
-      ],
-      "text" : "Suche"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.85,
-      "id" : 3,
-      "kind" : "nav",
-      "lowConfidence" : false,
-      "reason" : "nav",
-      "spoken" : [
-
-      ],
-      "text" : "Erscheinungsbild Jetzt spenden Benutzerkonto erstellen Anmelden Meine Werkzeuge Jetzt spenden Benutzerkonto erstellen Anmelden"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.85,
-      "id" : 4,
       "kind" : "nav",
       "lowConfidence" : false,
       "reason" : "nav",
@@ -83,7 +19,7 @@
 
       ],
       "confidence" : 0.85,
-      "id" : 5,
+      "id" : 1,
       "kind" : "nav",
       "lowConfidence" : false,
       "reason" : "nav",
@@ -97,7 +33,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 6,
+      "id" : 2,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h1",
@@ -111,7 +47,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 7,
+      "id" : 3,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -129,7 +65,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 8,
+      "id" : 4,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -151,17 +87,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 9,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 5,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 16,
-          "offset" : 0,
-          "text" : "Links bearbeiten"
-        }
+
       ],
       "text" : "Links bearbeiten"
     },
@@ -170,7 +102,7 @@
 
       ],
       "confidence" : 0.85,
-      "id" : 10,
+      "id" : 6,
       "kind" : "nav",
       "lowConfidence" : false,
       "reason" : "nav",
@@ -184,7 +116,7 @@
 
       ],
       "confidence" : 0.85,
-      "id" : 11,
+      "id" : 7,
       "kind" : "nav",
       "lowConfidence" : false,
       "reason" : "nav",
@@ -198,7 +130,7 @@
 
       ],
       "confidence" : 0.85,
-      "id" : 12,
+      "id" : 8,
       "kind" : "nav",
       "lowConfidence" : false,
       "reason" : "nav",
@@ -212,7 +144,7 @@
 
       ],
       "confidence" : 0.85,
-      "id" : 13,
+      "id" : 9,
       "kind" : "nav",
       "lowConfidence" : false,
       "reason" : "nav",
@@ -226,7 +158,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 14,
+      "id" : 10,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -244,7 +176,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 15,
+      "id" : 11,
       "kind" : "figure",
       "lowConfidence" : false,
       "reason" : "figure",
@@ -258,7 +190,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 16,
+      "id" : 12,
       "kind" : "figure",
       "lowConfidence" : false,
       "reason" : "figure",
@@ -272,7 +204,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 17,
+      "id" : 13,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -315,7 +247,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 18,
+      "id" : 14,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -343,7 +275,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 19,
+      "id" : 15,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -366,7 +298,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 20,
+      "id" : 16,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -384,7 +316,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 21,
+      "id" : 17,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -417,7 +349,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 22,
+      "id" : 18,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -430,17 +362,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 23,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 19,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "[Bearbeiten | Quelltext bearbeiten]"
-        }
+
       ],
       "text" : "[Bearbeiten | Quelltext bearbeiten]"
     },
@@ -449,7 +377,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 24,
+      "id" : 20,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h3",
@@ -462,17 +390,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 25,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 21,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "[Bearbeiten | Quelltext bearbeiten]"
-        }
+
       ],
       "text" : "[Bearbeiten | Quelltext bearbeiten]"
     },
@@ -481,7 +405,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 26,
+      "id" : 22,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -524,7 +448,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 27,
+      "id" : 23,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -547,7 +471,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 28,
+      "id" : 24,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -580,7 +504,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 29,
+      "id" : 25,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -608,7 +532,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 30,
+      "id" : 26,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -631,7 +555,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 31,
+      "id" : 27,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h3",
@@ -644,17 +568,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 32,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 28,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "[Bearbeiten | Quelltext bearbeiten]"
-        }
+
       ],
       "text" : "[Bearbeiten | Quelltext bearbeiten]"
     },
@@ -663,7 +583,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 33,
+      "id" : 29,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -691,7 +611,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 34,
+      "id" : 30,
       "kind" : "figure",
       "lowConfidence" : false,
       "reason" : "figure",
@@ -705,7 +625,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 35,
+      "id" : 31,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -753,7 +673,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 36,
+      "id" : 32,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -801,7 +721,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 37,
+      "id" : 33,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -819,7 +739,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 38,
+      "id" : 34,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -852,7 +772,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 39,
+      "id" : 35,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -865,17 +785,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 40,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 36,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "[Bearbeiten | Quelltext bearbeiten]"
-        }
+
       ],
       "text" : "[Bearbeiten | Quelltext bearbeiten]"
     },
@@ -884,7 +800,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 41,
+      "id" : 37,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -902,7 +818,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 42,
+      "id" : 38,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h3",
@@ -915,17 +831,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 43,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 39,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "[Bearbeiten | Quelltext bearbeiten]"
-        }
+
       ],
       "text" : "[Bearbeiten | Quelltext bearbeiten]"
     },
@@ -934,7 +846,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 44,
+      "id" : 40,
       "kind" : "figure",
       "lowConfidence" : false,
       "reason" : "figure",
@@ -948,7 +860,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 45,
+      "id" : 41,
       "kind" : "figure",
       "lowConfidence" : false,
       "reason" : "figure",
@@ -962,7 +874,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 46,
+      "id" : 42,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1010,7 +922,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 47,
+      "id" : 43,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1033,7 +945,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 48,
+      "id" : 44,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h3",
@@ -1046,17 +958,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 49,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 45,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "[Bearbeiten | Quelltext bearbeiten]"
-        }
+
       ],
       "text" : "[Bearbeiten | Quelltext bearbeiten]"
     },
@@ -1065,7 +973,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 50,
+      "id" : 46,
       "kind" : "figure",
       "lowConfidence" : false,
       "reason" : "figure",
@@ -1079,7 +987,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 51,
+      "id" : 47,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1102,7 +1010,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 52,
+      "id" : 48,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1145,7 +1053,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 53,
+      "id" : 49,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1178,7 +1086,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 54,
+      "id" : 50,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h3",
@@ -1191,17 +1099,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 55,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 51,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "[Bearbeiten | Quelltext bearbeiten]"
-        }
+
       ],
       "text" : "[Bearbeiten | Quelltext bearbeiten]"
     },
@@ -1210,7 +1114,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 56,
+      "id" : 52,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1253,7 +1157,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 57,
+      "id" : 53,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -1266,17 +1170,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 58,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 54,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "[Bearbeiten | Quelltext bearbeiten]"
-        }
+
       ],
       "text" : "[Bearbeiten | Quelltext bearbeiten]"
     },
@@ -1285,7 +1185,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 59,
+      "id" : 55,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1318,7 +1218,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 60,
+      "id" : 56,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1371,7 +1271,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 61,
+      "id" : 57,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1394,7 +1294,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 62,
+      "id" : 58,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1437,7 +1337,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 63,
+      "id" : 59,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -1450,17 +1350,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 64,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 60,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "[Bearbeiten | Quelltext bearbeiten]"
-        }
+
       ],
       "text" : "[Bearbeiten | Quelltext bearbeiten]"
     },
@@ -1469,7 +1365,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 65,
+      "id" : 61,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1492,7 +1388,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 66,
+      "id" : 62,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1520,7 +1416,7 @@
 
       ],
       "confidence" : 0.92,
-      "id" : 67,
+      "id" : 63,
       "kind" : "quote",
       "lowConfidence" : false,
       "reason" : "blockquote",
@@ -1553,61 +1449,25 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 68,
+      "id" : 64,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
       "spoken" : [
         {
-          "length" : 56,
+          "length" : 62,
           "offset" : 0,
-          "text" : "Gordon Brown, damaliger britischer Premierminister, 2009"
+          "text" : "– Gordon Brown, damaliger britischer Premierminister, 2009[21]"
         }
       ],
-      "text" : "Gordon Brown, damaliger britischer Premierminister, 2009"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 69,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 4,
-          "offset" : 0,
-          "text" : "[21]"
-        }
-      ],
-      "text" : "[21]"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 70,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 1,
-          "offset" : 0,
-          "text" : "–"
-        }
-      ],
-      "text" : "–"
+      "text" : "– Gordon Brown, damaliger britischer Premierminister, 2009[21]"
     },
     {
       "children" : [
 
       ],
       "confidence" : 0.98,
-      "id" : 71,
+      "id" : 65,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1630,7 +1490,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 72,
+      "id" : 66,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1668,7 +1528,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 73,
+      "id" : 67,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1706,7 +1566,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 74,
+      "id" : 68,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1724,7 +1584,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 75,
+      "id" : 69,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -1737,17 +1597,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 76,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 70,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "[Bearbeiten | Quelltext bearbeiten]"
-        }
+
       ],
       "text" : "[Bearbeiten | Quelltext bearbeiten]"
     },
@@ -1756,7 +1612,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 77,
+      "id" : 71,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1784,7 +1640,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 78,
+      "id" : 72,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1847,7 +1703,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 79,
+      "id" : 73,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -1860,17 +1716,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 80,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 74,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "[Bearbeiten | Quelltext bearbeiten]"
-        }
+
       ],
       "text" : "[Bearbeiten | Quelltext bearbeiten]"
     },
@@ -1879,7 +1731,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 81,
+      "id" : 75,
       "kind" : "figure",
       "lowConfidence" : false,
       "reason" : "figure",
@@ -1893,7 +1745,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 82,
+      "id" : 76,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1921,7 +1773,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 83,
+      "id" : 77,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1944,7 +1796,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 84,
+      "id" : 78,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1972,7 +1824,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 85,
+      "id" : 79,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2000,7 +1852,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 86,
+      "id" : 80,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2023,7 +1875,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 87,
+      "id" : 81,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2051,7 +1903,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 88,
+      "id" : 82,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2069,7 +1921,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 89,
+      "id" : 83,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2087,7 +1939,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 90,
+      "id" : 84,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2125,7 +1977,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 91,
+      "id" : 85,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2143,7 +1995,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 92,
+      "id" : 86,
       "kind" : "figure",
       "lowConfidence" : false,
       "reason" : "figure",
@@ -2157,7 +2009,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 93,
+      "id" : 87,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2190,7 +2042,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 94,
+      "id" : 88,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -2203,17 +2055,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 95,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 89,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "[Bearbeiten | Quelltext bearbeiten]"
-        }
+
       ],
       "text" : "[Bearbeiten | Quelltext bearbeiten]"
     },
@@ -2222,7 +2070,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 96,
+      "id" : 90,
       "kind" : "figure",
       "lowConfidence" : false,
       "reason" : "figure",
@@ -2236,7 +2084,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 97,
+      "id" : 91,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -2299,7 +2147,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 98,
+      "id" : 92,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -2312,17 +2160,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 99,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 93,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "[Bearbeiten | Quelltext bearbeiten]"
-        }
+
       ],
       "text" : "[Bearbeiten | Quelltext bearbeiten]"
     },
@@ -2331,7 +2175,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 100,
+      "id" : 94,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h3",
@@ -2344,17 +2188,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 101,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 95,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "[Bearbeiten | Quelltext bearbeiten]"
-        }
+
       ],
       "text" : "[Bearbeiten | Quelltext bearbeiten]"
     },
@@ -2363,7 +2203,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 102,
+      "id" : 96,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2381,7 +2221,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 103,
+      "id" : 97,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -2444,7 +2284,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 104,
+      "id" : 98,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2462,7 +2302,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 105,
+      "id" : 99,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -2560,7 +2400,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 106,
+      "id" : 100,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -2578,7 +2418,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 107,
+      "id" : 101,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -2691,7 +2531,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 108,
+      "id" : 102,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h3",
@@ -2704,17 +2544,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 109,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 103,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "[Bearbeiten | Quelltext bearbeiten]"
-        }
+
       ],
       "text" : "[Bearbeiten | Quelltext bearbeiten]"
     },
@@ -2723,7 +2559,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 110,
+      "id" : 104,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -2741,7 +2577,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 111,
+      "id" : 105,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h3",
@@ -2754,17 +2590,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 112,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 106,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "[Bearbeiten | Quelltext bearbeiten]"
-        }
+
       ],
       "text" : "[Bearbeiten | Quelltext bearbeiten]"
     },
@@ -2773,7 +2605,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 113,
+      "id" : 107,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -2791,7 +2623,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 114,
+      "id" : 108,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -2804,17 +2636,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 115,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 109,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "[Bearbeiten | Quelltext bearbeiten]"
-        }
+
       ],
       "text" : "[Bearbeiten | Quelltext bearbeiten]"
     },
@@ -2823,7 +2651,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 116,
+      "id" : 110,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h3",
@@ -2836,17 +2664,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 117,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 111,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "[Bearbeiten | Quelltext bearbeiten]"
-        }
+
       ],
       "text" : "[Bearbeiten | Quelltext bearbeiten]"
     },
@@ -2855,7 +2679,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 118,
+      "id" : 112,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -2933,7 +2757,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 119,
+      "id" : 113,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h3",
@@ -2946,17 +2770,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 120,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 114,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "[Bearbeiten | Quelltext bearbeiten]"
-        }
+
       ],
       "text" : "[Bearbeiten | Quelltext bearbeiten]"
     },
@@ -2965,7 +2785,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 121,
+      "id" : 115,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -3128,7 +2948,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 122,
+      "id" : 116,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h3",
@@ -3141,17 +2961,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 123,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 117,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "[Bearbeiten | Quelltext bearbeiten]"
-        }
+
       ],
       "text" : "[Bearbeiten | Quelltext bearbeiten]"
     },
@@ -3160,7 +2976,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 124,
+      "id" : 118,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -3243,7 +3059,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 125,
+      "id" : 119,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -3256,17 +3072,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 126,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 120,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "[Bearbeiten | Quelltext bearbeiten]"
-        }
+
       ],
       "text" : "[Bearbeiten | Quelltext bearbeiten]"
     },
@@ -3275,7 +3087,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 127,
+      "id" : 121,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -3383,7 +3195,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 128,
+      "id" : 122,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -3396,17 +3208,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 129,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 123,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "[Bearbeiten | Quelltext bearbeiten]"
-        }
+
       ],
       "text" : "[Bearbeiten | Quelltext bearbeiten]"
     },
@@ -3415,7 +3223,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 130,
+      "id" : 124,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -3438,7 +3246,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 131,
+      "id" : 125,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -3451,17 +3259,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 132,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 126,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "[Bearbeiten | Quelltext bearbeiten]"
-        }
+
       ],
       "text" : "[Bearbeiten | Quelltext bearbeiten]"
     },
@@ -3470,7 +3274,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 133,
+      "id" : 127,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -3493,7 +3297,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 134,
+      "id" : 128,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -3506,17 +3310,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 135,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 129,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "[Bearbeiten | Quelltext bearbeiten]"
-        }
+
       ],
       "text" : "[Bearbeiten | Quelltext bearbeiten]"
     },
@@ -3525,7 +3325,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 136,
+      "id" : 130,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -3578,7 +3378,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 137,
+      "id" : 131,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -3591,17 +3391,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 138,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 132,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "[Bearbeiten | Quelltext bearbeiten]"
-        }
+
       ],
       "text" : "[Bearbeiten | Quelltext bearbeiten]"
     },
@@ -3610,79 +3406,39 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 139,
+      "id" : 133,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
       "spoken" : [
         {
-          "length" : 20,
+          "length" : 68,
           "offset" : 0,
-          "text" : "Commons: Alan Turing"
+          "text" : "Commons: Alan Turing – Sammlung von Bildern, Videos und Audiodateien"
         }
       ],
-      "text" : "Commons: Alan Turing"
+      "text" : "Commons: Alan Turing – Sammlung von Bildern, Videos und Audiodateien"
     },
     {
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 140,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 134,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 47,
-          "offset" : 0,
-          "text" : "– Sammlung von Bildern, Videos und Audiodateien"
-        }
-      ],
-      "text" : "– Sammlung von Bildern, Videos und Audiodateien"
-    },
-    {
-      "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 141,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 22,
-          "offset" : 0,
-          "text" : "Wikiquote: Alan Turing"
-        }
-      ],
-      "text" : "Wikiquote: Alan Turing"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 142,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 8,
-          "offset" : 0,
-          "text" : "– Zitate"
-        }
-      ],
-      "text" : "– Zitate"
+      "text" : "Wikiquote: Alan Turing – Zitate"
     },
     {
       "children" : [
 
       ],
       "confidence" : 0.95,
-      "id" : 143,
+      "id" : 135,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -3740,7 +3496,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 144,
+      "id" : 136,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -3758,7 +3514,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 145,
+      "id" : 137,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -3801,7 +3557,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 146,
+      "id" : 138,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -3814,17 +3570,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 147,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 139,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "[Bearbeiten | Quelltext bearbeiten]"
-        }
+
       ],
       "text" : "[Bearbeiten | Quelltext bearbeiten]"
     },
@@ -3833,7 +3585,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 148,
+      "id" : 140,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ol",
@@ -4955,62 +4707,22 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 149,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 141,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 11,
-          "offset" : 0,
-          "text" : "Codeknacker"
-        }
-      ],
-      "text" : "Codeknacker"
-    },
-    {
-      "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 150,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 14,
-          "offset" : 0,
-          "text" : "Bletchley Park"
-        }
-      ],
-      "text" : "Bletchley Park"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 151,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 3,
-          "offset" : 0,
-          "text" : "von"
-        }
-      ],
-      "text" : "von"
+      "text" : "Codeknacker von Bletchley Park"
     },
     {
       "children" : [
 
       ],
       "confidence" : 0.98,
-      "id" : 152,
+      "id" : 142,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -5027,44 +4739,22 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 153,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 143,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 13,
-          "offset" : 0,
-          "text" : "Hall of Honor"
-        }
-      ],
-      "text" : "Hall of Honor"
-    },
-    {
-      "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 154,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 14,
-          "offset" : 0,
-          "text" : "Geehrte in der"
-        }
-      ],
-      "text" : "Geehrte in der"
+      "text" : "Geehrte in der Hall of Honor"
     },
     {
       "children" : [
 
       ],
       "confidence" : 0.98,
-      "id" : 155,
+      "id" : 144,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -5082,7 +4772,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 156,
+      "id" : 145,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -5100,7 +4790,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 157,
+      "id" : 146,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -5118,7 +4808,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 158,
+      "id" : 147,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -5136,7 +4826,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 159,
+      "id" : 148,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -5154,7 +4844,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 160,
+      "id" : 149,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -5172,7 +4862,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 161,
+      "id" : 150,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -5190,7 +4880,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 162,
+      "id" : 151,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -5208,7 +4898,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 163,
+      "id" : 152,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -5226,7 +4916,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 164,
+      "id" : 153,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -5244,7 +4934,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 165,
+      "id" : 154,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -5262,7 +4952,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 166,
+      "id" : 155,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -5280,7 +4970,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 167,
+      "id" : 156,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -5298,7 +4988,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 168,
+      "id" : 157,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -5316,7 +5006,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 169,
+      "id" : 158,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -5334,7 +5024,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 170,
+      "id" : 159,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -5352,7 +5042,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 171,
+      "id" : 160,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -5370,7 +5060,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 172,
+      "id" : 161,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -5388,7 +5078,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 173,
+      "id" : 162,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -5406,7 +5096,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 174,
+      "id" : 163,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -5424,7 +5114,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 175,
+      "id" : 164,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -5442,7 +5132,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 176,
+      "id" : 165,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -5460,7 +5150,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 177,
+      "id" : 166,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -5478,7 +5168,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 178,
+      "id" : 167,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -5496,7 +5186,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 179,
+      "id" : 168,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -5513,278 +5203,22 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 180,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 169,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 3,
-          "offset" : 0,
-          "text" : "GND"
-        }
-      ],
-      "text" : "GND"
-    },
-    {
-      "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 181,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 9,
-          "offset" : 0,
-          "text" : "118802976"
-        }
-      ],
-      "text" : "118802976"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 182,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 32,
-          "offset" : 0,
-          "text" : "(lobid, GND Explorer, OGND, AKS)"
-        }
-      ],
-      "text" : "(lobid, GND Explorer, OGND, AKS)"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 183,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 1,
-          "offset" : 0,
-          "text" : "|"
-        }
-      ],
-      "text" : "|"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 184,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 4,
-          "offset" : 0,
-          "text" : "LCCN"
-        }
-      ],
-      "text" : "LCCN"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 185,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 9,
-          "offset" : 0,
-          "text" : "n83171546"
-        }
-      ],
-      "text" : "n83171546"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 186,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 1,
-          "offset" : 0,
-          "text" : "|"
-        }
-      ],
-      "text" : "|"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 187,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 3,
-          "offset" : 0,
-          "text" : "NDL"
-        }
-      ],
-      "text" : "NDL"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 188,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 8,
-          "offset" : 0,
-          "text" : "00621580"
-        }
-      ],
-      "text" : "00621580"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 189,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 1,
-          "offset" : 0,
-          "text" : "|"
-        }
-      ],
-      "text" : "|"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 190,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 4,
-          "offset" : 0,
-          "text" : "VIAF"
-        }
-      ],
-      "text" : "VIAF"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 191,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 8,
-          "offset" : 0,
-          "text" : "41887917"
-        }
-      ],
-      "text" : "41887917"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 192,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 1,
-          "offset" : 0,
-          "text" : "|"
-        }
-      ],
-      "text" : "|"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 193,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 23,
-          "offset" : 0,
-          "text" : "Wikipedia-Personensuche"
-        }
-      ],
-      "text" : "Wikipedia-Personensuche"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 194,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 26,
-          "offset" : 0,
-          "text" : "Normdaten(Person): : : : :"
-        }
-      ],
-      "text" : "Normdaten(Person): : : : :"
+      "text" : "Normdaten (Person): GND: 118802976 (lobid, GND Explorer, OGND, AKS) | LCCN: n83171546 | NDL: 00621580 | VIAF: 41887917 | Wikipedia-Personensuche"
     },
     {
       "children" : [
 
       ],
       "confidence" : 0.95,
-      "id" : 195,
+      "id" : 170,
       "kind" : "table",
       "lowConfidence" : false,
       "reason" : "table",
@@ -5797,62 +5231,36 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 196,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 171,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 70,
-          "offset" : 0,
-          "text" : "https://de.wikipedia.org/w/index.php?title=Alan_Turing&oldid=271820227"
-        }
+
       ],
-      "text" : "https://de.wikipedia.org/w/index.php?title=Alan_Turing&oldid=271820227"
+      "text" : "Abgerufen von „https://de.wikipedia.org/w/index.php?title=Alan_Turing&oldid=271820227“"
     },
     {
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 197,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 172,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 16,
-          "offset" : 0,
-          "text" : "Abgerufen von „“"
-        }
-      ],
-      "text" : "Abgerufen von „“"
-    },
-    {
-      "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 198,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 10,
-          "offset" : 0,
-          "text" : "Kategorien"
-        }
-      ],
-      "text" : "Kategorien"
+      "text" : "Kategorien:"
     },
     {
       "children" : [
 
       ],
       "confidence" : 0.95,
-      "id" : 199,
+      "id" : 173,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -5874,26 +5282,8 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 200,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 1,
-          "offset" : 0,
-          "text" : ":"
-        }
-      ],
-      "text" : ":"
-    },
-    {
-      "children" : [
-
-      ],
       "confidence" : 0.95,
-      "id" : 201,
+      "id" : 174,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -5941,7 +5331,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 202,
+      "id" : 175,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -5953,368 +5343,450 @@
         }
       ],
       "text" : "Datenschutz Über Wikipedia Haftungsausschluss Impressum / Sicherheit Verhaltenskodex Entwickler Statistiken Stellungnahme zu Cookies Mobile Ansicht"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 203,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 5,
-          "offset" : 0,
-          "text" : "Suche"
-        }
-      ],
-      "text" : "Suche"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.85,
-      "id" : 204,
-      "kind" : "nav",
-      "lowConfidence" : false,
-      "reason" : "nav",
-      "spoken" : [
-
-      ],
-      "text" : "Inhaltsverzeichnis umschalten"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 205,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 11,
-          "offset" : 0,
-          "text" : "Alan Turing"
-        }
-      ],
-      "text" : "Alan Turing"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 206,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 12,
-          "offset" : 0,
-          "text" : "164 Sprachen"
-        }
-      ],
-      "text" : "164 Sprachen"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 207,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 20,
-          "offset" : 0,
-          "text" : "Abschnitt hinzufügen"
-        }
-      ],
-      "text" : "Abschnitt hinzufügen"
     }
   ],
-  "sentence_count" : 658,
+  "sentence_count" : 596,
   "skipped" : [
     {
-      "block_id" : 1,
-      "confidence" : 0.85,
-      "kind" : "nav",
-      "reason" : "nav",
-      "words" : 24
-    },
-    {
-      "block_id" : 3,
-      "confidence" : 0.85,
-      "kind" : "nav",
-      "reason" : "nav",
-      "words" : 13
-    },
-    {
-      "block_id" : 4,
+      "block_id" : 0,
       "confidence" : 0.85,
       "kind" : "nav",
       "reason" : "nav",
       "words" : 116
     },
     {
-      "block_id" : 5,
+      "block_id" : 1,
       "confidence" : 0.85,
       "kind" : "nav",
       "reason" : "nav",
       "words" : 2
     },
     {
-      "block_id" : 6,
+      "block_id" : 2,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h1",
       "words" : 2
     },
     {
-      "block_id" : 10,
+      "block_id" : 5,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 2
+    },
+    {
+      "block_id" : 6,
       "confidence" : 0.85,
       "kind" : "nav",
       "reason" : "nav",
       "words" : 3
     },
     {
-      "block_id" : 11,
+      "block_id" : 7,
       "confidence" : 0.85,
       "kind" : "nav",
       "reason" : "nav",
       "words" : 6
     },
     {
-      "block_id" : 12,
+      "block_id" : 8,
       "confidence" : 0.85,
       "kind" : "nav",
       "reason" : "nav",
       "words" : 45
     },
     {
-      "block_id" : 13,
+      "block_id" : 9,
       "confidence" : 0.85,
       "kind" : "nav",
       "reason" : "nav",
       "words" : 6
     },
     {
-      "block_id" : 15,
+      "block_id" : 11,
       "confidence" : 0.95,
       "kind" : "figure",
       "reason" : "figure",
       "words" : 6
     },
     {
-      "block_id" : 16,
+      "block_id" : 12,
       "confidence" : 0.95,
       "kind" : "figure",
       "reason" : "figure",
       "words" : 3
     },
     {
-      "block_id" : 22,
+      "block_id" : 18,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
       "words" : 3
     },
     {
-      "block_id" : 24,
+      "block_id" : 19,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
+    },
+    {
+      "block_id" : 20,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h3",
       "words" : 3
     },
     {
-      "block_id" : 31,
+      "block_id" : 21,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
+    },
+    {
+      "block_id" : 27,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h3",
       "words" : 4
     },
     {
-      "block_id" : 34,
+      "block_id" : 28,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
+    },
+    {
+      "block_id" : 30,
       "confidence" : 0.95,
       "kind" : "figure",
       "reason" : "figure",
       "words" : 20
     },
     {
-      "block_id" : 39,
+      "block_id" : 35,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
       "words" : 3
     },
     {
-      "block_id" : 42,
+      "block_id" : 36,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
+    },
+    {
+      "block_id" : 38,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h3",
       "words" : 1
     },
     {
-      "block_id" : 44,
+      "block_id" : 39,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
+    },
+    {
+      "block_id" : 40,
       "confidence" : 0.95,
       "kind" : "figure",
       "reason" : "figure",
       "words" : 5
     },
     {
-      "block_id" : 45,
+      "block_id" : 41,
       "confidence" : 0.95,
       "kind" : "figure",
       "reason" : "figure",
       "words" : 3
     },
     {
-      "block_id" : 48,
+      "block_id" : 44,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h3",
       "words" : 7
     },
     {
-      "block_id" : 50,
+      "block_id" : 45,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
+    },
+    {
+      "block_id" : 46,
       "confidence" : 0.95,
       "kind" : "figure",
       "reason" : "figure",
       "words" : 14
     },
     {
-      "block_id" : 54,
+      "block_id" : 50,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h3",
       "words" : 7
     },
     {
-      "block_id" : 57,
+      "block_id" : 51,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
+    },
+    {
+      "block_id" : 53,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
       "words" : 6
     },
     {
-      "block_id" : 63,
+      "block_id" : 54,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
+    },
+    {
+      "block_id" : 59,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
       "words" : 5
     },
     {
-      "block_id" : 75,
+      "block_id" : 60,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
+    },
+    {
+      "block_id" : 69,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
       "words" : 3
     },
     {
-      "block_id" : 79,
+      "block_id" : 70,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
+    },
+    {
+      "block_id" : 73,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
       "words" : 2
     },
     {
-      "block_id" : 81,
+      "block_id" : 74,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
+    },
+    {
+      "block_id" : 75,
       "confidence" : 0.95,
       "kind" : "figure",
       "reason" : "figure",
       "words" : 8
     },
     {
-      "block_id" : 92,
+      "block_id" : 86,
       "confidence" : 0.95,
       "kind" : "figure",
       "reason" : "figure",
       "words" : 12
     },
     {
-      "block_id" : 94,
+      "block_id" : 88,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
       "words" : 1
     },
     {
-      "block_id" : 96,
+      "block_id" : 89,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
+    },
+    {
+      "block_id" : 90,
       "confidence" : 0.95,
       "kind" : "figure",
       "reason" : "figure",
       "words" : 4
     },
     {
-      "block_id" : 98,
+      "block_id" : 92,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
       "words" : 1
     },
     {
-      "block_id" : 100,
+      "block_id" : 93,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
+    },
+    {
+      "block_id" : 94,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h3",
       "words" : 1
+    },
+    {
+      "block_id" : 95,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
+    },
+    {
+      "block_id" : 102,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 2
+    },
+    {
+      "block_id" : 103,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
+    },
+    {
+      "block_id" : 105,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 1
+    },
+    {
+      "block_id" : 106,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
     },
     {
       "block_id" : 108,
       "confidence" : 0.95,
       "kind" : "heading",
-      "reason" : "h3",
+      "reason" : "h2",
       "words" : 2
+    },
+    {
+      "block_id" : 109,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
+    },
+    {
+      "block_id" : 110,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 3
     },
     {
       "block_id" : 111,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
+    },
+    {
+      "block_id" : 113,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h3",
-      "words" : 1
+      "words" : 3
     },
     {
       "block_id" : 114,
-      "confidence" : 0.95,
-      "kind" : "heading",
-      "reason" : "h2",
-      "words" : 2
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
     },
     {
       "block_id" : 116,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h3",
-      "words" : 3
+      "words" : 1
+    },
+    {
+      "block_id" : 117,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
     },
     {
       "block_id" : 119,
       "confidence" : 0.95,
       "kind" : "heading",
-      "reason" : "h3",
-      "words" : 3
+      "reason" : "h2",
+      "words" : 2
+    },
+    {
+      "block_id" : 120,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
     },
     {
       "block_id" : 122,
       "confidence" : 0.95,
       "kind" : "heading",
-      "reason" : "h3",
+      "reason" : "h2",
       "words" : 1
+    },
+    {
+      "block_id" : 123,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
     },
     {
       "block_id" : 125,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
-      "words" : 2
+      "words" : 1
+    },
+    {
+      "block_id" : 126,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
     },
     {
       "block_id" : 128,
@@ -6324,6 +5796,13 @@
       "words" : 1
     },
     {
+      "block_id" : 129,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
+    },
+    {
       "block_id" : 131,
       "confidence" : 0.95,
       "kind" : "heading",
@@ -6331,44 +5810,79 @@
       "words" : 1
     },
     {
+      "block_id" : 132,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
+    },
+    {
       "block_id" : 134,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 5
+    },
+    {
+      "block_id" : 138,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
       "words" : 1
     },
     {
-      "block_id" : 137,
-      "confidence" : 0.95,
-      "kind" : "heading",
-      "reason" : "h2",
-      "words" : 1
+      "block_id" : 139,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
     },
     {
-      "block_id" : 146,
-      "confidence" : 0.95,
-      "kind" : "heading",
-      "reason" : "h2",
-      "words" : 1
+      "block_id" : 141,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 4
     },
     {
-      "block_id" : 195,
+      "block_id" : 143,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 6
+    },
+    {
+      "block_id" : 169,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 20
+    },
+    {
+      "block_id" : 170,
       "confidence" : 0.95,
       "kind" : "table",
       "reason" : "table",
       "words" : 29
     },
     {
-      "block_id" : 204,
-      "confidence" : 0.85,
+      "block_id" : 171,
+      "confidence" : 0.75,
       "kind" : "nav",
-      "reason" : "nav",
-      "words" : 2
+      "reason" : "link-density",
+      "words" : 3
+    },
+    {
+      "block_id" : 172,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 1
     }
   ],
   "source" : "042-de-wiki.html",
   "source_sha256" : "c7907f9c05997102545f5f5e220dbb0ff4da067f940bee048f0008eb6c73eb60",
-  "spoken_words" : 7339,
+  "spoken_words" : 7177,
   "validation_failures" : 0,
   "version" : 1
 }

@@ -12,22 +12,2313 @@
       "spoken" : [
 
       ],
-      "text" : "Want to start a startup? Get funded by Y Combinator. April 2001, rev. April 2003 (This article is derived from a talk given at the 2001 Franz Developer Symposium.) In the summer of 1995, my friend Robert Morris and I started a startup called Viaweb. Our plan was to write software that would let end users build online stores. What was novel about this software, at the time, was that it ran on our server, using ordinary Web pages as the interface. A lot of people could have been having this idea at the same time, of course, but as far as I know, Viaweb was the first Web-based application. It seemed such a novel idea to us that we named the company after it: Viaweb, because our software worked via the Web, instead of running on your desktop computer. Another unusual thing about this software was that it was written primarily in a programming language called Lisp. It was one of the first big end-user applications to be written in Lisp, which up till then had been used mostly in universities and research labs. [1] The Secret Weapon Eric Raymond has written an essay called \"How to Become a Hacker,\" and in it, among other things, he tells would-be hackers what languages they should learn. He suggests starting with Python and Java, because they are easy to learn. The serious hacker will also want to learn C, in order to hack Unix, and Perl for system administration and cgi scripts. Finally, the truly serious hacker should consider learning Lisp: Lisp is worth learning for the profound enlightenment experience you will have when you finally get it; that experience will make you a better programmer for the rest of your days, even if you never actually use Lisp itself a lot. This is the same argument you tend to hear for learning Latin. It won't get you a job, except perhaps as a classics professor, but it will improve your mind, and make you a better writer in languages you do want to use, like English. But wait a minute. This metaphor doesn't stretch that far. The reason Latin won't get you a job is that no one speaks it. If you write in Latin, no one can understand you. But Lisp is a computer language, and computers speak whatever language you, the programmer, tell them to. So if Lisp makes you a better programmer, like he says, why wouldn't you want to use it? If a painter were offered a brush that would make him a better painter, it seems to me that he would want to use it in all his paintings, wouldn't he? I'm not trying to make fun of Eric Raymond here. On the whole, his advice is good. What he says about Lisp is pretty much the conventional wisdom. But there is a contradiction in the conventional wisdom: Lisp will make you a better programmer, and yet you won't use it. Why not? Programming languages are just tools, after all. If Lisp really does yield better programs, you should use it. And if it doesn't, then who needs it? This is not just a theoretical question. Software is a very competitive business, prone to natural monopolies. A company that gets software written faster and better will, all other things being equal, put its competitors out of business. And when you're starting a startup, you feel this very keenly. Startups tend to be an all or nothing proposition. You either get rich, or you get nothing. In a startup, if you bet on the wrong technology, your competitors will crush you. Robert and I both knew Lisp well, and we couldn't see any reason not to trust our instincts and go with Lisp. We knew that everyone else was writing their software in C++ or Perl. But we also knew that that didn't mean anything. If you chose technology that way, you'd be running Windows. When you choose technology, you have to ignore what other people are doing, and consider only what will work the best. This is especially true in a startup. In a big company, you can do what all the other big companies are doing. But a startup can't do what all the other startups do. I don't think a lot of people realize this, even in startups. The average big company grows at about ten percent a year. So if you're running a big company and you do everything the way the average big company does it, you can expect to do as well as the average big company-- that is, to grow about ten percent a year. The same thing will happen if you're running a startup, of course. If you do everything the way the average startup does it, you should expect average performance. The problem here is, average performance means that you'll go out of business. The survival rate for startups is way less than fifty percent. So if you're running a startup, you had better be doing something odd. If not, you're in trouble. Back in 1995, we knew something that I don't think our competitors understood, and few understand even now: when you're writing software that only has to run on your own servers, you can use any language you want. When you're writing desktop software, there's a strong bias toward writing applications in the same language as the operating system. Ten years ago, writing applications meant writing applications in C. But with Web-based software, especially when you have the source code of both the language and the operating system, you can use whatever language you want. This new freedom is a double-edged sword, however. Now that you can use any language, you have to think about which one to use. Companies that try to pretend nothing has changed risk finding that their competitors do not. If you can use any language, which do you use? We chose Lisp. For one thing, it was obvious that rapid development would be important in this market. We were all starting from scratch, so a company that could get new features done before its competitors would have a big advantage. We knew Lisp was a really good language for writing software quickly, and server-based applications magnify the effect of rapid development, because you can release software the minute it's done. If other companies didn't want to use Lisp, so much the better. It might give us a technological edge, and we needed all the help we could get. When we started Viaweb, we had no experience in business. We didn't know anything about marketing, or hiring people, or raising money, or getting customers. Neither of us had ever even had what you would call a real job. The only thing we were good at was writing software. We hoped that would save us. Any advantage we could get in the software department, we would take. So you could say that using Lisp was an experiment. Our hypothesis was that if we wrote our software in Lisp, we'd be able to get features done faster than our competitors, and also to do things in our software that they couldn't do. And because Lisp was so high-level, we wouldn't need a big development team, so our costs would be lower. If this were so, we could offer a better product for less money, and still make a profit. We would end up getting all the users, and our competitors would get none, and eventually go out of business. That was what we hoped would happen, anyway. What were the results of this experiment? Somewhat surprisingly, it worked. We eventually had many competitors, on the order of twenty to thirty of them, but none of their software could compete with ours. We had a wysiwyg online store builder that ran on the server and yet felt like a desktop application. Our competitors had cgi scripts. And we were always far ahead of them in features. Sometimes, in desperation, competitors would try to introduce features that we didn't have. But with Lisp our development cycle was so fast that we could sometimes duplicate a new feature within a day or two of a competitor announcing it in a press release. By the time journalists covering the press release got round to calling us, we would have the new feature too. It must have seemed to our competitors that we had some kind of secret weapon-- that we were decoding their Enigma traffic or something. In fact we did have a secret weapon, but it was simpler than they realized. No one was leaking news of their features to us. We were just able to develop software faster than anyone thought possible. When I was about nine I happened to get hold of a copy of The Day of the Jackal, by Frederick Forsyth. The main character is an assassin who is hired to kill the president of France. The assassin has to get past the police to get up to an apartment that overlooks the president's route. He walks right by them, dressed up as an old man on crutches, and they never suspect him. Our secret weapon was similar. We wrote our software in a weird AI language, with a bizarre syntax full of parentheses. For years it had annoyed me to hear Lisp described that way. But now it worked to our advantage. In business, there is nothing more valuable than a technical advantage your competitors don't understand. In business, as in war, surprise is worth as much as force. And so, I'm a little embarrassed to say, I never said anything publicly about Lisp while we were working on Viaweb. We never mentioned it to the press, and if you searched for Lisp on our Web site, all you'd find were the titles of two books in my bio. This was no accident. A startup should give its competitors as little information as possible. If they didn't know what language our software was written in, or didn't care, I wanted to keep it that way.[2] The people who understood our technology best were the customers. They didn't care what language Viaweb was written in either, but they noticed that it worked really well. It let them build great looking online stores literally in minutes. And so, by word of mouth mostly, we got more and more users. By the end of 1996 we had about 70 stores online. At the end of 1997 we had 500. Six months later, when Yahoo bought us, we had 1070 users. Today, as Yahoo Store, this software continues to dominate its market. It's one of the more profitable pieces of Yahoo, and the stores built with it are the foundation of Yahoo Shopping. I left Yahoo in 1999, so I don't know exactly how many users they have now, but the last I heard there were about 20,000. The Blub Paradox What's so great about Lisp? And if Lisp is so great, why doesn't everyone use it? These sound like rhetorical questions, but actually they have straightforward answers. Lisp is so great not because of some magic quality visible only to devotees, but because it is simply the most powerful language available. And the reason everyone doesn't use it is that programming languages are not merely technologies, but habits of mind as well, and nothing changes slower. Of course, both these answers need explaining. I'll begin with a shockingly controversial statement: programming languages vary in power. Few would dispute, at least, that high level languages are more powerful than machine language. Most programmers today would agree that you do not, ordinarily, want to program in machine language. Instead, you should program in a high-level language, and have a compiler translate it into machine language for you. This idea is even built into the hardware now: since the 1980s, instruction sets have been designed for compilers rather than human programmers. Everyone knows it's a mistake to write your whole program by hand in machine language. What's less often understood is that there is a more general principle here: that if you have a choice of several languages, it is, all other things being equal, a mistake to program in anything but the most powerful one. [3] There are many exceptions to this rule. If you're writing a program that has to work very closely with a program written in a certain language, it might be a good idea to write the new program in the same language. If you're writing a program that only has to do something very simple, like number crunching or bit manipulation, you may as well use a less abstract language, especially since it may be slightly faster. And if you're writing a short, throwaway program, you may be better off just using whatever language has the best library functions for the task. But in general, for application software, you want to be using the most powerful (reasonably efficient) language you can get, and using anything else is a mistake, of exactly the same kind, though possibly in a lesser degree, as programming in machine language. You can see that machine language is very low level. But, at least as a kind of social convention, high-level languages are often all treated as equivalent. They're not. Technically the term \"high-level language\" doesn't mean anything very definite. There's no dividing line with machine languages on one side and all the high-level languages on the other. Languages fall along a continuum [4] of abstractness, from the most powerful all the way down to machine languages, which themselves vary in power. Consider Cobol. Cobol is a high-level language, in the sense that it gets compiled into machine language. Would anyone seriously argue that Cobol is equivalent in power to, say, Python? It's probably closer to machine language than Python. Or how about Perl 4? Between Perl 4 and Perl 5, lexical closures got added to the language. Most Perl hackers would agree that Perl 5 is more powerful than Perl 4. But once you've admitted that, you've admitted that one high level language can be more powerful than another. And it follows inexorably that, except in special cases, you ought to use the most powerful you can get. This idea is rarely followed to its conclusion, though. After a certain age, programmers rarely switch languages voluntarily. Whatever language people happen to be used to, they tend to consider just good enough. Programmers get very attached to their favorite languages, and I don't want to hurt anyone's feelings, so to explain this point I'm going to use a hypothetical language called Blub. Blub falls right in the middle of the abstractness continuum. It is not the most powerful language, but it is more powerful than Cobol or machine language. And in fact, our hypothetical Blub programmer wouldn't use either of them. Of course he wouldn't program in machine language. That's what compilers are for. And as for Cobol, he doesn't know how anyone can get anything done with it. It doesn't even have x (Blub feature of your choice). As long as our hypothetical Blub programmer is looking down the power continuum, he knows he's looking down. Languages less powerful than Blub are obviously less powerful, because they're missing some feature he's used to. But when our hypothetical Blub programmer looks in the other direction, up the power continuum, he doesn't realize he's looking up. What he sees are merely weird languages. He probably considers them about equivalent in power to Blub, but with all this other hairy stuff thrown in as well. Blub is good enough for him, because he thinks in Blub. When we switch to the point of view of a programmer using any of the languages higher up the power continuum, however, we find that he in turn looks down upon Blub. How can you get anything done in Blub? It doesn't even have y. By induction, the only programmers in a position to see all the differences in power between the various languages are those who understand the most powerful one. (This is probably what Eric Raymond meant about Lisp making you a better programmer.) You can't trust the opinions of the others, because of the Blub paradox: they're satisfied with whatever language they happen to use, because it dictates the way they think about programs. I know this from my own experience, as a high school kid writing programs in Basic. That language didn't even support recursion. It's hard to imagine writing programs without using recursion, but I didn't miss it at the time. I thought in Basic. And I was a whiz at it. Master of all I surveyed. The five languages that Eric Raymond recommends to hackers fall at various points on the power continuum. Where they fall relative to one another is a sensitive topic. What I will say is that I think Lisp is at the top. And to support this claim I'll tell you about one of the things I find missing when I look at the other four languages. How can you get anything done in them, I think, without macros? [5] Many languages have something called a macro. But Lisp macros are unique. And believe it or not, what they do is related to the parentheses. The designers of Lisp didn't put all those parentheses in the language just to be different. To the Blub programmer, Lisp code looks weird. But those parentheses are there for a reason. They are the outward evidence of a fundamental difference between Lisp and other languages. Lisp code is made out of Lisp data objects. And not in the trivial sense that the source files contain characters, and strings are one of the data types supported by the language. Lisp code, after it's read by the parser, is made of data structures that you can traverse. If you understand how compilers work, what's really going on is not so much that Lisp has a strange syntax as that Lisp has no syntax. You write programs in the parse trees that get generated within the compiler when other languages are parsed. But these parse trees are fully accessible to your programs. You can write programs that manipulate them. In Lisp, these programs are called macros. They are programs that write programs. Programs that write programs? When would you ever want to do that? Not very often, if you think in Cobol. All the time, if you think in Lisp. It would be convenient here if I could give an example of a powerful macro, and say there! how about that? But if I did, it would just look like gibberish to someone who didn't know Lisp; there isn't room here to explain everything you'd need to know to understand what it meant. In Ansi Common Lisp I tried to move things along as fast as I could, and even so I didn't get to macros until page 160. But I think I can give a kind of argument that might be convincing. The source code of the Viaweb editor was probably about 20-25% macros. Macros are harder to write than ordinary Lisp functions, and it's considered to be bad style to use them when they're not necessary. So every macro in that code is there because it has to be. What that means is that at least 20-25% of the code in this program is doing things that you can't easily do in any other language. However skeptical the Blub programmer might be about my claims for the mysterious powers of Lisp, this ought to make him curious. We weren't writing this code for our own amusement. We were a tiny startup, programming as hard as we could in order to put technical barriers between us and our competitors. A suspicious person might begin to wonder if there was some correlation here. A big chunk of our code was doing things that are very hard to do in other languages. The resulting software did things our competitors' software couldn't do. Maybe there was some kind of connection. I encourage you to follow that thread. There may be more to that old man hobbling along on his crutches than meets the eye. Aikido for Startups But I don't expect to convince anyone (over 25) to go out and learn Lisp. The purpose of this article is not to change anyone's mind, but to reassure people already interested in using Lisp-- people who know that Lisp is a powerful language, but worry because it isn't widely used. In a competitive situation, that's an advantage. Lisp's power is multiplied by the fact that your competitors don't get it. If you think of using Lisp in a startup, you shouldn't worry that it isn't widely understood. You should hope that it stays that way. And it's likely to. It's the nature of programming languages to make most people satisfied with whatever they currently use. Computer hardware changes so much faster than personal habits that programming practice is usually ten to twenty years behind the processor. At places like MIT they were writing programs in high-level languages in the early 1960s, but many companies continued to write code in machine language well into the 1980s. I bet a lot of people continued to write machine language until the processor, like a bartender eager to close up and go home, finally kicked them out by switching to a risc instruction set. Ordinarily technology changes fast. But programming languages are different: programming languages are not just technology, but what programmers think in. They're half technology and half religion.[6] And so the median language, meaning whatever language the median programmer uses, moves as slow as an iceberg. Garbage collection, introduced by Lisp in about 1960, is now widely considered to be a good thing. Runtime typing, ditto, is growing in popularity. Lexical closures, introduced by Lisp in the early 1970s, are now, just barely, on the radar screen. Macros, introduced by Lisp in the mid 1960s, are still terra incognita. Obviously, the median language has enormous momentum. I'm not proposing that you can fight this powerful force. What I'm proposing is exactly the opposite: that, like a practitioner of Aikido, you can use it against your opponents. If you work for a big company, this may not be easy. You will have a hard time convincing the pointy-haired boss to let you build things in Lisp, when he has just read in the paper that some other language is poised, like Ada was twenty years ago, to take over the world. But if you work for a startup that doesn't have pointy-haired bosses yet, you can, like we did, turn the Blub paradox to your advantage: you can use technology that your competitors, glued immovably to the median language, will never be able to match. If you ever do find yourself working for a startup, here's a handy tip for evaluating competitors. Read their job listings. Everything else on their site may be stock photos or the prose equivalent, but the job listings have to be specific about what they want, or they'll get the wrong candidates. During the years we worked on Viaweb I read a lot of job descriptions. A new competitor seemed to emerge out of the woodwork every month or so. The first thing I would do, after checking to see if they had a live online demo, was look at their job listings. After a couple years of this I could tell which companies to worry about and which not to. The more of an IT flavor the job descriptions had, the less dangerous the company was. The safest kind were the ones that wanted Oracle experience. You never had to worry about those. You were also safe if they said they wanted C++ or Java developers. If they wanted Perl or Python programmers, that would be a bit frightening-- that's starting to sound like a company where the technical side, at least, is run by real hackers. If I had ever seen a job posting looking for Lisp hackers, I would have been really worried. Notes [1] Viaweb at first had two parts: the editor, written in Lisp, which people used to build their sites, and the ordering system, written in C, which handled orders. The first version was mostly Lisp, because the ordering system was small. Later we added two more modules, an image generator written in C, and a back-office manager written mostly in Perl. In January 2003, Yahoo released a new version of the editor written in C++ and Perl. It's hard to say whether the program is no longer written in Lisp, though, because to translate this program into C++ they literally had to write a Lisp interpreter: the source files of all the page-generating templates are still, as far as I know, Lisp code. (See Greenspun's Tenth Rule.) [2] Robert Morris says that I didn't need to be secretive, because even if our competitors had known we were using Lisp, they wouldn't have understood why: \"If they were that smart they'd already be programming in Lisp.\" [3] All languages are equally powerful in the sense of being Turing equivalent, but that's not the sense of the word programmers care about. (No one wants to program a Turing machine.) The kind of power programmers care about may not be formally definable, but one way to explain it would be to say that it refers to features you could only get in the less powerful language by writing an interpreter for the more powerful language in it. If language A has an operator for removing spaces from strings and language B doesn't, that probably doesn't make A more powerful, because you can probably write a subroutine to do it in B. But if A supports, say, recursion, and B doesn't, that's not likely to be something you can fix by writing library functions. [4] Note to nerds: or possibly a lattice, narrowing toward the top; it's not the shape that matters here but the idea that there is at least a partial order. [5] It is a bit misleading to treat macros as a separate feature. In practice their usefulness is greatly enhanced by other Lisp features like lexical closures and rest parameters. [6] As a result, comparisons of programming languages either take the form of religious wars or undergraduate textbooks so determinedly neutral that they're really works of anthropology. People who value their peace, or want tenure, avoid the topic. But the question is only half a religious one; there is something there worth studying, especially if you want to design new languages. More Technical Details Japanese Translation Turkish Translation Uzbek Translation Orbitz Uses Lisp Too How To Become A Hacker A Scheme Story Italian Translation You'll find this essay and 14 others in Hackers & Painters."
+      "text" : "Want to start a startup? Get funded by Y Combinator."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 1,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 16,
+          "offset" : 0,
+          "text" : "April 2001, rev."
+        },
+        {
+          "length" : 10,
+          "offset" : 17,
+          "text" : "April 2003"
+        }
+      ],
+      "text" : "April 2001, rev. April 2003"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 2,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 82,
+          "offset" : 0,
+          "text" : "(This article is derived from a talk given at the 2001 Franz Developer Symposium.)"
+        }
+      ],
+      "text" : "(This article is derived from a talk given at the 2001 Franz Developer Symposium.)"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 3,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 85,
+          "offset" : 0,
+          "text" : "In the summer of 1995, my friend Robert Morris and I started a startup called Viaweb."
+        },
+        {
+          "length" : 76,
+          "offset" : 86,
+          "text" : "Our plan was to write software that would let end users build online stores."
+        },
+        {
+          "length" : 122,
+          "offset" : 163,
+          "text" : "What was novel about this software, at the time, was that it ran on our server, using ordinary Web pages as the interface."
+        }
+      ],
+      "text" : "In the summer of 1995, my friend Robert Morris and I started a startup called Viaweb. Our plan was to write software that would let end users build online stores. What was novel about this software, at the time, was that it ran on our server, using ordinary Web pages as the interface."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 4,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 143,
+          "offset" : 0,
+          "text" : "A lot of people could have been having this idea at the same time, of course, but as far as I know, Viaweb was the first Web-based application."
+        },
+        {
+          "length" : 163,
+          "offset" : 144,
+          "text" : "It seemed such a novel idea to us that we named the company after it: Viaweb, because our software worked via the Web, instead of running on your desktop computer."
+        }
+      ],
+      "text" : "A lot of people could have been having this idea at the same time, of course, but as far as I know, Viaweb was the first Web-based application. It seemed such a novel idea to us that we named the company after it: Viaweb, because our software worked via the Web, instead of running on your desktop computer."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 5,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 114,
+          "offset" : 0,
+          "text" : "Another unusual thing about this software was that it was written primarily in a programming language called Lisp."
+        },
+        {
+          "length" : 147,
+          "offset" : 115,
+          "text" : "It was one of the first big end-user applications to be written in Lisp, which up till then had been used mostly in universities and research labs."
+        },
+        {
+          "length" : 3,
+          "offset" : 263,
+          "text" : "[1]"
+        }
+      ],
+      "text" : "Another unusual thing about this software was that it was written primarily in a programming language called Lisp. It was one of the first big end-user applications to be written in Lisp, which up till then had been used mostly in universities and research labs. [1]"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 6,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 17,
+          "offset" : 0,
+          "text" : "The Secret Weapon"
+        }
+      ],
+      "text" : "The Secret Weapon"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.98,
+      "id" : 7,
+      "kind" : "prose",
+      "lowConfidence" : false,
+      "reason" : "p",
+      "spoken" : [
+        {
+          "length" : 157,
+          "offset" : 0,
+          "text" : "Eric Raymond has written an essay called \"How to Become a Hacker,\" and in it, among other things, he tells would-be hackers what languages they should learn."
+        },
+        {
+          "length" : 74,
+          "offset" : 158,
+          "text" : "He suggests starting with Python and Java, because they are easy to learn."
+        },
+        {
+          "length" : 120,
+          "offset" : 233,
+          "text" : "The serious hacker will also want to learn C, in order to hack Unix, and Perl for system administration and cgi scripts."
+        },
+        {
+          "length" : 64,
+          "offset" : 354,
+          "text" : "Finally, the truly serious hacker should consider learning Lisp:"
+        }
+      ],
+      "text" : "Eric Raymond has written an essay called \"How to Become a Hacker,\" and in it, among other things, he tells would-be hackers what languages they should learn. He suggests starting with Python and Java, because they are easy to learn. The serious hacker will also want to learn C, in order to hack Unix, and Perl for system administration and cgi scripts. Finally, the truly serious hacker should consider learning Lisp:"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.92,
+      "id" : 8,
+      "kind" : "quote",
+      "lowConfidence" : false,
+      "reason" : "blockquote",
+      "spoken" : [
+        {
+          "length" : 230,
+          "offset" : 0,
+          "text" : "Lisp is worth learning for the profound enlightenment experience you will have when you finally get it; that experience will make you a better programmer for the rest of your days, even if you never actually use Lisp itself a lot."
+        }
+      ],
+      "text" : "Lisp is worth learning for the profound enlightenment experience you will have when you finally get it; that experience will make you a better programmer for the rest of your days, even if you never actually use Lisp itself a lot."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 9,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 62,
+          "offset" : 0,
+          "text" : "This is the same argument you tend to hear for learning Latin."
+        },
+        {
+          "length" : 170,
+          "offset" : 63,
+          "text" : "It won't get you a job, except perhaps as a classics professor, but it will improve your mind, and make you a better writer in languages you do want to use, like English."
+        }
+      ],
+      "text" : "This is the same argument you tend to hear for learning Latin. It won't get you a job, except perhaps as a classics professor, but it will improve your mind, and make you a better writer in languages you do want to use, like English."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 10,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 18,
+          "offset" : 0,
+          "text" : "But wait a minute."
+        },
+        {
+          "length" : 39,
+          "offset" : 19,
+          "text" : "This metaphor doesn't stretch that far."
+        },
+        {
+          "length" : 62,
+          "offset" : 59,
+          "text" : "The reason Latin won't get you a job is that no one speaks it."
+        },
+        {
+          "length" : 49,
+          "offset" : 122,
+          "text" : "If you write in Latin, no one can understand you."
+        },
+        {
+          "length" : 105,
+          "offset" : 172,
+          "text" : "But Lisp is a computer language, and computers speak whatever language you, the programmer, tell them to."
+        }
+      ],
+      "text" : "But wait a minute. This metaphor doesn't stretch that far. The reason Latin won't get you a job is that no one speaks it. If you write in Latin, no one can understand you. But Lisp is a computer language, and computers speak whatever language you, the programmer, tell them to."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 11,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 88,
+          "offset" : 0,
+          "text" : "So if Lisp makes you a better programmer, like he says, why wouldn't you want to use it?"
+        },
+        {
+          "length" : 150,
+          "offset" : 89,
+          "text" : "If a painter were offered a brush that would make him a better painter, it seems to me that he would want to use it in all his paintings, wouldn't he?"
+        },
+        {
+          "length" : 48,
+          "offset" : 240,
+          "text" : "I'm not trying to make fun of Eric Raymond here."
+        },
+        {
+          "length" : 33,
+          "offset" : 289,
+          "text" : "On the whole, his advice is good."
+        },
+        {
+          "length" : 63,
+          "offset" : 323,
+          "text" : "What he says about Lisp is pretty much the conventional wisdom."
+        },
+        {
+          "length" : 122,
+          "offset" : 387,
+          "text" : "But there is a contradiction in the conventional wisdom: Lisp will make you a better programmer, and yet you won't use it."
+        }
+      ],
+      "text" : "So if Lisp makes you a better programmer, like he says, why wouldn't you want to use it? If a painter were offered a brush that would make him a better painter, it seems to me that he would want to use it in all his paintings, wouldn't he? I'm not trying to make fun of Eric Raymond here. On the whole, his advice is good. What he says about Lisp is pretty much the conventional wisdom. But there is a contradiction in the conventional wisdom: Lisp will make you a better programmer, and yet you won't use it."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 12,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 8,
+          "offset" : 0,
+          "text" : "Why not?"
+        },
+        {
+          "length" : 48,
+          "offset" : 9,
+          "text" : "Programming languages are just tools, after all."
+        },
+        {
+          "length" : 61,
+          "offset" : 58,
+          "text" : "If Lisp really does yield better programs, you should use it."
+        },
+        {
+          "length" : 37,
+          "offset" : 120,
+          "text" : "And if it doesn't, then who needs it?"
+        }
+      ],
+      "text" : "Why not? Programming languages are just tools, after all. If Lisp really does yield better programs, you should use it. And if it doesn't, then who needs it?"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 13,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 40,
+          "offset" : 0,
+          "text" : "This is not just a theoretical question."
+        },
+        {
+          "length" : 69,
+          "offset" : 41,
+          "text" : "Software is a very competitive business, prone to natural monopolies."
+        },
+        {
+          "length" : 127,
+          "offset" : 111,
+          "text" : "A company that gets software written faster and better will, all other things being equal, put its competitors out of business."
+        },
+        {
+          "length" : 62,
+          "offset" : 239,
+          "text" : "And when you're starting a startup, you feel this very keenly."
+        },
+        {
+          "length" : 50,
+          "offset" : 302,
+          "text" : "Startups tend to be an all or nothing proposition."
+        },
+        {
+          "length" : 40,
+          "offset" : 353,
+          "text" : "You either get rich, or you get nothing."
+        },
+        {
+          "length" : 82,
+          "offset" : 394,
+          "text" : "In a startup, if you bet on the wrong technology, your competitors will crush you."
+        }
+      ],
+      "text" : "This is not just a theoretical question. Software is a very competitive business, prone to natural monopolies. A company that gets software written faster and better will, all other things being equal, put its competitors out of business. And when you're starting a startup, you feel this very keenly. Startups tend to be an all or nothing proposition. You either get rich, or you get nothing. In a startup, if you bet on the wrong technology, your competitors will crush you."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 14,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 109,
+          "offset" : 0,
+          "text" : "Robert and I both knew Lisp well, and we couldn't see any reason not to trust our instincts and go with Lisp."
+        },
+        {
+          "length" : 69,
+          "offset" : 110,
+          "text" : "We knew that everyone else was writing their software in C++ or Perl."
+        },
+        {
+          "length" : 48,
+          "offset" : 180,
+          "text" : "But we also knew that that didn't mean anything."
+        },
+        {
+          "length" : 59,
+          "offset" : 229,
+          "text" : "If you chose technology that way, you'd be running Windows."
+        },
+        {
+          "length" : 118,
+          "offset" : 289,
+          "text" : "When you choose technology, you have to ignore what other people are doing, and consider only what will work the best."
+        }
+      ],
+      "text" : "Robert and I both knew Lisp well, and we couldn't see any reason not to trust our instincts and go with Lisp. We knew that everyone else was writing their software in C++ or Perl. But we also knew that that didn't mean anything. If you chose technology that way, you'd be running Windows. When you choose technology, you have to ignore what other people are doing, and consider only what will work the best."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 15,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 37,
+          "offset" : 0,
+          "text" : "This is especially true in a startup."
+        },
+        {
+          "length" : 72,
+          "offset" : 38,
+          "text" : "In a big company, you can do what all the other big companies are doing."
+        },
+        {
+          "length" : 54,
+          "offset" : 111,
+          "text" : "But a startup can't do what all the other startups do."
+        },
+        {
+          "length" : 61,
+          "offset" : 166,
+          "text" : "I don't think a lot of people realize this, even in startups."
+        }
+      ],
+      "text" : "This is especially true in a startup. In a big company, you can do what all the other big companies are doing. But a startup can't do what all the other startups do. I don't think a lot of people realize this, even in startups."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 16,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 58,
+          "offset" : 0,
+          "text" : "The average big company grows at about ten percent a year."
+        },
+        {
+          "length" : 198,
+          "offset" : 59,
+          "text" : "So if you're running a big company and you do everything the way the average big company does it, you can expect to do as well as the average big company-- that is, to grow about ten percent a year."
+        }
+      ],
+      "text" : "The average big company grows at about ten percent a year. So if you're running a big company and you do everything the way the average big company does it, you can expect to do as well as the average big company-- that is, to grow about ten percent a year."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 17,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 66,
+          "offset" : 0,
+          "text" : "The same thing will happen if you're running a startup, of course."
+        },
+        {
+          "length" : 96,
+          "offset" : 67,
+          "text" : "If you do everything the way the average startup does it, you should expect average performance."
+        },
+        {
+          "length" : 78,
+          "offset" : 164,
+          "text" : "The problem here is, average performance means that you'll go out of business."
+        },
+        {
+          "length" : 62,
+          "offset" : 243,
+          "text" : "The survival rate for startups is way less than fifty percent."
+        },
+        {
+          "length" : 70,
+          "offset" : 306,
+          "text" : "So if you're running a startup, you had better be doing something odd."
+        },
+        {
+          "length" : 26,
+          "offset" : 377,
+          "text" : "If not, you're in trouble."
+        }
+      ],
+      "text" : "The same thing will happen if you're running a startup, of course. If you do everything the way the average startup does it, you should expect average performance. The problem here is, average performance means that you'll go out of business. The survival rate for startups is way less than fifty percent. So if you're running a startup, you had better be doing something odd. If not, you're in trouble."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 18,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 213,
+          "offset" : 0,
+          "text" : "Back in 1995, we knew something that I don't think our competitors understood, and few understand even now: when you're writing software that only has to run on your own servers, you can use any language you want."
+        },
+        {
+          "length" : 133,
+          "offset" : 214,
+          "text" : "When you're writing desktop software, there's a strong bias toward writing applications in the same language as the operating system."
+        },
+        {
+          "length" : 225,
+          "offset" : 348,
+          "text" : "Ten years ago, writing applications meant writing applications in C. But with Web-based software, especially when you have the source code of both the language and the operating system, you can use whatever language you want."
+        }
+      ],
+      "text" : "Back in 1995, we knew something that I don't think our competitors understood, and few understand even now: when you're writing software that only has to run on your own servers, you can use any language you want. When you're writing desktop software, there's a strong bias toward writing applications in the same language as the operating system. Ten years ago, writing applications meant writing applications in C. But with Web-based software, especially when you have the source code of both the language and the operating system, you can use whatever language you want."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 19,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 50,
+          "offset" : 0,
+          "text" : "This new freedom is a double-edged sword, however."
+        },
+        {
+          "length" : 76,
+          "offset" : 51,
+          "text" : "Now that you can use any language, you have to think about which one to use."
+        },
+        {
+          "length" : 93,
+          "offset" : 128,
+          "text" : "Companies that try to pretend nothing has changed risk finding that their competitors do not."
+        }
+      ],
+      "text" : "This new freedom is a double-edged sword, however. Now that you can use any language, you have to think about which one to use. Companies that try to pretend nothing has changed risk finding that their competitors do not."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 20,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 46,
+          "offset" : 0,
+          "text" : "If you can use any language, which do you use?"
+        },
+        {
+          "length" : 14,
+          "offset" : 47,
+          "text" : "We chose Lisp."
+        },
+        {
+          "length" : 87,
+          "offset" : 62,
+          "text" : "For one thing, it was obvious that rapid development would be important in this market."
+        },
+        {
+          "length" : 131,
+          "offset" : 150,
+          "text" : "We were all starting from scratch, so a company that could get new features done before its competitors would have a big advantage."
+        },
+        {
+          "length" : 195,
+          "offset" : 282,
+          "text" : "We knew Lisp was a really good language for writing software quickly, and server-based applications magnify the effect of rapid development, because you can release software the minute it's done."
+        }
+      ],
+      "text" : "If you can use any language, which do you use? We chose Lisp. For one thing, it was obvious that rapid development would be important in this market. We were all starting from scratch, so a company that could get new features done before its competitors would have a big advantage. We knew Lisp was a really good language for writing software quickly, and server-based applications magnify the effect of rapid development, because you can release software the minute it's done."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 21,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 63,
+          "offset" : 0,
+          "text" : "If other companies didn't want to use Lisp, so much the better."
+        },
+        {
+          "length" : 79,
+          "offset" : 64,
+          "text" : "It might give us a technological edge, and we needed all the help we could get."
+        },
+        {
+          "length" : 57,
+          "offset" : 144,
+          "text" : "When we started Viaweb, we had no experience in business."
+        },
+        {
+          "length" : 98,
+          "offset" : 202,
+          "text" : "We didn't know anything about marketing, or hiring people, or raising money, or getting customers."
+        },
+        {
+          "length" : 63,
+          "offset" : 301,
+          "text" : "Neither of us had ever even had what you would call a real job."
+        },
+        {
+          "length" : 52,
+          "offset" : 365,
+          "text" : "The only thing we were good at was writing software."
+        },
+        {
+          "length" : 28,
+          "offset" : 418,
+          "text" : "We hoped that would save us."
+        },
+        {
+          "length" : 69,
+          "offset" : 447,
+          "text" : "Any advantage we could get in the software department, we would take."
+        }
+      ],
+      "text" : "If other companies didn't want to use Lisp, so much the better. It might give us a technological edge, and we needed all the help we could get. When we started Viaweb, we had no experience in business. We didn't know anything about marketing, or hiring people, or raising money, or getting customers. Neither of us had ever even had what you would call a real job. The only thing we were good at was writing software. We hoped that would save us. Any advantage we could get in the software department, we would take."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 22,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 51,
+          "offset" : 0,
+          "text" : "So you could say that using Lisp was an experiment."
+        },
+        {
+          "length" : 181,
+          "offset" : 52,
+          "text" : "Our hypothesis was that if we wrote our software in Lisp, we'd be able to get features done faster than our competitors, and also to do things in our software that they couldn't do."
+        },
+        {
+          "length" : 105,
+          "offset" : 234,
+          "text" : "And because Lisp was so high-level, we wouldn't need a big development team, so our costs would be lower."
+        },
+        {
+          "length" : 89,
+          "offset" : 340,
+          "text" : "If this were so, we could offer a better product for less money, and still make a profit."
+        },
+        {
+          "length" : 109,
+          "offset" : 430,
+          "text" : "We would end up getting all the users, and our competitors would get none, and eventually go out of business."
+        },
+        {
+          "length" : 44,
+          "offset" : 540,
+          "text" : "That was what we hoped would happen, anyway."
+        }
+      ],
+      "text" : "So you could say that using Lisp was an experiment. Our hypothesis was that if we wrote our software in Lisp, we'd be able to get features done faster than our competitors, and also to do things in our software that they couldn't do. And because Lisp was so high-level, we wouldn't need a big development team, so our costs would be lower. If this were so, we could offer a better product for less money, and still make a profit. We would end up getting all the users, and our competitors would get none, and eventually go out of business. That was what we hoped would happen, anyway."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 23,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 41,
+          "offset" : 0,
+          "text" : "What were the results of this experiment?"
+        },
+        {
+          "length" : 33,
+          "offset" : 42,
+          "text" : "Somewhat surprisingly, it worked."
+        },
+        {
+          "length" : 129,
+          "offset" : 76,
+          "text" : "We eventually had many competitors, on the order of twenty to thirty of them, but none of their software could compete with ours."
+        },
+        {
+          "length" : 101,
+          "offset" : 206,
+          "text" : "We had a wysiwyg online store builder that ran on the server and yet felt like a desktop application."
+        },
+        {
+          "length" : 32,
+          "offset" : 308,
+          "text" : "Our competitors had cgi scripts."
+        },
+        {
+          "length" : 49,
+          "offset" : 341,
+          "text" : "And we were always far ahead of them in features."
+        },
+        {
+          "length" : 91,
+          "offset" : 391,
+          "text" : "Sometimes, in desperation, competitors would try to introduce features that we didn't have."
+        },
+        {
+          "length" : 165,
+          "offset" : 483,
+          "text" : "But with Lisp our development cycle was so fast that we could sometimes duplicate a new feature within a day or two of a competitor announcing it in a press release."
+        },
+        {
+          "length" : 110,
+          "offset" : 649,
+          "text" : "By the time journalists covering the press release got round to calling us, we would have the new feature too."
+        }
+      ],
+      "text" : "What were the results of this experiment? Somewhat surprisingly, it worked. We eventually had many competitors, on the order of twenty to thirty of them, but none of their software could compete with ours. We had a wysiwyg online store builder that ran on the server and yet felt like a desktop application. Our competitors had cgi scripts. And we were always far ahead of them in features. Sometimes, in desperation, competitors would try to introduce features that we didn't have. But with Lisp our development cycle was so fast that we could sometimes duplicate a new feature within a day or two of a competitor announcing it in a press release. By the time journalists covering the press release got round to calling us, we would have the new feature too."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 24,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 136,
+          "offset" : 0,
+          "text" : "It must have seemed to our competitors that we had some kind of secret weapon-- that we were decoding their Enigma traffic or something."
+        },
+        {
+          "length" : 75,
+          "offset" : 137,
+          "text" : "In fact we did have a secret weapon, but it was simpler than they realized."
+        },
+        {
+          "length" : 48,
+          "offset" : 213,
+          "text" : "No one was leaking news of their features to us."
+        },
+        {
+          "length" : 74,
+          "offset" : 262,
+          "text" : "We were just able to develop software faster than anyone thought possible."
+        }
+      ],
+      "text" : "It must have seemed to our competitors that we had some kind of secret weapon-- that we were decoding their Enigma traffic or something. In fact we did have a secret weapon, but it was simpler than they realized. No one was leaking news of their features to us. We were just able to develop software faster than anyone thought possible."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 25,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 102,
+          "offset" : 0,
+          "text" : "When I was about nine I happened to get hold of a copy of The Day of the Jackal, by Frederick Forsyth."
+        },
+        {
+          "length" : 79,
+          "offset" : 103,
+          "text" : "The main character is an assassin who is hired to kill the president of France."
+        },
+        {
+          "length" : 103,
+          "offset" : 183,
+          "text" : "The assassin has to get past the police to get up to an apartment that overlooks the president's route."
+        },
+        {
+          "length" : 89,
+          "offset" : 287,
+          "text" : "He walks right by them, dressed up as an old man on crutches, and they never suspect him."
+        }
+      ],
+      "text" : "When I was about nine I happened to get hold of a copy of The Day of the Jackal, by Frederick Forsyth. The main character is an assassin who is hired to kill the president of France. The assassin has to get past the police to get up to an apartment that overlooks the president's route. He walks right by them, dressed up as an old man on crutches, and they never suspect him."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 26,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 30,
+          "offset" : 0,
+          "text" : "Our secret weapon was similar."
+        },
+        {
+          "length" : 88,
+          "offset" : 31,
+          "text" : "We wrote our software in a weird AI language, with a bizarre syntax full of parentheses."
+        },
+        {
+          "length" : 60,
+          "offset" : 120,
+          "text" : "For years it had annoyed me to hear Lisp described that way."
+        },
+        {
+          "length" : 35,
+          "offset" : 181,
+          "text" : "But now it worked to our advantage."
+        },
+        {
+          "length" : 105,
+          "offset" : 217,
+          "text" : "In business, there is nothing more valuable than a technical advantage your competitors don't understand."
+        },
+        {
+          "length" : 59,
+          "offset" : 323,
+          "text" : "In business, as in war, surprise is worth as much as force."
+        }
+      ],
+      "text" : "Our secret weapon was similar. We wrote our software in a weird AI language, with a bizarre syntax full of parentheses. For years it had annoyed me to hear Lisp described that way. But now it worked to our advantage. In business, there is nothing more valuable than a technical advantage your competitors don't understand. In business, as in war, surprise is worth as much as force."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 27,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 115,
+          "offset" : 0,
+          "text" : "And so, I'm a little embarrassed to say, I never said anything publicly about Lisp while we were working on Viaweb."
+        },
+        {
+          "length" : 136,
+          "offset" : 116,
+          "text" : "We never mentioned it to the press, and if you searched for Lisp on our Web site, all you'd find were the titles of two books in my bio."
+        },
+        {
+          "length" : 21,
+          "offset" : 253,
+          "text" : "This was no accident."
+        },
+        {
+          "length" : 72,
+          "offset" : 275,
+          "text" : "A startup should give its competitors as little information as possible."
+        },
+        {
+          "length" : 111,
+          "offset" : 348,
+          "text" : "If they didn't know what language our software was written in, or didn't care, I wanted to keep it that way.[2]"
+        }
+      ],
+      "text" : "And so, I'm a little embarrassed to say, I never said anything publicly about Lisp while we were working on Viaweb. We never mentioned it to the press, and if you searched for Lisp on our Web site, all you'd find were the titles of two books in my bio. This was no accident. A startup should give its competitors as little information as possible. If they didn't know what language our software was written in, or didn't care, I wanted to keep it that way.[2]"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 28,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 65,
+          "offset" : 0,
+          "text" : "The people who understood our technology best were the customers."
+        },
+        {
+          "length" : 105,
+          "offset" : 66,
+          "text" : "They didn't care what language Viaweb was written in either, but they noticed that it worked really well."
+        },
+        {
+          "length" : 67,
+          "offset" : 172,
+          "text" : "It let them build great looking online stores literally in minutes."
+        },
+        {
+          "length" : 60,
+          "offset" : 240,
+          "text" : "And so, by word of mouth mostly, we got more and more users."
+        },
+        {
+          "length" : 49,
+          "offset" : 301,
+          "text" : "By the end of 1996 we had about 70 stores online."
+        },
+        {
+          "length" : 30,
+          "offset" : 351,
+          "text" : "At the end of 1997 we had 500."
+        },
+        {
+          "length" : 58,
+          "offset" : 382,
+          "text" : "Six months later, when Yahoo bought us, we had 1070 users."
+        },
+        {
+          "length" : 70,
+          "offset" : 441,
+          "text" : "Today, as Yahoo Store, this software continues to dominate its market."
+        },
+        {
+          "length" : 115,
+          "offset" : 512,
+          "text" : "It's one of the more profitable pieces of Yahoo, and the stores built with it are the foundation of Yahoo Shopping."
+        },
+        {
+          "length" : 121,
+          "offset" : 628,
+          "text" : "I left Yahoo in 1999, so I don't know exactly how many users they have now, but the last I heard there were about 20,000."
+        }
+      ],
+      "text" : "The people who understood our technology best were the customers. They didn't care what language Viaweb was written in either, but they noticed that it worked really well. It let them build great looking online stores literally in minutes. And so, by word of mouth mostly, we got more and more users. By the end of 1996 we had about 70 stores online. At the end of 1997 we had 500. Six months later, when Yahoo bought us, we had 1070 users. Today, as Yahoo Store, this software continues to dominate its market. It's one of the more profitable pieces of Yahoo, and the stores built with it are the foundation of Yahoo Shopping. I left Yahoo in 1999, so I don't know exactly how many users they have now, but the last I heard there were about 20,000."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 29,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 16,
+          "offset" : 0,
+          "text" : "The Blub Paradox"
+        }
+      ],
+      "text" : "The Blub Paradox"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 30,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 27,
+          "offset" : 0,
+          "text" : "What's so great about Lisp?"
+        },
+        {
+          "length" : 53,
+          "offset" : 28,
+          "text" : "And if Lisp is so great, why doesn't everyone use it?"
+        },
+        {
+          "length" : 86,
+          "offset" : 82,
+          "text" : "These sound like rhetorical questions, but actually they have straightforward answers."
+        },
+        {
+          "length" : 139,
+          "offset" : 169,
+          "text" : "Lisp is so great not because of some magic quality visible only to devotees, but because it is simply the most powerful language available."
+        },
+        {
+          "length" : 153,
+          "offset" : 309,
+          "text" : "And the reason everyone doesn't use it is that programming languages are not merely technologies, but habits of mind as well, and nothing changes slower."
+        },
+        {
+          "length" : 46,
+          "offset" : 463,
+          "text" : "Of course, both these answers need explaining."
+        }
+      ],
+      "text" : "What's so great about Lisp? And if Lisp is so great, why doesn't everyone use it? These sound like rhetorical questions, but actually they have straightforward answers. Lisp is so great not because of some magic quality visible only to devotees, but because it is simply the most powerful language available. And the reason everyone doesn't use it is that programming languages are not merely technologies, but habits of mind as well, and nothing changes slower. Of course, both these answers need explaining."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 31,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 90,
+          "offset" : 0,
+          "text" : "I'll begin with a shockingly controversial statement: programming languages vary in power."
+        }
+      ],
+      "text" : "I'll begin with a shockingly controversial statement: programming languages vary in power."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 32,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 95,
+          "offset" : 0,
+          "text" : "Few would dispute, at least, that high level languages are more powerful than machine language."
+        },
+        {
+          "length" : 100,
+          "offset" : 96,
+          "text" : "Most programmers today would agree that you do not, ordinarily, want to program in machine language."
+        },
+        {
+          "length" : 117,
+          "offset" : 197,
+          "text" : "Instead, you should program in a high-level language, and have a compiler translate it into machine language for you."
+        },
+        {
+          "length" : 144,
+          "offset" : 315,
+          "text" : "This idea is even built into the hardware now: since the 1980s, instruction sets have been designed for compilers rather than human programmers."
+        }
+      ],
+      "text" : "Few would dispute, at least, that high level languages are more powerful than machine language. Most programmers today would agree that you do not, ordinarily, want to program in machine language. Instead, you should program in a high-level language, and have a compiler translate it into machine language for you. This idea is even built into the hardware now: since the 1980s, instruction sets have been designed for compilers rather than human programmers."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 33,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 86,
+          "offset" : 0,
+          "text" : "Everyone knows it's a mistake to write your whole program by hand in machine language."
+        },
+        {
+          "length" : 221,
+          "offset" : 87,
+          "text" : "What's less often understood is that there is a more general principle here: that if you have a choice of several languages, it is, all other things being equal, a mistake to program in anything but the most powerful one."
+        },
+        {
+          "length" : 3,
+          "offset" : 309,
+          "text" : "[3]"
+        }
+      ],
+      "text" : "Everyone knows it's a mistake to write your whole program by hand in machine language. What's less often understood is that there is a more general principle here: that if you have a choice of several languages, it is, all other things being equal, a mistake to program in anything but the most powerful one. [3]"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 34,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 39,
+          "offset" : 0,
+          "text" : "There are many exceptions to this rule."
+        },
+        {
+          "length" : 174,
+          "offset" : 40,
+          "text" : "If you're writing a program that has to work very closely with a program written in a certain language, it might be a good idea to write the new program in the same language."
+        },
+        {
+          "length" : 203,
+          "offset" : 215,
+          "text" : "If you're writing a program that only has to do something very simple, like number crunching or bit manipulation, you may as well use a less abstract language, especially since it may be slightly faster."
+        },
+        {
+          "length" : 145,
+          "offset" : 419,
+          "text" : "And if you're writing a short, throwaway program, you may be better off just using whatever language has the best library functions for the task."
+        },
+        {
+          "length" : 261,
+          "offset" : 565,
+          "text" : "But in general, for application software, you want to be using the most powerful (reasonably efficient) language you can get, and using anything else is a mistake, of exactly the same kind, though possibly in a lesser degree, as programming in machine language."
+        }
+      ],
+      "text" : "There are many exceptions to this rule. If you're writing a program that has to work very closely with a program written in a certain language, it might be a good idea to write the new program in the same language. If you're writing a program that only has to do something very simple, like number crunching or bit manipulation, you may as well use a less abstract language, especially since it may be slightly faster. And if you're writing a short, throwaway program, you may be better off just using whatever language has the best library functions for the task. But in general, for application software, you want to be using the most powerful (reasonably efficient) language you can get, and using anything else is a mistake, of exactly the same kind, though possibly in a lesser degree, as programming in machine language."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 35,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 52,
+          "offset" : 0,
+          "text" : "You can see that machine language is very low level."
+        },
+        {
+          "length" : 103,
+          "offset" : 53,
+          "text" : "But, at least as a kind of social convention, high-level languages are often all treated as equivalent."
+        },
+        {
+          "length" : 12,
+          "offset" : 157,
+          "text" : "They're not."
+        },
+        {
+          "length" : 79,
+          "offset" : 170,
+          "text" : "Technically the term \"high-level language\" doesn't mean anything very definite."
+        },
+        {
+          "length" : 106,
+          "offset" : 250,
+          "text" : "There's no dividing line with machine languages on one side and all the high-level languages on the other."
+        },
+        {
+          "length" : 147,
+          "offset" : 357,
+          "text" : "Languages fall along a continuum [4] of abstractness, from the most powerful all the way down to machine languages, which themselves vary in power."
+        }
+      ],
+      "text" : "You can see that machine language is very low level. But, at least as a kind of social convention, high-level languages are often all treated as equivalent. They're not. Technically the term \"high-level language\" doesn't mean anything very definite. There's no dividing line with machine languages on one side and all the high-level languages on the other. Languages fall along a continuum [4] of abstractness, from the most powerful all the way down to machine languages, which themselves vary in power."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 36,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 15,
+          "offset" : 0,
+          "text" : "Consider Cobol."
+        },
+        {
+          "length" : 89,
+          "offset" : 16,
+          "text" : "Cobol is a high-level language, in the sense that it gets compiled into machine language."
+        },
+        {
+          "length" : 79,
+          "offset" : 106,
+          "text" : "Would anyone seriously argue that Cobol is equivalent in power to, say, Python?"
+        },
+        {
+          "length" : 53,
+          "offset" : 186,
+          "text" : "It's probably closer to machine language than Python."
+        }
+      ],
+      "text" : "Consider Cobol. Cobol is a high-level language, in the sense that it gets compiled into machine language. Would anyone seriously argue that Cobol is equivalent in power to, say, Python? It's probably closer to machine language than Python."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 37,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 20,
+          "offset" : 0,
+          "text" : "Or how about Perl 4?"
+        },
+        {
+          "length" : 70,
+          "offset" : 21,
+          "text" : "Between Perl 4 and Perl 5, lexical closures got added to the language."
+        },
+        {
+          "length" : 71,
+          "offset" : 92,
+          "text" : "Most Perl hackers would agree that Perl 5 is more powerful than Perl 4."
+        },
+        {
+          "length" : 110,
+          "offset" : 164,
+          "text" : "But once you've admitted that, you've admitted that one high level language can be more powerful than another."
+        },
+        {
+          "length" : 104,
+          "offset" : 275,
+          "text" : "And it follows inexorably that, except in special cases, you ought to use the most powerful you can get."
+        }
+      ],
+      "text" : "Or how about Perl 4? Between Perl 4 and Perl 5, lexical closures got added to the language. Most Perl hackers would agree that Perl 5 is more powerful than Perl 4. But once you've admitted that, you've admitted that one high level language can be more powerful than another. And it follows inexorably that, except in special cases, you ought to use the most powerful you can get."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 38,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 55,
+          "offset" : 0,
+          "text" : "This idea is rarely followed to its conclusion, though."
+        },
+        {
+          "length" : 69,
+          "offset" : 56,
+          "text" : "After a certain age, programmers rarely switch languages voluntarily."
+        },
+        {
+          "length" : 86,
+          "offset" : 126,
+          "text" : "Whatever language people happen to be used to, they tend to consider just good enough."
+        }
+      ],
+      "text" : "This idea is rarely followed to its conclusion, though. After a certain age, programmers rarely switch languages voluntarily. Whatever language people happen to be used to, they tend to consider just good enough."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 39,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 181,
+          "offset" : 0,
+          "text" : "Programmers get very attached to their favorite languages, and I don't want to hurt anyone's feelings, so to explain this point I'm going to use a hypothetical language called Blub."
+        },
+        {
+          "length" : 61,
+          "offset" : 182,
+          "text" : "Blub falls right in the middle of the abstractness continuum."
+        },
+        {
+          "length" : 93,
+          "offset" : 244,
+          "text" : "It is not the most powerful language, but it is more powerful than Cobol or machine language."
+        }
+      ],
+      "text" : "Programmers get very attached to their favorite languages, and I don't want to hurt anyone's feelings, so to explain this point I'm going to use a hypothetical language called Blub. Blub falls right in the middle of the abstractness continuum. It is not the most powerful language, but it is more powerful than Cobol or machine language."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 40,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 74,
+          "offset" : 0,
+          "text" : "And in fact, our hypothetical Blub programmer wouldn't use either of them."
+        },
+        {
+          "length" : 50,
+          "offset" : 75,
+          "text" : "Of course he wouldn't program in machine language."
+        },
+        {
+          "length" : 30,
+          "offset" : 126,
+          "text" : "That's what compilers are for."
+        },
+        {
+          "length" : 75,
+          "offset" : 157,
+          "text" : "And as for Cobol, he doesn't know how anyone can get anything done with it."
+        },
+        {
+          "length" : 53,
+          "offset" : 233,
+          "text" : "It doesn't even have x (Blub feature of your choice)."
+        }
+      ],
+      "text" : "And in fact, our hypothetical Blub programmer wouldn't use either of them. Of course he wouldn't program in machine language. That's what compilers are for. And as for Cobol, he doesn't know how anyone can get anything done with it. It doesn't even have x (Blub feature of your choice)."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 41,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 108,
+          "offset" : 0,
+          "text" : "As long as our hypothetical Blub programmer is looking down the power continuum, he knows he's looking down."
+        },
+        {
+          "length" : 113,
+          "offset" : 109,
+          "text" : "Languages less powerful than Blub are obviously less powerful, because they're missing some feature he's used to."
+        },
+        {
+          "length" : 131,
+          "offset" : 223,
+          "text" : "But when our hypothetical Blub programmer looks in the other direction, up the power continuum, he doesn't realize he's looking up."
+        },
+        {
+          "length" : 40,
+          "offset" : 355,
+          "text" : "What he sees are merely weird languages."
+        },
+        {
+          "length" : 116,
+          "offset" : 396,
+          "text" : "He probably considers them about equivalent in power to Blub, but with all this other hairy stuff thrown in as well."
+        },
+        {
+          "length" : 55,
+          "offset" : 513,
+          "text" : "Blub is good enough for him, because he thinks in Blub."
+        }
+      ],
+      "text" : "As long as our hypothetical Blub programmer is looking down the power continuum, he knows he's looking down. Languages less powerful than Blub are obviously less powerful, because they're missing some feature he's used to. But when our hypothetical Blub programmer looks in the other direction, up the power continuum, he doesn't realize he's looking up. What he sees are merely weird languages. He probably considers them about equivalent in power to Blub, but with all this other hairy stuff thrown in as well. Blub is good enough for him, because he thinks in Blub."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 42,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 164,
+          "offset" : 0,
+          "text" : "When we switch to the point of view of a programmer using any of the languages higher up the power continuum, however, we find that he in turn looks down upon Blub."
+        },
+        {
+          "length" : 38,
+          "offset" : 165,
+          "text" : "How can you get anything done in Blub?"
+        },
+        {
+          "length" : 23,
+          "offset" : 204,
+          "text" : "It doesn't even have y."
+        }
+      ],
+      "text" : "When we switch to the point of view of a programmer using any of the languages higher up the power continuum, however, we find that he in turn looks down upon Blub. How can you get anything done in Blub? It doesn't even have y."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 43,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 162,
+          "offset" : 0,
+          "text" : "By induction, the only programmers in a position to see all the differences in power between the various languages are those who understand the most powerful one."
+        },
+        {
+          "length" : 85,
+          "offset" : 163,
+          "text" : "(This is probably what Eric Raymond meant about Lisp making you a better programmer.)"
+        },
+        {
+          "length" : 188,
+          "offset" : 249,
+          "text" : "You can't trust the opinions of the others, because of the Blub paradox: they're satisfied with whatever language they happen to use, because it dictates the way they think about programs."
+        }
+      ],
+      "text" : "By induction, the only programmers in a position to see all the differences in power between the various languages are those who understand the most powerful one. (This is probably what Eric Raymond meant about Lisp making you a better programmer.) You can't trust the opinions of the others, because of the Blub paradox: they're satisfied with whatever language they happen to use, because it dictates the way they think about programs."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 44,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 83,
+          "offset" : 0,
+          "text" : "I know this from my own experience, as a high school kid writing programs in Basic."
+        },
+        {
+          "length" : 44,
+          "offset" : 84,
+          "text" : "That language didn't even support recursion."
+        },
+        {
+          "length" : 96,
+          "offset" : 129,
+          "text" : "It's hard to imagine writing programs without using recursion, but I didn't miss it at the time."
+        },
+        {
+          "length" : 19,
+          "offset" : 226,
+          "text" : "I thought in Basic."
+        },
+        {
+          "length" : 23,
+          "offset" : 246,
+          "text" : "And I was a whiz at it."
+        },
+        {
+          "length" : 25,
+          "offset" : 270,
+          "text" : "Master of all I surveyed."
+        }
+      ],
+      "text" : "I know this from my own experience, as a high school kid writing programs in Basic. That language didn't even support recursion. It's hard to imagine writing programs without using recursion, but I didn't miss it at the time. I thought in Basic. And I was a whiz at it. Master of all I surveyed."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 45,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 105,
+          "offset" : 0,
+          "text" : "The five languages that Eric Raymond recommends to hackers fall at various points on the power continuum."
+        },
+        {
+          "length" : 61,
+          "offset" : 106,
+          "text" : "Where they fall relative to one another is a sensitive topic."
+        },
+        {
+          "length" : 51,
+          "offset" : 168,
+          "text" : "What I will say is that I think Lisp is at the top."
+        },
+        {
+          "length" : 119,
+          "offset" : 220,
+          "text" : "And to support this claim I'll tell you about one of the things I find missing when I look at the other four languages."
+        },
+        {
+          "length" : 63,
+          "offset" : 340,
+          "text" : "How can you get anything done in them, I think, without macros?"
+        },
+        {
+          "length" : 3,
+          "offset" : 404,
+          "text" : "[5]"
+        }
+      ],
+      "text" : "The five languages that Eric Raymond recommends to hackers fall at various points on the power continuum. Where they fall relative to one another is a sensitive topic. What I will say is that I think Lisp is at the top. And to support this claim I'll tell you about one of the things I find missing when I look at the other four languages. How can you get anything done in them, I think, without macros? [5]"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 46,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 45,
+          "offset" : 0,
+          "text" : "Many languages have something called a macro."
+        },
+        {
+          "length" : 27,
+          "offset" : 46,
+          "text" : "But Lisp macros are unique."
+        },
+        {
+          "length" : 66,
+          "offset" : 74,
+          "text" : "And believe it or not, what they do is related to the parentheses."
+        },
+        {
+          "length" : 92,
+          "offset" : 141,
+          "text" : "The designers of Lisp didn't put all those parentheses in the language just to be different."
+        },
+        {
+          "length" : 46,
+          "offset" : 234,
+          "text" : "To the Blub programmer, Lisp code looks weird."
+        },
+        {
+          "length" : 45,
+          "offset" : 281,
+          "text" : "But those parentheses are there for a reason."
+        },
+        {
+          "length" : 91,
+          "offset" : 327,
+          "text" : "They are the outward evidence of a fundamental difference between Lisp and other languages."
+        }
+      ],
+      "text" : "Many languages have something called a macro. But Lisp macros are unique. And believe it or not, what they do is related to the parentheses. The designers of Lisp didn't put all those parentheses in the language just to be different. To the Blub programmer, Lisp code looks weird. But those parentheses are there for a reason. They are the outward evidence of a fundamental difference between Lisp and other languages."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 47,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 43,
+          "offset" : 0,
+          "text" : "Lisp code is made out of Lisp data objects."
+        },
+        {
+          "length" : 135,
+          "offset" : 44,
+          "text" : "And not in the trivial sense that the source files contain characters, and strings are one of the data types supported by the language."
+        },
+        {
+          "length" : 91,
+          "offset" : 180,
+          "text" : "Lisp code, after it's read by the parser, is made of data structures that you can traverse."
+        }
+      ],
+      "text" : "Lisp code is made out of Lisp data objects. And not in the trivial sense that the source files contain characters, and strings are one of the data types supported by the language. Lisp code, after it's read by the parser, is made of data structures that you can traverse."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 48,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 134,
+          "offset" : 0,
+          "text" : "If you understand how compilers work, what's really going on is not so much that Lisp has a strange syntax as that Lisp has no syntax."
+        },
+        {
+          "length" : 109,
+          "offset" : 135,
+          "text" : "You write programs in the parse trees that get generated within the compiler when other languages are parsed."
+        },
+        {
+          "length" : 60,
+          "offset" : 245,
+          "text" : "But these parse trees are fully accessible to your programs."
+        },
+        {
+          "length" : 44,
+          "offset" : 306,
+          "text" : "You can write programs that manipulate them."
+        },
+        {
+          "length" : 42,
+          "offset" : 351,
+          "text" : "In Lisp, these programs are called macros."
+        },
+        {
+          "length" : 38,
+          "offset" : 394,
+          "text" : "They are programs that write programs."
+        }
+      ],
+      "text" : "If you understand how compilers work, what's really going on is not so much that Lisp has a strange syntax as that Lisp has no syntax. You write programs in the parse trees that get generated within the compiler when other languages are parsed. But these parse trees are fully accessible to your programs. You can write programs that manipulate them. In Lisp, these programs are called macros. They are programs that write programs."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 49,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 29,
+          "offset" : 0,
+          "text" : "Programs that write programs?"
+        },
+        {
+          "length" : 36,
+          "offset" : 30,
+          "text" : "When would you ever want to do that?"
+        },
+        {
+          "length" : 38,
+          "offset" : 67,
+          "text" : "Not very often, if you think in Cobol."
+        },
+        {
+          "length" : 35,
+          "offset" : 106,
+          "text" : "All the time, if you think in Lisp."
+        },
+        {
+          "length" : 90,
+          "offset" : 142,
+          "text" : "It would be convenient here if I could give an example of a powerful macro, and say there!"
+        },
+        {
+          "length" : 15,
+          "offset" : 233,
+          "text" : "how about that?"
+        },
+        {
+          "length" : 172,
+          "offset" : 249,
+          "text" : "But if I did, it would just look like gibberish to someone who didn't know Lisp; there isn't room here to explain everything you'd need to know to understand what it meant."
+        },
+        {
+          "length" : 119,
+          "offset" : 422,
+          "text" : "In Ansi Common Lisp I tried to move things along as fast as I could, and even so I didn't get to macros until page 160."
+        }
+      ],
+      "text" : "Programs that write programs? When would you ever want to do that? Not very often, if you think in Cobol. All the time, if you think in Lisp. It would be convenient here if I could give an example of a powerful macro, and say there! how about that? But if I did, it would just look like gibberish to someone who didn't know Lisp; there isn't room here to explain everything you'd need to know to understand what it meant. In Ansi Common Lisp I tried to move things along as fast as I could, and even so I didn't get to macros until page 160."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 50,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 67,
+          "offset" : 0,
+          "text" : "But I think I can give a kind of argument that might be convincing."
+        },
+        {
+          "length" : 70,
+          "offset" : 68,
+          "text" : "The source code of the Viaweb editor was probably about 20-25% macros."
+        },
+        {
+          "length" : 132,
+          "offset" : 139,
+          "text" : "Macros are harder to write than ordinary Lisp functions, and it's considered to be bad style to use them when they're not necessary."
+        },
+        {
+          "length" : 58,
+          "offset" : 272,
+          "text" : "So every macro in that code is there because it has to be."
+        },
+        {
+          "length" : 131,
+          "offset" : 331,
+          "text" : "What that means is that at least 20-25% of the code in this program is doing things that you can't easily do in any other language."
+        },
+        {
+          "length" : 129,
+          "offset" : 463,
+          "text" : "However skeptical the Blub programmer might be about my claims for the mysterious powers of Lisp, this ought to make him curious."
+        },
+        {
+          "length" : 51,
+          "offset" : 593,
+          "text" : "We weren't writing this code for our own amusement."
+        },
+        {
+          "length" : 122,
+          "offset" : 645,
+          "text" : "We were a tiny startup, programming as hard as we could in order to put technical barriers between us and our competitors."
+        }
+      ],
+      "text" : "But I think I can give a kind of argument that might be convincing. The source code of the Viaweb editor was probably about 20-25% macros. Macros are harder to write than ordinary Lisp functions, and it's considered to be bad style to use them when they're not necessary. So every macro in that code is there because it has to be. What that means is that at least 20-25% of the code in this program is doing things that you can't easily do in any other language. However skeptical the Blub programmer might be about my claims for the mysterious powers of Lisp, this ought to make him curious. We weren't writing this code for our own amusement. We were a tiny startup, programming as hard as we could in order to put technical barriers between us and our competitors."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 51,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 77,
+          "offset" : 0,
+          "text" : "A suspicious person might begin to wonder if there was some correlation here."
+        },
+        {
+          "length" : 85,
+          "offset" : 78,
+          "text" : "A big chunk of our code was doing things that are very hard to do in other languages."
+        },
+        {
+          "length" : 72,
+          "offset" : 164,
+          "text" : "The resulting software did things our competitors' software couldn't do."
+        },
+        {
+          "length" : 40,
+          "offset" : 237,
+          "text" : "Maybe there was some kind of connection."
+        },
+        {
+          "length" : 38,
+          "offset" : 278,
+          "text" : "I encourage you to follow that thread."
+        },
+        {
+          "length" : 84,
+          "offset" : 317,
+          "text" : "There may be more to that old man hobbling along on his crutches than meets the eye."
+        }
+      ],
+      "text" : "A suspicious person might begin to wonder if there was some correlation here. A big chunk of our code was doing things that are very hard to do in other languages. The resulting software did things our competitors' software couldn't do. Maybe there was some kind of connection. I encourage you to follow that thread. There may be more to that old man hobbling along on his crutches than meets the eye."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 52,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 19,
+          "offset" : 0,
+          "text" : "Aikido for Startups"
+        }
+      ],
+      "text" : "Aikido for Startups"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 53,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 73,
+          "offset" : 0,
+          "text" : "But I don't expect to convince anyone (over 25) to go out and learn Lisp."
+        },
+        {
+          "length" : 207,
+          "offset" : 74,
+          "text" : "The purpose of this article is not to change anyone's mind, but to reassure people already interested in using Lisp-- people who know that Lisp is a powerful language, but worry because it isn't widely used."
+        },
+        {
+          "length" : 48,
+          "offset" : 282,
+          "text" : "In a competitive situation, that's an advantage."
+        },
+        {
+          "length" : 74,
+          "offset" : 331,
+          "text" : "Lisp's power is multiplied by the fact that your competitors don't get it."
+        }
+      ],
+      "text" : "But I don't expect to convince anyone (over 25) to go out and learn Lisp. The purpose of this article is not to change anyone's mind, but to reassure people already interested in using Lisp-- people who know that Lisp is a powerful language, but worry because it isn't widely used. In a competitive situation, that's an advantage. Lisp's power is multiplied by the fact that your competitors don't get it."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 54,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 93,
+          "offset" : 0,
+          "text" : "If you think of using Lisp in a startup, you shouldn't worry that it isn't widely understood."
+        },
+        {
+          "length" : 39,
+          "offset" : 94,
+          "text" : "You should hope that it stays that way."
+        },
+        {
+          "length" : 19,
+          "offset" : 134,
+          "text" : "And it's likely to."
+        },
+        {
+          "length" : 104,
+          "offset" : 154,
+          "text" : "It's the nature of programming languages to make most people satisfied with whatever they currently use."
+        },
+        {
+          "length" : 140,
+          "offset" : 259,
+          "text" : "Computer hardware changes so much faster than personal habits that programming practice is usually ten to twenty years behind the processor."
+        },
+        {
+          "length" : 364,
+          "offset" : 400,
+          "text" : "At places like MIT they were writing programs in high-level languages in the early 1960s, but many companies continued to write code in machine language well into the 1980s. I bet a lot of people continued to write machine language until the processor, like a bartender eager to close up and go home, finally kicked them out by switching to a risc instruction set."
+        }
+      ],
+      "text" : "If you think of using Lisp in a startup, you shouldn't worry that it isn't widely understood. You should hope that it stays that way. And it's likely to. It's the nature of programming languages to make most people satisfied with whatever they currently use. Computer hardware changes so much faster than personal habits that programming practice is usually ten to twenty years behind the processor. At places like MIT they were writing programs in high-level languages in the early 1960s, but many companies continued to write code in machine language well into the 1980s. I bet a lot of people continued to write machine language until the processor, like a bartender eager to close up and go home, finally kicked them out by switching to a risc instruction set."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 55,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 35,
+          "offset" : 0,
+          "text" : "Ordinarily technology changes fast."
+        },
+        {
+          "length" : 118,
+          "offset" : 36,
+          "text" : "But programming languages are different: programming languages are not just technology, but what programmers think in."
+        },
+        {
+          "length" : 156,
+          "offset" : 155,
+          "text" : "They're half technology and half religion.[6] And so the median language, meaning whatever language the median programmer uses, moves as slow as an iceberg."
+        },
+        {
+          "length" : 98,
+          "offset" : 312,
+          "text" : "Garbage collection, introduced by Lisp in about 1960, is now widely considered to be a good thing."
+        },
+        {
+          "length" : 48,
+          "offset" : 411,
+          "text" : "Runtime typing, ditto, is growing in popularity."
+        },
+        {
+          "length" : 99,
+          "offset" : 460,
+          "text" : "Lexical closures, introduced by Lisp in the early 1970s, are now, just barely, on the radar screen."
+        },
+        {
+          "length" : 71,
+          "offset" : 560,
+          "text" : "Macros, introduced by Lisp in the mid 1960s, are still terra incognita."
+        }
+      ],
+      "text" : "Ordinarily technology changes fast. But programming languages are different: programming languages are not just technology, but what programmers think in. They're half technology and half religion.[6] And so the median language, meaning whatever language the median programmer uses, moves as slow as an iceberg. Garbage collection, introduced by Lisp in about 1960, is now widely considered to be a good thing. Runtime typing, ditto, is growing in popularity. Lexical closures, introduced by Lisp in the early 1970s, are now, just barely, on the radar screen. Macros, introduced by Lisp in the mid 1960s, are still terra incognita."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 56,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 53,
+          "offset" : 0,
+          "text" : "Obviously, the median language has enormous momentum."
+        },
+        {
+          "length" : 57,
+          "offset" : 54,
+          "text" : "I'm not proposing that you can fight this powerful force."
+        },
+        {
+          "length" : 119,
+          "offset" : 112,
+          "text" : "What I'm proposing is exactly the opposite: that, like a practitioner of Aikido, you can use it against your opponents."
+        }
+      ],
+      "text" : "Obviously, the median language has enormous momentum. I'm not proposing that you can fight this powerful force. What I'm proposing is exactly the opposite: that, like a practitioner of Aikido, you can use it against your opponents."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 57,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 52,
+          "offset" : 0,
+          "text" : "If you work for a big company, this may not be easy."
+        },
+        {
+          "length" : 218,
+          "offset" : 53,
+          "text" : "You will have a hard time convincing the pointy-haired boss to let you build things in Lisp, when he has just read in the paper that some other language is poised, like Ada was twenty years ago, to take over the world."
+        },
+        {
+          "length" : 251,
+          "offset" : 272,
+          "text" : "But if you work for a startup that doesn't have pointy-haired bosses yet, you can, like we did, turn the Blub paradox to your advantage: you can use technology that your competitors, glued immovably to the median language, will never be able to match."
+        }
+      ],
+      "text" : "If you work for a big company, this may not be easy. You will have a hard time convincing the pointy-haired boss to let you build things in Lisp, when he has just read in the paper that some other language is poised, like Ada was twenty years ago, to take over the world. But if you work for a startup that doesn't have pointy-haired bosses yet, you can, like we did, turn the Blub paradox to your advantage: you can use technology that your competitors, glued immovably to the median language, will never be able to match."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 58,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 98,
+          "offset" : 0,
+          "text" : "If you ever do find yourself working for a startup, here's a handy tip for evaluating competitors."
+        },
+        {
+          "length" : 24,
+          "offset" : 99,
+          "text" : "Read their job listings."
+        },
+        {
+          "length" : 174,
+          "offset" : 124,
+          "text" : "Everything else on their site may be stock photos or the prose equivalent, but the job listings have to be specific about what they want, or they'll get the wrong candidates."
+        }
+      ],
+      "text" : "If you ever do find yourself working for a startup, here's a handy tip for evaluating competitors. Read their job listings. Everything else on their site may be stock photos or the prose equivalent, but the job listings have to be specific about what they want, or they'll get the wrong candidates."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 59,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 70,
+          "offset" : 0,
+          "text" : "During the years we worked on Viaweb I read a lot of job descriptions."
+        },
+        {
+          "length" : 72,
+          "offset" : 71,
+          "text" : "A new competitor seemed to emerge out of the woodwork every month or so."
+        },
+        {
+          "length" : 113,
+          "offset" : 144,
+          "text" : "The first thing I would do, after checking to see if they had a live online demo, was look at their job listings."
+        },
+        {
+          "length" : 90,
+          "offset" : 258,
+          "text" : "After a couple years of this I could tell which companies to worry about and which not to."
+        },
+        {
+          "length" : 86,
+          "offset" : 349,
+          "text" : "The more of an IT flavor the job descriptions had, the less dangerous the company was."
+        },
+        {
+          "length" : 60,
+          "offset" : 436,
+          "text" : "The safest kind were the ones that wanted Oracle experience."
+        },
+        {
+          "length" : 35,
+          "offset" : 497,
+          "text" : "You never had to worry about those."
+        },
+        {
+          "length" : 67,
+          "offset" : 533,
+          "text" : "You were also safe if they said they wanted C++ or Java developers."
+        },
+        {
+          "length" : 176,
+          "offset" : 601,
+          "text" : "If they wanted Perl or Python programmers, that would be a bit frightening-- that's starting to sound like a company where the technical side, at least, is run by real hackers."
+        },
+        {
+          "length" : 92,
+          "offset" : 778,
+          "text" : "If I had ever seen a job posting looking for Lisp hackers, I would have been really worried."
+        }
+      ],
+      "text" : "During the years we worked on Viaweb I read a lot of job descriptions. A new competitor seemed to emerge out of the woodwork every month or so. The first thing I would do, after checking to see if they had a live online demo, was look at their job listings. After a couple years of this I could tell which companies to worry about and which not to. The more of an IT flavor the job descriptions had, the less dangerous the company was. The safest kind were the ones that wanted Oracle experience. You never had to worry about those. You were also safe if they said they wanted C++ or Java developers. If they wanted Perl or Python programmers, that would be a bit frightening-- that's starting to sound like a company where the technical side, at least, is run by real hackers. If I had ever seen a job posting looking for Lisp hackers, I would have been really worried."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 60,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 5,
+          "offset" : 0,
+          "text" : "Notes"
+        }
+      ],
+      "text" : "Notes"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 61,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 164,
+          "offset" : 0,
+          "text" : "[1] Viaweb at first had two parts: the editor, written in Lisp, which people used to build their sites, and the ordering system, written in C, which handled orders."
+        },
+        {
+          "length" : 73,
+          "offset" : 165,
+          "text" : "The first version was mostly Lisp, because the ordering system was small."
+        },
+        {
+          "length" : 115,
+          "offset" : 239,
+          "text" : "Later we added two more modules, an image generator written in C, and a back-office manager written mostly in Perl."
+        }
+      ],
+      "text" : "[1] Viaweb at first had two parts: the editor, written in Lisp, which people used to build their sites, and the ordering system, written in C, which handled orders. The first version was mostly Lisp, because the ordering system was small. Later we added two more modules, an image generator written in C, and a back-office manager written mostly in Perl."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 62,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 84,
+          "offset" : 0,
+          "text" : "In January 2003, Yahoo released a new version of the editor written in C++ and Perl."
+        },
+        {
+          "length" : 259,
+          "offset" : 85,
+          "text" : "It's hard to say whether the program is no longer written in Lisp, though, because to translate this program into C++ they literally had to write a Lisp interpreter: the source files of all the page-generating templates are still, as far as I know, Lisp code."
+        },
+        {
+          "length" : 29,
+          "offset" : 345,
+          "text" : "(See Greenspun's Tenth Rule.)"
+        }
+      ],
+      "text" : "In January 2003, Yahoo released a new version of the editor written in C++ and Perl. It's hard to say whether the program is no longer written in Lisp, though, because to translate this program into C++ they literally had to write a Lisp interpreter: the source files of all the page-generating templates are still, as far as I know, Lisp code. (See Greenspun's Tenth Rule.)"
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 63,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 220,
+          "offset" : 0,
+          "text" : "[2] Robert Morris says that I didn't need to be secretive, because even if our competitors had known we were using Lisp, they wouldn't have understood why: \"If they were that smart they'd already be programming in Lisp.\""
+        }
+      ],
+      "text" : "[2] Robert Morris says that I didn't need to be secretive, because even if our competitors had known we were using Lisp, they wouldn't have understood why: \"If they were that smart they'd already be programming in Lisp.\""
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 64,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 140,
+          "offset" : 0,
+          "text" : "[3] All languages are equally powerful in the sense of being Turing equivalent, but that's not the sense of the word programmers care about."
+        },
+        {
+          "length" : 43,
+          "offset" : 141,
+          "text" : "(No one wants to program a Turing machine.)"
+        },
+        {
+          "length" : 253,
+          "offset" : 185,
+          "text" : "The kind of power programmers care about may not be formally definable, but one way to explain it would be to say that it refers to features you could only get in the less powerful language by writing an interpreter for the more powerful language in it."
+        },
+        {
+          "length" : 315,
+          "offset" : 439,
+          "text" : "If language A has an operator for removing spaces from strings and language B doesn't, that probably doesn't make A more powerful, because you can probably write a subroutine to do it in B. But if A supports, say, recursion, and B doesn't, that's not likely to be something you can fix by writing library functions."
+        }
+      ],
+      "text" : "[3] All languages are equally powerful in the sense of being Turing equivalent, but that's not the sense of the word programmers care about. (No one wants to program a Turing machine.) The kind of power programmers care about may not be formally definable, but one way to explain it would be to say that it refers to features you could only get in the less powerful language by writing an interpreter for the more powerful language in it. If language A has an operator for removing spaces from strings and language B doesn't, that probably doesn't make A more powerful, because you can probably write a subroutine to do it in B. But if A supports, say, recursion, and B doesn't, that's not likely to be something you can fix by writing library functions."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 65,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 157,
+          "offset" : 0,
+          "text" : "[4] Note to nerds: or possibly a lattice, narrowing toward the top; it's not the shape that matters here but the idea that there is at least a partial order."
+        }
+      ],
+      "text" : "[4] Note to nerds: or possibly a lattice, narrowing toward the top; it's not the shape that matters here but the idea that there is at least a partial order."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 66,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 65,
+          "offset" : 0,
+          "text" : "[5] It is a bit misleading to treat macros as a separate feature."
+        },
+        {
+          "length" : 114,
+          "offset" : 66,
+          "text" : "In practice their usefulness is greatly enhanced by other Lisp features like lexical closures and rest parameters."
+        }
+      ],
+      "text" : "[5] It is a bit misleading to treat macros as a separate feature. In practice their usefulness is greatly enhanced by other Lisp features like lexical closures and rest parameters."
+    },
+    {
+      "children" : [
+
+      ],
+      "confidence" : 0.6,
+      "id" : 67,
+      "kind" : "prose",
+      "lowConfidence" : true,
+      "reason" : "shape-unsure",
+      "spoken" : [
+        {
+          "length" : 186,
+          "offset" : 0,
+          "text" : "[6] As a result, comparisons of programming languages either take the form of religious wars or undergraduate textbooks so determinedly neutral that they're really works of anthropology."
+        },
+        {
+          "length" : 62,
+          "offset" : 187,
+          "text" : "People who value their peace, or want tenure, avoid the topic."
+        },
+        {
+          "length" : 135,
+          "offset" : 250,
+          "text" : "But the question is only half a religious one; there is something there worth studying, especially if you want to design new languages."
+        }
+      ],
+      "text" : "[6] As a result, comparisons of programming languages either take the form of religious wars or undergraduate textbooks so determinedly neutral that they're really works of anthropology. People who value their peace, or want tenure, avoid the topic. But the question is only half a religious one; there is something there worth studying, especially if you want to design new languages."
     }
   ],
-  "sentence_count" : 0,
+  "sentence_count" : 284,
   "skipped" : [
     {
       "block_id" : 0,
       "confidence" : 0.95,
       "kind" : "table",
       "reason" : "table",
-      "words" : 4490
+      "words" : 10
     }
   ],
   "source" : "004-averages.html",
   "source_sha256" : "00dd5e1386b5306a43221dc044132b37ff826c09e96f653b086f7b60fa2e7743",
-  "spoken_words" : 0,
+  "spoken_words" : 4446,
   "validation_failures" : 0,
   "version" : 1
 }

@@ -4,199 +4,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.85,
+      "confidence" : 0.75,
       "id" : 0,
       "kind" : "nav",
-      "lowConfidence" : false,
-      "reason" : "nav",
-      "spoken" : [
-
-      ],
-      "text" : "Physics Mathematics Biology Computer Science Topics Archive"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.85,
-      "id" : 1,
-      "kind" : "nav",
-      "lowConfidence" : false,
-      "reason" : "nav",
-      "spoken" : [
-
-      ],
-      "text" : "Special Issues Podcasts Videos Qualia Essays Multimedia Q&As Explainers"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 2,
-      "kind" : "prose",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 12,
-          "offset" : 0,
-          "text" : "About Quanta"
-        }
-      ],
-      "text" : "About Quanta"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 3,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 6,
-          "offset" : 0,
-          "text" : "Search"
-        }
-      ],
-      "text" : "Search"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 4,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 10,
-          "offset" : 0,
-          "text" : "Newsletter"
-        }
-      ],
-      "text" : "Newsletter"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.98,
-      "id" : 5,
-      "kind" : "prose",
-      "lowConfidence" : false,
-      "reason" : "p",
-      "spoken" : [
-        {
-          "length" : 44,
-          "offset" : 0,
-          "text" : "Get the latest news delivered to your inbox."
-        }
-      ],
-      "text" : "Get the latest news delivered to your inbox."
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 6,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 13,
-          "offset" : 0,
-          "text" : "Follow Quanta"
-        }
-      ],
-      "text" : "Follow Quanta"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.98,
-      "id" : 7,
-      "kind" : "prose",
-      "lowConfidence" : false,
-      "reason" : "p",
-      "spoken" : [
-        {
-          "length" : 74,
-          "offset" : 0,
-          "text" : "An editorially independent publication supported by the Simons Foundation."
-        }
-      ],
-      "text" : "An editorially independent publication supported by the Simons Foundation."
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.85,
-      "id" : 8,
-      "kind" : "nav",
-      "lowConfidence" : false,
-      "reason" : "nav",
+      "reason" : "link-density",
       "spoken" : [
 
-      ],
-      "text" : "Physics Mathematics Biology Computer Science Topics Archive Saved Articles Create a reading list by clicking the Read Later icon next to the articles you wish to save. See all saved articles Log out Change password"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.98,
-      "id" : 9,
-      "kind" : "prose",
-      "lowConfidence" : false,
-      "reason" : "p",
-      "spoken" : [
-        {
-          "length" : 35,
-          "offset" : 0,
-          "text" : "Type search term(s) and press enter"
-        }
-      ],
-      "text" : "Type search term(s) and press enter"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.85,
-      "id" : 10,
-      "kind" : "nav",
-      "lowConfidence" : false,
-      "reason" : "nav",
-      "spoken" : [
-
-      ],
-      "text" : "Popular Searches Mathematics Physics Black Holes Evolution"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 11,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 4,
-          "offset" : 0,
-          "text" : "Home"
-        }
       ],
       "text" : "Home"
     },
@@ -205,7 +19,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 12,
+      "id" : 1,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -223,7 +37,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 13,
+      "id" : 2,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -240,17 +54,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 14,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "confidence" : 0.95,
+      "id" : 3,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h6",
       "spoken" : [
-        {
-          "length" : 5,
-          "offset" : 0,
-          "text" : "Share"
-        }
+
       ],
       "text" : "Share"
     },
@@ -259,7 +69,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 15,
+      "id" : 4,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -277,7 +87,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 16,
+      "id" : 5,
       "kind" : "list",
       "lowConfidence" : false,
       "reason" : "ul",
@@ -294,17 +104,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 17,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 6,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 10,
-          "offset" : 0,
-          "text" : "explainers"
-        }
+
       ],
       "text" : "explainers"
     },
@@ -313,7 +119,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 18,
+      "id" : 7,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h1",
@@ -326,44 +132,22 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 19,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 8,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 2,
-          "offset" : 0,
-          "text" : "By"
-        }
-      ],
-      "text" : "By"
-    },
-    {
-      "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 20,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 12,
-          "offset" : 0,
-          "text" : "Perri Thaler"
-        }
-      ],
-      "text" : "Perri Thaler"
+      "text" : "By Perri Thaler"
     },
     {
       "children" : [
 
       ],
       "confidence" : 0.98,
-      "id" : 21,
+      "id" : 9,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -381,7 +165,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 22,
+      "id" : 10,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -404,7 +188,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 23,
+      "id" : 11,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -421,17 +205,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 24,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 12,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 44,
-          "offset" : 0,
-          "text" : "Add as Preferred Source (opens in a new tab)"
-        }
+
       ],
       "text" : "Add as Preferred Source (opens in a new tab)"
     },
@@ -440,7 +220,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 25,
+      "id" : 13,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -458,7 +238,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 26,
+      "id" : 14,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -476,7 +256,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 27,
+      "id" : 15,
       "kind" : "figure",
       "lowConfidence" : false,
       "reason" : "figure",
@@ -490,7 +270,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 28,
+      "id" : 16,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -504,7 +284,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 29,
+      "id" : 17,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -527,7 +307,7 @@
 
       ],
       "confidence" : 0.9,
-      "id" : 30,
+      "id" : 18,
       "kind" : "aside",
       "lowConfidence" : false,
       "reason" : "aside",
@@ -541,7 +321,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 31,
+      "id" : 19,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -574,7 +354,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 32,
+      "id" : 20,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -597,7 +377,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 33,
+      "id" : 21,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -620,7 +400,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 34,
+      "id" : 22,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -648,7 +428,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 35,
+      "id" : 23,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -676,7 +456,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 36,
+      "id" : 24,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -724,7 +504,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 37,
+      "id" : 25,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -752,7 +532,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 38,
+      "id" : 26,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -775,7 +555,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 39,
+      "id" : 27,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -803,7 +583,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 40,
+      "id" : 28,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -841,7 +621,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 41,
+      "id" : 29,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -869,7 +649,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 42,
+      "id" : 30,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -907,7 +687,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 43,
+      "id" : 31,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -940,7 +720,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 44,
+      "id" : 32,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -968,7 +748,7 @@
 
       ],
       "confidence" : 0.9,
-      "id" : 45,
+      "id" : 33,
       "kind" : "aside",
       "lowConfidence" : false,
       "reason" : "aside",
@@ -982,7 +762,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 46,
+      "id" : 34,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1015,7 +795,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 47,
+      "id" : 35,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1038,7 +818,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 48,
+      "id" : 36,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1066,7 +846,7 @@
 
       ],
       "confidence" : 0.9,
-      "id" : 49,
+      "id" : 37,
       "kind" : "aside",
       "lowConfidence" : false,
       "reason" : "aside",
@@ -1080,7 +860,7 @@
 
       ],
       "confidence" : 0.9,
-      "id" : 50,
+      "id" : 38,
       "kind" : "aside",
       "lowConfidence" : false,
       "reason" : "aside",
@@ -1094,7 +874,7 @@
 
       ],
       "confidence" : 0.9,
-      "id" : 51,
+      "id" : 39,
       "kind" : "aside",
       "lowConfidence" : false,
       "reason" : "aside",
@@ -1108,7 +888,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 52,
+      "id" : 40,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -1126,7 +906,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 53,
+      "id" : 41,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1144,7 +924,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 54,
+      "id" : 42,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -1158,7 +938,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 55,
+      "id" : 43,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -1175,17 +955,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 56,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 44,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 10,
-          "offset" : 0,
-          "text" : "explainers"
-        }
+
       ],
       "text" : "explainers"
     },
@@ -1193,17 +969,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 57,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "confidence" : 0.95,
+      "id" : 45,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 31,
-          "offset" : 0,
-          "text" : "Did Life Begin in an RNA World?"
-        }
+
       ],
       "text" : "Did Life Begin in an RNA World?"
     },
@@ -1211,44 +983,22 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 58,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 46,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 2,
-          "offset" : 0,
-          "text" : "By"
-        }
+
       ],
-      "text" : "By"
+      "text" : "By Philip Ball"
     },
     {
       "children" : [
 
       ],
       "confidence" : 0.6,
-      "id" : 59,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 11,
-          "offset" : 0,
-          "text" : "Philip Ball"
-        }
-      ],
-      "text" : "Philip Ball"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 60,
+      "id" : 47,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -1266,7 +1016,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 61,
+      "id" : 48,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -1284,7 +1034,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 62,
+      "id" : 49,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -1301,17 +1051,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 63,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 50,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 17,
-          "offset" : 0,
-          "text" : "materials science"
-        }
+
       ],
       "text" : "materials science"
     },
@@ -1319,17 +1065,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 64,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "confidence" : 0.95,
+      "id" : 51,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 60,
-          "offset" : 0,
-          "text" : "How Spiders Spin ‘Silk Dope’ Into Nature’s Toughest Material"
-        }
+
       ],
       "text" : "How Spiders Spin ‘Silk Dope’ Into Nature’s Toughest Material"
     },
@@ -1337,44 +1079,22 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 65,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 52,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 2,
-          "offset" : 0,
-          "text" : "By"
-        }
+
       ],
-      "text" : "By"
+      "text" : "By Yasemin Saplakoglu"
     },
     {
       "children" : [
 
       ],
       "confidence" : 0.6,
-      "id" : 66,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 18,
-          "offset" : 0,
-          "text" : "Yasemin Saplakoglu"
-        }
-      ],
-      "text" : "Yasemin Saplakoglu"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 67,
+      "id" : 53,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -1392,7 +1112,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 68,
+      "id" : 54,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -1410,7 +1130,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 69,
+      "id" : 55,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -1427,17 +1147,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 70,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 56,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 10,
-          "offset" : 0,
-          "text" : "biophysics"
-        }
+
       ],
       "text" : "biophysics"
     },
@@ -1445,17 +1161,13 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 71,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "confidence" : 0.95,
+      "id" : 57,
+      "kind" : "heading",
+      "lowConfidence" : false,
+      "reason" : "h3",
       "spoken" : [
-        {
-          "length" : 59,
-          "offset" : 0,
-          "text" : "Malaria Parasite Caught in the Act of Breaking and Entering"
-        }
+
       ],
       "text" : "Malaria Parasite Caught in the Act of Breaking and Entering"
     },
@@ -1463,44 +1175,22 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
-      "id" : 72,
-      "kind" : "prose",
+      "confidence" : 0.75,
+      "id" : 58,
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 2,
-          "offset" : 0,
-          "text" : "By"
-        }
+
       ],
-      "text" : "By"
+      "text" : "By Joanna Thompson"
     },
     {
       "children" : [
 
       ],
       "confidence" : 0.6,
-      "id" : 73,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 15,
-          "offset" : 0,
-          "text" : "Joanna Thompson"
-        }
-      ],
-      "text" : "Joanna Thompson"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 74,
+      "id" : 59,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -1518,7 +1208,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 75,
+      "id" : 60,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -1536,7 +1226,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 76,
+      "id" : 61,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -1550,7 +1240,7 @@
 
       ],
       "confidence" : 0.98,
-      "id" : 77,
+      "id" : 62,
       "kind" : "prose",
       "lowConfidence" : false,
       "reason" : "p",
@@ -1578,7 +1268,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 78,
+      "id" : 63,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -1596,7 +1286,7 @@
 
       ],
       "confidence" : 0.95,
-      "id" : 79,
+      "id" : 64,
       "kind" : "heading",
       "lowConfidence" : false,
       "reason" : "h2",
@@ -1610,7 +1300,7 @@
 
       ],
       "confidence" : 0.6,
-      "id" : 80,
+      "id" : 65,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -1622,467 +1312,189 @@
         }
       ],
       "text" : "Did Life Begin in an RNA World?"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.85,
-      "id" : 81,
-      "kind" : "nav",
-      "lowConfidence" : false,
-      "reason" : "nav",
-      "spoken" : [
-
-      ],
-      "text" : "About Quanta Archive Contact Us Terms & Conditions Privacy Policy AI Editorial Policy"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 82,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 26,
-          "offset" : 0,
-          "text" : "All Rights Reserved © 2026"
-        }
-      ],
-      "text" : "All Rights Reserved © 2026"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 83,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 74,
-          "offset" : 0,
-          "text" : "An editorially independent publication supported by the Simons Foundation."
-        }
-      ],
-      "text" : "An editorially independent publication supported by the Simons Foundation."
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 84,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 17,
-          "offset" : 0,
-          "text" : "Simons Foundation"
-        }
-      ],
-      "text" : "Simons Foundation"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 85,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 16,
-          "offset" : 0,
-          "text" : "Log in to Quanta"
-        }
-      ],
-      "text" : "Log in to Quanta"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.95,
-      "id" : 86,
-      "kind" : "heading",
-      "lowConfidence" : false,
-      "reason" : "h2",
-      "spoken" : [
-
-      ],
-      "text" : "Use your social network"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 87,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 21,
-          "offset" : 0,
-          "text" : "Connect with Facebook"
-        }
-      ],
-      "text" : "Connect with Facebook"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 88,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 19,
-          "offset" : 0,
-          "text" : "Connect with Google"
-        }
-      ],
-      "text" : "Connect with Google"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 89,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 2,
-          "offset" : 0,
-          "text" : "or"
-        }
-      ],
-      "text" : "or"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 90,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 7,
-          "offset" : 0,
-          "text" : "Sign up"
-        }
-      ],
-      "text" : "Sign up"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 91,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 26,
-          "offset" : 0,
-          "text" : "Don't have an account yet?"
-        }
-      ],
-      "text" : "Don't have an account yet?"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 92,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 21,
-          "offset" : 0,
-          "text" : "Forgot your password?"
-        }
-      ],
-      "text" : "Forgot your password?"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.98,
-      "id" : 93,
-      "kind" : "prose",
-      "lowConfidence" : false,
-      "reason" : "p",
-      "spoken" : [
-        {
-          "length" : 51,
-          "offset" : 0,
-          "text" : "We’ll email you instructions to reset your password"
-        }
-      ],
-      "text" : "We’ll email you instructions to reset your password"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 94,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 20,
-          "offset" : 0,
-          "text" : "Change your password"
-        }
-      ],
-      "text" : "Change your password"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.98,
-      "id" : 95,
-      "kind" : "prose",
-      "lowConfidence" : false,
-      "reason" : "p",
-      "spoken" : [
-        {
-          "length" : 23,
-          "offset" : 0,
-          "text" : "Enter your new password"
-        }
-      ],
-      "text" : "Enter your new password"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 96,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 7,
-          "offset" : 0,
-          "text" : "Sign Up"
-        }
-      ],
-      "text" : "Sign Up"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 97,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 18,
-          "offset" : 0,
-          "text" : "Terms & Conditions"
-        }
-      ],
-      "text" : "Terms & Conditions"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 98,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 14,
-          "offset" : 0,
-          "text" : "Privacy Policy"
-        }
-      ],
-      "text" : "Privacy Policy"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 99,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 58,
-          "offset" : 0,
-          "text" : "Creating an account means you accept Quanta Magazine's and"
-        }
-      ],
-      "text" : "Creating an account means you accept Quanta Magazine's and"
     }
   ],
-  "sentence_count" : 128,
+  "sentence_count" : 86,
   "skipped" : [
     {
       "block_id" : 0,
-      "confidence" : 0.85,
+      "confidence" : 0.75,
       "kind" : "nav",
-      "reason" : "nav",
-      "words" : 7
+      "reason" : "link-density",
+      "words" : 1
     },
     {
-      "block_id" : 1,
-      "confidence" : 0.85,
-      "kind" : "nav",
-      "reason" : "nav",
-      "words" : 9
+      "block_id" : 3,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h6",
+      "words" : 1
     },
     {
-      "block_id" : 8,
-      "confidence" : 0.85,
+      "block_id" : 6,
+      "confidence" : 0.75,
       "kind" : "nav",
-      "reason" : "nav",
-      "words" : 35
+      "reason" : "link-density",
+      "words" : 1
     },
     {
-      "block_id" : 10,
-      "confidence" : 0.85,
-      "kind" : "nav",
-      "reason" : "nav",
-      "words" : 7
-    },
-    {
-      "block_id" : 18,
+      "block_id" : 7,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h1",
       "words" : 8
     },
     {
-      "block_id" : 27,
+      "block_id" : 8,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 3
+    },
+    {
+      "block_id" : 12,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 9
+    },
+    {
+      "block_id" : 15,
       "confidence" : 0.95,
       "kind" : "figure",
       "reason" : "figure",
       "words" : 13
     },
     {
-      "block_id" : 28,
+      "block_id" : 16,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
       "words" : 1
     },
     {
-      "block_id" : 30,
+      "block_id" : 18,
       "confidence" : 0.9,
       "kind" : "aside",
       "reason" : "aside",
       "words" : 23
     },
     {
-      "block_id" : 45,
+      "block_id" : 33,
       "confidence" : 0.9,
       "kind" : "aside",
       "reason" : "aside",
       "words" : 39
     },
     {
-      "block_id" : 49,
+      "block_id" : 37,
       "confidence" : 0.9,
       "kind" : "aside",
       "reason" : "aside",
       "words" : 14
     },
     {
-      "block_id" : 50,
+      "block_id" : 38,
       "confidence" : 0.9,
       "kind" : "aside",
       "reason" : "aside",
       "words" : 23
     },
     {
-      "block_id" : 51,
+      "block_id" : 39,
       "confidence" : 0.9,
       "kind" : "aside",
       "reason" : "aside",
       "words" : 14
     },
     {
-      "block_id" : 54,
+      "block_id" : 42,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
       "words" : 3
     },
     {
-      "block_id" : 76,
+      "block_id" : 44,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 1
+    },
+    {
+      "block_id" : 45,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 7
+    },
+    {
+      "block_id" : 46,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 3
+    },
+    {
+      "block_id" : 50,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 2
+    },
+    {
+      "block_id" : 51,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 9
+    },
+    {
+      "block_id" : 52,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 3
+    },
+    {
+      "block_id" : 56,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 1
+    },
+    {
+      "block_id" : 57,
+      "confidence" : 0.95,
+      "kind" : "heading",
+      "reason" : "h3",
+      "words" : 10
+    },
+    {
+      "block_id" : 58,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 3
+    },
+    {
+      "block_id" : 61,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
       "words" : 4
     },
     {
-      "block_id" : 79,
+      "block_id" : 64,
       "confidence" : 0.95,
       "kind" : "heading",
       "reason" : "h2",
       "words" : 2
-    },
-    {
-      "block_id" : 81,
-      "confidence" : 0.85,
-      "kind" : "nav",
-      "reason" : "nav",
-      "words" : 13
-    },
-    {
-      "block_id" : 86,
-      "confidence" : 0.95,
-      "kind" : "heading",
-      "reason" : "h2",
-      "words" : 4
     }
   ],
   "source" : "089-bubble-quanta.html",
   "source_sha256" : "825226929628202c601e6e8a836b9875b0b04115c5765524eba824b57bd4f60e",
-  "spoken_words" : 1454,
+  "spoken_words" : 1303,
   "validation_failures" : 0,
   "version" : 1
 }

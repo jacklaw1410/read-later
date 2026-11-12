@@ -290,11 +290,11 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
+      "confidence" : 0.98,
       "id" : 16,
       "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "lowConfidence" : false,
+      "reason" : "p",
       "spoken" : [
         {
           "length" : 6,
@@ -308,11 +308,11 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
+      "confidence" : 0.98,
       "id" : 17,
       "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "lowConfidence" : false,
+      "reason" : "p",
       "spoken" : [
         {
           "length" : 5,
@@ -326,11 +326,11 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
+      "confidence" : 0.98,
       "id" : 18,
       "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "lowConfidence" : false,
+      "reason" : "p",
       "spoken" : [
         {
           "length" : 18,
@@ -362,11 +362,11 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
+      "confidence" : 0.98,
       "id" : 20,
       "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "lowConfidence" : false,
+      "reason" : "p",
       "spoken" : [
         {
           "length" : 7,
@@ -380,11 +380,11 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
+      "confidence" : 0.98,
       "id" : 21,
       "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "lowConfidence" : false,
+      "reason" : "p",
       "spoken" : [
         {
           "length" : 11,
@@ -398,11 +398,11 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
+      "confidence" : 0.98,
       "id" : 22,
       "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "lowConfidence" : false,
+      "reason" : "p",
       "spoken" : [
         {
           "length" : 8,
@@ -416,11 +416,11 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
+      "confidence" : 0.98,
       "id" : 23,
       "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "lowConfidence" : false,
+      "reason" : "p",
       "spoken" : [
         {
           "length" : 8,
@@ -434,11 +434,11 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
+      "confidence" : 0.98,
       "id" : 24,
       "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "lowConfidence" : false,
+      "reason" : "p",
       "spoken" : [
         {
           "length" : 8,
@@ -452,11 +452,11 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
+      "confidence" : 0.98,
       "id" : 25,
       "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "lowConfidence" : false,
+      "reason" : "p",
       "spoken" : [
         {
           "length" : 18,
@@ -470,11 +470,11 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
+      "confidence" : 0.98,
       "id" : 26,
       "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "lowConfidence" : false,
+      "reason" : "p",
       "spoken" : [
         {
           "length" : 31,
@@ -488,11 +488,11 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
+      "confidence" : 0.98,
       "id" : 27,
       "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "lowConfidence" : false,
+      "reason" : "p",
       "spoken" : [
         {
           "length" : 10,
@@ -511,11 +511,11 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
+      "confidence" : 0.98,
       "id" : 28,
       "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "lowConfidence" : false,
+      "reason" : "p",
       "spoken" : [
         {
           "length" : 17,
@@ -619,19 +619,15 @@
       "children" : [
 
       ],
-      "confidence" : 0.6,
+      "confidence" : 0.75,
       "id" : 34,
-      "kind" : "prose",
+      "kind" : "nav",
       "lowConfidence" : true,
-      "reason" : "shape-unsure",
+      "reason" : "link-density",
       "spoken" : [
-        {
-          "length" : 18,
-          "offset" : 0,
-          "text" : "The Straits Times|"
-        }
+
       ],
-      "text" : "The Straits Times|"
+      "text" : "The Straits Times|The Business Times|Lianhe Zaobao|Berita Harian|Tamil Murasu|Stomp"
     },
     {
       "children" : [
@@ -639,96 +635,6 @@
       ],
       "confidence" : 0.6,
       "id" : 35,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 19,
-          "offset" : 0,
-          "text" : "The Business Times|"
-        }
-      ],
-      "text" : "The Business Times|"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 36,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 14,
-          "offset" : 0,
-          "text" : "Lianhe Zaobao|"
-        }
-      ],
-      "text" : "Lianhe Zaobao|"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 37,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 14,
-          "offset" : 0,
-          "text" : "Berita Harian|"
-        }
-      ],
-      "text" : "Berita Harian|"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 38,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 13,
-          "offset" : 0,
-          "text" : "Tamil Murasu|"
-        }
-      ],
-      "text" : "Tamil Murasu|"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 39,
-      "kind" : "prose",
-      "lowConfidence" : true,
-      "reason" : "shape-unsure",
-      "spoken" : [
-        {
-          "length" : 5,
-          "offset" : 0,
-          "text" : "Stomp"
-        }
-      ],
-      "text" : "Stomp"
-    },
-    {
-      "children" : [
-
-      ],
-      "confidence" : 0.6,
-      "id" : 40,
       "kind" : "prose",
       "lowConfidence" : true,
       "reason" : "shape-unsure",
@@ -757,7 +663,7 @@
       "text" : "MDDI (P) 046/10/2025. Published by SPH Media Limited, Co. Regn. No.202120748H. Copyright © 2026 SPH Media Limited. All rights reserved."
     }
   ],
-  "sentence_count" : 44,
+  "sentence_count" : 38,
   "skipped" : [
     {
       "block_id" : 2,
@@ -779,11 +685,18 @@
       "kind" : "heading",
       "reason" : "h6",
       "words" : 3
+    },
+    {
+      "block_id" : 34,
+      "confidence" : 0.75,
+      "kind" : "nav",
+      "reason" : "link-density",
+      "words" : 8
     }
   ],
   "source" : "078-italian-schools.html",
   "source_sha256" : "ebbd36768c8ba91edf4625476999a67f5bcd173c954495c18c80495f5ae6d362",
-  "spoken_words" : 294,
+  "spoken_words" : 281,
   "validation_failures" : 0,
   "version" : 1
 }
