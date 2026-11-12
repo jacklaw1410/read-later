@@ -65,7 +65,13 @@ targets:
         script: |
           set -u
           SHA=$(git -C "$SRCROOT/../.." rev-parse --short HEAD 2>/dev/null || echo unknown)
+          # A file, not an Info.plist key. Xcode processes the generated plist
+          # after this phase, so a key added here does not survive a clean
+          # build. A file in the bundle does, and the signature covers it.
+          OUT="$TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/GitSHA.txt"
+          [ -d "${OUT%/*}" ] || exit 0
+          printf '%s\n' "$SHA" > "$OUT"
           PLIST="$TARGET_BUILD_DIR/$INFOPLIST_PATH"
           [ -f "$PLIST" ] || exit 0
           /usr/libexec/PlistBuddy -c "Delete :GitSHA" "$PLIST" >/dev/null 2>&1 || true
-          /usr/libexec/PlistBuddy -c "Add :GitSHA string $SHA" "$PLIST"
+          /usr/libexec/PlistBuddy -c "Add :GitSHA string $SHA" "$PLIST" >/dev/null 2>&1 || true

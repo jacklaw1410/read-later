@@ -62,6 +62,20 @@ enum DiagnosticsExport {
         return folder
     }
 
+    /// The git SHA of this build. The stamp phase writes `GitSHA.txt` into
+    /// the bundle. It does not rely on an Info.plist key: Xcode processes the
+    /// generated plist after the script phase, so a key written there is lost
+    /// on a clean build. The plist key stays as a fallback for old builds.
+    static func buildSHA() -> String {
+        if let url = Bundle.main.url(forResource: "GitSHA", withExtension: "txt"),
+           let text = try? String(contentsOf: url, encoding: .utf8)
+        {
+            let sha = text.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !sha.isEmpty { return sha }
+        }
+        return (Bundle.main.infoDictionary?["GitSHA"] as? String) ?? "unknown"
+    }
+
     static func buildSummary(
         dictionaryVersion: String,
         pace: String,
@@ -73,7 +87,7 @@ enum DiagnosticsExport {
         formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         return Summary(
             schema: "rl-diagnostics-1",
-            buildSHA: (info?["GitSHA"] as? String) ?? "unknown",
+            buildSHA: Self.buildSHA(),
             bundleID: Bundle.main.bundleIdentifier ?? "unknown",
             appVersion: (info?["CFBundleShortVersionString"] as? String) ?? "unknown",
             buildNumber: (info?["CFBundleVersion"] as? String) ?? "unknown",
