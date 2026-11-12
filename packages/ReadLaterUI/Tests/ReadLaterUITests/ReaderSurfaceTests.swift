@@ -96,4 +96,21 @@ final class ReaderSurfaceTests: XCTestCase {
         XCTAssertEqual(washScrollTarget(washMidY: 100, viewportOriginY: 400, viewportHeight: 200, maxOffset: 2000), 0)
         XCTAssertEqual(washScrollTarget(washMidY: 5000, viewportOriginY: 0, viewportHeight: 200, maxOffset: 1200), 1200)
     }
+
+    // MARK: - Wash chip box
+
+    func testWashChipBoxCoversTypeNotLineBox() {
+        // A 19 pt word on a 31 pt line: the chip is the 23 pt type box,
+        // centred in the line, with 2 pt of side air.
+        let box = washChipBox(
+            glyphBox: CGRect(x: 10, y: 100, width: 60, height: 31),
+            origin: .zero,
+            ascender: 18,
+            descender: -5
+        )
+        XCTAssertEqual(box.height, 23)
+        XCTAssertEqual(box.minY, 104)
+        XCTAssertEqual(box.minX, 8)
+        XCTAssertEqual(box.width, 64)
+    }
 }
