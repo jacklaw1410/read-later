@@ -137,6 +137,61 @@ final class ReaderSession: ObservableObject {
         isScrubbing = false
     }
 
+    // MARK: - Unit navigation
+
+    /// Steps the wash one sentence. Playing restarts the queue at the
+    /// sentence; paused moves the wash and stashes the resume point, like a
+    /// scrub that lands on a sentence start. Tap-a-word stays lookup-only.
+    func stepSentence(_ delta: Int) {
+        let count = min(spoken.sentenceCount, spoken.firstWordOfSentence.count)
+        guard count > 0 else { return }
+        let current = spoken.sentenceIndex(forWord: wash.wordIndex ?? 0)
+        guard let target = UnitNavigation.clampedSentence(current: current, delta: delta, count: count) else {
+            return
+        }
+        seekToSentence(target)
+    }
+
+    /// Steps the wash one spoken block. Same play/paused split as sentences.
+    func stepBlock(_ delta: Int) {
+        let ids = document.readingOrder.filter { spoken.byBlock[$0.id] != nil }.map(\.id)
+        let currentID = wash.wordIndex.flatMap { spoken.word(at: $0)?.blockID }
+        guard let target = UnitNavigation.clampedBlock(currentID: currentID, delta: delta, orderedIDs: ids),
+              let first = spoken.byBlock[target]?.first
+        else { return }
+        seekToWord(first.index)
+    }
+
+    private func seekToSentence(_ sentence: Int) {
+        guard sentence < spoken.firstWordOfSentence.count else { return }
+        isFinished = false
+        let word = spoken.firstWordOfSentence[sentence]
+        if isPlaying {
+            speech.restart(fromSentence: sentence)
+            wash.wordIndex = word
+            wash.isPlaying = true
+        } else {
+            speech.stop()
+            resumeAt = word
+            wash.wordIndex = word
+            wash.isPlaying = false
+        }
+    }
+
+    private func seekToWord(_ word: Int) {
+        isFinished = false
+        if isPlaying {
+            speech.restart(fromWord: word)
+            wash.wordIndex = word
+            wash.isPlaying = true
+        } else {
+            speech.stop()
+            resumeAt = word
+            wash.wordIndex = word
+            wash.isPlaying = false
+        }
+    }
+
     // MARK: - Lookup
 
     func tapped(blockID: Int, slot: WordSlot?, word: String) {

@@ -114,6 +114,10 @@ struct ReaderScreen: View {
                                 returnToken += 1
                             }
                         }
+                        SentenceStepper(
+                            onStepSentence: { session.stepSentence($0) },
+                            onStepBlock: { session.stepBlock($0) }
+                        )
                         PlayerBar(
                             progress: session.progress,
                             isPlaying: session.isPlaying,

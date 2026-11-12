@@ -150,4 +150,28 @@ final class PlayerTests: XCTestCase {
     func testReturnPillHidesWhileFollowingOnScreen() {
         XCTAssertFalse(shouldShowReturnPill(washVisible: false, isHeld: false, isPlaying: true))
     }
+
+    // MARK: - Unit navigation
+
+    func testSentenceStepClampsBothEnds() {
+        XCTAssertEqual(UnitNavigation.clampedSentence(current: 1, delta: 1, count: 3), 2)
+        XCTAssertEqual(UnitNavigation.clampedSentence(current: 2, delta: 1, count: 3), 2)
+        XCTAssertEqual(UnitNavigation.clampedSentence(current: 0, delta: -1, count: 3), 0)
+    }
+
+    func testSentenceStepNeedsSpokenSentences() {
+        XCTAssertNil(UnitNavigation.clampedSentence(current: 0, delta: 1, count: 0))
+    }
+
+    func testBlockStepWalksOrderedIDs() {
+        XCTAssertEqual(UnitNavigation.clampedBlock(currentID: 5, delta: 1, orderedIDs: [1, 5, 9]), 9)
+        XCTAssertEqual(UnitNavigation.clampedBlock(currentID: 9, delta: 1, orderedIDs: [1, 5, 9]), 9)
+        XCTAssertEqual(UnitNavigation.clampedBlock(currentID: 1, delta: -1, orderedIDs: [1, 5, 9]), 1)
+    }
+
+    func testBlockStepFromUnknownJumpsToNearEnd() {
+        XCTAssertEqual(UnitNavigation.clampedBlock(currentID: nil, delta: 1, orderedIDs: [1, 5, 9]), 1)
+        XCTAssertEqual(UnitNavigation.clampedBlock(currentID: 7, delta: -1, orderedIDs: [1, 5, 9]), 9)
+        XCTAssertNil(UnitNavigation.clampedBlock(currentID: 5, delta: 1, orderedIDs: []))
+    }
 }
