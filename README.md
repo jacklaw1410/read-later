@@ -69,7 +69,7 @@ xcodebuild -project ReadLater.xcodeproj -scheme ReadLater \
   CODE_SIGNING_ALLOWED=NO build
 open -a Simulator
 xcrun simctl install booted ./build/Build/Products/Debug-iphonesimulator/ReadLater.app
-xcrun simctl launch booted com.readlater.app
+xcrun simctl launch booted app.readlater.reader
 ```
 
 If the simulator runtime is missing, download it first (about 7 GB):
@@ -163,6 +163,8 @@ speech tracking.
 | No PNGs appear after a snapshot run | Binary was run directly instead of through LaunchServices | Launch with `open -n … --args --snapshot <dir>`, not by path to the binary |
 | Wash stays on word zero in a `--snapshot` launch | Word-boundary callbacks do not arrive in that launch | Expected. The harness drives the wash itself. See §7 |
 | `error: Could not find Package.swift` in `packages/ReadLaterTestKit` | TestKit is a source library inside the app project, not a package | Do not run `swift test` there. Test it through the packages that use it |
+| `The app identifier "…" cannot be registered to your development team because it is not available` | the bundle id is already registered to another Apple team; ids are unique across all accounts | Change `PRODUCT_BUNDLE_IDENTIFIER` in `project.yml` to a unique id, then `xcodegen generate` |
+| `No profiles for '…' were found` | Xcode has not created a profile for this bundle id and team | Set `DEVELOPMENT_TEAM` and `CODE_SIGN_STYLE=Automatic`; with a free personal team the profile lasts 7 days |
 | `main actor-isolated class method … cannot be called from outside of the actor` in `DictionaryLookup.swift` | Swift 6 language-mode warning | Warning only. The build still succeeds |
 
 ## 9. Where things live

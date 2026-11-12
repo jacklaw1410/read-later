@@ -62,7 +62,7 @@ xcodebuild -project ReadLater.xcodeproj -scheme ReadLater \
   CODE_SIGNING_ALLOWED=NO build
 open -a Simulator
 xcrun simctl install booted ./build/Build/Products/Debug-iphonesimulator/ReadLater.app
-xcrun simctl launch booted com.readlater.app
+xcrun simctl launch booted app.readlater.reader
 ```
 
 Keep `CODE_SIGNING_ALLOWED=NO` here. The signing flags differ from macOS:
@@ -82,24 +82,48 @@ xcodebuild -downloadPlatform iOS
 You need an Apple Developer team. A free personal team works, but its
 provisioning profile expires after 7 days.
 
-1. Open your team id in Xcode under Settings → Accounts.
-2. In `project.yml`, under the `ReadLater` target `settings`, set
-   `CODE_SIGNING_ALLOWED: YES` and add `DEVELOPMENT_TEAM: <YourTeamID>`.
-3. Regenerate and build against your plugged-in phone:
+### Values
+
+| Build setting | Value |
+|---|---|
+| `CODE_SIGN_STYLE` | `Automatic` |
+| `DEVELOPMENT_TEAM` | your 10-character team id |
+| `PRODUCT_BUNDLE_IDENTIFIER` | `app.readlater.reader` |
+
+Find the team id from the signing certificate:
+
+```bash
+security find-identity -v -p codesigning
+# 1) EE1... "Apple Development: you@example.com (ANQ2AUKWYY)"
+#                                              ^^^^^^^^^^ team id
+```
+
+Xcode shows the same id under Settings → Accounts → your Apple ID → the team
+row. The bundle id must be unique across all Apple accounts, not just yours.
+`com.readlater.app` was already registered to another team, so Xcode answered
+`The app identifier "com.readlater.app" cannot be registered to your
+development team because it is not available.` If `app.readlater.reader` is
+rejected the same way, append the team id: `app.readlater.anq2aukwyy`.
+
+### Build
 
 ```bash
 cd apps/apple
 xcodegen generate
 xcodebuild -project ReadLater.xcodeproj -scheme ReadLater \
   -destination 'platform=iOS,name=<Your iPhone>' \
-  -configuration Debug build
+  -configuration Debug \
+  DEVELOPMENT_TEAM=<YourTeamID> CODE_SIGN_STYLE=Automatic \
+  CODE_SIGNING_ALLOWED=YES build
 ```
 
-4. On the phone, trust the developer certificate under
-   Settings → General → VPN & Device Management.
+Then on the phone, trust the developer certificate under
+Settings → General → VPN & Device Management.
 
-Do not commit the team id in `project.yml`. Keep `CODE_SIGNING_ALLOWED: NO`
-committed, and override signing locally.
+Do not commit the team id. Keep `CODE_SIGNING_ALLOWED: NO` committed, and
+override signing on the command line. The signing pane in Xcode writes to the
+generated `.xcodeproj`, which is gitignored, so a team set there is lost at the
+next `xcodegen generate`.
 
 ## Snapshot harness
 
