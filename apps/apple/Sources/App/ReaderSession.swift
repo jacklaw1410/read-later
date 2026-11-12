@@ -28,8 +28,10 @@ final class ReaderSession: ObservableObject {
     private let speech: AVSpeechController
     private let lookupProvider: PackLookupProvider
     private let speedStore: SpeedStore
-    /// Where the next `play` starts. Set by a scrub while paused.
-    private var resumeAt: Int?
+    /// Where the next `play` starts. Set by a scrub while paused. A latch,
+    /// not a plain optional: the stash clears only after a start succeeds,
+    /// so a failed first press retries the same word (F19 1.3).
+    private var latch = ResumeLatch()
 
     init(
         document: ReadLaterCore.Document,
@@ -74,36 +76,59 @@ final class ReaderSession: ObservableObject {
 
     func togglePlay() {
         guard card == nil, note == nil else { return }
-        if isPlaying {
+        if speech.state == .speaking {
             speech.pause()
             TelemetryHub.shared.record(TelemetryName.pause)
             return
         }
         TelemetryHub.shared.record(TelemetryName.play)
+        // A paused scrub arms the latch. It wins over resume-from-pause:
+        // resuming would replay the old position and strand the scrub.
+        if let target = latch.peek() {
+            startSpeaking(at: target)
+            return
+        }
         switch speech.state {
         case .paused:
             speech.resume()
         case .speaking:
             speech.pause()
+            TelemetryHub.shared.record(TelemetryName.pause)
         case .warming, .idle, .finished:
             // Warming is a background pre-warm, not playback. The reader's
             // first press must start the article even if the voice is still
             // getting ready; treating warming as playing made the button do
             // nothing on a cold launch.
-            startSpeaking(at: resumeAt ?? 0)
+            startSpeaking(at: 0)
         }
     }
 
-    private func startSpeaking(at wordIndex: Int) {
+    /// Starts audio at a word. Returns true when audio will move. The latch
+    /// clears only on success, so a failed press keeps the word for the next
+    /// one instead of losing the place.
+    @discardableResult
+    private func startSpeaking(at wordIndex: Int) -> Bool {
         isFinished = false
-        resumeAt = nil
         wash.wordIndex = min(max(wordIndex, 0), max(spoken.totalWords - 1, 0))
         wash.isPlaying = true
-        if wordIndex > 0 {
-            speech.restart(fromWord: wordIndex)
-        } else {
-            speech.speak(sentences: document.spokenSentences)
+        if wordIndex > 0, speech.canRestart {
+            guard speech.restart(fromWord: wordIndex) else { return false }
+            latch.clear()
+            return true
         }
+        if wordIndex > 0 {
+            // No queue to seek in: never played, or a stop destroyed it.
+            // Rebuild from the sentences, then seek. The restart bumps the
+            // epoch, so the speak's deferred fill is stale and only the seek
+            // fill runs.
+            speech.speak(sentences: document.spokenSentences)
+            guard speech.restart(fromWord: wordIndex) else { return false }
+            latch.clear()
+            return true
+        }
+        speech.speak(sentences: document.spokenSentences)
+        latch.clear()
+        return true
     }
 
     func setSpeed(_ value: Float) {
@@ -124,12 +149,14 @@ final class ReaderSession: ObservableObject {
         wash.wordIndex = index
         wash.isPlaying = false
 
-        if isPlaying {
+        if speech.state == .speaking {
             speech.restart(fromWord: index)
             wash.isPlaying = true
         } else {
-            speech.stop()
-            resumeAt = index
+            // Paused scrub stashes the word and leaves the queue alive.
+            // stop() used to destroy the queue restart() needs, and the old
+            // code cleared the position before the failed start (F19 1.3).
+            latch.stash(index)
         }
     }
 
@@ -233,7 +260,7 @@ final class ReaderSession: ObservableObject {
         isFinished = false
         card = nil
         note = nil
-        resumeAt = nil
+        latch.clear()
     }
 
     // MARK: - Pack

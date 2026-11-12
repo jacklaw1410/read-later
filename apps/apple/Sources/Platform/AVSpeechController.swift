@@ -222,13 +222,16 @@ public final class AVSpeechController: NSObject, SpeechController {
     /// Restarts speech at a global word index without restarting the
     /// document. The first utterance is the truncated remainder of its
     /// sentence from that word on; the queue continues from there with the
-    /// prefetch window refilled.
-    public func restart(fromWord index: Int) {
-        guard let current = queue, !current.utterances.isEmpty else { return }
+    /// prefetch window refilled. Returns false when there is no queue to
+    /// restart, so the caller can rebuild instead of dying silently. A
+    /// paused scrub must keep the queue alive for exactly this reason.
+    @discardableResult
+    public func restart(fromWord index: Int) -> Bool {
+        guard let current = queue, !current.utterances.isEmpty else { return false }
         let clamped = min(max(index, 0), current.totalWords - 1)
         guard let start = current.startPosition(forWord: clamped),
               let position = current.utterances.firstIndex(of: start.utterance)
-        else { return }
+        else { return false }
         epoch += 1
         synthesizer.stopSpeaking(at: .immediate)
         inFlight.removeAll()
@@ -243,15 +246,23 @@ public final class AVSpeechController: NSObject, SpeechController {
         currentWordIndex = clamped
         state = .speaking
         fillWindow()
+        return true
     }
 
     /// Restarts speech at a sentence position. Kept for the sentence-order
     /// scrubber: `init(sentences:)` emits one utterance per sentence in order,
     /// so utterance `index` opens with that sentence's first word.
-    public func restart(fromSentence index: Int) {
-        guard let current = queue, !current.utterances.isEmpty else { return }
+    @discardableResult
+    public func restart(fromSentence index: Int) -> Bool {
+        guard let current = queue, !current.utterances.isEmpty else { return false }
         let clamped = min(max(index, 0), current.utterances.count - 1)
-        restart(fromWord: current.utterances[clamped].firstWordIndex)
+        return restart(fromWord: current.utterances[clamped].firstWordIndex)
+    }
+
+    /// Whether a restart has a queue to seek in. False before the first
+    /// `speak` and after `stop`, which destroys the queue.
+    public var canRestart: Bool {
+        queue.map { !$0.utterances.isEmpty } ?? false
     }
 
     // MARK: - Queue
