@@ -70,6 +70,39 @@ private func longSentence(_ subject: String) -> String {
     }
 }
 
+@Test func figureKeepsImageReferenceAndCaption() throws {
+    // F19 §1.14 shape: a figure wrapping an img plus a caption. The block
+    // keeps src/alt; the caption text stays the caption well.
+    let html = page(
+        """
+        <p>\(longSentence("The opening paragraph of the article"))</p>
+        <figure><img src="https://example.com/chart.png" alt="Adoption curve, 2020 to 2026"><figcaption>\(longSentence("The caption under the chart"))</figcaption></figure>
+        <p>\(longSentence("The closing paragraph of the article"))</p>
+        """
+    )
+    let result = try SwiftSoupExtractor().extract(html: html, source: "test", httpStatus: 200)
+    let figures = result.blocks.filter { $0.kind == .figure }
+    #expect(figures.count == 1)
+    #expect(figures[0].imageURL == "https://example.com/chart.png")
+    #expect(figures[0].alt == "Adoption curve, 2020 to 2026")
+    #expect(figures[0].text.contains("The caption under the chart"))
+}
+
+@Test func bareImgBecomesImageBlockWithSrcsetFallback() throws {
+    let html = page(
+        """
+        <p>\(longSentence("The opening paragraph of the article"))</p>
+        <img srcset="https://example.com/small.png 480w, https://example.com/big.png 1024w" alt="A small diagram">
+        <p>\(longSentence("The closing paragraph of the article"))</p>
+        """
+    )
+    let result = try SwiftSoupExtractor().extract(html: html, source: "test", httpStatus: 200)
+    let images = result.blocks.filter { $0.kind == .image }
+    #expect(images.count == 1)
+    #expect(images[0].imageURL == "https://example.com/small.png")
+    #expect(images[0].alt == "A small diagram")
+}
+
 @Test func tableFramePageKeepsTheProse() throws {
     let html = page(
         """

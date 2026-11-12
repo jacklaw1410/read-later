@@ -123,6 +123,17 @@ public enum ContentRoot {
                     }
                     continue
                 }
+                // F19 1.14: a figure beside the article root carries the
+                // argument on pages where images matter. Keep it when it
+                // holds an image or real text; classed rails stay out above.
+                if tag == "figure" || tag == "img" {
+                    let hasImg = tag == "img" || !(((try? sibling.select("img")) ?? Elements()).isEmpty())
+                    let text = normalise((try? sibling.text()) ?? "")
+                    if hasImg || text.count >= 40 {
+                        roots.append(sibling)
+                    }
+                    continue
+                }
                 // F19 1.13: a list beside the article root is content, not
                 // chrome. Link-dense menu lists stay out via the density
                 // check; the unlikely filter above already drops classed rails.

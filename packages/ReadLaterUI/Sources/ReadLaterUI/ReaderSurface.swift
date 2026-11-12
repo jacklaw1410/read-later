@@ -53,6 +53,7 @@ public extension BlockKind {
     /// The label on a reduced-ink block. Nil when the block speaks.
     var skipChipLabel: String? {
         switch self {
+        case .heading: return nil
         case .code: return "code block · skipped by audio"
         case .table: return "table · skipped by audio"
         case .image: return "image · skipped by audio"

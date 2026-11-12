@@ -322,7 +322,11 @@ private struct BlockWalker {
 
     mutating func processLeaf(_ element: Element, tag: String) throws {
         let text = Self.normalise((try? element.text()) ?? "")
-        guard !text.isEmpty else { return }
+        // F19 1.14: a bare img carries no text, so the old guard dropped it
+        // and the image path stayed dead. Capture src/srcset/alt instead;
+        // the block keeps the reference and the placeholder keeps the caption.
+        let imageRef = Self.imageRef(of: element, tag: tag)
+        guard !text.isEmpty || imageRef.url != nil else { return }
         if tag != "pre" && tag != "code" {
             // Older pages break paragraphs with `<br /><br />` inside one `<p>`, and
             // the text API turns each break into a space. Split on the breaks so each
@@ -360,7 +364,9 @@ private struct BlockWalker {
                 linkTextChars: linkChars,
                 lines: Self.lines((try? element.text(trimAndNormaliseWhitespace: false)) ?? "")
             ),
-            text: text
+            text: text,
+            imageURL: imageRef.url,
+            alt: imageRef.alt
         )
     }
 
@@ -459,15 +465,57 @@ private struct BlockWalker {
         }
     }
 
-    mutating func emit(_ verdict: Classification, text: String) {
+    mutating func emit(_ verdict: Classification, text: String, imageURL: String? = nil, alt: String? = nil) {
         blocks.append(Block(
             id: nextID,
             kind: verdict.kind,
             confidence: verdict.confidence,
             reason: verdict.reason,
-            text: text
+            text: text,
+            imageURL: imageURL,
+            alt: alt
         ))
         nextID += 1
+    }
+
+    // MARK: - Image references (F19 1.14)
+    //
+    // The block keeps the URL and the alt text; nothing fetches them. The
+    // loader slice will resolve relative URLs, pick a srcset candidate for
+    // the display width, and cache — all through this one seam.
+
+    /// The image reference for a leaf that can carry one: the element itself
+    /// when it is an `img`, else its first descendant `img` (a `figure`
+    /// wrapping one). Prefers `src`; falls back to the first `srcset`
+    /// candidate. URLs stay as written — no base resolution yet.
+    static func imageRef(of element: Element, tag: String) -> (url: String?, alt: String?) {
+        let img: Element?
+        if tag == "img" {
+            img = element
+        } else if tag == "figure" {
+            img = ((try? element.select("img")) ?? Elements()).array().first
+        } else {
+            return (nil, nil)
+        }
+        guard let img else { return (nil, nil) }
+        let alt = (try? img.attr("alt")).flatMap { $0.isEmpty ? nil : $0 }
+        if let src = try? img.attr("src"), !src.isEmpty {
+            return (src, alt)
+        }
+        if let srcset = try? img.attr("srcset"), !srcset.isEmpty {
+            return (firstSrcsetURL(srcset), alt)
+        }
+        return (nil, alt)
+    }
+
+    /// First URL in a `srcset` list (`"a.jpg 1x, b.jpg 2x"` → `"a.jpg"`).
+    static func firstSrcsetURL(_ srcset: String) -> String? {
+        for candidate in srcset.split(separator: ",") {
+            let url = candidate.split(separator: " ", omittingEmptySubsequences: true)
+                .first.map(String.init) ?? ""
+            if !url.isEmpty { return url }
+        }
+        return nil
     }
 
     // MARK: - Element helpers

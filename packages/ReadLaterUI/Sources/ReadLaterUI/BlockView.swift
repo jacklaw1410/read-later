@@ -199,7 +199,7 @@ public struct BlockView: View {
             }
             .frame(height: 120)
             .clipShape(RoundedRectangle(cornerRadius: 8))
-            .accessibilityLabel("Image")
+            .accessibilityLabel(accessibleImageLabel)
             WashableText(text: block.text, slots: [], wash: .idle, style: .note, tone: .skip) { _, word in
                 tap(nil, word)
             }
@@ -242,6 +242,14 @@ public struct BlockView: View {
     }
 
     // MARK: - Table rows
+
+    /// Spoken label for the grey placeholder. The alt text when the element
+    /// carried one, else the generic marker. The caption well below still
+    /// reads the block text; this only names the box to accessibility.
+    var accessibleImageLabel: String {
+        guard let alt = block.alt, !alt.isEmpty else { return "Image" }
+        return alt
+    }
 
     /// Splits table text into rows and cells. Child blocks are rows when
     /// present; otherwise non-empty lines are rows. Cells split on tabs,

@@ -48,6 +48,15 @@ public struct Block: Codable, Sendable, Identifiable, Hashable {
     public var children: [Block]
     public var spoken: [Sentence]
     public var lowConfidence: Bool
+    /// Image reference for `image` and `figure` blocks. The URL as written
+    /// in `src` (first `srcset` candidate when `src` is absent), unresolved
+    /// against any base. No loader reads this yet: fetching, caching and a
+    /// real `<Image>` view are an explicit later slice. This field is the
+    /// seam it will build on. Nil for every other kind.
+    public var imageURL: String?
+    /// The `alt` text as written, for the caption well and accessibility.
+    /// Nil when the element carried no `alt`.
+    public var alt: String?
 
     public init(
         id: Int,
@@ -57,7 +66,9 @@ public struct Block: Codable, Sendable, Identifiable, Hashable {
         text: String,
         children: [Block] = [],
         spoken: [Sentence] = [],
-        lowConfidence: Bool? = nil
+        lowConfidence: Bool? = nil,
+        imageURL: String? = nil,
+        alt: String? = nil
     ) {
         self.id = id
         self.kind = kind
@@ -67,10 +78,14 @@ public struct Block: Codable, Sendable, Identifiable, Hashable {
         self.children = children
         self.spoken = spoken
         self.lowConfidence = lowConfidence ?? (confidence < 0.8)
+        self.imageURL = imageURL
+        self.alt = alt
     }
 
     private enum CodingKeys: String, CodingKey {
         case id, kind, confidence, reason, text, children, spoken, lowConfidence
+        case imageURL = "image_url"
+        case alt
     }
 
     public init(from decoder: any Decoder) throws {
@@ -83,6 +98,8 @@ public struct Block: Codable, Sendable, Identifiable, Hashable {
         children = try c.decodeIfPresent([Block].self, forKey: .children) ?? []
         spoken = try c.decodeIfPresent([Sentence].self, forKey: .spoken) ?? []
         lowConfidence = try c.decodeIfPresent(Bool.self, forKey: .lowConfidence) ?? (confidence < 0.8)
+        imageURL = try c.decodeIfPresent(String.self, forKey: .imageURL)
+        alt = try c.decodeIfPresent(String.self, forKey: .alt)
     }
 }
 
