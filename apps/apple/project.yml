@@ -25,6 +25,8 @@ packages:
     path: ../../packages/ReadLaterUI
   ReadLaterPacks:
     path: ../../packages/ReadLaterPacks
+  ReadLaterStore:
+    path: ../../packages/ReadLaterStore
 
 targets:
   ReadLater:
@@ -41,6 +43,7 @@ targets:
       - package: ReadLaterCore
       - package: ReadLaterUI
       - package: ReadLaterPacks
+      - package: ReadLaterStore
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES

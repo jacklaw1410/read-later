@@ -87,3 +87,11 @@ import ReadLaterCore
     #expect(EntryCopy.emptyRefusal == "nothing to open — paste a link or text")
     #expect(EntryCopy.loginWallRefusal == "login wall — paste text instead")
 }
+
+// MARK: - ResumeOffer
+
+@Test func resumeOfferPlaceLine() {
+    #expect(ResumeOffer(title: "T", wordIndex: 11, totalWords: 300).placeLine == "word 12 of 300")
+    #expect(ResumeOffer(title: "T", wordIndex: 999, totalWords: 300).placeLine == "word 300 of 300")
+    #expect(ResumeOffer(title: "Only title", wordIndex: 0, totalWords: 0).placeLine == "Only title")
+}

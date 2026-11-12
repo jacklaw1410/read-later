@@ -1,5 +1,6 @@
 import Foundation
 import ReadLaterCore
+import ReadLaterStore
 import ReadLaterUI
 
 /// Playback and lookup state for one open document.
@@ -30,6 +31,10 @@ final class ReaderSession: ObservableObject {
     private let speedStore: SpeedStore
     /// Where the next `play` starts. Set by a scrub while paused.
     private var resumeAt: Int?
+    /// Receives the current word index when the place should be recorded.
+    /// Throttled during reading; immediate on pause, scrub and finish.
+    var onProgress: ((Int) -> Void)?
+    private var progressThrottle = PositionWriteThrottle()
 
     init(
         document: ReadLaterCore.Document,
@@ -59,6 +64,29 @@ final class ReaderSession: ObservableObject {
 
     func warmUp() {
         speech.warmUp()
+    }
+
+    // MARK: - Resume
+
+    /// Starts the next play at a saved word. The wash shows the place at
+    /// once; the voice starts there on the next press.
+    func begin(at wordIndex: Int) {
+        guard spoken.totalWords > 0 else { return }
+        let clamped = min(max(wordIndex, 0), spoken.totalWords - 1)
+        wash.wordIndex = clamped
+        resumeAt = clamped > 0 ? clamped : nil
+        isFinished = false
+    }
+
+    /// Records the place: at most once per throttle interval during reading,
+    /// always for the out-of-band writes (pause, scrub, background flush).
+    private func record(_ index: Int, force: Bool = false) {
+        if force {
+            progressThrottle.recordNow()
+            onProgress?(index)
+        } else if progressThrottle.shouldWrite() {
+            onProgress?(index)
+        }
     }
 
     // MARK: - Transport
@@ -131,6 +159,7 @@ final class ReaderSession: ObservableObject {
             speech.stop()
             resumeAt = index
         }
+        record(index, force: true)
     }
 
     func finishScrubbing() {
@@ -302,6 +331,7 @@ final class ReaderSession: ObservableObject {
         }
         wash.wordIndex = index
         wash.isPlaying = isPlaying
+        record(index)
     }
 
     private func speechStateChanged(_ state: SpeechState) {
@@ -311,12 +341,16 @@ final class ReaderSession: ObservableObject {
             isFinished = false
         case .paused, .warming:
             isPlaying = false
+            if case .paused = state {
+                record(wash.wordIndex ?? 0, force: true)
+            }
         case .idle:
             isPlaying = false
         case .finished:
             isPlaying = false
             isFinished = true
             wash.isPlaying = false
+            record(max(spoken.totalWords - 1, 0), force: true)
             TelemetryHub.shared.record(TelemetryName.finished)
         }
         wash.isPlaying = isPlaying
