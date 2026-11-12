@@ -78,7 +78,15 @@ public struct SwiftSoupExtractor: Extractor {
         }
 
         var walker = BlockWalker()
-        try walker.run(body)
+        // The article body first, not the page: chrome around it costs a reader
+        // their place and teaches the classifier a false pattern.
+        for root in ContentRoot.roots(in: body) {
+            if root === body {
+                try walker.run(body)
+            } else {
+                try walker.process(root)
+            }
+        }
         var blocks = walker.blocks
         if blocks.isEmpty {
             let verdict = Classifier.classify(
@@ -161,6 +169,11 @@ private struct BlockWalker {
     ]
     static let containerTags: Set<String> = [
         "div", "section", "article", "main", "header", "footer",
+        // Table layout was the normal way to build a page until the late 2000s, and
+        // old essays still ship that way. A layout table recurses, so the prose in
+        // its cells becomes blocks instead of one skipped table. The rule that
+        // picks it is `isLayoutTable`; a data table stays a leaf.
+        "thead", "tbody", "tfoot", "tr", "td", "th",
     ]
     static let blockDescendantQuery = [
         "p", "h1", "h2", "h3", "h4", "h5", "h6", "pre", "blockquote",
@@ -169,22 +182,34 @@ private struct BlockWalker {
     ].joined(separator: ", ")
 
     mutating func run(_ body: Element) throws {
-        for child in body.children() {
-            try process(child)
-        }
-        let own = Self.normalise(body.ownText())
-        if !own.isEmpty {
-            emit(Classifier.classify(tag: "body", text: own), text: own)
-        }
+        try processContainer(body, tag: "body")
     }
 
     mutating func process(_ element: Element) throws {
         let tag = element.tagNameNormal()
+        if tag == "table" {
+            if Self.isLayoutTable(element) {
+                try processContainer(element, tag: tag)
+            } else {
+                try processLeaf(element, tag: tag)
+            }
+            return
+        }
         if Self.containerTags.contains(tag) {
             try processContainer(element, tag: tag)
         } else if Self.leafTags.contains(tag) {
             try processLeaf(element, tag: tag)
         } else {
+            // An inline element at block position that wraps block-level content
+            // (`<font>` around a whole page, an anchor around a card) is a
+            // container in disguise. Treating it as a leaf merges every paragraph
+            // inside it into one block, which is how a 4,500-word essay became a
+            // single block.
+            let descendants = (try? element.select(Self.blockDescendantQuery)) ?? Elements()
+            if !descendants.isEmpty() {
+                try processContainer(element, tag: tag)
+                return
+            }
             // Inline or unknown element at block position: one block from
             // its combined text so no words are lost.
             let text = Self.normalise((try? element.text()) ?? "")
@@ -205,6 +230,28 @@ private struct BlockWalker {
     mutating func processLeaf(_ element: Element, tag: String) throws {
         let text = Self.normalise((try? element.text()) ?? "")
         guard !text.isEmpty else { return }
+        if tag != "pre" && tag != "code" {
+            // Older pages break paragraphs with `<br /><br />` inside one `<p>`, and
+            // the text API turns each break into a space. Split on the breaks so each
+            // paragraph is a block: the reader shows a paragraph, and a wash word
+            // sits in one block instead of a 4,500-word wall.
+            let chunks = Self.inlineChunks(of: element)
+            if chunks.count > 1 {
+                for chunk in chunks {
+                    emit(
+                        Classifier.classify(
+                            tag: tag,
+                            classNames: classes(of: element),
+                            role: role(of: element),
+                            text: chunk.text,
+                            linkTextChars: chunk.linkChars
+                        ),
+                        text: chunk.text
+                    )
+                }
+                return
+            }
+        }
         var linkChars = 0
         if let links = try? element.select("a") {
             for link in links {
@@ -224,39 +271,43 @@ private struct BlockWalker {
         )
     }
 
+    /// Walks a container in document order. Text and inline markup between block
+    /// children gather into a run; each block child ends the run and is processed
+    /// on its own.
+    ///
+    /// The old path walked only `children()` and emitted `ownText()` after them,
+    /// which put every direct text node into one block and put the text of inline
+    /// children into a second block. On a page whose body is one `<font>` that
+    /// split a 5,000-word essay into a wall plus a handful of fragments.
     mutating func processContainer(_ element: Element, tag: String) throws {
-        let descendants = (try? element.select(Self.blockDescendantQuery)) ?? Elements()
-        if descendants.isEmpty() {
-            // No block-level descendants: the container is all prose-shaped
-            // text (plus inline markup). One block, nothing lost.
-            let text = Self.normalise((try? element.text()) ?? "")
-            guard !text.isEmpty else { return }
+        var run = InlineRun()
+        for node in element.getChildNodes() {
+            if let textNode = node as? TextNode {
+                run.add(textNode.text())
+                continue
+            }
+            guard let child = node as? Element else { continue }
+            if Self.isBlockPosition(child) {
+                emitRun(&run, element: element, tag: tag)
+                try process(child)
+            } else {
+                run.add(inline: child)
+            }
+        }
+        emitRun(&run, element: element, tag: tag)
+    }
+
+    mutating func emitRun(_ run: inout InlineRun, element: Element, tag: String) {
+        for chunk in run.drain() {
             emit(
                 Classifier.classify(
                     tag: tag,
                     classNames: classes(of: element),
                     role: role(of: element),
-                    text: text,
-                    lines: Self.lines((try? element.text(trimAndNormaliseWhitespace: false)) ?? "")
+                    text: chunk.text,
+                    linkTextChars: chunk.linkChars
                 ),
-                text: text
-            )
-            return
-        }
-        for child in element.children() {
-            try process(child)
-        }
-        let own = Self.normalise(element.ownText())
-        if !own.isEmpty {
-            emit(
-                Classifier.classify(
-                    tag: tag,
-                    classNames: classes(of: element),
-                    role: role(of: element),
-                    text: own,
-                    lines: Self.lines(element.ownText())
-                ),
-                text: own
+                text: chunk.text
             )
         }
     }
@@ -273,6 +324,124 @@ private struct BlockWalker {
     }
 
     // MARK: - Element helpers
+
+    /// A table that holds block-level prose is a page frame, not data.
+    ///
+    /// Paul Graham's essays are one table: the sidebar, the column rule and the essay
+    /// share it. Treated as a leaf it became a single `table` block, and the whole
+    /// essay was skipped. The marker is paragraph-level content inside the table: a
+    /// data table puts prose in its cells only in the rare caption, and that caption
+    /// still reads correctly as part of the table.
+    static func isLayoutTable(_ element: Element) -> Bool {
+        let prose = (try? element.select("p, h1, h2, h3, h4, h5, h6, blockquote, pre")) ?? Elements()
+        return !prose.isEmpty()
+    }
+
+    struct Chunk {
+        var text: String
+        var linkChars: Int
+    }
+
+    /// Gathers the inline content of one element into paragraph chunks.
+    ///
+    /// A run of two or more `<br>` ends a paragraph. A single break is a line
+    /// break inside a paragraph and stays a space.
+    struct InlineRun {
+        private var chunks: [Chunk] = []
+        private var buffer = ""
+        private var linkBuffer = 0
+        private var breaks = 0
+        private var linkDepth = 0
+
+        mutating func add(_ value: String) {
+            if value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                // Whitespace between two `<br>` tags does not end the run.
+                if breaks == 0 { buffer += " " }
+                return
+            }
+            beforeInline()
+            buffer += value
+            if linkDepth > 0 { linkBuffer += value.count }
+        }
+
+        mutating func add(inline element: Element) {
+            let tag = element.tagNameNormal()
+            if tag == "br" {
+                breaks += 1
+                return
+            }
+            if tag == "img" || tag == "wbr" { return }
+            beforeInline()
+            let isLink = tag == "a"
+            if isLink { linkDepth += 1 }
+            for node in element.getChildNodes() {
+                if let textNode = node as? TextNode {
+                    add(textNode.text())
+                } else if let child = node as? Element {
+                    add(inline: child)
+                }
+            }
+            if isLink { linkDepth -= 1 }
+        }
+
+        /// Returns the finished chunks and starts a new run.
+        mutating func drain() -> [Chunk] {
+            flush()
+            let done = chunks
+            chunks = []
+            return done
+        }
+
+        private mutating func beforeInline() {
+            if breaks >= 2 {
+                flush()
+            } else if breaks == 1 {
+                buffer += " "
+            }
+            breaks = 0
+        }
+
+        private mutating func flush() {
+            let normalised = BlockWalker.normalise(buffer)
+            if !normalised.isEmpty {
+                chunks.append(Chunk(text: normalised, linkChars: linkBuffer))
+            }
+            buffer = ""
+            linkBuffer = 0
+        }
+    }
+
+    static func inlineChunks(of element: Element) -> [Chunk] {
+        var run = InlineRun()
+        for node in element.getChildNodes() {
+            if let textNode = node as? TextNode {
+                run.add(textNode.text())
+            } else if let child = node as? Element {
+                run.add(inline: child)
+            }
+        }
+        return run.drain()
+    }
+
+    /// Inline tags never end a paragraph, even where their text is long.
+    static let inlineTags: Set<String> = [
+        "a", "abbr", "b", "bdi", "bdo", "cite", "code", "data", "dfn", "em",
+        "font", "i", "kbd", "mark", "q", "rp", "rt", "ruby", "s", "samp",
+        "small", "span", "strong", "sub", "sup", "time", "u", "var", "wbr",
+    ]
+
+    /// A child that ends the current inline run. An unknown wrapper counts as a
+    /// block when it contains block-level content, so `<center>` around a table
+    /// still recurses.
+    static func isBlockPosition(_ element: Element) -> Bool {
+        let tag = element.tagNameNormal()
+        if tag == "img" || tag == "wbr" || tag == "br" { return false }
+        if inlineTags.contains(tag) {
+            let nested = (try? element.select(blockDescendantQuery)) ?? Elements()
+            return !nested.isEmpty()
+        }
+        return true
+    }
 
     func classes(of element: Element) -> [String] {
         Array((try? element.classNames()) ?? OrderedSet<String>())
