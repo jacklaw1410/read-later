@@ -27,12 +27,12 @@ final class PlayerTests: XCTestCase {
         XCTAssertEqual(progress.timeLabel, "00:00 left · 0/0")
     }
 
-    func testTimeLabelDoubleSpeedHalvesSeconds() {
-        let fast = PlayerProgress(wordIndex: 0, totalWords: 447, speed: 2, isFinished: false)
-        XCTAssertEqual(fast.timeLabel, "01:36 left · 0/447")
+    func testTimeLabelTopSpeedScalesSeconds() {
+        let fast = PlayerProgress(wordIndex: 0, totalWords: 447, speed: 1.5, isFinished: false)
+        XCTAssertEqual(fast.timeLabel, "02:08 left · 0/447")
         XCTAssertEqual(
-            Pace.secondsRemaining(wordsLeft: 447, speed: 2) * 2,
-            Pace.secondsRemaining(wordsLeft: 447, speed: 1)
+            Pace.secondsRemaining(wordsLeft: 447, speed: 1.5) * 3,
+            Pace.secondsRemaining(wordsLeft: 447, speed: 1) * 2
         )
     }
 
@@ -65,12 +65,10 @@ final class PlayerTests: XCTestCase {
     // MARK: - Pace ladder
 
     func testNextWalksLadderAndWraps() {
-        XCTAssertEqual(Pace.next(after: 0.5), 0.75)
-        XCTAssertEqual(Pace.next(after: 0.75), 1)
-        XCTAssertEqual(Pace.next(after: 1), 1.25)
-        XCTAssertEqual(Pace.next(after: 1.25), 1.5)
-        XCTAssertEqual(Pace.next(after: 1.5), 2)
-        XCTAssertEqual(Pace.next(after: 2), 0.5)
+        XCTAssertEqual(Pace.next(after: 0.5), 0.6)
+        XCTAssertEqual(Pace.next(after: 1), 1.1)
+        XCTAssertEqual(Pace.next(after: 1.4), 1.5)
+        XCTAssertEqual(Pace.next(after: 1.5), 0.5)
     }
 
     func testNextOffLadderReturnsReference() {
