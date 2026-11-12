@@ -31,14 +31,14 @@ public struct SwiftSoupExtractor: Extractor {
         let title = (try? doc.title()) ?? ""
         let bodyChars = bodyText.count
         let bodyWords = SpokenPlanEngine.wordCount(in: bodyText)
-        let linkElements = (try? body.select("a")) ?? Elements()
-        var linkCount = 0
-        var linkChars = 0
-        for link in linkElements {
-            linkCount += 1
-            linkChars += ((try? link.text()) ?? "").count
+        let bodyLinkElements = (try? body.select("a")) ?? Elements()
+        var bodyLinkCount = 0
+        var bodyLinkChars = 0
+        for link in bodyLinkElements {
+            bodyLinkCount += 1
+            bodyLinkChars += ((try? link.text()) ?? "").count
         }
-        let paragraphs = ((try? body.select("p")) ?? Elements()).array()
+        let bodyParagraphs = ((try? body.select("p")) ?? Elements()).array()
             .filter { (((try? $0.text()) ?? "").trimmingCharacters(in: .whitespacesAndNewlines)).count > 0 }
             .count
 
@@ -62,25 +62,80 @@ public struct SwiftSoupExtractor: Extractor {
         guard !bodyText.isEmpty else {
             throw ExtractionError.emptyDocument
         }
-        let linkDensity = Double(linkChars) / Double(max(bodyChars, 1))
+        // V1: choose the article roots before the index rule, and measure the
+        // index shapes on the union of the roots, not the whole body. A
+        // "related reads" rail must not turn a real article into
+        // `not-an-article`. When a root is the body itself the numbers are
+        // identical to the whole-body measure.
+        func measure(_ roots: [Element]) -> (chars: Int, words: Int, links: Int, linkChars: Int, paragraphs: Int) {
+            let text = roots.map { ((try? $0.text()) ?? "").trimmingCharacters(in: .whitespacesAndNewlines) }
+                .filter { !$0.isEmpty }
+                .joined(separator: " ")
+            var links = 0
+            var linked = 0
+            var paragraphs = 0
+            for root in roots {
+                let tag = root.tagNameNormal()
+                let linkElements = (try? root.select("a")) ?? Elements()
+                for link in linkElements.array() {
+                    if link === root { continue }
+                    links += 1
+                    linked += ((try? link.text()) ?? "").count
+                }
+                if tag == "a", linkElements.isEmpty() {
+                    if (((try? root.text()) ?? "").trimmingCharacters(in: .whitespacesAndNewlines)).count > 0 {
+                        links += 1
+                        linked += ((try? root.text()) ?? "").count
+                    }
+                }
+                for p in ((try? root.select("p")) ?? Elements()).array() {
+                    if p === root { continue }
+                    if (((try? p.text()) ?? "").trimmingCharacters(in: .whitespacesAndNewlines)).count > 0 {
+                        paragraphs += 1
+                    }
+                }
+                if tag == "p",
+                   (((try? root.text()) ?? "").trimmingCharacters(in: .whitespacesAndNewlines)).count > 0
+                {
+                    paragraphs += 1
+                }
+            }
+            return (text.count, SpokenPlanEngine.wordCount(in: text), links, linked, paragraphs)
+        }
+
+        // V1b: a root that holds almost no words is a bad root, not a bad page.
+        // The words still exist on the page, so fall back to the body. Without
+        // this, one pinned article (The Verge) loses 100% of its text.
+        var roots = ContentRoot.roots(in: body)
+        var metrics = measure(roots)
+        if metrics.words < 20 && bodyWords >= 20 {
+            roots = [body]
+            metrics = measure(roots)
+        }
+        let linkCount = metrics.links
+        let linkChars = metrics.linkChars
+        let paragraphs = metrics.paragraphs
+        let rootChars = metrics.chars
+        let rootWords = metrics.words
+        let linkDensity = Double(linkChars) / Double(max(rootChars, 1))
         // The index rule needs a short page. A 4,000-word article with fifteen links in it
         // is an article, and calling it an index loses the page for no gain.
-        if (linkCount >= 15 && paragraphs <= 3 && bodyWords < 600)
-            || (paragraphs == 0 && bodyWords < 100)
-            || (bodyWords < 40 && linkDensity >= 0.5)
+        if (linkCount >= 15 && paragraphs <= 3 && rootWords < 600)
+            || (paragraphs == 0 && rootWords < 100)
+            || (rootWords < 40 && linkDensity >= 0.5)
         {
             throw ExtractionError.notAnArticle(
-                reason: "index: \(linkCount) links, \(paragraphs) paragraphs, \(bodyWords) words"
+                reason: "index: \(linkCount) links, \(paragraphs) paragraphs, \(rootWords) words"
             )
         }
-        guard bodyWords >= 20 else {
+        guard rootWords >= 20 else {
             throw ExtractionError.emptyDocument
         }
 
         var walker = BlockWalker()
         // The article body first, not the page: chrome around it costs a reader
         // their place and teaches the classifier a false pattern.
-        for root in ContentRoot.roots(in: body) {
+        for root in roots {
             if root === body {
                 try walker.run(body)
             } else {
@@ -91,7 +146,7 @@ public struct SwiftSoupExtractor: Extractor {
         if blocks.isEmpty {
             let verdict = Classifier.classify(
                 tag: "body", classNames: [], role: nil,
-                text: bodyText, linkTextChars: linkChars
+                text: bodyText, linkTextChars: bodyLinkChars
             )
             blocks = [Block(
                 id: 0,
