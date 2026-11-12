@@ -78,6 +78,8 @@ struct ReaderScreen: View {
     @Environment(\.openURL) private var openURL
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var showSettings = false
+    @State private var washVisible = true
+    @State private var returnToken = 0
 
     var body: some View {
         VStack(spacing: 0) {
@@ -87,10 +89,14 @@ struct ReaderScreen: View {
                 wash: session.wash,
                 spoken: session.spoken,
                 autoScroll: session.autoScroll && !session.isScrubbing,
+                isScrubbing: session.isScrubbing,
+                returnToken: returnToken,
                 onTapWord: { blockID, slot, word in
                     session.tapped(blockID: blockID, slot: slot, word: word)
                 },
                 onTapNote: { session.openNote($0) },
+                onHold: { session.userScrolled() },
+                onWashVisibilityChanged: { washVisible = $0 },
                 player: {
                     VStack(spacing: 0) {
                         HoldBadge(
@@ -98,6 +104,16 @@ struct ReaderScreen: View {
                             isPlaying: session.isPlaying,
                             onResume: { session.resumeFollowing() }
                         )
+                        if shouldShowReturnPill(
+                            washVisible: washVisible,
+                            isHeld: session.isHeld,
+                            isPlaying: session.isPlaying
+                        ) {
+                            ReturnToWashPill {
+                                session.resumeFollowing()
+                                returnToken += 1
+                            }
+                        }
                         PlayerBar(
                             progress: session.progress,
                             isPlaying: session.isPlaying,

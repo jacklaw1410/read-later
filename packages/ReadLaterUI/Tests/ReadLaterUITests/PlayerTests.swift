@@ -131,4 +131,23 @@ final class PlayerTests: XCTestCase {
         XCTAssertFalse(detector.scrollEvent(distanceFromWash: 200, isFollowing: false, isScrubbing: false))
         XCTAssertFalse(detector.scrollEvent(distanceFromWash: 200, isFollowing: false, isScrubbing: false))
     }
+
+    // MARK: - Return pill
+
+    func testReturnPillShowsWhenWashOffScreenAndHeld() {
+        XCTAssertTrue(shouldShowReturnPill(washVisible: false, isHeld: true, isPlaying: true))
+    }
+
+    func testReturnPillShowsWhenWashOffScreenAndPaused() {
+        XCTAssertTrue(shouldShowReturnPill(washVisible: false, isHeld: false, isPlaying: false))
+    }
+
+    func testReturnPillHidesWhenWashVisible() {
+        XCTAssertFalse(shouldShowReturnPill(washVisible: true, isHeld: true, isPlaying: true))
+        XCTAssertFalse(shouldShowReturnPill(washVisible: true, isHeld: false, isPlaying: false))
+    }
+
+    func testReturnPillHidesWhileFollowingOnScreen() {
+        XCTAssertFalse(shouldShowReturnPill(washVisible: false, isHeld: false, isPlaying: true))
+    }
 }
