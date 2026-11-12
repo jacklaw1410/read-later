@@ -16,16 +16,22 @@ final class AppModel: ObservableObject {
         let next = ReaderSession(document: document, speech: speech, lookupProvider: lookup)
         session = next
         next.warmUp()
+        TelemetryHub.shared.record(TelemetryName.articleReady, fields: [
+            "title": document.title,
+            "words": String(document.plan.spokenWords),
+        ])
     }
 
     func closeDocument() {
         session?.stop()
         session = nil
+        TelemetryHub.shared.endRunIfActive(outcome: "closed")
     }
 }
 
 struct RootView: View {
     @StateObject private var model = AppModel()
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         Group {
@@ -40,6 +46,18 @@ struct RootView: View {
         .frame(minWidth: 380, minHeight: 560)
         .background(Theme.paper)
         .animation(.easeInOut(duration: 0.18), value: model.session == nil)
+        .onChange(of: scenePhase) { _, phase in
+            switch phase {
+            case .background:
+                TelemetryHub.shared.record(TelemetryName.appHide)
+            case .active:
+                TelemetryHub.shared.record(TelemetryName.appReturn)
+            case .inactive:
+                break
+            @unknown default:
+                break
+            }
+        }
         #if os(macOS)
         .task {
             if SnapshotHarness.isEnabled {
@@ -57,7 +75,7 @@ struct ReaderScreen: View {
 
     @ObservedObject private var registry = PackRegistry.shared
     @Environment(\.openURL) private var openURL
-    @State private var showDictionaries = false
+    @State private var showSettings = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -94,8 +112,8 @@ struct ReaderScreen: View {
                 overlay: { overlay }
             )
         }
-        .sheet(isPresented: $showDictionaries) {
-            DictionariesSettings(registry: registry)
+        .sheet(isPresented: $showSettings) {
+            SettingsView(registry: registry)
         }
         .onKeyPress(.escape) {
             if session.card != nil {
@@ -142,7 +160,7 @@ struct ReaderScreen: View {
                 Button(session.autoScroll ? "Stop following the wash" : "Follow the wash") {
                     if session.autoScroll { session.holdFollowing() } else { session.resumeFollowing() }
                 }
-                Button("Dictionaries") { showDictionaries = true }
+                Button("Settings") { showSettings = true }
                 if session.isFinished {
                     Button("Replay") { session.togglePlay() }
                 }

@@ -76,8 +76,10 @@ final class ReaderSession: ObservableObject {
         guard card == nil, note == nil else { return }
         if isPlaying {
             speech.pause()
+            TelemetryHub.shared.record(TelemetryName.pause)
             return
         }
+        TelemetryHub.shared.record(TelemetryName.play)
         switch speech.state {
         case .paused:
             speech.resume()
@@ -105,8 +107,10 @@ final class ReaderSession: ObservableObject {
     }
 
     func setSpeed(_ value: Float) {
+        let from = speed
         speed = value
         speedStore.save(value)
+        TelemetryHub.shared.record(TelemetryName.speedChange, fields: ["from": String(from), "to": String(value)])
         // The synthesizer cannot change tempo mid-utterance, so the controller
         // restarts the current sentence and keeps the word.
         speech.rate = value
@@ -146,6 +150,7 @@ final class ReaderSession: ObservableObject {
         let wasPlaying = speech.wasPlayingBeforeLookup
         wash.selectedWordIndex = slot?.index
         wash.isPlaying = false
+        TelemetryHub.shared.record(TelemetryName.lookup, fields: ["word": token])
 
         Task { [weak self] in
             guard let self else { return }
@@ -241,16 +246,19 @@ final class ReaderSession: ObservableObject {
         guard isPlaying, autoScroll else { return }
         autoScroll = false
         isHeld = true
+        TelemetryHub.shared.record(TelemetryName.holdStart, fields: ["reason": "scroll"])
     }
 
     func holdFollowing() {
         autoScroll = false
         isHeld = isPlaying
+        TelemetryHub.shared.record(TelemetryName.holdStart, fields: ["reason": "menu"])
     }
 
     func resumeFollowing() {
         autoScroll = true
         isHeld = false
+        TelemetryHub.shared.record(TelemetryName.holdEnd, fields: ["outcome": "resume"])
     }
 
     #if DEBUG
@@ -294,6 +302,7 @@ final class ReaderSession: ObservableObject {
             isPlaying = false
             isFinished = true
             wash.isPlaying = false
+            TelemetryHub.shared.record(TelemetryName.finished)
         }
         wash.isPlaying = isPlaying
     }

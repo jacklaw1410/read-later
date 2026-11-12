@@ -129,6 +129,7 @@ public struct EntryView: View {
         .padding(.horizontal, Theme.screenGutter)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(Theme.paper)
+        .onAppear { TelemetryHub.shared.markEntryReady() }
     }
 
     private var isLoading: Bool {
@@ -196,6 +197,7 @@ public struct EntryView: View {
             return
         }
         guard !isLoading else { return }
+        TelemetryHub.shared.record(TelemetryName.tap)
         Task { await load(link: link, raw: raw) }
     }
 
@@ -209,6 +211,7 @@ public struct EntryView: View {
             await reveal(.ready)
             switch ArticleIngress.pasted(raw) {
             case .success(let document):
+                TelemetryHub.shared.record(TelemetryName.readerOpen, fields: ["source": "pasted"])
                 onOpen(document)
             case .failure(let error):
                 state = .refused(error.message)
@@ -219,6 +222,12 @@ public struct EntryView: View {
             state = .loading(stage: .fetching, progress: EntryStage.fetching.progress)
             await reveal(.stripping)
             await reveal(.ready)
+            TelemetryHub.shared.record(TelemetryName.fetchSkipped, fields: ["reason": "sample-link"])
+            TelemetryHub.shared.record(TelemetryName.planReady, fields: [
+                "source": "sample",
+                "words": String(ArticleLibrary.demo.plan.spokenWords),
+            ])
+            TelemetryHub.shared.record(TelemetryName.readerOpen, fields: ["source": "sample"])
             onOpen(ArticleLibrary.demo)
             return
         }
@@ -235,6 +244,7 @@ public struct EntryView: View {
         switch ArticleIngress.read(page) {
         case .success(let document):
             await reveal(.ready)
+            TelemetryHub.shared.record(TelemetryName.readerOpen, fields: ["source": "link"])
             onOpen(document)
         case .failure(let error):
             state = .refused(error.message)

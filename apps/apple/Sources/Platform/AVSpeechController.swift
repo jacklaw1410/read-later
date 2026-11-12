@@ -74,6 +74,11 @@ public final class AVSpeechController: NSObject, SpeechController {
     /// Epoch captured when a fill is scheduled, so a stale fill does nothing.
     private var epochAtFill = 0
     private var warmupIDs = Set<ObjectIdentifier>()
+    /// First voice callback and first word boundary of the current `speak`,
+    /// for the T6→T7 stage. Reset on every speak; only the first of each is
+    /// recorded, and only while a tap-to-first-word run is active.
+    private var ttfwVoiceStarted = false
+    private var ttfwWordDelivered = false
     private var pausedByInterruption = false
     private var voice: AVSpeechSynthesisVoice?
     private nonisolated(unsafe) var interruptionToken: NSObjectProtocol?
@@ -132,6 +137,8 @@ public final class AVSpeechController: NSObject, SpeechController {
     public func speak(sentences: [(blockID: Int, sentence: Sentence)], prefetch: Int) {
         epoch += 1
         epochAtFill = epoch
+        ttfwVoiceStarted = false
+        ttfwWordDelivered = false
         synthesizer.stopSpeaking(at: .immediate)
         inFlight.removeAll()
         retained.removeAll()
@@ -146,6 +153,11 @@ public final class AVSpeechController: NSObject, SpeechController {
             return
         }
         state = .speaking
+        if TelemetryHub.shared.hasActiveRun {
+            TelemetryHub.shared.record(TelemetryName.speakEnqueued, fields: [
+                "sentences": String(sentences.count),
+            ])
+        }
         // `stopSpeaking(at: .immediate)` is processed on the synthesizer's own
         // queue. An utterance enqueued in the same turn as the stop is
         // discarded, so the first fill waits for one run-loop turn.
@@ -321,6 +333,12 @@ extension AVSpeechController {
         // transport then swallows the reader's first press.
         guard inFlight[utteranceID] != nil, !warmupIDs.contains(utteranceID) else { return }
         state = .speaking
+        if !ttfwVoiceStarted {
+            ttfwVoiceStarted = true
+            if TelemetryHub.shared.hasActiveRun {
+                TelemetryHub.shared.record(TelemetryName.speechDidStart)
+            }
+        }
     }
 
     fileprivate func handleWord(range: NSRange, utteranceID: ObjectIdentifier) {
@@ -339,6 +357,12 @@ extension AVSpeechController {
               let global = current.wordIndex(reportedRange: adjusted, in: utterance)
         else { return }
         currentWordIndex = global
+        if !ttfwWordDelivered {
+            ttfwWordDelivered = true
+            if TelemetryHub.shared.hasActiveRun {
+                TelemetryHub.shared.record(TelemetryName.firstWord)
+            }
+        }
         onWord?(word)
     }
 
