@@ -17,5 +17,11 @@ func makeMigrator() -> DatabaseMigrator {
         try db.execute(sql: "INSERT INTO phrase_ft(phrase_ft) VALUES('rebuild')")
     }
 
+    // v3 adds the reading-position table. Visit rows are local-only, so no
+    // backfill: only articles opened after this build record a place.
+    migrator.registerMigration("v3_positions") { db in
+        try Schema.createReadingPositionTable(db)
+    }
+
     return migrator
 }

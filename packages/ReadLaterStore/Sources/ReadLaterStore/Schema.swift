@@ -11,6 +11,7 @@ enum Schema {
     static let phraseOccurrence = "phrase_occurrence"
     static let changelog = "changelog"
     static let phraseFTS = "phrase_ft"
+    static let readingPosition = "reading_position"
 
     /// Creates the v1 tables. The block plan is stored as JSON (`plan_json`)
     /// because it is a versioned contract, not a set of columns.
@@ -83,6 +84,26 @@ enum Schema {
                 INSERT INTO phrase_ft(rowid, word, gloss)
                 VALUES (new.rowid, new.word, new.gloss);
             END
+            """)
+    }
+
+    /// One row per started article: where the reader stopped. Keyed by content
+    /// hash so a re-pasted article resumes at the same word; the document id
+    /// is kept alongside as fallback for plans with an empty hash.
+    static func createReadingPositionTable(_ db: Database) throws {
+        try db.execute(sql: """
+            CREATE TABLE reading_position(
+                content_hash TEXT PRIMARY KEY,
+                document_id TEXT NOT NULL,
+                title TEXT NOT NULL,
+                word_index INTEGER NOT NULL,
+                finished INTEGER NOT NULL DEFAULT 0,
+                updated_at REAL NOT NULL
+            )
+            """)
+        try db.execute(sql: """
+            CREATE INDEX idx_reading_position_updated
+            ON reading_position(updated_at DESC)
             """)
     }
 }
