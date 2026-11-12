@@ -158,11 +158,26 @@ final class ReaderSession: ObservableObject {
             guard !Task.isCancelled else { return }
             switch outcome {
             case let .hit(result):
+                // The source and the line count are the proof that a card
+                // carries text: an empty gloss from the wrong source is the
+                // defect this field catches.
+                TelemetryHub.shared.record(
+                    TelemetryName.lookupHit,
+                    fields: [
+                        "source": result.source.rawValue,
+                        "lines": String(result.gloss.split(separator: "\n").count),
+                    ]
+                )
                 self.card = .hit(result, wordIndex: slot?.index, wasPlaying: wasPlaying)
             case let .miss(kind):
+                let refined = self.refine(kind)
+                TelemetryHub.shared.record(
+                    TelemetryName.lookupMiss,
+                    fields: ["kind": String(describing: refined)]
+                )
                 self.card = .miss(
                     word: token,
-                    kind: self.refine(kind),
+                    kind: refined,
                     wordIndex: slot?.index,
                     wasPlaying: wasPlaying
                 )

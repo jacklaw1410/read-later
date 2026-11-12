@@ -48,6 +48,8 @@ public enum TelemetryName {
     public static let pause = "pause"
     public static let finished = "finished"
     public static let lookup = "lookup"
+    public static let lookupHit = "lookup.hit"
+    public static let lookupMiss = "lookup.miss"
     public static let speedChange = "speed change"
     public static let holdStart = "hold-start"
     public static let holdEnd = "hold-end"
