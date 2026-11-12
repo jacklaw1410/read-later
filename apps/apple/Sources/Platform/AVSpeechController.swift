@@ -86,6 +86,11 @@ public final class AVSpeechController: NSObject, SpeechController {
     public override init() {
         voice = Self.defaultVoice()
         super.init()
+        // This init is the one place that owns the audio-session config. The
+        // MVP declares no `audio` background key (see project.yml: none) and
+        // pauses on leaving `.active`, so a later listen-only mode adds the
+        // key, `.playback`, and Now Playing info here — never a second
+        // transport path (F19 1.4, decision 6).
         let bridge = SpeechDelegateBridge()
         bridge.owner = self
         self.bridge = bridge
@@ -168,7 +173,7 @@ public final class AVSpeechController: NSObject, SpeechController {
     }
 
     public func pause() {
-        guard state == .speaking, !inFlight.isEmpty else { return }
+        guard state == .speaking else { return }
         synthesizer.pauseSpeaking(at: .word)
         state = .paused
     }
@@ -263,6 +268,13 @@ public final class AVSpeechController: NSObject, SpeechController {
     /// `speak` and after `stop`, which destroys the queue.
     public var canRestart: Bool {
         queue.map { !$0.utterances.isEmpty } ?? false
+    }
+
+    /// Whether any utterance is still with the synthesizer. False after a
+    /// suspension kill delivered every cancel, which is the reconcile signal:
+    /// a `.speaking` controller with nothing live is lying (F19 1.4).
+    public var hasLiveUtterances: Bool {
+        !inFlight.isEmpty
     }
 
     // MARK: - Queue
@@ -416,6 +428,13 @@ extension AVSpeechController {
         guard let entry = inFlight[utteranceID], entry.epoch == epoch else { return }
         inFlight.removeValue(forKey: utteranceID)
         retained.removeValue(forKey: utteranceID)
+        // A cancel for the current epoch means the synthesizer dropped live
+        // speech, not a superseded queue: suspension or interruption. The
+        // controller must leave `.speaking`, or the button lies (F19 1.4).
+        // Stale-epoch cancels return above and change nothing.
+        if inFlight.isEmpty, state == .speaking {
+            state = .paused
+        }
     }
 }
 

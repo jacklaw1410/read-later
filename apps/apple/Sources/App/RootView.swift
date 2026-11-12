@@ -50,11 +50,15 @@ struct RootView: View {
         .onChange(of: scenePhase) { _, phase in
             switch phase {
             case .background:
+                model.session?.pauseForBackground()
                 TelemetryHub.shared.record(TelemetryName.appHide)
             case .active:
                 TelemetryHub.shared.record(TelemetryName.appReturn)
+                model.session?.reconcileOnReturn()
             case .inactive:
-                break
+                // Lock and background pass through `.inactive` on the way
+                // out. Pause here so the state lands before suspension.
+                model.session?.pauseForBackground()
             @unknown default:
                 break
             }

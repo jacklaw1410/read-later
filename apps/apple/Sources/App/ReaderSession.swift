@@ -33,6 +33,12 @@ final class ReaderSession: ObservableObject {
     /// so a failed first press retries the same word (F19 1.3).
     private var latch = ResumeLatch()
 
+    /// SEAM(persistence/F19-1.16): the persistence slice sets this to record
+    /// the word. Fired on pause, scrub commit, and background. The value
+    /// written is the existing session value (`wash.wordIndex`); the store
+    /// schema it lands in belongs to the persistence slice, not here.
+    var onCheckpoint: ((Int) -> Void)?
+
     init(
         document: ReadLaterCore.Document,
         speech: AVSpeechController,
@@ -78,6 +84,7 @@ final class ReaderSession: ObservableObject {
         guard card == nil, note == nil else { return }
         if speech.state == .speaking {
             speech.pause()
+            checkpoint()
             TelemetryHub.shared.record(TelemetryName.pause)
             return
         }
@@ -158,10 +165,38 @@ final class ReaderSession: ObservableObject {
             // code cleared the position before the failed start (F19 1.3).
             latch.stash(index)
         }
+        checkpoint()
     }
 
     func finishScrubbing() {
         isScrubbing = false
+    }
+
+    // MARK: - Background (F19 1.4, decided: clean pause)
+
+    /// Deliberate pause on leaving `.active`. Lands before the system
+    /// suspends the process, so the reader returns to a paused article at
+    /// the same word with a truthful button. Never auto-resumes.
+    func pauseForBackground() {
+        guard speech.state == .speaking else { return }
+        speech.pause()
+        checkpoint()
+    }
+
+    /// Reconcile on return to `.active`. Suspension can kill synthesis with
+    /// the controller still reading `.speaking`; that lie becomes a clean
+    /// pause here instead of a dead button.
+    func reconcileOnReturn() {
+        if TransportTruth.needsReconcile(state: speech.state, hasLiveUtterances: speech.hasLiveUtterances) {
+            speech.pause()
+        }
+    }
+
+    /// Hands the current word to the persistence slice, if one is attached.
+    private func checkpoint() {
+        if let word = wash.wordIndex {
+            onCheckpoint?(word)
+        }
     }
 
     // MARK: - Lookup
