@@ -18,7 +18,7 @@ public enum Gzip {
             }
         }
         guard code == 0 else {
-            throw GzipError.failed(String(cString: err))
+            throw GzipError.failed(message(from: err))
         }
     }
 
@@ -32,7 +32,14 @@ public enum Gzip {
             }
         }
         guard code == 0 else {
-            throw GzipError.failed(String(cString: err))
+            throw GzipError.failed(message(from: err))
         }
+    }
+
+    /// Reads a NUL-terminated C error buffer. The C side always writes one,
+    /// so the bytes before the first zero are the message.
+    private static func message(from buffer: [CChar]) -> String {
+        let bytes = buffer.prefix(while: { $0 != 0 }).map { UInt8(bitPattern: $0) }
+        return String(decoding: bytes, as: UTF8.self)
     }
 }
