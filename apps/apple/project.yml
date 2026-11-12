@@ -37,3 +37,17 @@ targets:
       PRODUCT_BUNDLE_IDENTIFIER: app.readlater.reader
       MARKETING_VERSION: "0.1.0"
       CURRENT_PROJECT_VERSION: "1"
+    preBuildScripts:
+      - name: Stamp the git SHA into BuildInfo
+        basedOnDependencyAnalysis: false
+        script: |
+          set -u
+          SHA=$(git -C "$SRCROOT/../.." rev-parse --short HEAD 2>/dev/null || echo unknown)
+          mkdir -p "$SRCROOT/Sources/App/Generated"
+          cat > "$SRCROOT/Sources/App/Generated/BuildInfo.swift" <<EOF
+          // Generated at build time by project.yml. Do not edit.
+          // The committed stub reports "unknown"; a real build stamps HEAD.
+          enum BuildInfo {
+              static let gitSHA = "$SHA"
+          }
+          EOF
