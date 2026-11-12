@@ -275,7 +275,7 @@ private struct BlockWalker {
             if Self.isLayoutTable(element) {
                 try processContainer(element, tag: tag)
             } else {
-                try processLeaf(element, tag: tag)
+                try processTable(element, tag: tag)
             }
             return
         }
@@ -368,6 +368,60 @@ private struct BlockWalker {
             imageURL: imageRef.url,
             alt: imageRef.alt
         )
+    }
+
+    /// One row per `tr`, as children of the table block.
+    ///
+    /// F19 1.15, minimal honest degradation: a data table keeps its row
+    /// structure instead of flattening to prose. Each row joins its cells
+    /// with a comma — a separator the voice can read as a pause, without
+    /// chanting markup. Rows stay kind `.table`, so the voice still skips
+    /// them and the reader still renders the row grid from the children.
+    /// The parent keeps the whole text so nothing is lost. Small on purpose:
+    /// the row mechanics reuse the list item work (units with structure,
+    /// spoken only when their kind speaks).
+    mutating func processTable(_ element: Element, tag: String) throws {
+        let text = Self.normalise((try? element.text()) ?? "")
+        guard !text.isEmpty else { return }
+        var linkChars = 0
+        if let links = try? element.select("a") {
+            for link in links {
+                linkChars += ((try? link.text()) ?? "").count
+            }
+        }
+        let verdict = Classifier.classify(
+            tag: tag,
+            classNames: classes(of: element),
+            role: role(of: element),
+            text: text,
+            linkTextChars: linkChars,
+            lines: Self.lines((try? element.text(trimAndNormaliseWhitespace: false)) ?? "")
+        )
+        let parentID = nextID
+        nextID += 1
+        var children: [Block] = []
+        for row in ((try? element.select("tr")) ?? Elements()).array() {
+            let cells = ((try? row.select("th, td")) ?? Elements()).array().map {
+                Self.normalise((try? $0.text()) ?? "")
+            }.filter { !$0.isEmpty }
+            guard !cells.isEmpty else { continue }
+            children.append(Block(
+                id: nextID,
+                kind: .table,
+                confidence: 0.9,
+                reason: "tr",
+                text: cells.joined(separator: ", ")
+            ))
+            nextID += 1
+        }
+        blocks.append(Block(
+            id: parentID,
+            kind: verdict.kind,
+            confidence: verdict.confidence,
+            reason: verdict.reason,
+            text: text,
+            children: children
+        ))
     }
 
     /// One block per list item, as siblings in document order.

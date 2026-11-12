@@ -150,6 +150,15 @@ public enum ContentRoot {
                     }
                     continue
                 }
+                // F19 1.15: a data table beside the article root keeps its
+                // rows instead of flattening. process() sorts layout frames
+                // from data tables, so the root rule only asks for real text.
+                if tag == "table" {
+                    if normalise((try? sibling.text()) ?? "").count >= 40 {
+                        roots.append(sibling)
+                    }
+                    continue
+                }
                 let siblingScore = scores[ObjectIdentifier(sibling)] ?? 0
                 if siblingScore >= topScore * 0.2 {
                     roots.append(sibling)

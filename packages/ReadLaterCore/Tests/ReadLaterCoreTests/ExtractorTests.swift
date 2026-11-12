@@ -103,6 +103,27 @@ private func longSentence(_ subject: String) -> String {
     #expect(images[0].alt == "A small diagram")
 }
 
+@Test func dataTableKeepsRowsAsUnits() throws {
+    // F19 §1.15: a results table degrades to rows, never to prose. Each
+    // row is a unit, cells joined with a voice-readable separator.
+    let html = page(
+        """
+        <p>\(longSentence("The opening paragraph of the article"))</p>
+        <table><tr><th>Year</th><th>Sales</th></tr><tr><td>2024</td><td>Twelve thousand units moved in spring.</td></tr><tr><td>2025</td><td>Fifteen thousand units moved in spring.</td></tr></table>
+        <p>\(longSentence("The closing paragraph of the article"))</p>
+        """
+    )
+    let result = try SwiftSoupExtractor().extract(html: html, source: "test", httpStatus: 200)
+    let tables = result.blocks.filter { $0.kind == .table && $0.text.contains("Sales") }
+    #expect(tables.count == 1)
+    #expect(tables[0].children.count == 3)
+    #expect(tables[0].children[0].text == "Year, Sales")
+    #expect(tables[0].children[1].text == "2024, Twelve thousand units moved in spring.")
+    let plan = SpokenPlanBuilder.build(blocks: result.blocks, source: "test", sourceSHA256: "abc")
+    let spokenTables = plan.blocks.flatMap { [$0] + $0.children }.filter { $0.kind == .table && !$0.spoken.isEmpty }
+    #expect(spokenTables.isEmpty)
+}
+
 @Test func tableFramePageKeepsTheProse() throws {
     let html = page(
         """
