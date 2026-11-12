@@ -9,6 +9,10 @@ import SwiftUI
 /// One object owns the install, so the miss card and Settings cannot disagree
 /// about whether a pack is present. The fact is persisted, because an install
 /// that forgets itself on relaunch is not an install.
+///
+/// Two sources answer lookups: the installed real pack from the R2 registry,
+/// and the bundled demo pack while nothing is installed. The reading path
+/// never touches the network either way.
 @MainActor
 final class PackRegistry: ObservableObject {
     static let shared = PackRegistry()
@@ -17,48 +21,121 @@ final class PackRegistry: ObservableObject {
     @Published private(set) var isInstalling = false
     @Published private(set) var failure: String?
 
-    private(set) var pack: DemoPack?
+    private var store: PackIndexStore?
+    private var demo: DemoPack?
     private let defaults: UserDefaults
     private let installedKey = "rl-pack-installed-version"
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         if let version = defaults.string(forKey: installedKey),
-           let pack = DemoPack.load(),
-           pack.version == version
+           let sqliteURL = Self.sqliteURL(),
+           FileManager.default.fileExists(atPath: sqliteURL.path)
         {
-            self.pack = pack
+            self.store = PackIndexStore(sqliteURL: sqliteURL)
             self.installedVersion = version
         }
     }
 
-    var isInstalled: Bool { installedVersion != nil }
+    var isInstalled: Bool { store != nil }
 
+    static func packsDirectory() -> URL? {
+        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
+            .appendingPathComponent("Packs", isDirectory: true)
+    }
+
+    static func sqliteURL() -> URL? {
+        packsDirectory()?.appendingPathComponent("\(RegistryClient.packID).sqlite")
+    }
+
+    static var appVersion: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.1.0"
+    }
+
+    /// Fetches the manifest, gates it against the allowlist, downloads the
+    /// archive with resume, verifies the sha256, and builds the on-disk
+    /// index. The demo pack keeps answering while this runs and after it
+    /// fails.
     func install() async {
         guard !isInstalling, !isInstalled else { return }
         isInstalling = true
         failure = nil
         defer { isInstalling = false }
 
-        switch await DemoPackInstaller.install() {
-        case let .installed(pack):
-            self.pack = pack
-            installedVersion = pack.version
-            defaults.set(pack.version, forKey: installedKey)
-        case let .failed(state):
+        let manifest: PackManifest
+        do {
+            manifest = try await RegistryClient.fetchManifest(fetch: { url in
+                try await PackDownloader.fetch(url: url)
+            })
+        } catch let error as PackDownloadError {
+            failure = error.installState.settingsDescription
+            return
+        } catch {
+            failure = InstallState.failedRegistry.settingsDescription
+            return
+        }
+
+        guard let directory = Self.packsDirectory() else {
+            failure = InstallState.failedDisk.settingsDescription
+            return
+        }
+        let state = await PackService.install(
+            manifest: manifest,
+            archiveURL: RegistryClient.archiveURL(manifest: manifest),
+            directory: directory,
+            appVersion: Self.appVersion,
+            download: { url, destination, offset, progress in
+                try await PackDownloader.download(
+                    url: url,
+                    destination: destination,
+                    resumeOffset: offset,
+                    progress: progress
+                )
+            }
+        )
+        switch state {
+        case .installed(let version):
+            guard let sqliteURL = Self.sqliteURL() else {
+                failure = InstallState.failedDisk.settingsDescription
+                return
+            }
+            self.store = PackIndexStore(sqliteURL: sqliteURL)
+            installedVersion = version
+            defaults.set(version, forKey: installedKey)
+        default:
             failure = state.settingsDescription
         }
     }
 
-    /// Removes the pack. The reader keeps working; the offer returns.
+    /// Removes the pack. The reader keeps working; the demo answers and the
+    /// offer returns.
     func remove() {
-        pack = nil
+        store = nil
         installedVersion = nil
         defaults.removeObject(forKey: installedKey)
+        if let directory = Self.packsDirectory() {
+            for name in ["\(RegistryClient.packID).pack.gz", "\(RegistryClient.packID).sqlite"] {
+                try? FileManager.default.removeItem(at: directory.appendingPathComponent(name))
+            }
+        }
     }
 
+    /// The real pack first, the bundled demo while nothing is installed.
+    /// Case-insensitive; `café` resolves to the `cafe` row with the stored
+    /// headword as the subtitle.
     func lookup(_ word: String) -> LookupResult? {
-        pack?.lookup(word)
+        if let entry = store?.entry(for: word) {
+            return LookupResult(
+                word: word,
+                gloss: entry.gloss,
+                phonetic: entry.phonetic,
+                partOfSpeech: entry.partOfSpeech,
+                source: .pack,
+                accentVariant: PackIndexStore.accentSubtitle(tapped: word, stored: entry.word)
+            )
+        }
+        if demo == nil { demo = DemoPack.load() }
+        return demo?.lookup(word)
     }
 }
 
