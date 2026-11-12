@@ -101,14 +101,18 @@ public enum ArticleIngress {
             switch error {
             case .notHTTP:
                 return .failure(.notHTTPS)
-            case .tooLarge:
+            case .tooLarge(let bytes):
+                TelemetryHub.shared.record(TelemetryName.fetchFailed, fields: ["kind": "tooLarge", "bytes": String(bytes)])
                 return .failure(.failed)
             case .notText:
+                TelemetryHub.shared.record(TelemetryName.fetchFailed, fields: ["kind": "notText"])
                 return .failure(.failed)
             case .offline:
+                TelemetryHub.shared.record(TelemetryName.fetchFailed, fields: ["kind": "offline"])
                 return .failure(.offline(""))
             }
         } catch {
+            TelemetryHub.shared.record(TelemetryName.fetchFailed, fields: ["kind": "offline"])
             return .failure(.offline(""))
         }
     }
@@ -119,14 +123,20 @@ public enum ArticleIngress {
         _ page: FetchedPage,
         extractor: Extractor = SwiftSoupExtractor()
     ) -> Result<Document, IngressError> {
+        TelemetryHub.shared.record(TelemetryName.extractStart, fields: ["bytes": String(page.html.count)])
         do {
             let result = try extractor.extract(html: page.html, source: page.url.absoluteString, httpStatus: page.status)
+            TelemetryHub.shared.record(TelemetryName.parsed, fields: ["blocks": String(result.blocks.count)])
             let plan = SpokenPlanBuilder.build(
                 blocks: result.blocks,
                 source: page.url.host ?? page.url.absoluteString,
                 sourceSHA256: sha256(page.html)
             )
             guard !plan.blocks.isEmpty else { return .failure(.failed) }
+            TelemetryHub.shared.record(TelemetryName.planReady, fields: [
+                "sentences": String(plan.sentenceCount),
+                "words": String(plan.spokenWords),
+            ])
             return .success(Document(
                 url: page.url,
                 title: title(for: result, page: page),
@@ -135,15 +145,20 @@ public enum ArticleIngress {
         } catch let error as ExtractionError {
             switch error {
             case .walled:
+                TelemetryHub.shared.record(TelemetryName.extractFailed, fields: ["kind": "walled"])
                 return .failure(.walled)
             case .unrendered:
+                TelemetryHub.shared.record(TelemetryName.extractFailed, fields: ["kind": "unrendered"])
                 return .failure(.unrendered)
             case .notAnArticle:
+                TelemetryHub.shared.record(TelemetryName.extractFailed, fields: ["kind": "notAnArticle"])
                 return .failure(.notAnArticle)
             case .emptyDocument, .badURL:
+                TelemetryHub.shared.record(TelemetryName.extractFailed, fields: ["kind": "failed"])
                 return .failure(.failed)
             }
         } catch {
+            TelemetryHub.shared.record(TelemetryName.extractFailed, fields: ["kind": "failed"])
             return .failure(.failed)
         }
     }
@@ -153,6 +168,10 @@ public enum ArticleIngress {
         guard let document = PasteLoader.document(from: text, title: nil) else {
             return .failure(.empty)
         }
+        TelemetryHub.shared.record(TelemetryName.planReady, fields: [
+            "source": "pasted",
+            "words": String(document.plan.spokenWords),
+        ])
         return .success(document)
     }
 

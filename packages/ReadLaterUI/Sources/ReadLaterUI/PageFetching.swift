@@ -1,4 +1,5 @@
 import Foundation
+import ReadLaterCore
 
 /// One fetched page: the bytes the extractor reads, the status that decides a
 /// wall, and the URL that answered after redirects.
@@ -56,16 +57,19 @@ public struct URLSessionPageFetcher: PageFetching {
         request.setValue("text/html,application/xhtml+xml;q=0.9,text/plain;q=0.8,*/*;q=0.1", forHTTPHeaderField: "Accept")
         request.setValue("en,zh-HK;q=0.8", forHTTPHeaderField: "Accept-Language")
 
-        let data: Data
-        let response: URLResponse
+        TelemetryHub.shared.record(TelemetryName.fetchStart, fields: ["host": url.host ?? url.absoluteString])
+        let (data, http): (Data, HTTPURLResponse)
         do {
-            (data, response) = try await session.data(for: request)
+            (data, http) = try await perform(request, url: url)
+        } catch let error as PageFetchError {
+            throw error
         } catch {
             throw PageFetchError.offline((error as NSError).localizedDescription)
         }
-        guard let http = response as? HTTPURLResponse else {
-            throw PageFetchError.offline("no HTTP response")
-        }
+        TelemetryHub.shared.record(TelemetryName.bodyDone, fields: [
+            "status": String(http.statusCode),
+            "bytes": String(data.count),
+        ])
         if data.count > maximumBytes {
             throw PageFetchError.tooLarge(data.count)
         }
@@ -80,5 +84,107 @@ public struct URLSessionPageFetcher: PageFetching {
             ?? String(data: data, encoding: .isoLatin1)
             ?? ""
         return FetchedPage(html: html, status: http.statusCode, url: http.url ?? url)
+    }
+
+    /// Runs the request on a per-fetch session so a delegate can stamp the
+    /// header arrival (T2). The stored session's configuration is reused, so a
+    /// custom configuration still applies; the delegate cannot live on a
+    /// shared session.
+    private func perform(_ request: URLRequest, url: URL) async throws -> (Data, HTTPURLResponse) {
+        let delegate = FetchTimingDelegate(maximumBytes: maximumBytes, url: url)
+        let configuration = session.configuration
+        configuration.timeoutIntervalForRequest = timeout
+        configuration.timeoutIntervalForResource = timeout
+        let taskSession = URLSession(configuration: configuration, delegate: delegate, delegateQueue: nil)
+        defer { taskSession.finishTasksAndInvalidate() }
+        return try await withCheckedThrowingContinuation { continuation in
+            delegate.begin(taskSession: taskSession, request: request, continuation: continuation)
+        }
+    }
+}
+
+/// Stamps T2 when the response headers arrive and accumulates the body.
+/// One instance per fetch; all mutable state is lock-guarded because the
+/// callbacks arrive off the caller's actor.
+private final class FetchTimingDelegate: NSObject, URLSessionDataDelegate, @unchecked Sendable {
+    private let lock = NSLock()
+    private let maximumBytes: Int
+    private let url: URL
+    private var received = Data()
+    private var response: HTTPURLResponse?
+    private var continuation: CheckedContinuation<(Data, HTTPURLResponse), Error>?
+    private var task: URLSessionDataTask?
+    private var done = false
+
+    init(maximumBytes: Int, url: URL) {
+        self.maximumBytes = maximumBytes
+        self.url = url
+    }
+
+    func begin(
+        taskSession: URLSession, request: URLRequest,
+        continuation: CheckedContinuation<(Data, HTTPURLResponse), Error>
+    ) {
+        lock.withLock { self.continuation = continuation }
+        let dataTask = taskSession.dataTask(with: request)
+        lock.withLock { task = dataTask }
+        dataTask.resume()
+    }
+
+    private func finish(_ result: Result<(Data, HTTPURLResponse), Error>) {
+        let cont = lock.withLock { () -> CheckedContinuation<(Data, HTTPURLResponse), Error>? in
+            guard !done else { return nil }
+            done = true
+            let cont = continuation
+            continuation = nil
+            return cont
+        }
+        switch result {
+        case .success(let value): cont?.resume(returning: value)
+        case .failure(let error): cont?.resume(throwing: error)
+        }
+    }
+
+    func urlSession(
+        _: URLSession, dataTask: URLSessionDataTask,
+        didReceive response: URLResponse,
+        completionHandler: @escaping (URLSession.ResponseDisposition) -> Void
+    ) {
+        guard let http = response as? HTTPURLResponse else {
+            completionHandler(.cancel)
+            finish(.failure(PageFetchError.offline("no HTTP response")))
+            return
+        }
+        TelemetryHub.shared.record(TelemetryName.headers, fields: [
+            "status": String(http.statusCode),
+            "host": url.host ?? url.absoluteString,
+        ])
+        lock.withLock { self.response = http }
+        completionHandler(.allow)
+    }
+
+    func urlSession(_: URLSession, dataTask _: URLSessionDataTask, didReceive data: Data) {
+        let overflow = lock.withLock { () -> Int? in
+            received.append(data)
+            return received.count > maximumBytes ? received.count : nil
+        }
+        if let count = overflow {
+            task?.cancel()
+            finish(.failure(PageFetchError.tooLarge(count)))
+        }
+    }
+
+    func urlSession(_ session: URLSession, task _: URLSessionTask, didCompleteWithError error: Error?) {
+        defer { session.finishTasksAndInvalidate() }
+        if let error {
+            finish(.failure(PageFetchError.offline((error as NSError).localizedDescription)))
+            return
+        }
+        let (body, http) = lock.withLock { (received, response) }
+        guard let http else {
+            finish(.failure(PageFetchError.offline("no HTTP response")))
+            return
+        }
+        finish(.success((body, http)))
     }
 }

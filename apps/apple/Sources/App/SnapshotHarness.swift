@@ -90,6 +90,7 @@ enum SnapshotHarness {
         capture("12-hit", into: directory)
 
         print("[snapshot] wrote \(directory.path)")
+        TelemetryHub.shared.flush()
         NSApp.terminate(nil)
     }
 
