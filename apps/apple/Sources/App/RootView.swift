@@ -147,56 +147,21 @@ struct ReaderScreen: View {
     }
 
     private var chrome: some View {
-        HStack(spacing: 8) {
-            Button {
-                onExit()
-            } label: {
-                Label("Library", systemImage: "chevron.left")
-                    .labelStyle(.titleAndIcon)
-                    .font(.system(size: 13))
-            }
-            .buttonStyle(.plain)
-            .foregroundStyle(Theme.inkSecondary)
-            .frame(minHeight: 44)
-            .accessibilityLabel("Back to library")
-
-            Spacer(minLength: 8)
-
-            Text(session.document.title)
-                .font(.system(size: 12))
-                .foregroundStyle(Theme.inkSecondary)
-                .lineLimit(1)
-                .truncationMode(.tail)
-
-            Spacer(minLength: 8)
-
-            Menu {
-                Button("Restart from the first word") {
-                    session.scrub(toFraction: 0)
-                    session.resumeFollowing()
-                }
-                Button(session.autoScroll ? "Stop following the wash" : "Follow the wash") {
-                    if session.autoScroll { session.holdFollowing() } else { session.resumeFollowing() }
-                }
-                Button("Settings") { showSettings = true }
-                if session.isFinished {
-                    Button("Replay") { session.togglePlay() }
-                }
-            } label: {
-                Image(systemName: "ellipsis")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Theme.inkSecondary)
-                    .frame(width: 44, height: 44)
-            }
-            .menuStyle(.borderlessButton)
-            .menuIndicator(.hidden)
-            .frame(width: 44, height: 44)
-            .accessibilityLabel("Reader options")
-        }
-        .padding(.horizontal, 8)
-        .frame(height: 44)
-        .background(Theme.surface)
-        .overlay(Divider(), alignment: .bottom)
+        ReaderChrome(
+            title: session.document.title,
+            autoScroll: session.autoScroll,
+            isFinished: session.isFinished,
+            onExit: onExit,
+            onRestart: {
+                session.scrub(toFraction: 0)
+                session.resumeFollowing()
+            },
+            onToggleFollow: {
+                if session.autoScroll { session.holdFollowing() } else { session.resumeFollowing() }
+            },
+            onSettings: { showSettings = true },
+            onReplay: { session.togglePlay() }
+        )
     }
 
     @ViewBuilder
@@ -260,5 +225,71 @@ struct ReaderScreen: View {
             }
             .zIndex(3)
         }
+    }
+}
+
+/// Reader top bar. Takes plain values, never the session, so a wash tick
+/// cannot invalidate it. The menu reads two values, follow state and
+/// finished state, and no per-word state. No behavior change.
+struct ReaderChrome: View {
+    let title: String
+    let autoScroll: Bool
+    let isFinished: Bool
+    let onExit: () -> Void
+    let onRestart: () -> Void
+    let onToggleFollow: () -> Void
+    let onSettings: () -> Void
+    let onReplay: () -> Void
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Button {
+                onExit()
+            } label: {
+                Label("Library", systemImage: "chevron.left")
+                    .labelStyle(.titleAndIcon)
+                    .font(.system(size: 13))
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(Theme.inkSecondary)
+            .frame(minHeight: 44)
+            .accessibilityLabel("Back to library")
+
+            Spacer(minLength: 8)
+
+            Text(title)
+                .font(.system(size: 12))
+                .foregroundStyle(Theme.inkSecondary)
+                .lineLimit(1)
+                .truncationMode(.tail)
+
+            Spacer(minLength: 8)
+
+            Menu {
+                Button("Restart from the first word") {
+                    onRestart()
+                }
+                Button(autoScroll ? "Stop following the wash" : "Follow the wash") {
+                    onToggleFollow()
+                }
+                Button("Settings") { onSettings() }
+                if isFinished {
+                    Button("Replay") { onReplay() }
+                }
+            } label: {
+                Image(systemName: "ellipsis")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(Theme.inkSecondary)
+                    .frame(width: 44, height: 44)
+            }
+            .menuStyle(.borderlessButton)
+            .menuIndicator(.hidden)
+            .frame(width: 44, height: 44)
+            .accessibilityLabel("Reader options")
+        }
+        .padding(.horizontal, 8)
+        .frame(height: 44)
+        .background(Theme.surface)
+        .overlay(Divider(), alignment: .bottom)
     }
 }
