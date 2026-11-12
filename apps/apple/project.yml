@@ -68,7 +68,7 @@ targets:
           # A file, not an Info.plist key. Xcode processes the generated plist
           # after this phase, so a key added here does not survive a clean
           # build. A file in the bundle does, and the signature covers it.
-          OUT="$TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/GitSHA.txt"
+          OUT="$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/GitSHA.txt"
           [ -d "${OUT%/*}" ] || exit 0
           printf '%s\n' "$SHA" > "$OUT"
           PLIST="$TARGET_BUILD_DIR/$INFOPLIST_PATH"
