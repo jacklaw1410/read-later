@@ -19,3 +19,9 @@ One branch, one commit.
 
 Build, test, device and troubleshooting instructions:
 [`README.md`](README.md) and [`apps/apple/README.md`](apps/apple/README.md).
+
+Design values come from `design/tokens.json` only. A view reads a semantic
+name, never a hex or a point. After a token edit, run
+`python3 tools/tokens/generate.py`, then `./tools/tokens/check.sh`. Do not edit
+a file under `Generated/` or `design/generated/`. Layers and the portability
+boundary: [`docs/design-system.md`](docs/design-system.md).

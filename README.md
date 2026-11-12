@@ -130,10 +130,10 @@ Counts below were observed on 2026-11-12 with Swift 6.4.2.
 
 | Package | Command | Observed |
 |---|---|---|
-| `ReadLaterCore` | `swift test` in `packages/ReadLaterCore` | 56 tests pass |
-| `ReadLaterPacks` | `swift test` in `packages/ReadLaterPacks` | 27 tests pass |
+| `ReadLaterCore` | `swift test` in `packages/ReadLaterCore` | 64 tests pass |
+| `ReadLaterPacks` | `swift test` in `packages/ReadLaterPacks` | 50 tests pass |
 | `ReadLaterStore` | `swift test` in `packages/ReadLaterStore` | 11 tests pass |
-| `ReadLaterUI` | `swift test` in `packages/ReadLaterUI` | 33 swift-testing + 22 XCTest pass |
+| `ReadLaterUI` | `swift test` in `packages/ReadLaterUI` | 33 swift-testing tests pass |
 
 ```bash
 cd packages/ReadLaterCore && swift test
@@ -163,7 +163,9 @@ open -n ./build/Build/Products/Debug/ReadLater.app --args --snapshot /tmp/rlsnap
 
 PNGs land in the directory you name (`/tmp/rlsnap` above).
 Without a directory, they land in a `readlater-snapshots` temp folder.
-Running the binary directly produces no captures. Use `open -n`.
+The harness pins the window to 430 × 760, so two runs of the same build write
+the same pixels. Launch it with `open -n`, or run the binary in
+`Contents/MacOS` directly. Both write captures.
 
 Known limitation: in a `--snapshot` launch, `AVSpeechSynthesizer` starts the
 utterance and then delivers no word-boundary callbacks. The harness advances
@@ -201,8 +203,24 @@ contracts/           Versioned JSON Schemas shared with the research repo
 fixtures/            20 committed pages and their expected block plans
 tools/blockplan/     Dumps a block plan so the research gate can score it
 tools/registry/      Pack publish script (`publish.sh`, needs `wrangler` + Node)
-docs/                ADRs and provenance. Extraction flow: research repo spec/extraction-flow.md
+docs/                ADRs, provenance and the design system. Extraction flow: research repo spec/extraction-flow.md
+design/tokens.json   The only source for colour, type, space, radius, size and motion
+tools/tokens/        Generator for every platform, plus the stale-file check
 ```
+
+## 10. Design system
+
+`design/tokens.json` holds the Calm Editorial values. `tools/tokens/generate.py`
+writes Swift, CSS, Kotlin and XAML from that one file. A view reads a semantic
+name, never a literal.
+
+```bash
+python3 tools/tokens/generate.py     # write every platform file
+./tools/tokens/check.sh              # fail when a file is stale
+```
+
+The layers, the portability boundary and the steps to add a platform are in
+[`docs/design-system.md`](docs/design-system.md).
 
 ## Rules
 

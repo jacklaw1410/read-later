@@ -112,19 +112,20 @@ public extension Document {
 /// The reader's line and type measurements, taken from the prototype so the
 /// app and the prototype cannot drift apart on the thing a reader feels first.
 public enum ReaderMetrics {
-    public static let bodySize: CGFloat = 19
-    public static let bodyLineHeight: CGFloat = 31
-    public static let bodyLeading: CGFloat = bodyLineHeight - bodySize
-    public static let titleSize: CGFloat = 24
-    public static let titleLineHeight: CGFloat = 30
+    // Type and target values come from `design/tokens.json`, so the reader and
+    // the other platforms cannot drift. Only reader geometry stays local here:
+    // it describes this surface, not the design language.
+    public static let bodySize: CGFloat = Theme.bodySize
+    public static let bodyLineHeight: CGFloat = Theme.bodyLine
+    public static let bodyLeading: CGFloat = Theme.bodyLineSpacing
+    public static let chipSize: CGFloat = Theme.chipSize
+    public static let codeSize: CGFloat = Theme.codeSize
+    public static let footnoteSize: CGFloat = Theme.captionSize
     public static let quoteInset: CGFloat = 14
     public static let quoteBorder: CGFloat = 3
     public static let paragraphGap: CGFloat = 14
-    public static let chipSize: CGFloat = 10
-    public static let codeSize: CGFloat = 12
-    public static let footnoteSize: CGFloat = 13
     /// A footnote marker needs a 44 pt target without growing the line box.
-    public static let footnoteHitTarget: CGFloat = 44
+    public static let footnoteHitTarget: CGFloat = Theme.minTarget
     /// Auto-scroll stops following once the wash is this far from centre.
     public static let autoScrollTolerance: CGFloat = 140
     /// The wash is drawn half a word ahead of the audio clock so the eye lands

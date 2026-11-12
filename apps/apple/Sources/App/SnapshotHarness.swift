@@ -25,6 +25,10 @@ enum SnapshotHarness {
         // the real installer rather than by whatever a past run left behind.
         PackRegistry.shared.remove()
 
+        // Pin the window size. A restored frame from a past run changes the
+        // capture size, and a pixel comparison then fails for a reason that has
+        // nothing to do with the change under test.
+        await pinWindowSize()
         await pause(1.4)
         capture("01-entry", into: directory)
 
@@ -174,6 +178,31 @@ enum SnapshotHarness {
 
     private static func mainWindow() -> NSWindow? {
         NSApp.windows.first { $0.isVisible && $0.contentView != nil }
+    }
+
+    /// Sets the window to the design's phone-sized frame, and holds it there.
+    ///
+    /// AppKit can restore a frame from the previous run, and SwiftUI can apply
+    /// `.defaultSize` after the first layout pass. Both arrive late, so this
+    /// polls until the content size is the one the capture expects.
+    private static func pinWindowSize() async {
+        let size = NSSize(width: 430, height: 760)
+        func fits(_ actual: NSSize) -> Bool {
+            abs(actual.width - size.width) < 1 && abs(actual.height - size.height) < 1
+        }
+        for _ in 0 ..< 40 {
+            guard let window = mainWindow() else {
+                await pause(0.05)
+                continue
+            }
+            window.isRestorable = false
+            let actual = window.contentView?.bounds.size ?? .zero
+            if fits(actual) { return }
+            window.setContentSize(size)
+            window.setFrameOrigin(NSPoint(x: 80, y: 80))
+            await pause(0.05)
+        }
+        print("[snapshot] window did not take the pinned size")
     }
 
     private static func outputDirectory() -> URL {
