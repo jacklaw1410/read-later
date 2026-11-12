@@ -14,6 +14,24 @@ private func longSentence(_ subject: String) -> String {
         + "with commas, clauses, and enough words for the extractor to read it as prose."
 }
 
+@Test func headingBlockSpeaksEndToEnd() throws {
+    let html = page(
+        """
+        <h2>Why calm software wins</h2>
+        <p>\(longSentence("The opening paragraph of the article"))</p>
+        <p>\(longSentence("The second paragraph of the article"))</p>
+        """
+    )
+    let result = try SwiftSoupExtractor().extract(html: html, source: "test", httpStatus: 200)
+    let headings = result.blocks.filter { $0.kind == .heading }
+    #expect(headings.count == 1)
+    #expect(headings[0].text == "Why calm software wins")
+    let plan = SpokenPlanBuilder.build(blocks: result.blocks, source: "test", sourceSHA256: "abc")
+    let spokenHeadings = plan.blocks.filter { $0.kind == .heading && !$0.spoken.isEmpty }
+    #expect(spokenHeadings.count == 1)
+    #expect(!plan.skipped.contains { $0.kind == .heading })
+}
+
 @Test func tableFramePageKeepsTheProse() throws {
     let html = page(
         """

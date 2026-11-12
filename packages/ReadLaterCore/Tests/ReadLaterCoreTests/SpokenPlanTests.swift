@@ -71,6 +71,24 @@ private func slicesAreExact(_ text: String, _ sentences: [Sentence]) -> Bool {
     #expect(slicesAreExact(text, sentences))
 }
 
+@Test func headingSpeaksAndLeavesSkipped() {
+    let blocks = [
+        Block(id: 0, kind: .heading, confidence: 0.95, reason: "h2",
+              text: "Why calm software wins."),
+        Block(id: 1, kind: .code, confidence: 0.99, reason: "pre",
+              text: ">>> import json\n>>> print(x)"),
+    ]
+    let plan = SpokenPlanBuilder.build(blocks: blocks, source: "test", sourceSHA256: "abc")
+    #expect(plan.blocks[0].spoken.count == 1)
+    #expect(plan.blocks[0].spoken[0].text == "Why calm software wins.")
+    #expect(plan.blocks[1].spoken.isEmpty)
+    #expect(plan.sentenceCount == 1)
+    #expect(plan.spokenWords == 4)
+    #expect(plan.skipped.count == 1)
+    #expect(plan.skipped[0].blockID == 1)
+    #expect(!plan.skipped.contains { $0.kind == .heading })
+}
+
 @Test func buildFillsSpokenRecursivelyAndCounts() {
     let blocks = [
         Block(id: 0, kind: .prose, confidence: 0.98, reason: "p",

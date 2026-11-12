@@ -68,11 +68,7 @@ public struct BlockView: View {
         case .nav:
             SkipShell(label: BlockKind.nav.skipChipLabel) { navBody }
         case .heading:
-            if block.isSkippedByAudio {
-                SkipShell(label: BlockKind.heading.skipChipLabel) { skippedHeadingBody }
-            } else {
-                headingBody
-            }
+            headingBody
         case .quote:
             if block.isSkippedByAudio {
                 SkipShell(label: BlockKind.quote.skipChipLabel) { skippedProseBody }
@@ -150,12 +146,6 @@ public struct BlockView: View {
 
     private var skippedProseBody: some View {
         WashableText(text: block.text, slots: [], wash: .idle, tone: .skip) { _, word in
-            tap(nil, word)
-        }
-    }
-
-    private var skippedHeadingBody: some View {
-        WashableText(text: block.text, slots: [], wash: .idle, style: .heading, tone: .skip) { _, word in
             tap(nil, word)
         }
     }

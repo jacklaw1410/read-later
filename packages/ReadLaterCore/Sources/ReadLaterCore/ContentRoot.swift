@@ -113,6 +113,16 @@ public enum ContentRoot {
             for sibling in siblings where sibling != top {
                 if skipTags.contains(sibling.tagNameNormal()) { continue }
                 if isUnlikely(sibling) { continue }
+                let tag = sibling.tagNameNormal()
+                // F19 1.9: headings speak, so a heading beside the article
+                // root is a landmark, not chrome. Short text is expected;
+                // the unlikely filter above still drops rail headings.
+                if ["h1", "h2", "h3", "h4", "h5", "h6"].contains(tag) {
+                    if !normalise((try? sibling.text()) ?? "").isEmpty {
+                        roots.append(sibling)
+                    }
+                    continue
+                }
                 let siblingScore = scores[ObjectIdentifier(sibling)] ?? 0
                 if siblingScore >= topScore * 0.2 {
                     roots.append(sibling)
@@ -124,6 +134,14 @@ public enum ContentRoot {
                         roots.append(sibling)
                     }
                 }
+            }
+            // Siblings iterate in document order but `top` was prepended, so
+            // a heading before the first paragraph would read after it.
+            // Restore document order: the wash and the voice follow this list.
+            let order = siblings.map { ObjectIdentifier($0) }
+            roots.sort {
+                (order.firstIndex(of: ObjectIdentifier($0)) ?? 0)
+                    < (order.firstIndex(of: ObjectIdentifier($1)) ?? 0)
             }
         }
         return roots
