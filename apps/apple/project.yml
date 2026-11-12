@@ -1,6 +1,19 @@
 name: ReadLater
 options:
   bundleIdPrefix: com.readlater
+
+configs:
+  Debug: debug
+  Release: release
+  # Phone builds need signing on, and Xcode does not apply a command-line
+  # CODE_SIGNING_ALLOWED to a target that sets it. One config is simpler.
+  Device: debug
+
+configFiles:
+  # The team id is not a secret, but it belongs to one machine's account, so it
+  # stays out of the repo. Copy Device.xcconfig.example once.
+  Device: Config/Device.xcconfig
+
   deploymentTarget:
     iOS: "17.0"
     macOS: "14.0"
@@ -29,14 +42,23 @@ targets:
       - package: ReadLaterUI
       - package: ReadLaterPacks
     settings:
-      CODE_SIGNING_ALLOWED: NO
-      GENERATE_INFOPLIST_FILE: YES
-      # XcodeGen ignores the target `bundleId` when Xcode generates the
-      # Info.plist, and falls back to `<prefix>.<target name>`. Set it here so
-      # the built app answers to the id the docs and the device plan use.
-      PRODUCT_BUNDLE_IDENTIFIER: app.readlater.reader
-      MARKETING_VERSION: "0.1.0"
-      CURRENT_PROJECT_VERSION: "1"
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        # XcodeGen ignores the target `bundleId` when Xcode generates the
+        # Info.plist, and falls back to `<prefix>.<target name>`. Set it here so
+        # the built app answers to the id the docs and the device plan use.
+        PRODUCT_BUNDLE_IDENTIFIER: app.readlater.reader
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
+      # A `Device` configuration exists so a phone build can sign without a
+      # command-line override, which Xcode does not apply to this setting.
+      configs:
+        Debug:
+          CODE_SIGNING_ALLOWED: NO
+        Device:
+          CODE_SIGNING_ALLOWED: YES
+          CODE_SIGN_STYLE: Automatic
+          CODE_SIGN_IDENTITY: Apple Development
     postBuildScripts:
       - name: Stamp the git SHA into the bundle
         basedOnDependencyAnalysis: false

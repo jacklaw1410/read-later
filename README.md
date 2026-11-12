@@ -94,24 +94,29 @@ plutil -p ~/Library/Preferences/com.apple.dt.Xcode.plist \
   | grep -A4 IDEProvisioningTeamByIdentifier
 ```
 
-2. Build. `-allowProvisioningUpdates` lets xcodebuild register the App ID and
-   create the profile; without it the build fails with `No profiles … were
-   found`.
+2. Build with the `Device` configuration. It turns signing on, because Xcode
+   does not apply a command-line `CODE_SIGNING_ALLOWED` to a target that sets
+   the value itself. The team id comes from a gitignored file:
 
 ```bash
 cd apps/apple
+cp Config/Device.xcconfig.example Config/Device.xcconfig  # once; add your team id
 xcodegen generate
 xcodebuild -project ReadLater.xcodeproj -scheme ReadLater \
-  -destination 'platform=iOS,name=<Your iPhone>' \
-  -configuration Debug \
-  DEVELOPMENT_TEAM=<YourTeamID> CODE_SIGN_STYLE=Automatic \
-  CODE_SIGNING_ALLOWED=YES -allowProvisioningUpdates build
+  -configuration Device \
+  -destination 'id=<UDID>' \
+  -derivedDataPath build-device \
+  -allowProvisioningUpdates build
 ```
+
+`-allowProvisioningUpdates` lets xcodebuild register the App ID and create the
+profile; without it the build fails with `No profiles … were found`. The build
+lands in `build-device/Build/Products/Device-iphoneos/ReadLater.app`.
 
 3. Install and launch:
 
 ```bash
-APP=~/Library/Developer/Xcode/DerivedData/ReadLater-*/Build/Products/Debug-iphoneos/ReadLater.app
+APP=build-device/Build/Products/Device-iphoneos/ReadLater.app
 xcrun devicectl device install app --device <UDID> "$APP"
 xcrun devicectl device process launch --device <UDID> app.readlater.reader
 ```
@@ -120,9 +125,8 @@ xcrun devicectl device process launch --device <UDID> app.readlater.reader
    Settings → General → VPN & Device Management. Until then the launch fails
    with `… its profile has not been explicitly trusted by the user`.
 
-Keep `CODE_SIGNING_ALLOWED: NO` in the committed `project.yml`.
-Override signing on the command line or keep the team id in a local
-`Secrets.xcconfig` (gitignored), never in a commit.
+Keep the team id out of commits: it lives in `apps/apple/Config/Device.xcconfig`,
+which is gitignored. Only `Config/Device.xcconfig.example` is committed.
 
 ## 6. Tests
 

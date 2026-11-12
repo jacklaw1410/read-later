@@ -1,5 +1,6 @@
 # Build products
 .build/
+build-device/
 .swiftpm/
 DerivedData/
 build/
@@ -14,6 +15,8 @@ target/
 *.p12
 *.mobileprovision
 Secrets.xcconfig
+apps/apple/Config/*.xcconfig
+!apps/apple/Config/*.example
 
 # Test output
 *.xcresult

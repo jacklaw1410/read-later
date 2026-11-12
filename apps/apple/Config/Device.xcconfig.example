@@ -1,0 +1,4 @@
+# Copy to Device.xcconfig and put your team id here.
+# Find it: plutil -p ~/Library/Preferences/com.apple.dt.Xcode.plist
+#         | grep -A4 IDEProvisioningTeamByIdentifier
+DEVELOPMENT_TEAM = <YourTeamID>
