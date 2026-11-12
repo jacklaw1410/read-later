@@ -24,7 +24,7 @@ a{color:inherit}
 <h1>Calm Editorial specimen</h1>
 <p>Layers 1 and 2 from <b>design/tokens.json</b>. Every swatch, bar and row reads the linked CSS file. This page holds no colour, no point size, no platform value.</p>
 <h2>1 · Mode switch</h2>
-<p>Mode governs every colour. Same roles, light and dark.</p>
+<p>Mode governs every semantic colour. Same roles, light and dark.</p>
 <h3>light</h3>
 <div data-theme="light">
 <div class="grid">
@@ -94,56 +94,54 @@ a{color:inherit}
 </div>
 </div>
 <h3>Layer 1 · primitives</h3>
-<p>Raw values, no meaning. Each swatch borrows the first semantic role that shows it; <b>black</b> only appears under the scrim, so its swatch is the scrim.</p>
-<div data-theme="light">
+<p>Raw values, no meaning. A primitive belongs to no mode, so these swatches stay the same in light and dark. Each reads <code>--primitive-*</code> from the linked CSS.</p>
 <div class="grid">
-<div class="cell" data-primitive="white"><div class="sw" style="background:var(--page-surface)"></div><div><b>white</b></div></div>
-<div class="cell" data-primitive="black"><div class="sw" style="background:var(--veil-scrim)"></div><div><b>black</b></div></div>
-<div class="cell" data-primitive="sand.50"><div class="sw" style="background:var(--page-paper)"></div><div><b>sand.50</b></div></div>
-<div class="cell" data-primitive="sand.100"><div class="sw" style="background:var(--page-raised)"></div><div><b>sand.100</b></div></div>
-<div class="cell" data-primitive="sand.150"><div class="sw" style="background:var(--skip-surface)"></div><div><b>sand.150</b></div></div>
-<div class="cell" data-primitive="sand.175"><div class="sw" style="background:var(--code-inline-surface)"></div><div><b>sand.175</b></div></div>
-<div class="cell" data-primitive="sand.250"><div class="sw" style="background:var(--line-hair)"></div><div><b>sand.250</b></div></div>
-<div class="cell" data-primitive="ink.0"><div class="sw" style="background:var(--page-surface)"></div><div><b>ink.0</b></div></div>
-<div class="cell" data-primitive="ink.200"><div class="sw" style="background:var(--text-body)"></div><div><b>ink.200</b></div></div>
-<div class="cell" data-primitive="ink.300"><div class="sw" style="background:var(--skip-ink)"></div><div><b>ink.300</b></div></div>
-<div class="cell" data-primitive="ink.500"><div class="sw" style="background:var(--text-meta)"></div><div><b>ink.500</b></div></div>
-<div class="cell" data-primitive="ink.600"><div class="sw" style="background:var(--text-meta)"></div><div><b>ink.600</b></div></div>
-<div class="cell" data-primitive="ink.700"><div class="sw" style="background:var(--line-hair)"></div><div><b>ink.700</b></div></div>
-<div class="cell" data-primitive="ink.750"><div class="sw" style="background:var(--ghost-fill)"></div><div><b>ink.750</b></div></div>
-<div class="cell" data-primitive="ink.760"><div class="sw" style="background:var(--code-inline-surface)"></div><div><b>ink.760</b></div></div>
-<div class="cell" data-primitive="ink.780"><div class="sw" style="background:var(--skip-border)"></div><div><b>ink.780</b></div></div>
-<div class="cell" data-primitive="ink.800"><div class="sw" style="background:var(--page-surface)"></div><div><b>ink.800</b></div></div>
-<div class="cell" data-primitive="ink.820"><div class="sw" style="background:var(--skip-surface)"></div><div><b>ink.820</b></div></div>
-<div class="cell" data-primitive="ink.850"><div class="sw" style="background:var(--page-raised)"></div><div><b>ink.850</b></div></div>
-<div class="cell" data-primitive="ink.900"><div class="sw" style="background:var(--text-body)"></div><div><b>ink.900</b></div></div>
-<div class="cell" data-primitive="ink.950"><div class="sw" style="background:var(--page-paper)"></div><div><b>ink.950</b></div></div>
-<div class="cell" data-primitive="blue.100"><div class="sw" style="background:var(--mark-selected)"></div><div><b>blue.100</b></div></div>
-<div class="cell" data-primitive="blue.300"><div class="sw" style="background:var(--brand-link)"></div><div><b>blue.300</b></div></div>
-<div class="cell" data-primitive="blue.650"><div class="sw" style="background:var(--action-fill)"></div><div><b>blue.650</b></div></div>
-<div class="cell" data-primitive="blue.700"><div class="sw" style="background:var(--brand-link)"></div><div><b>blue.700</b></div></div>
-<div class="cell" data-primitive="blue.750"><div class="sw" style="background:var(--mark-selected)"></div><div><b>blue.750</b></div></div>
-<div class="cell" data-primitive="amber.100"><div class="sw" style="background:var(--mark-saved-fill)"></div><div><b>amber.100</b></div></div>
-<div class="cell" data-primitive="amber.200"><div class="sw" style="background:var(--wash-fill)"></div><div><b>amber.200</b></div></div>
-<div class="cell" data-primitive="amber.250"><div class="sw" style="background:var(--rule-paused)"></div><div><b>amber.250</b></div></div>
-<div class="cell" data-primitive="amber.300"><div class="sw" style="background:var(--mark-saved)"></div><div><b>amber.300</b></div></div>
-<div class="cell" data-primitive="amber.400"><div class="sw" style="background:var(--rule-ring)"></div><div><b>amber.400</b></div></div>
-<div class="cell" data-primitive="amber.500"><div class="sw" style="background:var(--mark-coincide)"></div><div><b>amber.500</b></div></div>
-<div class="cell" data-primitive="amber.600"><div class="sw" style="background:var(--mark-coincide)"></div><div><b>amber.600</b></div></div>
-<div class="cell" data-primitive="amber.700"><div class="sw" style="background:var(--wash-fill)"></div><div><b>amber.700</b></div></div>
-<div class="cell" data-primitive="amber.750"><div class="sw" style="background:var(--rule-ring)"></div><div><b>amber.750</b></div></div>
-<div class="cell" data-primitive="amber.800"><div class="sw" style="background:var(--wash-ink)"></div><div><b>amber.800</b></div></div>
-<div class="cell" data-primitive="amber.900"><div class="sw" style="background:var(--mark-saved)"></div><div><b>amber.900</b></div></div>
-<div class="cell" data-primitive="amber.950"><div class="sw" style="background:var(--hold-border)"></div><div><b>amber.950</b></div></div>
-<div class="cell" data-primitive="amber.975"><div class="sw" style="background:var(--rule-paused)"></div><div><b>amber.975</b></div></div>
-<div class="cell" data-primitive="olive.200"><div class="sw" style="background:var(--chip-surface)"></div><div><b>olive.200</b></div></div>
-<div class="cell" data-primitive="olive.250"><div class="sw" style="background:var(--chip-border)"></div><div><b>olive.250</b></div></div>
-<div class="cell" data-primitive="olive.600"><div class="sw" style="background:var(--chip-ink)"></div><div><b>olive.600</b></div></div>
-<div class="cell" data-primitive="olive.850"><div class="sw" style="background:var(--chip-surface)"></div><div><b>olive.850</b></div></div>
-<div class="cell" data-primitive="olive.900"><div class="sw" style="background:var(--chip-border)"></div><div><b>olive.900</b></div></div>
-<div class="cell" data-primitive="amber.150"><div class="sw" style="background:var(--chip-ink)"></div><div><b>amber.150</b></div></div>
-<div class="cell" data-primitive="amber.850"><div class="sw" style="background:var(--mark-saved-fill)"></div><div><b>amber.850</b></div></div>
-</div>
+<div class="cell" data-primitive="white"><div class="sw" style="background:var(--primitive-white)"></div><div><b>white</b></div></div>
+<div class="cell" data-primitive="black"><div class="sw" style="background:var(--primitive-black)"></div><div><b>black</b></div></div>
+<div class="cell" data-primitive="sand.50"><div class="sw" style="background:var(--primitive-sand-50)"></div><div><b>sand.50</b></div></div>
+<div class="cell" data-primitive="sand.100"><div class="sw" style="background:var(--primitive-sand-100)"></div><div><b>sand.100</b></div></div>
+<div class="cell" data-primitive="sand.150"><div class="sw" style="background:var(--primitive-sand-150)"></div><div><b>sand.150</b></div></div>
+<div class="cell" data-primitive="sand.175"><div class="sw" style="background:var(--primitive-sand-175)"></div><div><b>sand.175</b></div></div>
+<div class="cell" data-primitive="sand.250"><div class="sw" style="background:var(--primitive-sand-250)"></div><div><b>sand.250</b></div></div>
+<div class="cell" data-primitive="ink.0"><div class="sw" style="background:var(--primitive-ink-0)"></div><div><b>ink.0</b></div></div>
+<div class="cell" data-primitive="ink.200"><div class="sw" style="background:var(--primitive-ink-200)"></div><div><b>ink.200</b></div></div>
+<div class="cell" data-primitive="ink.300"><div class="sw" style="background:var(--primitive-ink-300)"></div><div><b>ink.300</b></div></div>
+<div class="cell" data-primitive="ink.500"><div class="sw" style="background:var(--primitive-ink-500)"></div><div><b>ink.500</b></div></div>
+<div class="cell" data-primitive="ink.600"><div class="sw" style="background:var(--primitive-ink-600)"></div><div><b>ink.600</b></div></div>
+<div class="cell" data-primitive="ink.700"><div class="sw" style="background:var(--primitive-ink-700)"></div><div><b>ink.700</b></div></div>
+<div class="cell" data-primitive="ink.750"><div class="sw" style="background:var(--primitive-ink-750)"></div><div><b>ink.750</b></div></div>
+<div class="cell" data-primitive="ink.760"><div class="sw" style="background:var(--primitive-ink-760)"></div><div><b>ink.760</b></div></div>
+<div class="cell" data-primitive="ink.780"><div class="sw" style="background:var(--primitive-ink-780)"></div><div><b>ink.780</b></div></div>
+<div class="cell" data-primitive="ink.800"><div class="sw" style="background:var(--primitive-ink-800)"></div><div><b>ink.800</b></div></div>
+<div class="cell" data-primitive="ink.820"><div class="sw" style="background:var(--primitive-ink-820)"></div><div><b>ink.820</b></div></div>
+<div class="cell" data-primitive="ink.850"><div class="sw" style="background:var(--primitive-ink-850)"></div><div><b>ink.850</b></div></div>
+<div class="cell" data-primitive="ink.900"><div class="sw" style="background:var(--primitive-ink-900)"></div><div><b>ink.900</b></div></div>
+<div class="cell" data-primitive="ink.950"><div class="sw" style="background:var(--primitive-ink-950)"></div><div><b>ink.950</b></div></div>
+<div class="cell" data-primitive="blue.100"><div class="sw" style="background:var(--primitive-blue-100)"></div><div><b>blue.100</b></div></div>
+<div class="cell" data-primitive="blue.300"><div class="sw" style="background:var(--primitive-blue-300)"></div><div><b>blue.300</b></div></div>
+<div class="cell" data-primitive="blue.650"><div class="sw" style="background:var(--primitive-blue-650)"></div><div><b>blue.650</b></div></div>
+<div class="cell" data-primitive="blue.700"><div class="sw" style="background:var(--primitive-blue-700)"></div><div><b>blue.700</b></div></div>
+<div class="cell" data-primitive="blue.750"><div class="sw" style="background:var(--primitive-blue-750)"></div><div><b>blue.750</b></div></div>
+<div class="cell" data-primitive="amber.100"><div class="sw" style="background:var(--primitive-amber-100)"></div><div><b>amber.100</b></div></div>
+<div class="cell" data-primitive="amber.200"><div class="sw" style="background:var(--primitive-amber-200)"></div><div><b>amber.200</b></div></div>
+<div class="cell" data-primitive="amber.250"><div class="sw" style="background:var(--primitive-amber-250)"></div><div><b>amber.250</b></div></div>
+<div class="cell" data-primitive="amber.300"><div class="sw" style="background:var(--primitive-amber-300)"></div><div><b>amber.300</b></div></div>
+<div class="cell" data-primitive="amber.400"><div class="sw" style="background:var(--primitive-amber-400)"></div><div><b>amber.400</b></div></div>
+<div class="cell" data-primitive="amber.500"><div class="sw" style="background:var(--primitive-amber-500)"></div><div><b>amber.500</b></div></div>
+<div class="cell" data-primitive="amber.600"><div class="sw" style="background:var(--primitive-amber-600)"></div><div><b>amber.600</b></div></div>
+<div class="cell" data-primitive="amber.700"><div class="sw" style="background:var(--primitive-amber-700)"></div><div><b>amber.700</b></div></div>
+<div class="cell" data-primitive="amber.750"><div class="sw" style="background:var(--primitive-amber-750)"></div><div><b>amber.750</b></div></div>
+<div class="cell" data-primitive="amber.800"><div class="sw" style="background:var(--primitive-amber-800)"></div><div><b>amber.800</b></div></div>
+<div class="cell" data-primitive="amber.900"><div class="sw" style="background:var(--primitive-amber-900)"></div><div><b>amber.900</b></div></div>
+<div class="cell" data-primitive="amber.950"><div class="sw" style="background:var(--primitive-amber-950)"></div><div><b>amber.950</b></div></div>
+<div class="cell" data-primitive="amber.975"><div class="sw" style="background:var(--primitive-amber-975)"></div><div><b>amber.975</b></div></div>
+<div class="cell" data-primitive="olive.200"><div class="sw" style="background:var(--primitive-olive-200)"></div><div><b>olive.200</b></div></div>
+<div class="cell" data-primitive="olive.250"><div class="sw" style="background:var(--primitive-olive-250)"></div><div><b>olive.250</b></div></div>
+<div class="cell" data-primitive="olive.600"><div class="sw" style="background:var(--primitive-olive-600)"></div><div><b>olive.600</b></div></div>
+<div class="cell" data-primitive="olive.850"><div class="sw" style="background:var(--primitive-olive-850)"></div><div><b>olive.850</b></div></div>
+<div class="cell" data-primitive="olive.900"><div class="sw" style="background:var(--primitive-olive-900)"></div><div><b>olive.900</b></div></div>
+<div class="cell" data-primitive="amber.150"><div class="sw" style="background:var(--primitive-amber-150)"></div><div><b>amber.150</b></div></div>
+<div class="cell" data-primitive="amber.850"><div class="sw" style="background:var(--primitive-amber-850)"></div><div><b>amber.850</b></div></div>
 </div>
 <h2>2 · Page and text</h2>
 <p>Foundation before accents.</p>
@@ -225,12 +223,12 @@ a{color:inherit}
 <p>Shape beside scale.</p>
 <div data-theme="light">
 <div class="demo" style="background:var(--page-paper);color:var(--text-body)">
-<div class="row" data-radius="chip"><div class="sw" style="width:6rem;background:var(--page-raised);border-radius:var(--radius-chip)"></div><span><b>chip</b> · step 4 · Wash chip.</span></div>
-<div class="row" data-radius="inner"><div class="sw" style="width:6rem;background:var(--page-raised);border-radius:var(--radius-inner)"></div><span><b>inner</b> · step 8 · Skip inner table.</span></div>
-<div class="row" data-radius="button"><div class="sw" style="width:6rem;background:var(--page-raised);border-radius:var(--radius-button)"></div><span><b>button</b> · step 10 · Buttons and fields.</span></div>
-<div class="row" data-radius="card"><div class="sw" style="width:6rem;background:var(--page-raised);border-radius:var(--radius-card)"></div><span><b>card</b> · step 12 · Card, skip shell, sheet.</span></div>
-<div class="row" data-radius="sheet"><div class="sw" style="width:6rem;background:var(--page-raised);border-radius:var(--radius-sheet)"></div><span><b>sheet</b> · step 16 · provisional · Sheet top.</span></div>
-<div class="row" data-radius="pill"><div class="sw" style="width:6rem;background:var(--page-raised);border-radius:var(--radius-pill)"></div><span><b>pill</b> · step 999 · Capsule.</span></div>
+<div class="row" data-radius="chip"><div class="sw" style="width:6rem;background:var(--chip-surface);border-radius:var(--radius-chip)"></div><span><b>chip</b> · step 4 · Wash chip.</span></div>
+<div class="row" data-radius="inner"><div class="sw" style="width:6rem;background:var(--chip-surface);border-radius:var(--radius-inner)"></div><span><b>inner</b> · step 8 · Skip inner table.</span></div>
+<div class="row" data-radius="button"><div class="sw" style="width:6rem;background:var(--chip-surface);border-radius:var(--radius-button)"></div><span><b>button</b> · step 10 · Buttons and fields.</span></div>
+<div class="row" data-radius="card"><div class="sw" style="width:6rem;background:var(--chip-surface);border-radius:var(--radius-card)"></div><span><b>card</b> · step 12 · Card, skip shell, sheet.</span></div>
+<div class="row" data-radius="sheet"><div class="sw" style="width:6rem;background:var(--chip-surface);border-radius:var(--radius-sheet)"></div><span><b>sheet</b> · step 16 · provisional · Sheet top.</span></div>
+<div class="row" data-radius="pill"><div class="sw" style="width:6rem;background:var(--chip-surface);border-radius:var(--radius-pill)"></div><span><b>pill</b> · step 999 · Capsule.</span></div>
 <div class="row" data-size="minTarget"><div style="width:var(--size-min-target);height:var(--size-min-target);background:var(--action-fill)"></div><span><b>minTarget</b> · step 44 · Smallest control, both axes.</span></div>
 <div class="row" data-size="playerBar"><div style="width:100%;height:var(--size-player-bar);background:var(--page-surface);border:0.0625rem solid currentColor"></div><span><b>playerBar</b> · step 58 · Bar height, including the 44 pt hit row.</span></div>
 <div class="row" data-size="chrome"><div style="width:100%;height:var(--size-chrome);background:var(--page-raised);border:0.0625rem solid currentColor"></div><span><b>chrome</b> · step 44 · Reader top bar.</span></div>

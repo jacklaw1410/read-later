@@ -8,9 +8,8 @@
 
 use std::path::Path;
 
-use crate::model::{ColorRef, Doc, ScalarRole};
+use crate::model::{Doc, ScalarRole};
 use crate::naming::kebab;
-use crate::validate::resolve_color;
 
 /// The source commit behind the banner. Both values come from the last commit
 /// that touched `design/tokens.json`, never from the wall clock: a date from
@@ -101,32 +100,9 @@ fn head(title: &str) -> String {
     )
 }
 
-/// Finds a semantic role that shows a primitive, so the strip needs no
-/// literal. Light mode wins; an alpha role is a last resort. Every primitive
-/// in the file today has at least one role, so a missing one is an emitter
-/// bug, not a gap the page may hide.
-fn primitive_swatch(doc: &Doc, name: &str, hex: &str) -> Result<(String, String), String> {
-    let mut fallback: Option<(String, String)> = None;
-    for (role, entry) in &doc.semantic.color {
-        for (mode, value) in [("light", &entry.light), ("dark", &entry.dark)] {
-            if resolve_color(doc, value)?.eq_ignore_ascii_case(hex) {
-                let named = (kebab(role), mode.to_string());
-                match value {
-                    ColorRef::Primitive(_) => return Ok(named),
-                    ColorRef::Alpha { .. } => fallback = fallback.or(Some(named)),
-                }
-            }
-        }
-    }
-    // `black` only appears under an alpha role today. The swatch shows the
-    // scrim, which the caption says.
-    let _ = name;
-    fallback.ok_or_else(|| format!("primitive {name:?} is shown by no semantic role"))
-}
-
 /// Section 1: every semantic role in both modes, plus the primitive strip.
-fn section_modes(doc: &Doc) -> Result<String, String> {
-    let mut out = String::from("<h2>1 · Mode switch</h2>\n<p>Mode governs every colour. Same roles, light and dark.</p>\n");
+fn section_modes(doc: &Doc) -> String {
+    let mut out = String::from("<h2>1 · Mode switch</h2>\n<p>Mode governs every semantic colour. Same roles, light and dark.</p>\n");
     for mode in ["light", "dark"] {
         out.push_str(&format!("<h3>{mode}</h3>\n<div data-theme=\"{mode}\">\n<div class=\"grid\">\n"));
         for (role, entry) in &doc.semantic.color {
@@ -138,16 +114,15 @@ fn section_modes(doc: &Doc) -> Result<String, String> {
         }
         out.push_str("</div>\n</div>\n");
     }
-    out.push_str("<h3>Layer 1 · primitives</h3>\n<p>Raw values, no meaning. Each swatch borrows the first semantic role that shows it; <b>black</b> only appears under the scrim, so its swatch is the scrim.</p>\n<div data-theme=\"light\">\n<div class=\"grid\">\n");
-    for (name, hex) in &doc.primitive.color {
-        let (var, mode) = primitive_swatch(doc, name, hex)?;
-        let _ = mode;
+    out.push_str("<h3>Layer 1 · primitives</h3>\n<p>Raw values, no meaning. A primitive belongs to no mode, so these swatches stay the same in light and dark. Each reads <code>--primitive-*</code> from the linked CSS.</p>\n<div class=\"grid\">\n");
+    for name in doc.primitive.color.keys() {
         out.push_str(&format!(
-            "<div class=\"cell\" data-primitive=\"{name}\"><div class=\"sw\" style=\"background:var(--{var})\"></div><div><b>{name}</b></div></div>\n",
+            "<div class=\"cell\" data-primitive=\"{name}\"><div class=\"sw\" style=\"background:var(--primitive-{var})\"></div><div><b>{name}</b></div></div>\n",
+            var = kebab(name),
         ));
     }
-    out.push_str("</div>\n</div>\n");
-    Ok(out)
+    out.push_str("</div>\n");
+    out
 }
 
 /// Section 2: paper, surface and raised as a stack, not three squares.
@@ -233,7 +208,7 @@ fn section_radius(doc: &Doc) -> Result<String, String> {
             ""
         };
         out.push_str(&format!(
-            "<div class=\"row\" data-radius=\"{role}\"><div class=\"sw\" style=\"width:6rem;background:var(--page-raised);border-radius:var(--radius-{var})\"></div><span><b>{role}</b> · step {value}{flag} · {desc}</span></div>\n",
+            "<div class=\"row\" data-radius=\"{role}\"><div class=\"sw\" style=\"width:6rem;background:var(--chip-surface);border-radius:var(--radius-{var})\"></div><span><b>{role}</b> · step {value}{flag} · {desc}</span></div>\n",
             var = kebab(role),
             value = spec.value,
             desc = esc(&spec.description),
@@ -286,7 +261,7 @@ pub fn emit_specimen(doc: &Doc, fresh: &Freshness) -> Result<String, String> {
     let mut out = head("Calm Editorial specimen · layers 1–2");
     out.push_str(&format!("<p class=\"banner\">{}</p>\n", banner(fresh)));
     out.push_str("<h1>Calm Editorial specimen</h1>\n<p>Layers 1 and 2 from <b>design/tokens.json</b>. Every swatch, bar and row reads the linked CSS file. This page holds no colour, no point size, no platform value.</p>\n");
-    out.push_str(&section_modes(doc)?);
+    out.push_str(&section_modes(doc));
     out.push_str(&section_page());
     out.push_str(&section_voice());
     out.push_str(&section_actions());
@@ -419,6 +394,29 @@ mod tests {
     fn the_index_holds_no_literal() {
         let html = emit_index(&fresh()).expect("index emits");
         assert_eq!(restated(&html), Vec::<String>::new());
+    }
+
+    /// A primitive has no mode. If it slipped into a themed block, a swatch
+    /// would change colour with the system setting and the raw layer would
+    /// misreport its own value.
+    #[test]
+    fn a_primitive_never_follows_the_theme() {
+        let css = crate::emit::css::emit(&fixture()).expect("css emits");
+        assert!(css.contains("--primitive-sand-50: #FFFCF7;"));
+        let dark = css
+            .find("@media (prefers-color-scheme: dark)")
+            .expect("dark block");
+        let forced = css.find("[data-theme=\"dark\"]").expect("forced block");
+        assert!(!css[dark..forced].contains("--primitive-"));
+        assert!(!css[forced..].contains("--primitive-"));
+    }
+
+    #[test]
+    fn the_primitive_strip_reads_the_raw_layer() {
+        let html = emit_specimen(&fixture(), &fresh()).expect("specimen emits");
+        assert!(html.contains("data-primitive=\"ink.900\""));
+        assert!(html.contains("var(--primitive-ink-900)"));
+        assert!(!html.contains("var(--text-body)\"></div><div><b>ink.900"));
     }
 
     #[test]

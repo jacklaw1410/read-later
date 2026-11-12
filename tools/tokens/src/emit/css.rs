@@ -13,6 +13,11 @@ pub fn emit(doc: &Doc) -> Result<String, String> {
     let dark = block(doc, false)?;
 
     let mut extra: Vec<String> = Vec::new();
+    // A primitive has no mode, so it lives in `:root` only. A page that shows
+    // the raw layer reads these, and the swatch cannot flip with the theme.
+    for (name, hex) in &doc.primitive.color {
+        extra.push(format!("  --primitive-{}: {hex};", kebab(name)));
+    }
     for (role, spec) in &doc.semantic.space {
         extra.push(marker(spec.status.as_deref(), &kebab(role)));
         extra.push(format!("  --{}: {}px;", kebab(role), spec.value));
