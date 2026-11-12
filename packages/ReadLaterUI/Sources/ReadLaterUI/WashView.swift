@@ -71,6 +71,23 @@ func slotAt(slots: [WordSlot], utf16Index: Int) -> WordSlot? {
     return nil
 }
 
+/// Target content offset that puts the wash mid-line at `anchorFraction` of
+/// the viewport. Nil when already inside the dead band, so the page does
+/// not jitter while the wash moves inside the comfortable middle.
+/// Pure so tests cover the dead band without a scroll view.
+public func washScrollTarget(
+    washMidY: CGFloat,
+    viewportOriginY: CGFloat,
+    viewportHeight: CGFloat,
+    maxOffset: CGFloat,
+    anchorFraction: CGFloat = 0.5,
+    deadBand: CGFloat = 32
+) -> CGFloat? {
+    let target = min(max(washMidY - viewportHeight * anchorFraction, 0), maxOffset)
+    guard abs(target - viewportOriginY) > deadBand else { return nil }
+    return target
+}
+
 /// One platform text view for a block of reader text.
 ///
 /// The wash draws with temporary attributes (macOS) or with an
@@ -691,6 +708,65 @@ func washAttributes(for emphasis: WordEmphasis) -> [NSAttributedString.Key: Any]
     }
 }
 
+/// Keeps the wash word inside the enclosing scroll view. Free function so the
+/// representable can call it without owning the subclass type.
+@MainActor
+func revealWash(in textView: UITextView, anchorFraction: CGFloat = 0.5) {
+    (textView as? _WashedTextView)?.revealWash(anchorFraction: anchorFraction)
+}
+
+/// A `UITextView` that knows its wash marks and can scroll its enclosing
+/// scroll view to them. Mirrors the macOS `_WashedTextView.revealWash`:
+/// per-tick, glyph-rect based, with a 32 pt dead band.
+final class _WashedTextView: UITextView {
+    /// UTF-16 length of the block text. Anything past it is the footnote
+    /// marker run, which is a target, not a word.
+    var bodyLength = 0
+
+    var washMarkList: [WashMark] = [] {
+        didSet {
+            if washMarkList != oldValue { setNeedsDisplay() }
+        }
+    }
+
+    /// Scrolls the enclosing scroll view so the wash word sits at
+    /// `anchorFraction` of the viewport. Called from the block that currently
+    /// holds the word, so only the visible block ever asks, and only when the
+    /// reader is following.
+    func revealWash(anchorFraction: CGFloat = 0.5) {
+        guard let mark = washMarkList.first(where: { $0.emphasis == .current || $0.emphasis == .paused }),
+              mark.range.length > 0,
+              let scrollView = enclosingScrollView()
+        else { return }
+
+        let glyphRange = layoutManager.glyphRange(forCharacterRange: mark.range, actualCharacterRange: nil)
+        var box = layoutManager.boundingRect(forGlyphRange: glyphRange, in: textContainer)
+        guard !box.isEmpty else { return }
+        box.origin.x += textContainerInset.left
+        box.origin.y += textContainerInset.top
+        let inScroll = convert(box, to: scrollView)
+
+        let maxOffset = max(0, scrollView.contentSize.height - scrollView.bounds.height)
+        guard let target = washScrollTarget(
+            washMidY: inScroll.midY,
+            viewportOriginY: scrollView.bounds.origin.y,
+            viewportHeight: scrollView.bounds.height,
+            maxOffset: maxOffset,
+            anchorFraction: anchorFraction
+        ) else { return }
+        scrollView.setContentOffset(CGPoint(x: scrollView.contentOffset.x, y: target), animated: false)
+    }
+
+    private func enclosingScrollView() -> UIScrollView? {
+        var view = superview
+        while let current = view {
+            if let scrollView = current as? UIScrollView { return scrollView }
+            view = current.superview
+        }
+        return nil
+    }
+}
+
 /// One paragraph in a non-editable UITextView (TextKit 1).
 struct _WashableTextView: UIViewRepresentable {
     var text: String
@@ -706,7 +782,7 @@ struct _WashableTextView: UIViewRepresentable {
     func makeCoordinator() -> Coordinator { Coordinator() }
 
     func makeUIView(context: Context) -> UITextView {
-        let textView = UITextView(usingTextLayoutManager: false)
+        let textView = _WashedTextView(usingTextLayoutManager: false)
         textView.isEditable = false
         textView.isSelectable = false
         textView.isScrollEnabled = false
@@ -722,6 +798,11 @@ struct _WashableTextView: UIViewRepresentable {
         context.coordinator.rebuildBase(text: text, style: style, tone: tone, marker: marker)
         textView.attributedText = context.coordinator.baseText
         context.coordinator.applyMarks(marks)
+        (textView as? _WashedTextView)?.washMarkList = marks
+        if followsWash {
+            context.coordinator.lastRevealedMarks = marks
+            DispatchQueue.main.async { revealWash(in: textView) }
+        }
         return textView
     }
 
@@ -741,6 +822,11 @@ struct _WashableTextView: UIViewRepresentable {
             context.coordinator.lastMarks = []
         }
         context.coordinator.applyMarks(marks)
+        (textView as? _WashedTextView)?.washMarkList = marks
+        if followsWash, marks != context.coordinator.lastRevealedMarks {
+            context.coordinator.lastRevealedMarks = marks
+            DispatchQueue.main.async { revealWash(in: textView) }
+        }
     }
 
     func sizeThatFits(_ proposal: ProposedViewSize, uiView: UITextView, context _: Context) -> CGSize? {
@@ -763,6 +849,7 @@ struct _WashableTextView: UIViewRepresentable {
         var lastTone: WashableTextTone?
         var lastMarker: String?
         var lastMarks: [WashMark] = []
+        var lastRevealedMarks: [WashMark] = []
 
         func rebuildBase(
             text: String,

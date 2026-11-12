@@ -81,4 +81,19 @@ final class ReaderSurfaceTests: XCTestCase {
         XCTAssertNil(index.word(inBlock: 1, atUTF16Index: 5))
         XCTAssertEqual(index.word(inBlock: 1, atUTF16Index: 0)?.text, "hello")
     }
+
+    // MARK: - Wash scroll target
+
+    func testWashScrollTargetStaysInsideDeadBand() {
+        XCTAssertNil(washScrollTarget(washMidY: 510, viewportOriginY: 400, viewportHeight: 200, maxOffset: 2000))
+    }
+
+    func testWashScrollTargetMovesWhenFar() {
+        XCTAssertEqual(washScrollTarget(washMidY: 900, viewportOriginY: 400, viewportHeight: 200, maxOffset: 2000), 800)
+    }
+
+    func testWashScrollTargetClampsToBounds() {
+        XCTAssertEqual(washScrollTarget(washMidY: 100, viewportOriginY: 400, viewportHeight: 200, maxOffset: 2000), 0)
+        XCTAssertEqual(washScrollTarget(washMidY: 5000, viewportOriginY: 0, viewportHeight: 200, maxOffset: 1200), 1200)
+    }
 }
