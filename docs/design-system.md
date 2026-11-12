@@ -13,8 +13,8 @@ changes in one place. Every platform reads the result.
 | `packages/ReadLaterUI/Sources/ReadLaterUI/Generated/ThemeTokens.swift` | Swift tokens. SwiftUI reads these. |
 | `packages/ReadLaterUI/Sources/ReadLaterUI/Theme.swift` | Resolver plus UIKit and AppKit adapters. Hand-written, on purpose. |
 | `design/generated/tokens.css` | CSS variables. For prototypes, docs and a future web surface. |
-| `design/generated/Tokens.kt` | Jetpack Compose colours, dp sizes, sp type sizes, motion. |
-| `design/generated/Tokens.xaml` | WinUI 3 theme dictionaries, doubles for size, motion in milliseconds. |
+| `design/generated/Tokens.kt` | Jetpack Compose colours, dp sizes, sp type sizes, motion durations and `CubicBezierEasing`. |
+| `design/generated/Tokens.xaml` | WinUI 3 theme dictionaries, doubles for size, motion in milliseconds, spline points as doubles. |
 
 `readlater-tokens --check` exits non-zero when a file is out of date. The build
 does not run it, so run it by hand or in CI before a commit.
@@ -55,15 +55,26 @@ app shipped names before the JSON existed and a rename would touch every view.
 | Portable (in the JSON) | Platform-owned |
 |---|---|
 | Semantic colours, both modes | Colour object type (`Color`, `UIColor`, `Color`, `Color`) |
-| Type role: size, weight family, line box | Font family. System faces differ. |
+| Type role: size, weight family, line box, tracking in em, case rule | Font family. System faces differ. |
 | Space scale, radius scale, target size, reading measure | Text scaling: Dynamic Type, `sp`, text scale |
-| Motion duration and curve name | Runtime API and easing implementation |
+| Motion duration and curve points | Runtime API: a platform builds the spline its own way |
 | — | Focus, hover, key, safe-area and IME insets |
 | — | Component geometry: padding inside a chip, bar layout |
 
 A platform that wants a value reads the semantic role. It never copies a hex or
 a point. `ReaderMetrics` shows the pattern on Swift: type and target sizes come
 from `Theme`, reader-specific geometry stays local.
+
+### Role fields that are not numbers
+
+| Field | Where | Meaning |
+|---|---|---|
+| `tracking` | type role | Letter spacing in em, so it scales with the size. Swift converts to points once. |
+| `case` | type role | `uppercase` only. A display rule, not a copy transform. |
+| `status` | any role | `provisional` marks a mock. Every emitter writes a marker and every run prints the role. |
+
+`radius.sheet` carries `status: provisional` today. The value is legal to ship,
+and it is not legal to forget.
 
 ## 4 · Workflow
 
@@ -98,7 +109,7 @@ Add a platform:
 
 | Platform | State | Notes |
 |---|---|---|
-| iOS, macOS | In use | `ThemeTokens.swift` plus `Theme.swift`. 29 colours, 11 type roles, 6 spaces, 6 radii, 4 sizes, 4 motions. |
+| iOS, macOS | In use | `ThemeTokens.swift` plus `Theme.swift`, plus `ThemeMotion`. 29 colours, 12 type roles, 6 spaces, 6 radii, 4 sizes, 4 motions. |
 | CSS | Generated, not imported by a live surface | Prototypes in the research repo predate it. Use it for the next prototype. |
 | Android | Generated, not compiled | Needs a Compose project to compile against. The wash chip must come from glyph bounds, not a fixed rect. Sizes are `dp`; text is `sp`. |
 | Windows | Generated, not compiled | WinUI 3 theme dictionaries. `44` is 44 epx at 100 % scaling. Scale it with the system text scale. |
