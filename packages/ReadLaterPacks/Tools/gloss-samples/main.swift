@@ -48,6 +48,17 @@ func isPlainAlpha(_ w: String) -> Bool {
     w.count >= 2 && w.allSatisfy { $0.isLowercase && $0.isLetter && $0.isASCII }
 }
 
+/// True when every sense line is an abbreviation expansion. `aahs` ships
+/// only `abbr.[軍] …`, the military acronym for AH, and the base-form note in
+/// front of it names a different word. Such a card answers a question the
+/// reader did not ask, so the sheet skips the word.
+func abbreviationOnly(_ gloss: String) -> Bool {
+    let lines = GlossRenderer.splitLines(gloss)
+        .filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
+    guard !lines.isEmpty else { return true }
+    return lines.allSatisfy { GlossRenderer.prepare($0).pos?.hasPrefix("abbr") == true }
+}
+
 func mixedTag(_ gloss: String) -> Bool {
     let lines = GlossRenderer.splitLines(gloss).filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
     guard lines.count > 1 else { return false }
@@ -55,11 +66,27 @@ func mixedTag(_ gloss: String) -> Bool {
     return flags.contains(true) && flags.contains(false)
 }
 
-func parenChanged(_ gloss: String) -> Bool {
-    GlossRenderer.splitLines(gloss).contains {
-        GlossRenderer.stripGrammarParenthetical($0) != $0
-            && !GlossRenderer.cleanLine($0).isEmpty
+/// True when a line carries a base-form note *after* sense text, which is the
+/// shape rule 3 targets: `摻奶的( milky的最高級 )`. A note that opens the line
+/// (`(aah 的現在分詞) abbr.[軍] Armored Artillery Howitzer`) describes the
+/// headword, not a sense, and it produced a card that answered a different
+/// question: `aahhing` showed the military acronym for AH.
+func parenInSense(_ gloss: String) -> Bool {
+    for raw in GlossRenderer.splitLines(gloss) {
+        let line = raw.trimmingCharacters(in: .whitespaces)
+        guard let open = line.firstIndex(where: { $0 == "(" || $0 == "（" }) else { continue }
+        let closer: Character = line[open] == "(" ? ")" : "）"
+        guard let close = line[line.index(after: open)...].firstIndex(of: closer) else { continue }
+        let inner = line[line.index(after: open)..<close]
+        guard GlossRenderer.pointerPhrases.contains(where: inner.contains) else { continue }
+        let before = GlossRenderer.cleanLine(String(line[..<open]))
+        guard !before.isEmpty else { continue }
+        // An abbreviation entry is not a sense either: the card would show
+        // the expansion of a different word.
+        if GlossRenderer.prepare(line).pos?.hasPrefix("abbr") == true { continue }
+        return true
     }
+    return false
 }
 
 @main
@@ -124,15 +151,19 @@ struct Main {
         var mixed: [String] = []
         for word in order.sorted() where mixed.count < 5 {
             guard isPlainAlpha(word), !pointer.contains(word) else { continue }
-            guard let rec = table.record(for: word), mixedTag(rec.gloss) else { continue }
+            guard let rec = table.record(for: word), !abbreviationOnly(rec.gloss),
+                  mixedTag(rec.gloss)
+            else { continue }
             mixed.append(word)
         }
 
-        // Parenthetical: alphabetical; the grammar-note strip changes the text.
+        // Parenthetical: alphabetical; a base-form note follows sense text.
         var paren: [String] = []
         for word in order.sorted() where paren.count < 5 {
             guard isPlainAlpha(word), !pointer.contains(word), !mixed.contains(word) else { continue }
-            guard let rec = table.record(for: word), parenChanged(rec.gloss) else { continue }
+            guard let rec = table.record(for: word), !abbreviationOnly(rec.gloss),
+                  parenInSense(rec.gloss)
+            else { continue }
             paren.append(word)
         }
 
@@ -210,11 +241,15 @@ struct Main {
         - Pointer (5): lowercase words whose gloss holds only a pointer and
           whose base word resolves to a Chinese gloss.
         - Mixed-tag (5): plain lowercase words with untagged and tagged lines.
-        - Parenthetical (5): plain lowercase words where dropping the
-          base-form note changes the text.
+        - Parenthetical (5): plain lowercase words where a base-form note
+          follows sense text, so rule 3 changes the line.
         - Ordinary (3): fixed — `serendipity`, `cafe`, `water`.
         - Accent (2): fixed probe order — the first two diacritic spellings
           absent from the pack that resolve through accent folding.
+
+        A word whose only sense is an abbreviation expansion is skipped: `aahs`
+        ships only `abbr.[軍] Armored Artillery Howitzer`, and a card that
+        describes AH instead of "said aah" answers the wrong question.
 
         Pointer-only here means the gloss names a base word and carries no
         Chinese of its own (7,109 headwords). The 28,151 count in the review
@@ -224,8 +259,9 @@ struct Main {
 
         The pack's `pos` column is empty for all 770,238 headwords, so `pos`
         reads — on every row below; the card's meta line shows the phonetic
-        only. The inline tags (`n.`, `vi., vt.`) that carried that signal are
-        stripped by rule and never appear raw.
+        only. The part of speech reaches the card from the inline tag on each
+        sense line and sits in front of it (`n. 速率, 速度`). Sensitive to the
+        rule: the tag moves, it does not disappear.
 
         """
         for (title, samples) in groups {

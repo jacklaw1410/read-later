@@ -18,9 +18,12 @@ import Foundation
 ///    is drawn without the note.
 ///
 /// The shipped text also carries literal `\n` escapes and inline
-/// part-of-speech tags (`n.`, `vi., vt.`) in the ECDICT style. Neither may
-/// reach the card raw. Sense order never changes: these rules remove noise,
-/// they do not re-rank meaning.
+/// part-of-speech tags (`n.`, `vi., vt.`) in the ECDICT style. The newlines
+/// split sense lines. The part-of-speech tag moves to the front of its line
+/// (`n. 速率, 速度`), because a reader needs the kind of word before the
+/// Chinese: `speed` is a noun and a verb, and the two lines say different
+/// things. Sense order never changes: these rules remove noise, they do not
+/// re-rank meaning.
 public enum GlossRenderer {
     /// The card shows at most this many gloss lines. Four covers a mixed entry
     /// (untagged lines plus one tagged line) with headroom; longer entries
@@ -29,8 +32,9 @@ public enum GlossRenderer {
 
     /// Inflection phrases that mark a pointer gloss or a grammar note.
     public static let pointerPhrases = [
-        "的變形", "的最高級", "的比較級", "的複數", "的複數形式",
-        "的過去式", "的過去分詞", "的現在分詞", "的第三人稱單數",
+        "的變形", "的最高級", "的比較級", "的複數", "的複數形式", "的單數",
+        "的過去式", "的過去時", "的過去分詞", "的現在分詞", "的現在時",
+        "的將來時", "的第三人稱單數",
     ]
 
     /// Inline part-of-speech abbreviations in the ECDICT style.
@@ -39,6 +43,16 @@ public enum GlossRenderer {
         "num", "past", "pl", "pp", "pref", "pres", "prep", "pron", "suf",
         "a", "n", "v", "vi", "vt",
     ]
+
+    /// Tags the pack writes that name no part of speech a reader can use.
+    /// `un.` (1,149 rows) and `na.` (661) carry a sense but no useful label;
+    /// `vbl.` (64) means "verb form". The label goes, the sense stays.
+    static let droppedTags: Set<String> = ["un", "na", "vbl"]
+
+    /// ECDICT spells the adjective tag `a.` on 37,044 rows and `adj.` on
+    /// 1,478. `a.` next to the article tag `art.` reads as an article, so the
+    /// card shows `adj.` for both.
+    static let shownTags: [String: String] = ["a": "adj"]
 
     /// Splits a stored gloss into sense lines. Handles both the real newlines
     /// the index builder writes and the literal `\n` escapes still carried by
@@ -49,18 +63,23 @@ public enum GlossRenderer {
 
     /// A domain-tagged line starts with a bracket tag such as `[經]` or
     /// `[計]`. The tag is at most six characters, matching the pack sweep.
+    /// A part-of-speech tag in front of the bracket (`abbr.[軍] …`) does not
+    /// hide it.
     public static func isTagged(_ line: String) -> Bool {
-        guard line.hasPrefix("[") else { return false }
-        guard let close = line.firstIndex(of: "]") else { return false }
-        let inner = line[line.index(after: line.startIndex) ..< close]
+        let text = stripInlinePOS(line)
+        guard text.hasPrefix("[") else { return false }
+        guard let close = text.firstIndex(of: "]") else { return false }
+        let inner = text[text.index(after: text.startIndex) ..< close]
         return !inner.isEmpty && inner.count <= 6 && !inner.contains("[")
     }
 
-    /// Removes a leading `n.`, `vi., vt.` or similar ECDICT tag. Consumes one
-    /// run of abbreviations with their comma and semicolon separators, then
-    /// stops: anything else at the line start is sense text.
-    public static func stripInlinePOS(_ line: String) -> String {
+    /// Splits a leading run of ECDICT tags from the sense text. `display` is
+    /// the run as the card shows it, already normalised; `rest` is the sense
+    /// text. Both `posPrefix` and `stripInlinePOS` read this one scan, so the
+    /// label and the text can never disagree.
+    static func tagRun(_ line: String) -> (display: String?, rest: String) {
         var rest = line[...]
+        var out = ""
         while true {
             var scan = rest
             while let first = scan.first, first == " " { scan = scan.dropFirst() }
@@ -70,14 +89,31 @@ public enum GlossRenderer {
                 letters.append(scan[cursor])
                 cursor = scan.index(after: cursor)
             }
-            guard !letters.isEmpty, posTags.contains(letters.lowercased()),
+            let key = letters.lowercased()
+            guard !letters.isEmpty, posTags.contains(key) || droppedTags.contains(key),
                   cursor < scan.endIndex, scan[cursor] == "."
-            else { return String(rest).trimmingCharacters(in: .whitespaces) }
+            else {
+                let shown = out.trimmingCharacters(in: .whitespaces)
+                return (shown.isEmpty ? nil : shown,
+                        String(rest).trimmingCharacters(in: .whitespaces))
+            }
             rest = scan[scan.index(after: cursor)...]
+            var separator = " "
             while let first = rest.first, first == " " || first == "," || first == ";" {
+                if first == "," { separator = ", " }
+                if first == ";" { separator = "; " }
                 rest = rest.dropFirst()
             }
+            if droppedTags.contains(key) { continue }
+            out += (shownTags[key] ?? letters) + "." + separator
         }
+    }
+
+    /// Removes a leading `n.`, `vi., vt.` or similar ECDICT tag. Consumes one
+    /// run of abbreviations with their comma and semicolon separators, then
+    /// stops: anything else at the line start is sense text.
+    public static func stripInlinePOS(_ line: String) -> String {
+        tagRun(line).rest
     }
 
     /// Removes a balanced parenthetical that names the base form, e.g.
@@ -103,13 +139,28 @@ public enum GlossRenderer {
         return collapseSpaces(out).trimmingCharacters(in: .whitespaces)
     }
 
+    /// The leading part-of-speech run as the card shows it, or nil.
+    /// `n. 速率` gives `n.`; `vi., vt. 穿著` gives `vi., vt.`; `a. 慢的` gives
+    /// `adj.`; sense text gives nil.
+    public static func posPrefix(_ line: String) -> String? {
+        tagRun(line).display
+    }
+
+    /// One stored line as the card needs it: the part-of-speech run apart
+    /// from the sense text, the grammar note and the cross-reference marker
+    /// gone, whitespace tidy.
+    public static func prepare(_ line: String) -> (pos: String?, text: String) {
+        var text = stripGrammarParenthetical(line).trimmingCharacters(in: .whitespaces)
+        let pos = posPrefix(text)
+        text = stripInlinePOS(text)
+        while text.hasPrefix("=") { text = String(text.dropFirst()).trimmingCharacters(in: .whitespaces) }
+        return (pos, collapseSpaces(text).trimmingCharacters(in: .whitespaces))
+    }
+
     /// One line as the card shows it: grammar note out, inline POS out, a
     /// leading `=` cross-reference marker out, whitespace tidy.
     public static func cleanLine(_ line: String) -> String {
-        var text = stripGrammarParenthetical(line).trimmingCharacters(in: .whitespaces)
-        text = stripInlinePOS(text)
-        while text.hasPrefix("=") { text = String(text.dropFirst()).trimmingCharacters(in: .whitespaces) }
-        return collapseSpaces(text).trimmingCharacters(in: .whitespaces)
+        prepare(line).text
     }
 
     /// The base word a pointer gloss points at, or nil when the gloss is not
@@ -150,20 +201,24 @@ public enum GlossRenderer {
         return !containsCJK(core)
     }
 
-    /// The gloss lines as the card shows them: cleaned, untagged first with
-    /// at most one tagged line after, capped at `maxLines`. Sense order
-    /// otherwise stays as the source gives it.
+    /// The gloss lines as the card shows them: the part-of-speech tag in
+    /// front of its sense, untagged lines first with at most one tagged line
+    /// after, capped at `maxLines`. Sense order otherwise stays as the source
+    /// gives it.
     public static func renderLines(gloss: String) -> [String] {
-        let lines = splitLines(gloss).map(cleanLine).filter { !$0.isEmpty }
-        let untagged = lines.filter { !isTagged($0) }
-        let tagged = lines.filter(isTagged)
+        let lines = splitLines(gloss).map(prepare).filter { !$0.text.isEmpty }
+        let untagged = lines.filter { !isTagged($0.text) }
+        let tagged = lines.filter { isTagged($0.text) }
         // A tagged line that repeats an untagged sense word for word adds no
         // meaning, and the card has four lines to spend: `算盤` plus
         // `[計] 算盤` is one sense shown twice. Skip those and take the next.
-        let seen = Set(untagged.map(senseKey))
-        let fresh = tagged.filter { !seen.contains(senseKey($0)) }
+        let seen = Set(untagged.map { senseKey($0.text) })
+        let fresh = tagged.filter { !seen.contains(senseKey($0.text)) }
         let ordered = untagged.isEmpty ? tagged : untagged + fresh.prefix(1)
-        return Array(ordered.prefix(maxLines))
+        return ordered.prefix(maxLines).map { line in
+            guard let pos = line.pos else { return line.text }
+            return "\(pos) \(line.text)"
+        }
     }
 
     /// The sense text with the domain tag, spacing and punctuation removed,

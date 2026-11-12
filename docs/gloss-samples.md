@@ -16,11 +16,15 @@ Selection rule (fixed; alphabetical over the pack's headwords):
 - Pointer (5): lowercase words whose gloss holds only a pointer and
   whose base word resolves to a Chinese gloss.
 - Mixed-tag (5): plain lowercase words with untagged and tagged lines.
-- Parenthetical (5): plain lowercase words where dropping the
-  base-form note changes the text.
+- Parenthetical (5): plain lowercase words where a base-form note
+  follows sense text, so rule 3 changes the line.
 - Ordinary (3): fixed — `serendipity`, `cafe`, `water`.
 - Accent (2): fixed probe order — the first two diacritic spellings
   absent from the pack that resolve through accent folding.
+
+A word whose only sense is an abbreviation expansion is skipped: `aahs`
+ships only `abbr.[軍] Armored Artillery Howitzer`, and a card that
+describes AH instead of "said aah" answers the wrong question.
 
 Pointer-only here means the gloss names a base word and carries no
 Chinese of its own (7,109 headwords). The 28,151 count in the review
@@ -30,8 +34,9 @@ card shows the meaning instead of resolving.
 
 The pack's `pos` column is empty for all 770,238 headwords, so `pos`
 reads — on every row below; the card's meta line shows the phonetic
-only. The inline tags (`n.`, `vi., vt.`) that carried that signal are
-stripped by rule and never appear raw.
+only. The part of speech reaches the card from the inline tag on each
+sense line and sits in front of it (`n. 速率, 速度`). Sensitive to the
+rule: the tag moves, it does not disappear.
 
 ## Pointer glosses — resolved through the base word
 
@@ -65,7 +70,7 @@ stripped by rule and never appear raw.
 - card shows:
 
 ```
-被拋棄的, 無約束的, 恣意放蕩的
+a. 被拋棄的, 無約束的, 恣意放蕩的
 ```
 
 ### abaser
@@ -76,7 +81,7 @@ stripped by rule and never appear raw.
 - card shows:
 
 ```
-降低...的地位, 降低...的品格, 貶抑, 使謙卑
+vt. 降低...的地位, 降低...的品格, 貶抑, 使謙卑
 ```
 
 ### abdicative
@@ -87,8 +92,8 @@ stripped by rule and never appear raw.
 - card shows:
 
 ```
-正式放棄
-退位, 退出, 辭職
+vt. 正式放棄
+vi. 退位, 退出, 辭職
 ```
 
 
@@ -101,7 +106,7 @@ stripped by rule and never appear raw.
 - card shows:
 
 ```
-從, 自
+prep. 從, 自
 [計] 地址總線
 ```
 
@@ -112,7 +117,7 @@ stripped by rule and never appear raw.
 - card shows:
 
 ```
-馬尼拉麻, 麻蕉
+n. 馬尼拉麻, 麻蕉
 [醫] 馬尼拉麻
 ```
 
@@ -123,7 +128,7 @@ stripped by rule and never appear raw.
 - card shows:
 
 ```
-非細菌性的
+a. 非細菌性的
 [醫] 非細菌性的; 無細菌的
 ```
 
@@ -134,7 +139,7 @@ stripped by rule and never appear raw.
 - card shows:
 
 ```
-算盤
+n. 算盤
 ```
 
 ### abandonee
@@ -144,64 +149,61 @@ stripped by rule and never appear raw.
 - card shows:
 
 ```
-棄物受領人, 被委付人
+n. 棄物受領人, 被委付人
 [經] 受領(或有權受領)被遺棄財物者
 ```
 
 
 ## Grammar parentheticals — the base-form note is dropped
 
-### aahhing
+### abandoning
 
 - phonetic: —
 - pos: —
 - card shows:
 
 ```
-[軍] Armored Artillery Howitzer, 裝甲榴彈炮
-[軍] Advanced Attack Helicopter, 先進攻擊直升機
+v. 放棄；屈服
 ```
 
-### aahing
+### abandons
 
-- phonetic: —
+- phonetic: əˈbændənz
 - pos: —
 - card shows:
 
 ```
-[軍] Armored Artillery Howitzer, 裝甲榴彈炮
-[軍] Advanced Attack Helicopter, 先進攻擊直升機
+v. 離棄; 放棄; 遺棄; 陷入
 ```
 
-### aahs
+### abases
 
-- phonetic: —
+- phonetic: əˈbeɪsiz
 - pos: —
 - card shows:
 
 ```
-[軍] Armored Artillery Howitzer, 裝甲榴彈炮
-[軍] Advanced Attack Helicopter, 先進攻擊直升機
+v. 使謙卑; 使感到羞恥; 使降低（地位、身份等）; <古>降下
 ```
 
-### aats
+### abashes
 
-- phonetic: —
+- phonetic: əˈbæʃiz
 - pos: —
 - card shows:
 
 ```
-alpha-l antitrypsin α-1抗胰蛋白酶
+v. 使羞愧, 使侷促, 使窘迫
 ```
 
-### abacos
+### abates
 
-- phonetic: —
+- phonetic: əˈbeɪts
 - pos: —
 - card shows:
 
 ```
-Great and Little Abaco islands 大阿巴科羣島和小阿巴科羣島
+v. 減少; 減去; 降價; 撤消（訴訟）
 ```
 
 
@@ -214,7 +216,7 @@ Great and Little Abaco islands 大阿巴科羣島和小阿巴科羣島
 - card shows:
 
 ```
-偶然發現珍寶的運氣/才能, 易遇奇緣的運氣
+n. 偶然發現珍寶的運氣/才能, 易遇奇緣的運氣
 ```
 
 ### cafe
@@ -224,7 +226,7 @@ Great and Little Abaco islands 大阿巴科羣島和小阿巴科羣島
 - card shows:
 
 ```
-咖啡館, 酒店
+n. 咖啡館, 酒店
 ```
 
 ### water
@@ -234,10 +236,10 @@ Great and Little Abaco islands 大阿巴科羣島和小阿巴科羣島
 - card shows:
 
 ```
-水, 雨水, 海水, 水位, 水面, 流水
-給...澆水, 供以水, 注入水, 使溼
-流淚, 流口水, 加水
-水的, 水上的, 水生的, 含水的
+n. 水, 雨水, 海水, 水位, 水面, 流水
+vt. 給...澆水, 供以水, 注入水, 使溼
+vi. 流淚, 流口水, 加水
+a. 水的, 水上的, 水生的, 含水的
 ```
 
 
@@ -251,7 +253,7 @@ Great and Little Abaco islands 大阿巴科羣島和小阿巴科羣島
 - card shows:
 
 ```
-咖啡館, 酒店
+n. 咖啡館, 酒店
 ```
 
 ### cliché
@@ -262,7 +264,7 @@ Great and Little Abaco islands 大阿巴科羣島和小阿巴科羣島
 - card shows:
 
 ```
-陳腔濫調, 凸印版
-陳腐的
+n. 陳腔濫調, 凸印版
+a. 陳腐的
 ```
 

@@ -32,10 +32,10 @@ struct GlossRendererTests {
 
     @Test("untagged lines come first, then at most one tagged line")
     func untaggedFirst() {
-        #expect(GlossRenderer.render(gloss: "pron. 我們\\n[經] 美國") == "我們\n[經] 美國")
+        #expect(GlossRenderer.render(gloss: "pron. 我們\\n[經] 美國") == "pron. 我們\n[經] 美國")
         #expect(
             GlossRenderer.render(gloss: "n. 通路, 入口\\nvt. 訪問\\n[計] 訪問, 存取\\n[醫] 通道")
-                == "通路, 入口\n訪問\n[計] 訪問, 存取"
+                == "n. 通路, 入口\nvt. 訪問\n[計] 訪問, 存取"
         )
     }
 
@@ -43,11 +43,17 @@ struct GlossRendererTests {
     func parentheticalStrip() {
         #expect(
             GlossRenderer.render(gloss: "a. 牛奶的, 像牛奶的, 摻奶的( milky的最高級 )")
-                == "牛奶的, 像牛奶的, 摻奶的"
+                == "adj. 牛奶的, 像牛奶的, 摻奶的"
         )
         #expect(
             GlossRenderer.render(gloss: "v. 逗留( linger的第三人稱單數 ); 緩慢消失")
-                == "逗留; 緩慢消失"
+                == "v. 逗留; 緩慢消失"
+        )
+        // The pack writes `的過去時` as well as `的過去式`; both name a base
+        // form and both go.
+        #expect(
+            GlossRenderer.render(gloss: "(aah 的過去時) abbr.[軍] Armored Artillery Howitzer, 裝甲榴彈炮")
+                == "abbr. [軍] Armored Artillery Howitzer, 裝甲榴彈炮"
         )
         // A parenthetical without a base form is sense text and stays.
         #expect(
@@ -56,26 +62,50 @@ struct GlossRendererTests {
         )
     }
 
-    @Test("inline part-of-speech tags never reach the card")
-    func posStrip() {
+    @Test("the inline part-of-speech tag moves in front of its sense")
+    func posPrefix() {
         #expect(
             GlossRenderer.render(gloss: "n. 偶然發現珍寶的運氣/才能, 易遇奇緣的運氣")
-                == "偶然發現珍寶的運氣/才能, 易遇奇緣的運氣"
+                == "n. 偶然發現珍寶的運氣/才能, 易遇奇緣的運氣"
         )
-        #expect(GlossRenderer.render(gloss: "vi., vt. 穿著, 打扮") == "穿著, 打扮")
-        #expect(GlossRenderer.render(gloss: "abbr. 測試") == "測試")
+        // A run of tags stays one run: the reader sees the kinds, not a
+        // truncated list.
+        #expect(GlossRenderer.render(gloss: "vi., vt. 穿著, 打扮") == "vi., vt. 穿著, 打扮")
+        #expect(GlossRenderer.render(gloss: "abbr. 測試") == "abbr. 測試")
+        // Multi-line: each line keeps its own tag, so the two senses of
+        // `speed` stay apart.
+        #expect(
+            GlossRenderer.render(gloss: "n. 速率, 速度\\nvi. 加速\\nvt. 促進")
+                == "n. 速率, 速度\nvi. 加速\nvt. 促進"
+        )
+        #expect(GlossRenderer.posPrefix("n. 速率") == "n.")
+        #expect(GlossRenderer.posPrefix("vi., vt. 穿著") == "vi., vt.")
+        #expect(GlossRenderer.posPrefix("我們") == nil)
+        // Sense text that happens to start with a letter is not a tag.
+        #expect(GlossRenderer.posPrefix("A型架") == nil)
+        // `a.` is the pack's adjective tag on 37,044 rows and sits beside the
+        // article tag `art.`, so the card says `adj.`.
+        #expect(GlossRenderer.posPrefix("a. 慢的") == "adj.")
+        #expect(GlossRenderer.posPrefix("adj. 慢的") == "adj.")
+        #expect(GlossRenderer.posPrefix("adj. 慢的") == GlossRenderer.posPrefix("a. 慢的"))
+        // A tag that names nothing a reader can use goes; its sense stays.
+        #expect(GlossRenderer.render(gloss: "un. 秋葵") == "秋葵")
+        #expect(GlossRenderer.render(gloss: "vbl. 歸咎；責備") == "歸咎；責備")
     }
 
     @Test("literal backslash-n escapes split like real newlines")
     func literalNewlines() {
-        #expect(GlossRenderer.render(gloss: "pron. 我們\\n[經] 美國") == "我們\n[經] 美國")
+        #expect(GlossRenderer.render(gloss: "pron. 我們\\n[經] 美國") == "pron. 我們\n[經] 美國")
     }
 
     @Test("the card shows at most four lines, in source order")
     func lineCap() {
         #expect(GlossRenderer.maxLines == 4)
         let six = (1 ... 6).map { "n. 義\($0)" }.joined(separator: "\\n")
-        #expect(GlossRenderer.renderLines(gloss: six) == ["義1", "義2", "義3", "義4"])
+        #expect(
+            GlossRenderer.renderLines(gloss: six)
+                == ["n. 義1", "n. 義2", "n. 義3", "n. 義4"]
+        )
         #expect(GlossRenderer.renderLines(gloss: six).count == GlossRenderer.maxLines)
     }
 
@@ -108,17 +138,17 @@ struct GlossRendererTests {
         let pointed = try #require(store.displayEntry(for: "ovated"))
         #expect(pointed.tapped == "ovated")
         #expect(pointed.subtitle == "ovate")
-        #expect(pointed.gloss == "卵形的\n[醫] 卵圓形的(葉)")
+        #expect(pointed.gloss == "adj. 卵形的\n[醫] 卵圓形的(葉)")
 
         let plain = try #require(store.displayEntry(for: "us"))
         #expect(plain.tapped == "us")
         #expect(plain.subtitle == nil)
-        #expect(plain.gloss == "我們\n[經] 美國")
+        #expect(plain.gloss == "pron. 我們\n[經] 美國")
 
         let accented = try #require(store.displayEntry(for: "café"))
         #expect(accented.tapped == "café")
         #expect(accented.subtitle == "cafe")
-        #expect(accented.gloss == "咖啡館, 酒店")
+        #expect(accented.gloss == "n. 咖啡館, 酒店")
 
         #expect(store.displayEntry(for: "zzzqqq") == nil)
     }
