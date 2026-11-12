@@ -53,6 +53,10 @@ public struct PlayerBar: View {
     @State private var scrubFraction: Double?
     @State private var lastFire = Date.distantPast
 
+    /// Persisted handedness: play at the trailing edge by default, the near
+    /// corner for a right thumb. Same key as HandednessStore.
+    @AppStorage("rl-play-trailing") private var playOnTrailing = true
+
     public init(
         progress: PlayerProgress,
         isPlaying: Bool,
@@ -73,12 +77,17 @@ public struct PlayerBar: View {
 
     public var body: some View {
         HStack(spacing: 10) {
-            playButton
-            scrubTrack
-            speedButton
-            Text(progress.timeLabel)
-                .font(Theme.mono())
-                .foregroundStyle(Theme.inkSecondary)
+            if playOnTrailing {
+                scrubTrack
+                speedButton
+                clock
+                playButton
+            } else {
+                playButton
+                scrubTrack
+                speedButton
+                clock
+            }
         }
         .frame(height: 58)
         .padding(.horizontal, Theme.screenGutter)
@@ -86,6 +95,18 @@ public struct PlayerBar: View {
         .overlay(alignment: .top) {
             Theme.line.frame(height: 1)
         }
+        .contextMenu {
+            Picker("Play button", selection: $playOnTrailing) {
+                Text("Right").tag(true)
+                Text("Left").tag(false)
+            }
+        }
+    }
+
+    private var clock: some View {
+        Text(progress.timeLabel)
+            .font(Theme.mono())
+            .foregroundStyle(Theme.inkSecondary)
     }
 
     // MARK: - Play

@@ -108,6 +108,31 @@ final class PlayerTests: XCTestCase {
         XCTAssertEqual(store.speed, Pace.reference)
     }
 
+    // MARK: - HandednessStore
+
+    private func scratchHandedness(key: String = "rl-play-trailing-test") throws -> (HandednessStore, UserDefaults) {
+        let suite = "test-handedness-\(UUID().uuidString)"
+        guard let defaults = UserDefaults(suiteName: suite) else {
+            throw XCTSkip("Cannot create scratch UserDefaults")
+        }
+        defaults.removePersistentDomain(forName: suite)
+        return (HandednessStore(defaults: defaults, key: key), defaults)
+    }
+
+    func testPlayDefaultsToTrailingEdge() throws {
+        let (store, _) = try scratchHandedness()
+        XCTAssertTrue(store.playOnTrailing)
+    }
+
+    func testHandednessFlipPersists() throws {
+        let (store, defaults) = try scratchHandedness()
+        store.save(trailing: false)
+        XCTAssertFalse(store.playOnTrailing)
+        XCTAssertFalse(HandednessStore(defaults: defaults, key: "rl-play-trailing-test").playOnTrailing)
+        store.save(trailing: true)
+        XCTAssertTrue(store.playOnTrailing)
+    }
+
     // MARK: - HoldDetector
 
     func testHoldDetectorNeedsTwoFarEvents() {
