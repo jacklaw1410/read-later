@@ -226,7 +226,10 @@ public enum Pace {
     public static let millisecondsPerWord = 429
 
     /// The ladder the speed control walks. 1× is the reference pace.
-    public static let steps: [Float] = [0.5, 0.75, 1, 1.25, 1.5, 2]
+    /// 0.1 increments over 0.5–1.5; 2.0 is gone as barely legible.
+    /// Interim ceiling pending pilot measurement D14, which picks the top,
+    /// the floor, and the step for good.
+    public static let steps: [Float] = [0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5]
     public static let reference: Float = 1
 
     /// Seconds left from a word index at a speed, rounded up to whole seconds.

@@ -151,12 +151,14 @@ private let twoParagraphs: [(BlockKind, String)] = [
     #expect(clockLabel(seconds: -5) == "00:00")
 }
 
-@Test func speedLadderWrapsAndRejectsOffLadderValues() {
-    #expect(Pace.steps == [0.5, 0.75, 1, 1.25, 1.5, 2])
-    #expect(Pace.next(after: 1) == 1.25)
-    #expect(Pace.next(after: 2) == 0.5)
-    #expect(Pace.next(after: 1.1) == Pace.reference)
+@Test func speedLadderWalksInTenthStepsAndCapsAtOneAndAHalf() {
+    #expect(Pace.steps == [0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5])
+    #expect(Pace.steps.contains(Pace.reference))
+    #expect(Pace.steps.max() == 1.5)
+    #expect(Pace.next(after: 1) == 1.1)
+    #expect(Pace.next(after: 1.5) == 0.5)
+    #expect(Pace.next(after: 3) == Pace.reference)
     #expect(Pace.speedLabel(1) == "1×")
-    #expect(Pace.speedLabel(1.25) == "1.25×")
-    #expect(Pace.speedLabel(2) == "2×")
+    #expect(Pace.speedLabel(1.1) == "1.1×")
+    #expect(Pace.speedLabel(1.5) == "1.5×")
 }

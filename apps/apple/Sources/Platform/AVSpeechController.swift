@@ -28,12 +28,21 @@ public final class AVSpeechController: NSObject, SpeechController {
 
     /// UI speed multiplier. 1.0 is the reference pace, about 140 words per minute.
     /// A change while speaking restarts from the current word, because the
-    /// synthesizer cannot change rate mid-utterance. A change while paused
-    /// applies to later utterances; the paused queue is left untouched.
+    /// synthesizer cannot change rate mid-utterance. Rapid changes coalesce:
+    /// one restart per gesture, not per tick, with the 50 ms delay doubling
+    /// as the throttle fallback (F19 1.7). A change while paused applies to
+    /// later utterances; the paused queue is left untouched.
     public var rate: Float = 1.0 {
         didSet {
             guard rate != oldValue, state == .speaking else { return }
-            restart(fromWord: currentWordIndex)
+            rateSettler.push(rate)
+            rateTask?.cancel()
+            rateTask = Task { [weak self] in
+                try? await Task.sleep(nanoseconds: 50_000_000)
+                guard let self, !Task.isCancelled, self.state == .speaking else { return }
+                guard self.rateSettler.takePending() != nil else { return }
+                self.restart(fromWord: self.currentWordIndex)
+            }
         }
     }
 
@@ -69,6 +78,8 @@ public final class AVSpeechController: NSObject, SpeechController {
     private var prefetchWindow = SpeechQueue.prefetch
     private var headTruncation: HeadTruncation?
     private var currentWordIndex = 0
+    private var rateTask: Task<Void, Never>?
+    private var rateSettler = RateSettler()
     private var epoch = 0
     private var warmedUp = false
     /// Epoch captured when a fill is scheduled, so a stale fill does nothing.
@@ -86,6 +97,11 @@ public final class AVSpeechController: NSObject, SpeechController {
     public override init() {
         voice = Self.defaultVoice()
         super.init()
+        // This init is the one place that owns the audio-session config. The
+        // MVP declares no `audio` background key (see project.yml: none) and
+        // pauses on leaving `.active`, so a later listen-only mode adds the
+        // key, `.playback`, and Now Playing info here — never a second
+        // transport path (F19 1.4, decision 6).
         let bridge = SpeechDelegateBridge()
         bridge.owner = self
         self.bridge = bridge
@@ -168,7 +184,7 @@ public final class AVSpeechController: NSObject, SpeechController {
     }
 
     public func pause() {
-        guard state == .speaking, !inFlight.isEmpty else { return }
+        guard state == .speaking else { return }
         synthesizer.pauseSpeaking(at: .word)
         state = .paused
     }
@@ -222,13 +238,16 @@ public final class AVSpeechController: NSObject, SpeechController {
     /// Restarts speech at a global word index without restarting the
     /// document. The first utterance is the truncated remainder of its
     /// sentence from that word on; the queue continues from there with the
-    /// prefetch window refilled.
-    public func restart(fromWord index: Int) {
-        guard let current = queue, !current.utterances.isEmpty else { return }
+    /// prefetch window refilled. Returns false when there is no queue to
+    /// restart, so the caller can rebuild instead of dying silently. A
+    /// paused scrub must keep the queue alive for exactly this reason.
+    @discardableResult
+    public func restart(fromWord index: Int) -> Bool {
+        guard let current = queue, !current.utterances.isEmpty else { return false }
         let clamped = min(max(index, 0), current.totalWords - 1)
         guard let start = current.startPosition(forWord: clamped),
               let position = current.utterances.firstIndex(of: start.utterance)
-        else { return }
+        else { return false }
         epoch += 1
         synthesizer.stopSpeaking(at: .immediate)
         inFlight.removeAll()
@@ -243,15 +262,30 @@ public final class AVSpeechController: NSObject, SpeechController {
         currentWordIndex = clamped
         state = .speaking
         fillWindow()
+        return true
     }
 
     /// Restarts speech at a sentence position. Kept for the sentence-order
     /// scrubber: `init(sentences:)` emits one utterance per sentence in order,
     /// so utterance `index` opens with that sentence's first word.
-    public func restart(fromSentence index: Int) {
-        guard let current = queue, !current.utterances.isEmpty else { return }
+    @discardableResult
+    public func restart(fromSentence index: Int) -> Bool {
+        guard let current = queue, !current.utterances.isEmpty else { return false }
         let clamped = min(max(index, 0), current.utterances.count - 1)
-        restart(fromWord: current.utterances[clamped].firstWordIndex)
+        return restart(fromWord: current.utterances[clamped].firstWordIndex)
+    }
+
+    /// Whether a restart has a queue to seek in. False before the first
+    /// `speak` and after `stop`, which destroys the queue.
+    public var canRestart: Bool {
+        queue.map { !$0.utterances.isEmpty } ?? false
+    }
+
+    /// Whether any utterance is still with the synthesizer. False after a
+    /// suspension kill delivered every cancel, which is the reconcile signal:
+    /// a `.speaking` controller with nothing live is lying (F19 1.4).
+    public var hasLiveUtterances: Bool {
+        !inFlight.isEmpty
     }
 
     // MARK: - Queue
@@ -405,6 +439,13 @@ extension AVSpeechController {
         guard let entry = inFlight[utteranceID], entry.epoch == epoch else { return }
         inFlight.removeValue(forKey: utteranceID)
         retained.removeValue(forKey: utteranceID)
+        // A cancel for the current epoch means the synthesizer dropped live
+        // speech, not a superseded queue: suspension or interruption. The
+        // controller must leave `.speaking`, or the button lies (F19 1.4).
+        // Stale-epoch cancels return above and change nothing.
+        if inFlight.isEmpty, state == .speaking {
+            state = .paused
+        }
     }
 }
 

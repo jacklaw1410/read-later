@@ -133,14 +133,18 @@ struct RootView: View {
         .onChange(of: scenePhase) { _, phase in
             switch phase {
             case .background:
+                model.session?.pauseForBackground()
                 TelemetryHub.shared.record(TelemetryName.appHide)
                 model.flushPosition()
             case .active:
                 TelemetryHub.shared.record(TelemetryName.appReturn)
+                model.session?.reconcileOnReturn()
             case .inactive:
                 // Lock and overlays pass through here before background; a
-                // kill in between sends no callback, so the place lands now.
+                // kill in between sends no callback, so pause and record now.
+                model.session?.pauseForBackground()
                 model.flushPosition()
+
             @unknown default:
                 break
             }
@@ -190,6 +194,7 @@ struct ReaderScreen: View {
                             onPlayPause: { session.togglePlay() },
                             onSpeed: { session.setSpeed($0) },
                             onScrub: { session.scrub(toFraction: $0) },
+                            onPreviewScrub: { session.previewScrub(toFraction: $0) },
                             onScrubbingChanged: { scrubbing in
                                 session.isScrubbing = scrubbing
                                 if !scrubbing { session.finishScrubbing() }

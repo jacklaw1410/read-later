@@ -36,21 +36,26 @@ public struct PlayerProgress: Sendable, Equatable {
 
 /// Docked transport bar: play/pause, scrub track, speed, clock.
 ///
-/// The bar reports gestures through `onScrub` and `onScrubbingChanged`.
-/// It never moves the wash itself. While scrubbing, the caller holds the
-/// wash still and seeks only the audio clock.
+/// The bar reports gestures through `onScrub`, `onPreviewScrub`, and
+/// `onScrubbingChanged`. While scrubbing, the caller holds the wash still.
+/// Drag ticks preview the wash only; the audio seek commits on release, so
+/// one drag costs one synthesizer restart (F19 1.7).
 public struct PlayerBar: View {
     private let progress: PlayerProgress
     private let isPlaying: Bool
     private let onPlayPause: () -> Void
     private let onSpeed: (Float) -> Void
     private let onScrub: (Double) -> Void
+    private let onPreviewScrub: (Double) -> Void
     private let onScrubbingChanged: (Bool) -> Void
 
     /// Live drag position. Shown while the finger is down.
     @State private var scrubFraction: Double?
     @State private var lastFire = Date.distantPast
-    @State private var lastFiredValue: Double?
+
+    /// Persisted handedness: play at the trailing edge by default, the near
+    /// corner for a right thumb. Same key as HandednessStore.
+    @AppStorage("rl-play-trailing") private var playOnTrailing = true
 
     public init(
         progress: PlayerProgress,
@@ -58,6 +63,7 @@ public struct PlayerBar: View {
         onPlayPause: @escaping () -> Void,
         onSpeed: @escaping (Float) -> Void,
         onScrub: @escaping (Double) -> Void,
+        onPreviewScrub: @escaping (Double) -> Void = { _ in },
         onScrubbingChanged: @escaping (Bool) -> Void
     ) {
         self.progress = progress
@@ -65,17 +71,23 @@ public struct PlayerBar: View {
         self.onPlayPause = onPlayPause
         self.onSpeed = onSpeed
         self.onScrub = onScrub
+        self.onPreviewScrub = onPreviewScrub
         self.onScrubbingChanged = onScrubbingChanged
     }
 
     public var body: some View {
         HStack(spacing: 10) {
-            playButton
-            scrubTrack
-            speedButton
-            Text(progress.timeLabel)
-                .font(Theme.mono())
-                .foregroundStyle(Theme.inkSecondary)
+            if playOnTrailing {
+                scrubTrack
+                speedButton
+                clock
+                playButton
+            } else {
+                playButton
+                scrubTrack
+                speedButton
+                clock
+            }
         }
         .frame(height: 58)
         .padding(.horizontal, Theme.screenGutter)
@@ -83,6 +95,18 @@ public struct PlayerBar: View {
         .overlay(alignment: .top) {
             Theme.line.frame(height: 1)
         }
+        .contextMenu {
+            Picker("Play button", selection: $playOnTrailing) {
+                Text("Right").tag(true)
+                Text("Left").tag(false)
+            }
+        }
+    }
+
+    private var clock: some View {
+        Text(progress.timeLabel)
+            .font(Theme.mono())
+            .foregroundStyle(Theme.inkSecondary)
     }
 
     // MARK: - Play
@@ -166,16 +190,18 @@ public struct PlayerBar: View {
                 if scrubFraction == nil {
                     scrubFraction = fraction
                     onScrubbingChanged(true)
-                    fire(fraction)
+                    firePreview(fraction)
                 } else {
                     scrubFraction = fraction
-                    fireThrottled(fraction)
+                    firePreviewThrottled(fraction)
                 }
             }
             .onEnded { value in
                 let fraction = clamped(value.location.x / max(width, 1))
                 scrubFraction = nil
-                fireFinal(fraction)
+                // The commit: one audio seek per drag, at the release word.
+                // Drag ticks only previewed, so no storm precedes this.
+                onScrub(fraction)
                 onScrubbingChanged(false)
             }
     }
@@ -184,22 +210,17 @@ public struct PlayerBar: View {
         min(1, max(0, value))
     }
 
-    /// Report at most every 50 ms during a drag.
-    private func fireThrottled(_ fraction: Double) {
+    /// Preview at most every 50 ms during a drag. The 50 ms throttle stays
+    /// as the fallback even with commit-on-release, so a slow release hand
+    /// cannot flood the wash either.
+    private func firePreviewThrottled(_ fraction: Double) {
         guard Date().timeIntervalSince(lastFire) >= 0.05 else { return }
-        fire(fraction)
+        firePreview(fraction)
     }
 
-    private func fire(_ fraction: Double) {
+    private func firePreview(_ fraction: Double) {
         lastFire = Date()
-        lastFiredValue = fraction
-        onScrub(fraction)
-    }
-
-    /// Report the release position unless the drag already sent it.
-    private func fireFinal(_ fraction: Double) {
-        guard lastFiredValue != fraction else { return }
-        fire(fraction)
+        onPreviewScrub(fraction)
     }
 
     /// Keyboard and VoiceOver step, in words. Seeks without scrub state.
@@ -211,9 +232,17 @@ public struct PlayerBar: View {
 
     // MARK: - Speed
 
+    /// Direct selection: the pill opens the full ladder as a radio list.
+    /// Tap-to-cycle is gone; reaching 1.5 from 1 cost two taps and an
+    /// overshoot wrapped to 0.5 (F19 1.10). The list reads Pace.steps, so
+    /// the D14 pilot measurement moves the options with no view change.
     private var speedButton: some View {
-        Button {
-            onSpeed(Pace.next(after: progress.speed))
+        Menu {
+            Picker("Speed", selection: speedBinding) {
+                ForEach(Pace.steps, id: \.self) { step in
+                    Text(Pace.speedLabel(step)).tag(step)
+                }
+            }
         } label: {
             Text(Pace.speedLabel(progress.speed))
                 .font(Theme.chip())
@@ -223,5 +252,9 @@ public struct PlayerBar: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel("Speed \(String(format: "%g", progress.speed)) times")
+    }
+
+    private var speedBinding: Binding<Float> {
+        Binding(get: { progress.speed }, set: { onSpeed($0) })
     }
 }
