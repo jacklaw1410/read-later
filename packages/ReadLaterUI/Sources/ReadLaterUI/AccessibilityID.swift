@@ -22,7 +22,6 @@ public enum AccessibilityID {
     public static let lookupWord = "lookup.word"
     public static let lookupGloss = "lookup.gloss"
 
-<<<<<<< HEAD
     public static let libraryActions = "library.actions"
     public static let librarySave = "library.save"
     public static let libraryUnsave = "library.unsave"
