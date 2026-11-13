@@ -57,11 +57,31 @@ final class ReadingExtendedTests: XCTestCase {
         openSample(app)
         setSpeed(app, to: "1.2×", label: "Speed 1.2 times")
 
-        // The e2e preset wipes defaults on every launch. Keep the store and
-        // the defaults for the relaunch, or nothing can persist.
+        // Pause records the place. The relaunch then offers a resume, which
+        // is the way back in: the link field is empty after the first demo
+        // open, so tapping Open would open nothing.
+        let play = app.buttons[AccessibilityID.readerPlayPause]
+        XCTAssertTrue(play.waitForExistence(timeout: Waits.screen), "the play button is missing")
+        play.tap()
+        waitForLabel("Pause", on: play, timeout: Waits.state, "playback did not start")
+        play.tap()
+        waitForLabel("Play", on: play, timeout: Waits.state, "pause did not land")
+
+        // The e2e preset wipes defaults on every launch. Keep them for the
+        // relaunch, or nothing can persist.
         app.launchArguments += ["--debug.reset=none"]
         AppLauncher.relaunch(app)
-        openSample(app)
+
+        let resume = app.buttons[AccessibilityID.entryResume]
+        XCTAssertTrue(
+            resume.waitForExistence(timeout: Waits.screen),
+            "the resume offer did not appear after relaunch"
+        )
+        resume.tap()
+        XCTAssertTrue(
+            app.staticTexts[AccessibilityID.readerTitle].waitForExistence(timeout: Waits.screen),
+            "resume did not reopen the article"
+        )
 
         let speed = app.buttons[AccessibilityID.readerSpeed]
         XCTAssertTrue(speed.waitForExistence(timeout: Waits.screen), "the speed control is missing")
