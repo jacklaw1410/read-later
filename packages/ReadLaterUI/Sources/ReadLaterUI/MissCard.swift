@@ -63,6 +63,7 @@ public struct MissCard: View {
             Text(word)
                 .font(Theme.lookupWord())
                 .foregroundStyle(Theme.ink)
+                .accessibilityIdentifier(AccessibilityID.missWord)
             Text(LookupOutcome.miss(kind).label)
                 .font(Theme.caption())
                 .foregroundStyle(Theme.inkSecondary)
@@ -107,6 +108,11 @@ public struct MissCard: View {
         .padding(Theme.screenGutter)
         .background(Theme.surface)
         .clipShape(RoundedRectangle(cornerRadius: Theme.cardRadius))
+        // A container, so the card and the word each answer to their own
+        // identifier. Same rule as the hit card: without it SwiftUI copies
+        // the card identifier onto every child.
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier(AccessibilityID.missCard)
     }
 
     @ViewBuilder
@@ -116,19 +122,24 @@ public struct MissCard: View {
                 Button(isInstalling ? CardCopy.installing : CardCopy.install, action: onInstall)
                     .buttonStyle(PrimaryActionButtonStyle())
                     .disabled(isInstalling)
+                    .accessibilityIdentifier(AccessibilityID.missInstall)
                 Button(CardCopy.notNow, action: onNotNow)
                     .buttonStyle(SecondaryActionButtonStyle())
+                    .accessibilityIdentifier(AccessibilityID.missNotNow)
             }
         } else if showsSearch {
             HStack(spacing: 8) {
                 Button(CardCopy.close, action: onClose)
                     .buttonStyle(SecondaryActionButtonStyle())
+                    .accessibilityIdentifier(AccessibilityID.missClose)
                 Button(CardCopy.searchWeb, action: onSearchWeb)
                     .buttonStyle(SecondaryActionButtonStyle())
+                    .accessibilityIdentifier(AccessibilityID.missSearch)
             }
         } else {
             Button(CardCopy.close, action: onClose)
                 .buttonStyle(SecondaryActionButtonStyle())
+                .accessibilityIdentifier(AccessibilityID.missClose)
         }
     }
 }

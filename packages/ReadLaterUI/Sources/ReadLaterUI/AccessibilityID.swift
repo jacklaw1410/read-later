@@ -22,6 +22,7 @@ public enum AccessibilityID {
     public static let lookupWord = "lookup.word"
     public static let lookupGloss = "lookup.gloss"
 
+<<<<<<< HEAD
     public static let libraryActions = "library.actions"
     public static let librarySave = "library.save"
     public static let libraryUnsave = "library.unsave"
@@ -30,4 +31,11 @@ public enum AccessibilityID {
 
     public static let settingsAppearance = "settings.appearance"
     public static let settingsHandedness = "settings.handedness"
+
+    public static let missCard = "miss.card"
+    public static let missWord = "miss.word"
+    public static let missNotNow = "miss.notNow"
+    public static let missClose = "miss.close"
+    public static let missInstall = "miss.install"
+    public static let missSearch = "miss.search"
 }
