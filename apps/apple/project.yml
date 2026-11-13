@@ -53,8 +53,10 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: app.readlater.reader
         MARKETING_VERSION: "0.1.0"
         CURRENT_PROJECT_VERSION: "1"
-      # A `Device` configuration exists so a phone build can sign without a
-      # command-line override, which Xcode does not apply to this setting.
+      # A `Device` configuration exists for CI-style signed builds, but a
+      # custom config name makes local packages compile Release, which drops
+      # the DEBUG-gated launch surface. Phone installs use `-configuration
+      # Debug` with command-line signing instead, which keeps DEBUG everywhere.
       configs:
         Debug:
           CODE_SIGNING_ALLOWED: NO
