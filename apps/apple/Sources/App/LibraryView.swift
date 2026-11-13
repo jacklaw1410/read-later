@@ -110,13 +110,16 @@ struct LibraryView: View {
                 Button(row.saved ? LibraryCopy.unsave : LibraryCopy.save) {
                     model.setSaved(row, saved: !row.saved)
                 }
+                .accessibilityIdentifier(row.saved ? AccessibilityID.libraryUnsave : AccessibilityID.librarySave)
                 Button(LibraryCopy.refresh) {
                     model.cacheBust(row)
                 }
+                .accessibilityIdentifier(AccessibilityID.libraryRefresh)
                 Divider()
                 Button(LibraryCopy.remove, role: .destructive) {
                     pendingRemoval = row
                 }
+                .accessibilityIdentifier(AccessibilityID.libraryRemove)
             } label: {
                 Image(systemName: "ellipsis")
                     .font(.system(size: 13, weight: .semibold))
@@ -126,6 +129,7 @@ struct LibraryView: View {
             .menuStyle(.borderlessButton)
             .menuIndicator(.hidden)
             .accessibilityLabel(LibraryCopy.actions)
+            .accessibilityIdentifier(AccessibilityID.libraryActions)
         }
         .padding(.vertical, 4)
     }

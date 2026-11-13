@@ -11,10 +11,13 @@ private final class HandednessBox: @unchecked Sendable {
 /// The default is the trailing (right) edge, the near corner for a right
 /// thumb. A left-handed reader flips it once; the flip persists.
 public struct HandednessStore: Sendable {
+    /// The `UserDefaults` key. One key, read by the player bar and Settings.
+    public static let storageKey = "rl-play-trailing"
+
     private let box: HandednessBox
     private let key: String
 
-    public init(defaults: UserDefaults = .standard, key: String = "rl-play-trailing") {
+    public init(defaults: UserDefaults = .standard, key: String = HandednessStore.storageKey) {
         self.box = HandednessBox(defaults)
         self.key = key
     }

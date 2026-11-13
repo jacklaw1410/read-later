@@ -21,4 +21,13 @@ public enum AccessibilityID {
     public static let lookupCard = "lookup.card"
     public static let lookupWord = "lookup.word"
     public static let lookupGloss = "lookup.gloss"
+
+    public static let libraryActions = "library.actions"
+    public static let librarySave = "library.save"
+    public static let libraryUnsave = "library.unsave"
+    public static let libraryRefresh = "library.refresh"
+    public static let libraryRemove = "library.remove"
+
+    public static let settingsAppearance = "settings.appearance"
+    public static let settingsHandedness = "settings.handedness"
 }

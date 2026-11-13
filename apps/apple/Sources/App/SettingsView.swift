@@ -15,6 +15,7 @@ import AppKit
 struct SettingsView: View {
     @ObservedObject var registry: PackRegistry = .shared
     @AppStorage(Appearance.storageKey) private var appearance = Appearance.system.rawValue
+    @AppStorage(HandednessStore.storageKey) private var playOnTrailing = true
 
     var body: some View {
         NavigationStack {
@@ -27,6 +28,16 @@ struct SettingsView: View {
                     }
                     .pickerStyle(.segmented)
                     .accessibilityLabel("Appearance")
+                    .accessibilityIdentifier(AccessibilityID.settingsAppearance)
+                }
+                Section("Play button") {
+                    Picker("Side", selection: $playOnTrailing) {
+                        Text("Right").tag(true)
+                        Text("Left").tag(false)
+                    }
+                    .pickerStyle(.segmented)
+                    .accessibilityLabel("Play button side")
+                    .accessibilityIdentifier(AccessibilityID.settingsHandedness)
                 }
                 NavigationLink("Dictionaries") {
                     DictionariesSettings(registry: registry)
