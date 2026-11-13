@@ -18,17 +18,22 @@ import Testing
     latch.stash(42)
     // The session peeks, attempts the start, and clears only on success.
     // A failure path that never calls clear() must leave the word behind.
-    let started = false
-    if started { latch.clear() }
+    attemptStart(&latch, started: false)
     #expect(latch.peek() == 42)
 }
 
 @Test func successfulStartClearsTheStash() {
     var latch = ResumeLatch()
     latch.stash(42)
-    let started = true
-    if started { latch.clear() }
+    attemptStart(&latch, started: true)
     #expect(latch.peek() == nil)
+}
+
+/// Models the session's rule: clear the stash only after a start succeeds.
+/// The outcome is a parameter so the compiler does not fold the branch away.
+private func attemptStart(_ latch: inout ResumeLatch, started: Bool) {
+    guard started else { return }
+    latch.clear()
 }
 
 @Test func restashOverwritesThePreviousWord() {

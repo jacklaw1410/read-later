@@ -71,7 +71,7 @@ public final class Store: Sendable {
         configuration.foreignKeysEnabled = true
         configuration.journalMode = .wal
         let dbQueue = try DatabaseQueue(path: databaseURL.path, configuration: configuration)
-        var migrator = makeMigrator()
+        let migrator = makeMigrator()
         try migrator.migrate(dbQueue)
         self.dbQueue = dbQueue
         self.oplog = Oplog(dbQueue: dbQueue, device: device)

@@ -126,7 +126,7 @@ pub fn emit(doc: &Doc) -> Result<String, String> {
             spec.description
         ));
         lines.push(format!(
-            "    public static let {role}: CGFloat = {}",
+            "    static let {role}: CGFloat = {}",
             spec.value
         ));
         lines.push(String::new());
@@ -138,7 +138,7 @@ pub fn emit(doc: &Doc) -> Result<String, String> {
             spec.description
         ));
         lines.push(format!(
-            "    public static let {role}Radius: CGFloat = {}",
+            "    static let {role}Radius: CGFloat = {}",
             spec.value
         ));
         lines.push(String::new());
@@ -153,7 +153,7 @@ pub fn emit(doc: &Doc) -> Result<String, String> {
             spec.description
         ));
         lines.push(format!(
-            "    public static let {role}: CGFloat = {}",
+            "    static let {role}: CGFloat = {}",
             spec.value
         ));
         lines.push(String::new());
@@ -171,7 +171,7 @@ pub fn emit(doc: &Doc) -> Result<String, String> {
             spec.description
         ));
         lines.push(format!(
-            "    public static let {role}: CGFloat = {}",
+            "    static let {role}: CGFloat = {}",
             spec.value
         ));
         lines.push(String::new());
@@ -185,7 +185,7 @@ pub fn emit(doc: &Doc) -> Result<String, String> {
     let spacing = body.line.ok_or("body needs a `line` value")? - body.size;
     lines.push("    /// The body line box, minus the type size.".to_string());
     lines.push(format!(
-        "    public static let bodyLineSpacing: CGFloat = {spacing}"
+        "    static let bodyLineSpacing: CGFloat = {spacing}"
     ));
     lines.push("}".to_string());
 
@@ -209,7 +209,7 @@ pub fn emit(doc: &Doc) -> Result<String, String> {
             provisional(spec.status.as_deref()),
             spec.curve.name
         ));
-        lines.push(format!("    public static let {role} = {animation}"));
+        lines.push(format!("    static let {role} = {animation}"));
         lines.push(String::new());
     }
     lines.push("}".to_string());

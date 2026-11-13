@@ -31,7 +31,7 @@ public enum ArticleLibrary {
     }
 
     private static func blocks() -> [Block] {
-        var blocks: [Block] = [
+        let blocks: [Block] = [
             Block(
                 id: 1,
                 kind: .nav,

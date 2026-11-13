@@ -181,69 +181,69 @@ public extension Theme {
     // MARK: - Space, shape, size (layer 2)
 
     /// `inlineGap`. Chip inset, tight pairs.
-    public static let inlineGap: CGFloat = 4
+    static let inlineGap: CGFloat = 4
 
     /// `controlGap`. Adjacent controls.
-    public static let controlGap: CGFloat = 8
+    static let controlGap: CGFloat = 8
 
     /// `stackGap`. Card rows.
-    public static let stackGap: CGFloat = 12
+    static let stackGap: CGFloat = 12
 
     /// `paragraphGap`. Between reader blocks.
-    public static let paragraphGap: CGFloat = 16
+    static let paragraphGap: CGFloat = 16
 
     /// `screenGutter`. Page side margin, card padding.
-    public static let screenGutter: CGFloat = 20
+    static let screenGutter: CGFloat = 20
 
     /// `breathingRoom`. Top room above the title.
-    public static let breathingRoom: CGFloat = 32
+    static let breathingRoom: CGFloat = 32
 
     /// `radius.chip`. Wash chip.
-    public static let chipRadius: CGFloat = 4
+    static let chipRadius: CGFloat = 4
 
     /// `radius.inner`. Skip inner table.
-    public static let innerRadius: CGFloat = 8
+    static let innerRadius: CGFloat = 8
 
     /// `radius.button`. Buttons and fields.
-    public static let buttonRadius: CGFloat = 10
+    static let buttonRadius: CGFloat = 10
 
     /// `radius.card`. Card, skip shell, sheet.
-    public static let cardRadius: CGFloat = 12
+    static let cardRadius: CGFloat = 12
 
     /// `radius.sheet`. Provisional. Sheet top.
-    public static let sheetRadius: CGFloat = 16
+    static let sheetRadius: CGFloat = 16
 
     /// `radius.pill`. Capsule.
-    public static let pillRadius: CGFloat = 999
+    static let pillRadius: CGFloat = 999
 
     /// `size.playerBar`. Bar height, including the 44 pt hit row.
-    public static let playerBar: CGFloat = 58
+    static let playerBar: CGFloat = 58
 
     /// `size.chrome`. Reader top bar.
-    public static let chrome: CGFloat = 44
+    static let chrome: CGFloat = 44
 
     /// `size.minTarget`. Smallest control, both axes.
-    public static let minTarget: CGFloat = 44
+    static let minTarget: CGFloat = 44
 
     /// `size.maxLineWidth`. Reading measure.
-    public static let maxLineWidth: CGFloat = 640
+    static let maxLineWidth: CGFloat = 640
 
     /// The body line box, minus the type size.
-    public static let bodyLineSpacing: CGFloat = 12
+    static let bodyLineSpacing: CGFloat = 12
 }
 
 /// Motion, layer 2. Built from the numbers, not from a name.
 public enum ThemeMotion {
     /// `motion.wash`. linear
-    public static let wash = Animation.linear(duration: 0.150)
+    static let wash = Animation.linear(duration: 0.150)
 
     /// `motion.sheet`. easeInOut
-    public static let sheet = Animation.timingCurve(0.42, 0, 0.58, 1, duration: 0.180)
+    static let sheet = Animation.timingCurve(0.42, 0, 0.58, 1, duration: 0.180)
 
     /// `motion.screen`. easeInOut
-    public static let screen = Animation.timingCurve(0.42, 0, 0.58, 1, duration: 0.180)
+    static let screen = Animation.timingCurve(0.42, 0, 0.58, 1, duration: 0.180)
 
     /// `motion.entryProgress`. easeInOut
-    public static let entryProgress = Animation.timingCurve(0.42, 0, 0.58, 1, duration: 0.300)
+    static let entryProgress = Animation.timingCurve(0.42, 0, 0.58, 1, duration: 0.300)
 
 }
