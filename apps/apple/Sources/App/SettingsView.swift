@@ -31,8 +31,10 @@ struct SettingsView: View {
                 NavigationLink("Dictionaries") {
                     DictionariesSettings(registry: registry)
                 }
-                NavigationLink("Diagnostics") {
-                    DiagnosticsView()
+                if DiagnosticsExport.isEnabled {
+                    NavigationLink("Diagnostics") {
+                        DiagnosticsView()
+                    }
                 }
             }
             .navigationTitle("Settings")

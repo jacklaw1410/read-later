@@ -12,6 +12,17 @@ import Darwin
 /// container. The same folder is reachable without the UI (see
 /// `pullCommand`, shown in the Diagnostics screen and the app README).
 enum DiagnosticsExport {
+    /// Diagnostics is a developer surface: internal paths, oplog payloads and
+    /// a pull command. A release build hides it. The oplog itself keeps
+    /// recording, so a pulled folder still answers the device plan.
+    static var isEnabled: Bool {
+        #if DEBUG
+        return true
+        #else
+        return false
+        #endif
+    }
+
     struct Summary: Codable {
         var schema: String
         var buildSHA: String
