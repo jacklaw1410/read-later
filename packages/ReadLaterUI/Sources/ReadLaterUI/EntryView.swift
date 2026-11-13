@@ -135,13 +135,10 @@ public struct EntryView: View {
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // The form sits in the optical centre of the window, not against
-            // the top edge. Two flexible spacers do that without a fixed
-            // offset, so a taller window keeps the form centred. The resume
-            // line sits above the form so a returning reader sees the place
-            // before the entry fields.
+            // The resume line sits above the form so a returning reader sees
+            // the place before the entry fields.
+            resumeAffordance
             Spacer(minLength: 24)
-
                 .onTapGesture { focused = nil }
             Picker("Input", selection: $mode) {
                 ForEach(EntryMode.allCases, id: \.self) { option in
@@ -161,8 +158,6 @@ public struct EntryView: View {
                     .accessibilityAddTraits(.isHeader)
                 TextField("Link", text: $linkText)
                     .textFieldStyle(.plain)
-            resumeAffordance
-
                     .font(.system(size: 14))
                     .padding(10)
                     .background(
