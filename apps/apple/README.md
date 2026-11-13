@@ -118,28 +118,39 @@ error: No profiles for 'app.readlater.reader' were found … Automatic signing i
 disabled and unable to generate a profile.
 ```
 
+The `Device` configuration signs. Copy the team id once, into the git-ignored
+`Config/Device.xcconfig`:
+
+```bash
+cp Config/Device.xcconfig.example Config/Device.xcconfig
+# then set DEVELOPMENT_TEAM = Z9LTZAW4H3
+```
+
 ```bash
 cd apps/apple
 xcodegen generate
 xcodebuild -project ReadLater.xcodeproj -scheme ReadLater \
-  -destination 'platform=iOS,name=JL' \
-  -configuration Debug \
-  DEVELOPMENT_TEAM=Z9LTZAW4H3 CODE_SIGN_STYLE=Automatic \
-  CODE_SIGNING_ALLOWED=YES -allowProvisioningUpdates build
+  -destination 'generic/platform=iOS' \
+  -configuration Device -derivedDataPath build-device \
+  -allowProvisioningUpdates build
 ```
 
-If `name=JL` fails with `Unable to find a destination`, the phone is not in
-Xcode's list yet. Check it, then use the UDID instead of the name:
+`generic/platform=iOS` builds the app whether or not the phone is awake. Use
+`-destination 'id=00008140-0001352A14BB001C'` only when the phone is unlocked
+and listed by `xcrun devicectl list devices`. An asleep phone fails the build
+with `Unable to find a destination matching the provided destination
+specifier`.
 
-```bash
-xcrun devicectl list devices
-xcodebuild … -destination 'id=00008140-0001352A14BB001C' …
+The app lands at:
+
+```
+apps/apple/build-device/Build/Products/Device-iphoneos/ReadLater.app
 ```
 
 ### Install and launch
 
 ```bash
-APP=~/Library/Developer/Xcode/DerivedData/ReadLater-*/Build/Products/Debug-iphoneos/ReadLater.app
+APP=build-device/Build/Products/Device-iphoneos/ReadLater.app
 xcrun devicectl device install app --device 00008140-0001352A14BB001C "$APP"
 xcrun devicectl device process launch --device 00008140-0001352A14BB001C app.readlater.reader
 ```
