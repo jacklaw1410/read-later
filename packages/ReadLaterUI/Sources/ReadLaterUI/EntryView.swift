@@ -62,7 +62,7 @@ public enum EntryCopy {
     public static let extracting = "Extracting…"
     public static let emptyRefusal = "nothing to open — paste a link or text"
     public static let loginWallRefusal = "login wall — paste text instead"
-    public static let footer = "MVP cut: flow and tap-to-lookup. No drag-phrase, no saving."
+    public static let footer = "MVP cut: flow and tap-to-lookup. No drag-phrase, no notes."
     public static let sampleLink = "https://www.theatlantic.com/reading/slow"
 }
 
