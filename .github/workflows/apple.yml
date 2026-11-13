@@ -29,7 +29,7 @@ jobs:
     name: lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: swift-format lint
         run: |
           if command -v swift-format >/dev/null 2>&1; then
@@ -46,8 +46,6 @@ jobs:
           fi
       - name: actionlint
         uses: rhysd/actionlint@914e7df21a07ef503a81201c76d2b11c789d3fca # v1.7.12
-        with:
-          fail_on_error: true
       - name: privacy manifest
         run: |
           MANIFEST=apps/apple/Resources/PrivacyInfo.xcprivacy
@@ -65,8 +63,8 @@ jobs:
     name: contracts
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: validate contracts and fixtures
@@ -78,7 +76,7 @@ jobs:
     name: unit
     runs-on: macos-15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: swift test, every package, warnings as errors
         run: |
           for pkg in packages/*/; do
@@ -91,7 +89,7 @@ jobs:
     name: build-macos
     runs-on: macos-15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: install xcodegen
         run: brew install xcodegen
       - name: stub Device.xcconfig for xcodegen
@@ -113,7 +111,7 @@ jobs:
     name: build-ios
     runs-on: macos-15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: install xcodegen
         run: brew install xcodegen
       - name: stub Device.xcconfig for xcodegen
@@ -135,7 +133,7 @@ jobs:
     name: invariant
     runs-on: macos-15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: spoken-slice invariant, 0 failures required
         run: |
           for pkg in packages/*/; do
@@ -148,7 +146,7 @@ jobs:
     name: e2e
     runs-on: macos-15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: decide scope
