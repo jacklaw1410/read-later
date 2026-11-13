@@ -57,6 +57,8 @@ public enum EntryCopy {
     public static let rawCaption = "Raw text"
     public static let rawPlaceholder = "Paste a paragraph to read…"
     public static let open = "Open in Read Later"
+    public static let paste = "Paste"
+    public static let pasteHint = "Paste a link and open it"
     public static let extracting = "Extracting…"
     public static let emptyRefusal = "nothing to open — paste a link or text"
     public static let loginWallRefusal = "login wall — paste text instead"
@@ -168,12 +170,27 @@ public struct EntryView: View {
             .accessibilityLabel("Input type")
             .padding(.bottom, 10)
             if mode == .link {
-                Text(EntryCopy.linkCaption)
-                    .font(Theme.eyebrow())
-                    .tracking(Theme.eyebrowTracking)
-                    .textCase(.uppercase)
-                    .foregroundStyle(Theme.inkSecondary)
-                    .accessibilityAddTraits(.isHeader)
+                HStack(spacing: 8) {
+                    Text(EntryCopy.linkCaption)
+                        .font(Theme.eyebrow())
+                        .tracking(Theme.eyebrowTracking)
+                        .textCase(.uppercase)
+                        .foregroundStyle(Theme.inkSecondary)
+                        .accessibilityAddTraits(.isHeader)
+                    Spacer(minLength: 4)
+                    // One tap pastes and opens. The system paste button needs
+                    // no clipboard read, so iOS shows no permission prompt.
+                    PasteButton(payloadType: String.self) { strings in
+                        guard let text = strings.first else { return }
+                        pasteAndOpen(text)
+                    }
+                    .labelStyle(.titleAndIcon)
+                    .buttonStyle(.bordered)
+                    .controlSize(.small)
+                    .font(Theme.caption())
+                    .disabled(isLoading)
+                    .accessibilityLabel(EntryCopy.pasteHint)
+                }
                 TextField("Link", text: $linkText)
                     .textFieldStyle(.plain)
                     .font(.system(size: 14))
@@ -332,6 +349,18 @@ public struct EntryView: View {
         .accessibilityLabel("Loading progress")
         .accessibilityValue("\(Int(shownProgress * 100)) percent")
         .accessibilityHidden(!showsProgress)
+    }
+
+    /// A pasted link opens in one tap. Anything that is not a web link lands
+    /// in the field instead, so the reader can fix it.
+    private func pasteAndOpen(_ text: String) {
+        guard let link = EntryPaste.openableLink(from: text) else {
+            linkText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+            return
+        }
+        mode = .link
+        linkText = link
+        open()
     }
 
     private func open() {
