@@ -169,6 +169,7 @@ public struct EntryView: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(LibraryCopy.title)
+                    .accessibilityIdentifier(AccessibilityID.entryLibrary)
                 }
                 if let onSettings {
                     Button(action: onSettings) {
@@ -179,6 +180,7 @@ public struct EntryView: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel("Settings")
+                    .accessibilityIdentifier(AccessibilityID.entrySettings)
                 }
             }
             // The resume line sits above the form so a returning reader sees
@@ -227,6 +229,7 @@ public struct EntryView: View {
                     )
                     .padding(.top, 6)
                     .accessibilityLabel("Link")
+                    .accessibilityIdentifier(AccessibilityID.entryLinkField)
                     .disabled(isLoading)
                     .focused($focused, equals: .link)
                     .submitLabel(.go)
@@ -253,6 +256,7 @@ public struct EntryView: View {
                                 .stroke(Theme.line, lineWidth: 1)
                         )
                         .accessibilityLabel("Raw text")
+                        .accessibilityIdentifier(AccessibilityID.entryRawField)
                         .focused($focused, equals: .raw)
                     if rawText.isEmpty {
                         Text(EntryCopy.rawPlaceholder)
@@ -273,6 +277,7 @@ public struct EntryView: View {
             .padding(.top, 16)
             .disabled(isLoading)
             .accessibilityLabel(isLoading ? EntryCopy.extracting : EntryCopy.open)
+            .accessibilityIdentifier(AccessibilityID.entryOpen)
             progressArea
                 .padding(.top, 14)
             Spacer(minLength: 0)
@@ -316,6 +321,7 @@ public struct EntryView: View {
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(Theme.brand)
                     .accessibilityLabel("Resume \(offer.title)")
+                    .accessibilityIdentifier(AccessibilityID.entryResume)
                 Button("Dismiss") { onDismiss?() }
                     .font(.system(size: 13))
                     .foregroundStyle(Theme.inkSecondary)

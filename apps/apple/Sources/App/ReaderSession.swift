@@ -26,7 +26,7 @@ final class ReaderSession: ObservableObject {
     @Published private(set) var offerDeclined = false
     @Published private(set) var isOnline = true
 
-    private let speech: AVSpeechController
+    private let speech: SpeechController
     private let lookupProvider: PackLookupProvider
     private let speedStore: SpeedStore
 
@@ -42,7 +42,7 @@ final class ReaderSession: ObservableObject {
 
     init(
         document: ReadLaterCore.Document,
-        speech: AVSpeechController,
+        speech: SpeechController,
         lookupProvider: PackLookupProvider,
         speedStore: SpeedStore = SpeedStore()
     ) {

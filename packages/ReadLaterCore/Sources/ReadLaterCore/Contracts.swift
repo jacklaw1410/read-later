@@ -91,6 +91,28 @@ public protocol SpeechController: AnyObject {
     func resume()
     func stop()
 
+    /// True when a restart has a queue to seek in. False before the first
+    /// `speak` and after `stop`.
+    var canRestart: Bool { get }
+
+    /// Restarts speech at a word or a sentence. Returns false when there is no
+    /// queue, so the caller can rebuild instead of failing silently.
+    @discardableResult
+    func restart(fromWord index: Int) -> Bool
+    @discardableResult
+    func restart(fromSentence index: Int) -> Bool
+
+    /// True while the voice still holds live audio. A suspension can kill the
+    /// queue while the state still reads `.speaking`; this is the reconcile
+    /// signal that turns that lie into a clean pause.
+    var hasLiveUtterances: Bool { get }
+
+    /// Pauses for a lookup card and remembers whether the voice was live, so
+    /// closing the card restores exactly that state.
+    func pauseForLookup()
+    func closeLookup()
+    var wasPlayingBeforeLookup: Bool { get }
+
     /// 1.0 is the reference pace, about 140 words per minute.
     var rate: Float { get set }
 }

@@ -4,6 +4,9 @@ import SwiftUI
 @main
 struct ReadLaterApp: App {
     init() {
+        #if DEBUG
+        DebugLaunch.prepare()
+        #endif
         TelemetryHub.shared.configure()
         TelemetryHub.shared.record(TelemetryName.processStart)
     }

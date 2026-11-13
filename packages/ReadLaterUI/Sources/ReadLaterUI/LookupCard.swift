@@ -29,6 +29,7 @@ public struct LookupCard: View {
             Text(result.word)
                 .font(Theme.lookupWord())
                 .foregroundStyle(Theme.ink)
+                .accessibilityIdentifier(AccessibilityID.lookupWord)
             metaLine
             if let accentVariant = result.accentVariant {
                 Text(accentVariant)
@@ -44,6 +45,7 @@ public struct LookupCard: View {
                     .font(Theme.gloss())
                     .foregroundStyle(Theme.ink)
                     .padding(.vertical, 12)
+                    .accessibilityIdentifier(AccessibilityID.lookupGloss)
             }
 
             if isCurrentWashWord {
@@ -80,6 +82,7 @@ public struct LookupCard: View {
         .padding(Theme.screenGutter)
         .background(Theme.surface)
         .clipShape(RoundedRectangle(cornerRadius: Theme.cardRadius))
+        .accessibilityIdentifier(AccessibilityID.lookupCard)
     }
 
     @ViewBuilder

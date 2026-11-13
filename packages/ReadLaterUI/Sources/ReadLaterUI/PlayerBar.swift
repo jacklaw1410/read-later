@@ -122,6 +122,7 @@ public struct PlayerBar: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(playLabel)
+        .accessibilityIdentifier(AccessibilityID.readerPlayPause)
     }
 
     private var playGlyph: String {

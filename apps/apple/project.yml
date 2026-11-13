@@ -78,3 +78,33 @@ targets:
           [ -f "$PLIST" ] || exit 0
           /usr/libexec/PlistBuddy -c "Delete :GitSHA" "$PLIST" >/dev/null 2>&1 || true
           /usr/libexec/PlistBuddy -c "Add :GitSHA string $SHA" "$PLIST" >/dev/null 2>&1 || true
+
+  # One UI-test bundle for both destinations. The journeys are grouped by
+  # user-facing feature; the platform differences live in Support/.
+  ReadLaterUITests:
+    type: bundle.ui-testing
+    supportedDestinations: [iOS, macOS]
+    bundleId: app.readlater.reader.uitests
+    sources:
+      - path: UITests
+    dependencies:
+      - target: ReadLater
+      - package: ReadLaterUI
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.readlater.reader.uitests
+        TEST_TARGET_NAME: ReadLater
+        CODE_SIGNING_ALLOWED: NO
+
+schemes:
+  ReadLater:
+    build:
+      targets:
+        ReadLater: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      gatherCoverageData: false
+      targets:
+        - ReadLaterUITests

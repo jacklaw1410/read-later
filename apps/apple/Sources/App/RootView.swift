@@ -26,21 +26,38 @@ final class AppModel: ObservableObject {
     @Published var isLibraryPresented = false
     @Published var isSettingsPresented = false
 
-    private let speech = AVSpeechController()
+    private let speech: SpeechController
     private let lookup = PackLookupProvider()
     private let store: ReadLaterStore.Store?
     init() {
+        self.speech = Self.makeSpeech()
         self.store = Self.openStore()
         refreshResumeOffer()
         refreshLibrary()
     }
 
+    /// The one place the voice is chosen. Production always gets the system
+    /// synthesizer; a debug launch can substitute the scripted voice.
+    @MainActor
+    private static func makeSpeech() -> SpeechController {
+        #if DEBUG
+        return DebugLaunch.makeSpeech()
+        #else
+        return AVSpeechController()
+        #endif
+    }
+
+    /// Application Support/ReadLater. Shared with the debug reset, so a test
+    /// launch deletes the same directory this opens.
+    nonisolated static var storeDirectory: URL? {
+        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
+            .appendingPathComponent("ReadLater", isDirectory: true)
+    }
+
     /// The resume store is best-effort: reading works without it, only the
     /// launch offer disappears.
     private static func openStore() -> ReadLaterStore.Store? {
-        guard let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
-            .appendingPathComponent("ReadLater", isDirectory: true)
-        else { return nil }
+        guard let dir = storeDirectory else { return nil }
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         return try? ReadLaterStore.Store(
             databaseURL: dir.appendingPathComponent("store.sqlite"), device: "apple-app")
@@ -250,14 +267,18 @@ struct RootView: View {
         }
         .frame(minWidth: 380, minHeight: 560)
         .background(Theme.paper)
-        .preferredColorScheme(Appearance(rawValue: appearance)?.colorScheme)
+        .preferredColorScheme((debugAppearance ?? Appearance(rawValue: appearance))?.colorScheme)
+        .environment(\.locale, debugLocale ?? .autoupdatingCurrent)
+        .transaction { transaction in
+            if debugDisablesMotion { transaction.disablesAnimations = true }
+        }
         .sheet(isPresented: $model.isSettingsPresented) {
             SettingsView(registry: registry)
         }
         .sheet(isPresented: $model.isLibraryPresented) {
             LibraryView(model: model, onClose: { model.isLibraryPresented = false })
         }
-        .animation(reduceMotion ? nil : ThemeMotion.screen, value: model.session == nil)
+        .animation((debugDisablesMotion || reduceMotion) ? nil : ThemeMotion.screen, value: model.session == nil)
         // One demo open sets the first-run flag, whichever path opened it:
         // entry, resume or the library.
         .onChange(of: model.session?.document.url) { _, url in
@@ -288,6 +309,33 @@ struct RootView: View {
                 await SnapshotHarness.run(app: model)
             }
         }
+        #endif
+    }
+
+    /// Debug overrides. Nil in every Release build, so the modifiers below
+    /// fall back to the stored choice and the system environment.
+    private var debugAppearance: Appearance? {
+        #if DEBUG
+        return DebugLaunch.options.appearance
+        #else
+        return nil
+        #endif
+    }
+
+    private var debugLocale: Locale? {
+        #if DEBUG
+        return DebugLaunch.options.locale.map(Locale.init(identifier:))
+        #else
+        return nil
+        #endif
+    }
+
+    private var debugDisablesMotion: Bool {
+        #if DEBUG
+        let options = DebugLaunch.options
+        return options.isActive && !options.animations
+        #else
+        return false
         #endif
     }
 }
@@ -475,6 +523,7 @@ struct ReaderChrome: View {
             .buttonStyle(.plain)
             .foregroundStyle(Theme.inkSecondary)
             .accessibilityLabel("Back to library")
+            .accessibilityIdentifier(AccessibilityID.readerBack)
 
             Spacer(minLength: 8)
 
@@ -483,6 +532,7 @@ struct ReaderChrome: View {
                 .foregroundStyle(Theme.inkSecondary)
                 .lineLimit(1)
                 .truncationMode(.tail)
+                .accessibilityIdentifier(AccessibilityID.readerTitle)
 
             Spacer(minLength: 8)
 
