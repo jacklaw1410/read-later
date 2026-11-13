@@ -287,12 +287,28 @@ final class _WashedTextView: NSTextView {
         didSet { if bodyLength != oldValue { needsDisplay = true } }
     }
 
-    var washMarkList: [WashMark] = [] {
-        didSet {
-            guard washMarkList != oldValue else { return }
-            needsDisplay = true
-        }
+    var washMarkList: [WashMark] = []
+
+    /// Replaces the marks and asks for a redraw only when they changed.
+    ///
+    /// This is a method, not a `didSet`, on purpose. Comparing the new list
+    /// with the captured `oldValue` inside a `didSet` on an `NSTextView`
+    /// subclass read a corrupt array buffer (`_ArrayBuffer.count`, address
+    /// `0x10`) and killed the app. The same comparison in a plain `NSObject`
+    /// subclass is fine, so the trap is the `oldValue` capture in an
+    /// Objective-C subclass, not the comparison. A signature avoids the
+    /// captured array and keeps the redraw guard.
+    func setWashMarks(_ marks: [WashMark]) {
+        var hasher = Hasher()
+        for mark in marks { hasher.combine(mark) }
+        let signature = hasher.finalize()
+        washMarkList = marks
+        guard signature != washMarkSignature else { return }
+        washMarkSignature = signature
+        needsDisplay = true
     }
+
+    private var washMarkSignature = 0
 
     /// Scrolls the enclosing scroll view so the wash word sits about 40 % down
     /// the viewport. Called from the block that currently holds the word, so
@@ -488,7 +504,7 @@ struct _WashableTextView: NSViewRepresentable {
         context.coordinator.lastStyle = style
         context.coordinator.lastTone = tone
         context.coordinator.slots = slots
-        textView.washMarkList = marks
+        textView.setWashMarks(marks)
         context.coordinator.applyMarks(marks, to: textView)
         if followsWash {
             DispatchQueue.main.async { revealWash(in: textView) }
@@ -619,7 +635,7 @@ struct _WashableTextView: NSViewRepresentable {
                 }
             }
             lastMarks = marks
-            (view as? _WashedTextView)?.washMarkList = marks
+            (view as? _WashedTextView)?.setWashMarks(marks)
 
         }
     }
@@ -752,15 +768,50 @@ func revealWash(in textView: UITextView, anchorFraction: CGFloat = 0.5) {
 /// scroll view to them. Mirrors the macOS `_WashedTextView.revealWash`:
 /// per-tick, glyph-rect based, with a 32 pt dead band.
 final class _WashedTextView: UITextView {
+    /// Builds the view on a TextKit 1 stack.
+    ///
+    /// Do not build it with `init(usingTextLayoutManager:)`. That initializer
+    /// leaves this subclass's stored properties zeroed: `washMarkList` holds no
+    /// array buffer and `bodyLength` holds no value. Reading either one traps.
+    /// That was the reader-open crash on device: `_ArrayBuffer.count` on
+    /// address `0x10`, SIGSEGV, on the first mark assignment. The frame and
+    /// container initializer is a designated initializer, so the Swift defaults
+    /// do run, and the wash chip needs TextKit 1 glyph rects anyway.
+    static func makeWashView() -> _WashedTextView {
+        let storage = NSTextStorage()
+        let layoutManager = NSLayoutManager()
+        storage.addLayoutManager(layoutManager)
+        let container = NSTextContainer()
+        layoutManager.addTextContainer(container)
+        return _WashedTextView(frame: .zero, textContainer: container)
+    }
+
     /// UTF-16 length of the block text. Anything past it is the footnote
     /// marker run, which is a target, not a word.
     var bodyLength = 0
 
-    var washMarkList: [WashMark] = [] {
-        didSet {
-            if washMarkList != oldValue { setNeedsDisplay() }
-        }
+    var washMarkList: [WashMark] = []
+
+    /// Replaces the marks and asks for a redraw only when they changed.
+    ///
+    /// A method, not a `didSet`, for the reason proven by the crash on device:
+    /// `Array.==` against the captured `oldValue` inside a `didSet` on a
+    /// `UITextView` subclass read a corrupt buffer (`_ArrayBuffer.count` at
+    /// address `0x10`, SIGSEGV) on the first assignment, so every reader open
+    /// died. The same comparison in an `NSObject` subclass passes, so the trap
+    /// is the `oldValue` capture in an Objective-C subclass. A signature keeps
+    /// the redraw guard without the captured array.
+    func setWashMarks(_ marks: [WashMark]) {
+        var hasher = Hasher()
+        for mark in marks { hasher.combine(mark) }
+        let signature = hasher.finalize()
+        washMarkList = marks
+        guard signature != washMarkSignature else { return }
+        washMarkSignature = signature
+        setNeedsDisplay()
     }
+
+    private var washMarkSignature = 0
 
     /// Scrolls the enclosing scroll view so the wash word sits at
     /// `anchorFraction` of the viewport. Called from the block that currently
@@ -910,7 +961,7 @@ struct _WashableTextView: UIViewRepresentable {
     func makeCoordinator() -> Coordinator { Coordinator() }
 
     func makeUIView(context: Context) -> UITextView {
-        let textView = _WashedTextView(usingTextLayoutManager: false)
+        let textView = _WashedTextView.makeWashView()
         textView.isEditable = false
         textView.isSelectable = false
         textView.isScrollEnabled = false
@@ -926,7 +977,7 @@ struct _WashableTextView: UIViewRepresentable {
         context.coordinator.rebuildBase(text: text, style: style, tone: tone, marker: marker)
         textView.attributedText = context.coordinator.baseText
         context.coordinator.applyMarks(marks)
-        (textView as? _WashedTextView)?.washMarkList = marks
+        (textView as? _WashedTextView)?.setWashMarks(marks)
         if followsWash {
             context.coordinator.lastRevealedMarks = marks
             DispatchQueue.main.async { revealWash(in: textView) }
@@ -950,7 +1001,7 @@ struct _WashableTextView: UIViewRepresentable {
             context.coordinator.lastMarks = []
         }
         context.coordinator.applyMarks(marks)
-        (textView as? _WashedTextView)?.washMarkList = marks
+        (textView as? _WashedTextView)?.setWashMarks(marks)
         if followsWash, marks != context.coordinator.lastRevealedMarks {
             context.coordinator.lastRevealedMarks = marks
             DispatchQueue.main.async { revealWash(in: textView) }
