@@ -58,6 +58,7 @@ final class ReadingTests: XCTestCase {
         moved.isInverted = true
         let result = XCTWaiter().wait(for: [moved], timeout: 2)
         XCTAssertTrue(result == .completed, "the progress moved while paused (was \(held))")
+        Artefacts.capture(app, name: "ios-paused", in: self)
     }
 
     /// Waits for the element label to read `expected`.

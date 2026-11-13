@@ -66,5 +66,6 @@ final class LookupTests: XCTestCase {
             gloss.label.range(of: "\\p{Han}", options: .regularExpression),
             "the gloss has no Chinese character: \(gloss.label)"
         )
+        Artefacts.capture(app, name: "ios-gloss", in: self)
     }
 }

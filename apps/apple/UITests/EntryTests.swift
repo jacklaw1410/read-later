@@ -25,5 +25,6 @@ final class EntryTests: XCTestCase {
         let title = app.staticTexts[AccessibilityID.readerTitle]
         XCTAssertTrue(title.waitForExistence(timeout: Waits.screen), "the article did not open")
         XCTAssertEqual(title.label, "The Quiet Power of Slow Reading")
+        Artefacts.capture(app, name: "ios-article", in: self)
     }
 }
