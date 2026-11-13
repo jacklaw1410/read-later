@@ -219,3 +219,51 @@ struct LibraryTests {
         #expect(try store.recentPositions().isEmpty)
     }
 }
+
+@Suite("Position carries the article origin")
+struct PositionOriginTests {
+    @Test("URL and spoken length land on the row")
+    func originRoundTrips() throws {
+        let (store, dir) = try makeTemporaryStore()
+        defer { removeTemporaryStore(at: dir) }
+
+        let document = makeSampleDocument()
+        try store.save(document: document)
+        try store.recordPosition(of: document, wordIndex: 2)
+
+        let back = try store.position(contentHash: Store.resumeKey(for: document))
+        #expect(back?.url == document.url)
+        #expect(back?.totalWords == SpokenIndex(plan: document.plan).totalWords)
+    }
+
+    @Test("A row with no URL keeps nil and a zero length")
+    func missingOriginIsTolerated() throws {
+        let (store, dir) = try makeTemporaryStore()
+        defer { removeTemporaryStore(at: dir) }
+
+        var document = makeSampleDocument()
+        document.url = nil
+        try store.save(document: document)
+        try store.recordPosition(of: document, wordIndex: 0)
+
+        let back = try store.position(contentHash: Store.resumeKey(for: document))
+        #expect(back?.url == nil)
+    }
+
+    @Test("A cache bust keeps the origin the list needs")
+    func bustKeepsOrigin() throws {
+        let (store, dir) = try makeTemporaryStore()
+        defer { removeTemporaryStore(at: dir) }
+
+        let document = makeSampleDocument()
+        try store.save(document: document)
+        try store.recordPosition(of: document, wordIndex: 1)
+
+        try store.cacheBust(documentID: document.id)
+
+        let rows = try store.recentPositions()
+        #expect(rows.count == 1)
+        #expect(rows.first?.url == document.url)
+        #expect(rows.first?.totalWords ?? 0 > 0)
+    }
+}

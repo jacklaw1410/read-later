@@ -139,7 +139,7 @@ struct LibraryView: View {
                     .lineLimit(2)
                 HStack(spacing: 6) {
                     let place = LibraryCopy.placeLine(
-                        wordIndex: row.wordIndex, totalWords: model.totalWords(for: row))
+                        wordIndex: row.wordIndex, totalWords: row.totalWords)
                     if !place.isEmpty {
                         Text(place)
                             .font(Theme.caption())

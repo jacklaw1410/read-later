@@ -42,11 +42,17 @@ public struct ReadingPosition: Sendable, Hashable, Equatable {
     /// Chosen by the reader, not a side effect of reading. A saved row
     /// survives a cache bust; a visit row does not.
     public var saved: Bool
+    /// The article URL, kept so the list can fetch the page again after a
+    /// cache bust, when the stored plan is gone.
+    public var url: URL?
+    /// Spoken length, so a row can say "word X of Y" with no store read.
+    public var totalWords: Int
     public var updatedAt: Date
 
     public init(
         contentHash: String, documentID: UUID, title: String,
-        wordIndex: Int, finished: Bool, saved: Bool = false, updatedAt: Date
+        wordIndex: Int, finished: Bool, saved: Bool = false,
+        url: URL? = nil, totalWords: Int = 0, updatedAt: Date
     ) {
         self.contentHash = contentHash
         self.documentID = documentID
@@ -54,6 +60,8 @@ public struct ReadingPosition: Sendable, Hashable, Equatable {
         self.wordIndex = wordIndex
         self.finished = finished
         self.saved = saved
+        self.url = url
+        self.totalWords = totalWords
         self.updatedAt = updatedAt
     }
 }
@@ -163,13 +171,16 @@ public final class Store: Sendable {
         let hash = Self.resumeKey(for: document)
         try dbQueue.write { db in
             try db.execute(sql: """
-                INSERT INTO reading_position(content_hash, document_id, title, word_index, finished, saved, updated_at)
-                VALUES (?, ?, ?, ?, ?, 0, ?)
+                INSERT INTO reading_position(
+                    content_hash, document_id, title, word_index, finished, saved, url, total_words, updated_at)
+                VALUES (?, ?, ?, ?, ?, 0, ?, ?, ?)
                 ON CONFLICT(content_hash) DO UPDATE SET
                     document_id = excluded.document_id,
                     title = excluded.title,
                     word_index = excluded.word_index,
                     finished = excluded.finished,
+                    url = excluded.url,
+                    total_words = excluded.total_words,
                     updated_at = excluded.updated_at
                 """, arguments: [
                     hash,
@@ -177,6 +188,8 @@ public final class Store: Sendable {
                     document.title,
                     clamped,
                     finished,
+                    document.url?.absoluteString,
+                    total,
                     date.timeIntervalSinceReferenceDate,
                 ])
         }
@@ -185,7 +198,7 @@ public final class Store: Sendable {
     public func position(contentHash: String) throws -> ReadingPosition? {
         try dbQueue.read { db in
             guard let row = try Row.fetchOne(db, sql: """
-                SELECT content_hash, document_id, title, word_index, finished, saved, updated_at
+                SELECT content_hash, document_id, title, word_index, finished, saved, url, total_words, updated_at
                 FROM reading_position WHERE content_hash = ?
                 """, arguments: [contentHash]) else { return nil }
             return try Self.decodePosition(row: row)
@@ -196,7 +209,7 @@ public final class Store: Sendable {
     public func position(documentID: UUID) throws -> ReadingPosition? {
         try dbQueue.read { db in
             guard let row = try Row.fetchOne(db, sql: """
-                SELECT content_hash, document_id, title, word_index, finished, saved, updated_at
+                SELECT content_hash, document_id, title, word_index, finished, saved, url, total_words, updated_at
                 FROM reading_position WHERE document_id = ?
                 ORDER BY updated_at DESC LIMIT 1
                 """, arguments: [documentID.uuidString]) else { return nil }
@@ -209,7 +222,7 @@ public final class Store: Sendable {
     public func latestUnfinishedPosition() throws -> ReadingPosition? {
         try dbQueue.read { db in
             guard let row = try Row.fetchOne(db, sql: """
-                SELECT content_hash, document_id, title, word_index, finished, saved, updated_at
+                SELECT content_hash, document_id, title, word_index, finished, saved, url, total_words, updated_at
                 FROM reading_position WHERE finished = 0
                 ORDER BY updated_at DESC LIMIT 1
                 """) else { return nil }
@@ -230,7 +243,7 @@ public final class Store: Sendable {
     public func recentPositions(limit: Int = 50) throws -> [ReadingPosition] {
         try dbQueue.read { db in
             let rows = try Row.fetchAll(db, sql: """
-                SELECT content_hash, document_id, title, word_index, finished, saved, updated_at
+                SELECT content_hash, document_id, title, word_index, finished, saved, url, total_words, updated_at
                 FROM reading_position ORDER BY updated_at DESC LIMIT ?
                 """, arguments: [limit])
             return try rows.map(Self.decodePosition(row:))
@@ -241,7 +254,7 @@ public final class Store: Sendable {
     public func savedPositions() throws -> [ReadingPosition] {
         try dbQueue.read { db in
             let rows = try Row.fetchAll(db, sql: """
-                SELECT content_hash, document_id, title, word_index, finished, saved, updated_at
+                SELECT content_hash, document_id, title, word_index, finished, saved, url, total_words, updated_at
                 FROM reading_position WHERE saved = 1 ORDER BY updated_at DESC
                 """)
             return try rows.map(Self.decodePosition(row:))
@@ -404,6 +417,8 @@ public final class Store: Sendable {
         let wordIndex: Int = row["word_index"]
         let finished: Bool = row["finished"]
         let saved: Bool = row["saved"]
+        let urlString: String? = row["url"]
+        let totalWords: Int = row["total_words"]
         let updatedAt: Double = row["updated_at"]
         guard let documentID = UUID(uuidString: documentString) else {
             throw StoreError.planDecodingFailed
@@ -411,6 +426,7 @@ public final class Store: Sendable {
         return ReadingPosition(
             contentHash: hash, documentID: documentID, title: title,
             wordIndex: wordIndex, finished: finished, saved: saved,
+            url: urlString.flatMap(URL.init(string:)), totalWords: totalWords,
             updatedAt: Date(timeIntervalSinceReferenceDate: updatedAt))
     }
 }

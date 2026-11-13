@@ -19,24 +19,14 @@ final class AppModel: ObservableObject {
     @Published private(set) var pendingResume: PendingResume?
     /// The browse list: every started article, newest first.
     @Published private(set) var library: [ReadingPosition] = []
-    /// Spoken length per document id, so a row can say "word X of Y" without a
-    /// store read on every render. A busted row keeps its last known length.
-    @Published private(set) var libraryTotals: [UUID: Int] = [:]
     /// One line the library view shows when an action fails.
     @Published private(set) var libraryMessage: String?
 
     private let speech = AVSpeechController()
     private let lookup = PackLookupProvider()
     private let store: ReadLaterStore.Store?
-    /// Last known URL per document id. A cache bust drops the stored document,
-    /// and the position row holds no URL, so the map is saved in defaults to
-    /// survive a relaunch.
-    private var libraryURLs: [UUID: URL]
-    private static let libraryURLsKey = "rl-library-urls"
-
     init() {
         self.store = Self.openStore()
-        self.libraryURLs = Self.loadLibraryURLs()
         refreshResumeOffer()
         refreshLibrary()
     }
@@ -99,7 +89,6 @@ final class AppModel: ObservableObject {
     func refreshLibrary() {
         guard let store else {
             library = []
-            libraryTotals = [:]
             return
         }
         do {
@@ -107,19 +96,7 @@ final class AppModel: ObservableObject {
         } catch {
             library = []
             libraryMessage = LibraryCopy.readFailed
-            return
         }
-        var totals: [UUID: Int] = [:]
-        for row in library {
-            guard let document = try? store.document(id: row.documentID) else {
-                // A busted row keeps the length it had before the bust.
-                if let known = libraryTotals[row.documentID] { totals[row.documentID] = known }
-                continue
-            }
-            totals[row.documentID] = SpokenIndex(plan: document.plan).totalWords
-            rememberLibraryURL(document.url, documentID: row.documentID)
-        }
-        libraryTotals = totals
     }
 
     /// Opens a library row. The stored plan is the normal path. After a cache
@@ -133,7 +110,6 @@ final class AppModel: ObservableObject {
         libraryMessage = nil
         do {
             if let document = try store.document(id: row.documentID) {
-                rememberLibraryURL(document.url, documentID: row.documentID)
                 openAtPlace(document, row: row)
                 return
             }
@@ -141,7 +117,8 @@ final class AppModel: ObservableObject {
             libraryMessage = LibraryCopy.openFailed
             return
         }
-        guard let url = libraryURLs[row.documentID] else {
+        // The row outlives a cache bust, so its URL is the way back.
+        guard let url = row.url else {
             libraryMessage = LibraryCopy.needsLink
             return
         }
@@ -187,15 +164,7 @@ final class AppModel: ObservableObject {
         } catch {
             libraryMessage = LibraryCopy.forgetFailed
         }
-        libraryURLs[row.documentID] = nil
-        libraryTotals[row.documentID] = nil
-        Self.saveLibraryURLs(libraryURLs)
         refreshLibrary()
-    }
-
-    /// Spoken length for a row, or 0 when the plan is gone.
-    func totalWords(for row: ReadingPosition) -> Int {
-        libraryTotals[row.documentID] ?? 0
     }
 
     private func openAtPlace(_ document: ReadLaterCore.Document, row: ReadingPosition) {
@@ -216,33 +185,6 @@ final class AppModel: ObservableObject {
                 openAtPlace(document, row: row)
             }
         }
-    }
-
-    /// Keeps the URL for a document id, and writes the map to defaults only
-    /// when it changes. A busted row needs this map to fetch its page again.
-    private func rememberLibraryURL(_ url: URL?, documentID: UUID) {
-        guard let url, libraryURLs[documentID] != url else { return }
-        libraryURLs[documentID] = url
-        Self.saveLibraryURLs(libraryURLs)
-    }
-
-    private static func loadLibraryURLs() -> [UUID: URL] {
-        let raw = UserDefaults.standard.dictionary(forKey: libraryURLsKey) ?? [:]
-        var map: [UUID: URL] = [:]
-        for (id, value) in raw {
-            guard let uuid = UUID(uuidString: id),
-                  let link = value as? String,
-                  let url = URL(string: link)
-            else { continue }
-            map[uuid] = url
-        }
-        return map
-    }
-
-    private static func saveLibraryURLs(_ map: [UUID: URL]) {
-        var raw: [String: String] = [:]
-        for (id, url) in map { raw[id.uuidString] = url.absoluteString }
-        UserDefaults.standard.set(raw, forKey: libraryURLsKey)
     }
 
     /// Writes the current place now. Called on pause-adjacent transitions the

@@ -30,5 +30,13 @@ func makeMigrator() -> DatabaseMigrator {
         try db.execute(sql: "ALTER TABLE reading_position ADD COLUMN saved INTEGER NOT NULL DEFAULT 0")
     }
 
+    // v5 keeps the article URL and its spoken length on the position row. The
+    // browse list needs both without a store read per render, and a cache bust
+    // leaves the row behind while the stored plan is gone.
+    migrator.registerMigration("v5_position_origin") { db in
+        try db.execute(sql: "ALTER TABLE reading_position ADD COLUMN url TEXT")
+        try db.execute(sql: "ALTER TABLE reading_position ADD COLUMN total_words INTEGER NOT NULL DEFAULT 0")
+    }
+
     return migrator
 }
