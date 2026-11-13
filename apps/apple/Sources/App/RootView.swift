@@ -107,6 +107,7 @@ struct RootView: View {
     @StateObject private var model = AppModel()
     @ObservedObject private var registry = PackRegistry.shared
     @State private var showSettings = false
+    @AppStorage(Appearance.storageKey) private var appearance = Appearance.system.rawValue
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -132,6 +133,7 @@ struct RootView: View {
         }
         .frame(minWidth: 380, minHeight: 560)
         .background(Theme.paper)
+        .preferredColorScheme(Appearance(rawValue: appearance)?.colorScheme)
         .sheet(isPresented: $showSettings) {
             SettingsView(registry: registry)
         }

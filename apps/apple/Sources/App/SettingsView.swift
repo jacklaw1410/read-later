@@ -14,10 +14,20 @@ import AppKit
 /// and the reader screen sheet shows it on iOS.
 struct SettingsView: View {
     @ObservedObject var registry: PackRegistry = .shared
+    @AppStorage(Appearance.storageKey) private var appearance = Appearance.system.rawValue
 
     var body: some View {
         NavigationStack {
             List {
+                Section("Appearance") {
+                    Picker("Appearance", selection: $appearance) {
+                        ForEach(Appearance.allCases, id: \.rawValue) { option in
+                            Text(option.title).tag(option.rawValue)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .accessibilityLabel("Appearance")
+                }
                 NavigationLink("Dictionaries") {
                     DictionariesSettings(registry: registry)
                 }
