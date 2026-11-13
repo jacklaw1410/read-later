@@ -21,6 +21,10 @@ final class AppModel: ObservableObject {
     @Published private(set) var library: [ReadingPosition] = []
     /// One line the library view shows when an action fails.
     @Published private(set) var libraryMessage: String?
+    /// The root's two sheets. The model owns them so the open paths and the
+    /// snapshot harness raise the same screens the buttons raise.
+    @Published var isLibraryPresented = false
+    @Published var isSettingsPresented = false
 
     private let speech = AVSpeechController()
     private let lookup = PackLookupProvider()
@@ -217,8 +221,6 @@ final class AppModel: ObservableObject {
 struct RootView: View {
     @StateObject private var model = AppModel()
     @ObservedObject private var registry = PackRegistry.shared
-    @State private var showSettings = false
-    @State private var showLibrary = false
     @AppStorage(Appearance.storageKey) private var appearance = Appearance.system.rawValue
     @AppStorage("rl-seen-demo") private var seenDemo = false
     @Environment(\.scenePhase) private var scenePhase
@@ -239,8 +241,8 @@ struct RootView: View {
                     },
                     onResume: model.resumePending,
                     onDismiss: model.dismissPending,
-                    onSettings: { showSettings = true },
-                    onLibrary: { showLibrary = true },
+                    onSettings: { model.isSettingsPresented = true },
+                    onLibrary: { model.isLibraryPresented = true },
                     prefillLink: LibraryCopy.prefillLink(seenDemo: seenDemo)
                 )
                 .transition(.opacity)
@@ -249,11 +251,11 @@ struct RootView: View {
         .frame(minWidth: 380, minHeight: 560)
         .background(Theme.paper)
         .preferredColorScheme(Appearance(rawValue: appearance)?.colorScheme)
-        .sheet(isPresented: $showSettings) {
+        .sheet(isPresented: $model.isSettingsPresented) {
             SettingsView(registry: registry)
         }
-        .sheet(isPresented: $showLibrary) {
-            LibraryView(model: model, onClose: { showLibrary = false })
+        .sheet(isPresented: $model.isLibraryPresented) {
+            LibraryView(model: model, onClose: { model.isLibraryPresented = false })
         }
         .animation(reduceMotion ? nil : ThemeMotion.screen, value: model.session == nil)
         // One demo open sets the first-run flag, whichever path opened it:

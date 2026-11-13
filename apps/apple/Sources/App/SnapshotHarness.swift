@@ -32,6 +32,19 @@ enum SnapshotHarness {
         await pause(1.4)
         capture("01-entry", into: directory)
 
+        // The two Tier 2 surfaces both hang off the entry screen. Capture
+        // them here, before the reader covers the entry.
+        app.isLibraryPresented = true
+        await pause(0.7)
+        captureSheet("01b-library", into: directory)
+        app.isLibraryPresented = false
+        await pause(0.6)
+        app.isSettingsPresented = true
+        await pause(0.7)
+        captureSheet("01c-settings", into: directory)
+        app.isSettingsPresented = false
+        await pause(0.6)
+
         // Press the real button. The point is the centre of the primary
         // action in a 430 x 760 window; a layout change moves it, and the
         // capture then shows the entry screen twice rather than lying.
@@ -219,11 +232,29 @@ enum SnapshotHarness {
     }
 
     private static func capture(_ name: String, into directory: URL) {
-        guard let window = NSApp.windows.first(where: { $0.isVisible && $0.contentView != nil }),
-              let view = window.contentView,
+        guard let window = NSApp.windows.first(where: { $0.isVisible && $0.contentView != nil }) else {
+            print("[snapshot] no window for \(name)")
+            return
+        }
+        capture(name, window: window, into: directory)
+    }
+
+    /// A SwiftUI sheet on macOS is its own window, so the parent capture never
+    /// shows it. The sheet is the attached window, and the key window while
+    /// it is up.
+    private static func captureSheet(_ name: String, into directory: URL) {
+        guard let sheet = mainWindow()?.attachedSheet ?? NSApp.keyWindow else {
+            print("[snapshot] no sheet for \(name)")
+            return
+        }
+        capture(name, window: sheet, into: directory)
+    }
+
+    private static func capture(_ name: String, window: NSWindow, into directory: URL) {
+        guard let view = window.contentView,
               view.bounds.width > 0, view.bounds.height > 0
         else {
-            print("[snapshot] no window for \(name)")
+            print("[snapshot] no content for \(name)")
             return
         }
         guard let rep = view.bitmapImageRepForCachingDisplay(in: view.bounds) else { return }

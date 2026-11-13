@@ -155,9 +155,14 @@ inside the `ReadLaterUI` package.
 ## 7. The snapshot harness
 
 `SnapshotHarness.swift` drives the real reader session and writes PNGs of the
-running window. It captures entry, entry-progress, reader, playing,
-playing-scrolled, hold, footnote, middle blocks, notes, miss-offer,
+running window. It captures entry, library, settings, entry-progress, reader,
+playing, playing-scrolled, hold, footnote, middle blocks, notes, miss-offer,
 miss-resolved and hit.
+
+A SwiftUI sheet is its own window on macOS, so the library and settings
+captures grab the attached sheet, not the parent behind it. The model owns the
+two presentation flags, so the harness raises the same sheets the buttons
+raise.
 
 Launch it with `open -n` and pass the output directory after `--snapshot`:
 
