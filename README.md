@@ -170,6 +170,12 @@ For macOS, replace the destination with `-destination 'platform=macOS'`.
 A journey launches the built app, taps real views and uses the scripted voice.
 It asserts wiring, not voice timing. Voice timing belongs to the unit tests.
 
+The background test (`LifecycleTests.test_backgroundPausesAndReturns`) is
+iOS-only: it presses the Home button, which macOS has no equivalent for, so it
+skips there. Simulator video exists only on `e2e-full`: that job records the
+booted simulator to `artifacts/e2e-ios.mp4` and uploads it for 7 days.
+`e2e-core` stays video-free.
+
 ### Debug launch surface
 
 `--debug.preset=e2e` resets the store and the defaults, selects the scripted

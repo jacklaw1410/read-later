@@ -311,6 +311,21 @@ jobs:
             -destination '${{ matrix.destination }}' \
             -derivedDataPath build/e2e \
             CODE_SIGNING_ALLOWED=NO
+      - name: start simulator video
+        working-directory: apps/apple
+        run: |
+          # iOS simulator screen recording for e2e-full only. A recorder
+          # failure must never fail the tests, so every line tolerates one.
+          mkdir -p artifacts || true
+          xcrun simctl boot "iPhone 16" >/dev/null 2>&1 || true
+          UDID=$(xcrun simctl list devices booted -j 2>/dev/null | jq -r '[.. | objects | select(.state? == "Booted") | .udid] | first // empty' || true)
+          if [ -z "$UDID" ]; then
+            echo "no booted simulator; skipping video"
+            exit 0
+          fi
+          (xcrun simctl io "$UDID" recordVideo --codec=h264 "artifacts/e2e-${{ matrix.platform }}.mp4" || true) &
+          echo $! > artifacts/video.pid || true
+          echo "recording on $UDID (pid $(cat artifacts/video.pid 2>/dev/null || echo unknown))"
       - name: run every journey
         working-directory: apps/apple
         run: |
@@ -322,6 +337,15 @@ jobs:
             -derivedDataPath build/e2e \
             -resultBundlePath "artifacts/e2e-${{ matrix.platform }}.xcresult" \
             CODE_SIGNING_ALLOWED=NO
+      - name: stop simulator video
+        if: always()
+        working-directory: apps/apple
+        run: |
+          if [ -f artifacts/video.pid ]; then
+            kill -INT "$(cat artifacts/video.pid)" 2>/dev/null || true
+            sleep 2 || true
+          fi
+          ls -la artifacts/*.mp4 2>/dev/null || echo "no video recorded"
       - name: count guard and summary
         # Always: a bad night still needs its table and its named Scenario.
         if: always()
@@ -378,6 +402,14 @@ jobs:
             apps/apple/screenshots
           if-no-files-found: ignore
           retention-days: 30
+      - name: upload simulator video
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-${{ matrix.platform }}-video
+          path: apps/apple/artifacts/e2e-${{ matrix.platform }}.mp4
+          if-no-files-found: ignore
+          retention-days: 7
 
   # The debug surface is DEBUG-only. A Release binary that still holds the
   # flag prefix ships a back door, so the literal must be absent.
