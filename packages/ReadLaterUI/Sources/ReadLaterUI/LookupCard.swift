@@ -82,6 +82,10 @@ public struct LookupCard: View {
         .padding(Theme.screenGutter)
         .background(Theme.surface)
         .clipShape(RoundedRectangle(cornerRadius: Theme.cardRadius))
+        // A container, so the card, the word and the gloss each answer to
+        // their own identifier. Without it SwiftUI copies the card identifier
+        // onto every child, and `lookup.word` and `lookup.gloss` stop existing.
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier(AccessibilityID.lookupCard)
     }
 

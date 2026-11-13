@@ -161,6 +161,11 @@ public struct ReaderView<Player: View, Overlay: View>: View {
                         }
                     }
                     .coordinateSpace(name: "readerScroll")
+                    // The reader body is one scrolling text element for the UI
+                    // journeys: a word tap is a coordinate tap inside this
+                    // frame, so the tests need a stable box to aim at. An
+                    // identifier only; the tree shape does not change.
+                    .accessibilityIdentifier(AccessibilityID.readerWash)
                     .overlay {
                         GeometryReader { geo in
                             Color.clear.preference(key: ViewportHeightKey.self, value: geo.size.height)
