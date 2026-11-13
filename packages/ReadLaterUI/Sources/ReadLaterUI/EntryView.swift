@@ -54,6 +54,9 @@ public enum EntryCopy {
     public static let textMode = "Text"
     public static let linkCaption = "Paste link"
     public static let linkHint = "The prefilled link opens the sample article. x.com and similar → login wall, paste text instead."
+    /// The caption for any link that is not the prefilled sample. Saying
+    /// "prefilled" over an empty field is a lie the reader can see.
+    public static let linkHintEdited = "A web link opens the article. x.com and similar → login wall, paste text instead."
     public static let rawCaption = "Raw text"
     public static let rawPlaceholder = "Paste a paragraph to read…"
     public static let open = "Open in Read Later"
@@ -64,6 +67,12 @@ public enum EntryCopy {
     public static let loginWallRefusal = "login wall — paste text instead"
     public static let footer = "MVP cut: flow and tap-to-lookup. No drag-phrase, no notes."
     public static let sampleLink = "https://www.theatlantic.com/reading/slow"
+
+    /// The link caption follows the field: the sample variant only when the
+    /// field really holds the sample.
+    public static func linkHint(for text: String) -> String {
+        text == sampleLink ? linkHint : linkHintEdited
+    }
 }
 
 /// One open reads one mode. Link stays first, so a pasted paragraph never
@@ -222,7 +231,7 @@ public struct EntryView: View {
                     .focused($focused, equals: .link)
                     .submitLabel(.go)
                     .onSubmit { open() }
-                Text(EntryCopy.linkHint)
+                Text(EntryCopy.linkHint(for: linkText))
                     .font(Theme.caption())
                     .foregroundStyle(Theme.inkSecondary)
                     .padding(.top, 6)

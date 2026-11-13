@@ -125,3 +125,13 @@ import ReadLaterCore
     #expect(ResumeOffer(title: "Only title", wordIndex: 0, totalWords: 0).placeLine == "Only title")
 
 }
+
+@Suite("Entry link caption")
+struct EntryCaptionTests {
+    @Test("The sample caption appears only over the sample link")
+    func sampleCaptionFollowsTheField() {
+        #expect(EntryCopy.linkHint(for: EntryCopy.sampleLink) == EntryCopy.linkHint)
+        #expect(EntryCopy.linkHint(for: "") == EntryCopy.linkHintEdited)
+        #expect(EntryCopy.linkHint(for: "https://example.com") == EntryCopy.linkHintEdited)
+    }
+}
