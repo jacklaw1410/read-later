@@ -39,6 +39,9 @@ struct SettingsView: View {
             }
             .navigationTitle("Settings")
         }
+        // A macOS sheet sizes to its content, and a List asks for very
+        // little. The floor keeps the sheet readable on both platforms.
+        .frame(minWidth: 360, minHeight: 420)
     }
 }
 
