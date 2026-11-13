@@ -161,7 +161,7 @@ bundle serves both destinations. To run them:
 cd apps/apple
 xcodegen generate
 xcodebuild test -project ReadLater.xcodeproj -scheme ReadLater \
-  -destination 'platform=iOS Simulator,name=iPhone 18 Pro' \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
   CODE_SIGNING_ALLOWED=NO
 ```
 
