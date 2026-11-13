@@ -108,6 +108,7 @@ public struct EntryView: View {
     private let resumeOffer: ResumeOffer?
     private let onResume: (() -> Void)?
     private let onDismiss: (() -> Void)?
+    private let onSettings: (() -> Void)?
 
     private enum Field {
         case link
@@ -125,16 +126,33 @@ public struct EntryView: View {
         onOpen: @escaping (ReadLaterCore.Document) -> Void,
         resumeOffer: ResumeOffer? = nil,
         onResume: (() -> Void)? = nil,
-        onDismiss: (() -> Void)? = nil
+        onDismiss: (() -> Void)? = nil,
+        onSettings: (() -> Void)? = nil
     ) {
         self.onOpen = onOpen
         self.resumeOffer = resumeOffer
         self.onResume = onResume
         self.onDismiss = onDismiss
+        self.onSettings = onSettings
     }
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
+            // Settings live here, not in the reading menu: reading controls
+            // change while reading, Settings never does.
+            HStack(spacing: 8) {
+                Spacer(minLength: 0)
+                if let onSettings {
+                    Button(action: onSettings) {
+                        Image(systemName: "gearshape")
+                            .font(.system(size: 14, weight: .regular))
+                            .foregroundStyle(Theme.inkSecondary)
+                            .frame(width: 44, height: 44)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Settings")
+                }
+            }
             // The resume line sits above the form so a returning reader sees
             // the place before the entry fields.
             resumeAffordance

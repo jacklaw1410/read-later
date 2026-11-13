@@ -105,6 +105,8 @@ final class AppModel: ObservableObject {
 
 struct RootView: View {
     @StateObject private var model = AppModel()
+    @ObservedObject private var registry = PackRegistry.shared
+    @State private var showSettings = false
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -122,13 +124,17 @@ struct RootView: View {
                             totalWords: $0.totalWords)
                     },
                     onResume: model.resumePending,
-                    onDismiss: model.dismissPending
+                    onDismiss: model.dismissPending,
+                    onSettings: { showSettings = true }
                 )
                 .transition(.opacity)
             }
         }
         .frame(minWidth: 380, minHeight: 560)
         .background(Theme.paper)
+        .sheet(isPresented: $showSettings) {
+            SettingsView(registry: registry)
+        }
         .animation(reduceMotion ? nil : ThemeMotion.screen, value: model.session == nil)
         .onChange(of: scenePhase) { _, phase in
             switch phase {
@@ -167,7 +173,6 @@ struct ReaderScreen: View {
     @ObservedObject private var registry = PackRegistry.shared
     @Environment(\.openURL) private var openURL
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var showSettings = false
     @State private var washVisible = true
     @State private var returnToken = 0
 
@@ -225,9 +230,6 @@ struct ReaderScreen: View {
                 overlay: { overlay }
             )
         }
-        .sheet(isPresented: $showSettings) {
-            SettingsView(registry: registry)
-        }
         .onKeyPress(.escape) {
             if session.card != nil {
                 session.closeCard()
@@ -254,7 +256,6 @@ struct ReaderScreen: View {
             onToggleFollow: {
                 if session.autoScroll { session.holdFollowing() } else { session.resumeFollowing() }
             },
-            onSettings: { showSettings = true },
             onReplay: { session.togglePlay() }
         )
     }
@@ -333,7 +334,6 @@ struct ReaderChrome: View {
     let onExit: () -> Void
     let onRestart: () -> Void
     let onToggleFollow: () -> Void
-    let onSettings: () -> Void
     let onReplay: () -> Void
 
     var body: some View {
@@ -341,13 +341,12 @@ struct ReaderChrome: View {
             Button {
                 onExit()
             } label: {
-                Label("Library", systemImage: "chevron.left")
-                    .labelStyle(.titleAndIcon)
-                    .font(.system(size: 13))
+                Image(systemName: "chevron.left")
+                    .font(.system(size: 13, weight: .semibold))
+                    .frame(width: 44, height: 44)
             }
             .buttonStyle(.plain)
             .foregroundStyle(Theme.inkSecondary)
-            .frame(minHeight: 44)
             .accessibilityLabel("Back to library")
 
             Spacer(minLength: 8)
@@ -367,7 +366,6 @@ struct ReaderChrome: View {
                 Button(autoScroll ? "Stop following the wash" : "Follow the wash") {
                     onToggleFollow()
                 }
-                Button("Settings") { onSettings() }
                 if isFinished {
                     Button("Replay") { onReplay() }
                 }
