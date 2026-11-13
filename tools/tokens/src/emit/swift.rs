@@ -209,7 +209,7 @@ pub fn emit(doc: &Doc) -> Result<String, String> {
             provisional(spec.status.as_deref()),
             spec.curve.name
         ));
-        lines.push(format!("    static let {role} = {animation}"));
+        lines.push(format!("    public static let {role} = {animation}"));
         lines.push(String::new());
     }
     lines.push("}".to_string());

@@ -235,15 +235,15 @@ public extension Theme {
 /// Motion, layer 2. Built from the numbers, not from a name.
 public enum ThemeMotion {
     /// `motion.wash`. linear
-    static let wash = Animation.linear(duration: 0.150)
+    public static let wash = Animation.linear(duration: 0.150)
 
     /// `motion.sheet`. easeInOut
-    static let sheet = Animation.timingCurve(0.42, 0, 0.58, 1, duration: 0.180)
+    public static let sheet = Animation.timingCurve(0.42, 0, 0.58, 1, duration: 0.180)
 
     /// `motion.screen`. easeInOut
-    static let screen = Animation.timingCurve(0.42, 0, 0.58, 1, duration: 0.180)
+    public static let screen = Animation.timingCurve(0.42, 0, 0.58, 1, duration: 0.180)
 
     /// `motion.entryProgress`. easeInOut
-    static let entryProgress = Animation.timingCurve(0.42, 0, 0.58, 1, duration: 0.300)
+    public static let entryProgress = Animation.timingCurve(0.42, 0, 0.58, 1, duration: 0.300)
 
 }
