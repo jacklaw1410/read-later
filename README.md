@@ -131,14 +131,14 @@ which is gitignored. Only `Config/Device.xcconfig.example` is committed.
 ## 6. Tests
 
 Work in each package directory. `swift test` covers every package.
-Counts below were observed on 2026-11-12 with Swift 6.4.2.
+Counts below were observed on 2026-11-13 with Swift 6.4.2.
 
 | Package | Command | Observed |
 |---|---|---|
-| `ReadLaterCore` | `swift test` in `packages/ReadLaterCore` | 64 tests pass |
-| `ReadLaterPacks` | `swift test` in `packages/ReadLaterPacks` | 50 tests pass |
-| `ReadLaterStore` | `swift test` in `packages/ReadLaterStore` | 11 tests pass |
-| `ReadLaterUI` | `swift test` in `packages/ReadLaterUI` | 33 swift-testing tests pass |
+| `ReadLaterCore` | `swift test` in `packages/ReadLaterCore` | 79 swift-testing tests pass |
+| `ReadLaterPacks` | `swift test` in `packages/ReadLaterPacks` | 52 swift-testing tests pass |
+| `ReadLaterStore` | `swift test` in `packages/ReadLaterStore` | 26 swift-testing tests pass |
+| `ReadLaterUI` | `swift test` in `packages/ReadLaterUI` | 60 XCTest and 45 swift-testing tests pass |
 
 ```bash
 cd packages/ReadLaterCore && swift test
@@ -149,8 +149,45 @@ cd ../ReadLaterUI && swift test
 
 `ReadLaterTestKit` is a fixture library, not a test bundle. It has no
 `Package.swift` and no tests of its own.
-There is no Xcode UI-test target. UI coverage lives in `ReadLaterUITests`
-inside the `ReadLaterUI` package.
+The package suites above are unit tests. They do not launch the app. The
+end-to-end journeys live in `apps/apple/UITests`; see below.
+
+### UI journeys
+
+`apps/apple/UITests` holds the end-to-end journeys, grouped by feature. One
+bundle serves both destinations. To run them:
+
+```bash
+cd apps/apple
+xcodegen generate
+xcodebuild test -project ReadLater.xcodeproj -scheme ReadLater \
+  -destination 'platform=iOS Simulator,name=iPhone 18 Pro' \
+  CODE_SIGNING_ALLOWED=NO
+```
+
+For macOS, replace the destination with `-destination 'platform=macOS'`.
+
+A journey launches the built app, taps real views and uses the scripted voice.
+It asserts wiring, not voice timing. Voice timing belongs to the unit tests.
+
+### Debug launch surface
+
+`--debug.preset=e2e` resets the store and the defaults, selects the scripted
+voice, turns animations off, pins the light appearance and the English locale.
+A journey can override one field of the preset:
+
+| Flag | Values |
+|---|---|
+| `--debug.reset` | `store`, `defaults`, `all` |
+| `--debug.voice` | `system`, `scripted` |
+| `--debug.voice-pace` | milliseconds per word, 20 to 1000, default 80 |
+| `--debug.animations` | `on`, `off` |
+| `--debug.appearance` | `system`, `light`, `dark` |
+| `--debug.locale` | a locale identifier, for example `zh_HK` |
+
+The surface is DEBUG-only. No flag means production behaviour. The Release
+binary must not contain the `--debug.` marker. An unknown key or a bad value is
+ignored with a warning, never a crash.
 
 ## 7. The snapshot harness
 
