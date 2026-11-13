@@ -111,13 +111,14 @@ public struct EntryView: View {
     private let onResume: (() -> Void)?
     private let onDismiss: (() -> Void)?
     private let onSettings: (() -> Void)?
+    private let onLibrary: (() -> Void)?
 
     private enum Field {
         case link
         case raw
     }
 
-    @State private var linkText = EntryCopy.sampleLink
+    @State private var linkText: String
     @State private var rawText = ""
     @State private var mode: EntryMode = .link
     @State private var state: EntryState = .idle
@@ -129,13 +130,17 @@ public struct EntryView: View {
         resumeOffer: ResumeOffer? = nil,
         onResume: (() -> Void)? = nil,
         onDismiss: (() -> Void)? = nil,
-        onSettings: (() -> Void)? = nil
+        onSettings: (() -> Void)? = nil,
+        onLibrary: (() -> Void)? = nil,
+        prefillLink: String = EntryCopy.sampleLink
     ) {
         self.onOpen = onOpen
         self.resumeOffer = resumeOffer
         self.onResume = onResume
         self.onDismiss = onDismiss
         self.onSettings = onSettings
+        self.onLibrary = onLibrary
+        self._linkText = State(initialValue: prefillLink)
     }
 
     public var body: some View {
@@ -144,6 +149,18 @@ public struct EntryView: View {
             // change while reading, Settings never does.
             HStack(spacing: 8) {
                 Spacer(minLength: 0)
+                // The library is a place, not a reading control, so it sits
+                // beside the gear and stays out of the reader's menu.
+                if let onLibrary {
+                    Button(action: onLibrary) {
+                        Text(LibraryCopy.title)
+                            .font(.system(size: 13))
+                            .foregroundStyle(Theme.inkSecondary)
+                            .frame(minWidth: 44, minHeight: 44)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(LibraryCopy.title)
+                }
                 if let onSettings {
                     Button(action: onSettings) {
                         Image(systemName: "gearshape")
