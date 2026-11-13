@@ -39,17 +39,21 @@ public struct ReadingPosition: Sendable, Hashable, Equatable {
     public var title: String
     public var wordIndex: Int
     public var finished: Bool
+    /// Chosen by the reader, not a side effect of reading. A saved row
+    /// survives a cache bust; a visit row does not.
+    public var saved: Bool
     public var updatedAt: Date
 
     public init(
         contentHash: String, documentID: UUID, title: String,
-        wordIndex: Int, finished: Bool, updatedAt: Date
+        wordIndex: Int, finished: Bool, saved: Bool = false, updatedAt: Date
     ) {
         self.contentHash = contentHash
         self.documentID = documentID
         self.title = title
         self.wordIndex = wordIndex
         self.finished = finished
+        self.saved = saved
         self.updatedAt = updatedAt
     }
 }
@@ -159,8 +163,8 @@ public final class Store: Sendable {
         let hash = Self.resumeKey(for: document)
         try dbQueue.write { db in
             try db.execute(sql: """
-                INSERT INTO reading_position(content_hash, document_id, title, word_index, finished, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?)
+                INSERT INTO reading_position(content_hash, document_id, title, word_index, finished, saved, updated_at)
+                VALUES (?, ?, ?, ?, ?, 0, ?)
                 ON CONFLICT(content_hash) DO UPDATE SET
                     document_id = excluded.document_id,
                     title = excluded.title,
@@ -181,7 +185,7 @@ public final class Store: Sendable {
     public func position(contentHash: String) throws -> ReadingPosition? {
         try dbQueue.read { db in
             guard let row = try Row.fetchOne(db, sql: """
-                SELECT content_hash, document_id, title, word_index, finished, updated_at
+                SELECT content_hash, document_id, title, word_index, finished, saved, updated_at
                 FROM reading_position WHERE content_hash = ?
                 """, arguments: [contentHash]) else { return nil }
             return try Self.decodePosition(row: row)
@@ -192,7 +196,7 @@ public final class Store: Sendable {
     public func position(documentID: UUID) throws -> ReadingPosition? {
         try dbQueue.read { db in
             guard let row = try Row.fetchOne(db, sql: """
-                SELECT content_hash, document_id, title, word_index, finished, updated_at
+                SELECT content_hash, document_id, title, word_index, finished, saved, updated_at
                 FROM reading_position WHERE document_id = ?
                 ORDER BY updated_at DESC LIMIT 1
                 """, arguments: [documentID.uuidString]) else { return nil }
@@ -205,7 +209,7 @@ public final class Store: Sendable {
     public func latestUnfinishedPosition() throws -> ReadingPosition? {
         try dbQueue.read { db in
             guard let row = try Row.fetchOne(db, sql: """
-                SELECT content_hash, document_id, title, word_index, finished, updated_at
+                SELECT content_hash, document_id, title, word_index, finished, saved, updated_at
                 FROM reading_position WHERE finished = 0
                 ORDER BY updated_at DESC LIMIT 1
                 """) else { return nil }
@@ -219,6 +223,52 @@ public final class Store: Sendable {
         try dbQueue.write { db in
             try db.execute(sql: "DELETE FROM reading_position WHERE content_hash = ?", arguments: [contentHash])
         }
+    }
+
+    /// The browse list: every started article, newest first. A visit row is a
+    /// side effect of reading, so the list needs no consent and no save.
+    public func recentPositions(limit: Int = 50) throws -> [ReadingPosition] {
+        try dbQueue.read { db in
+            let rows = try Row.fetchAll(db, sql: """
+                SELECT content_hash, document_id, title, word_index, finished, saved, updated_at
+                FROM reading_position ORDER BY updated_at DESC LIMIT ?
+                """, arguments: [limit])
+            return try rows.map(Self.decodePosition(row:))
+        }
+    }
+
+    /// The saved queue: rows the reader chose. These survive a cache bust.
+    public func savedPositions() throws -> [ReadingPosition] {
+        try dbQueue.read { db in
+            let rows = try Row.fetchAll(db, sql: """
+                SELECT content_hash, document_id, title, word_index, finished, saved, updated_at
+                FROM reading_position WHERE saved = 1 ORDER BY updated_at DESC
+                """)
+            return try rows.map(Self.decodePosition(row:))
+        }
+    }
+
+    /// Sets or clears the saved flag. The flag is local-only, like the rest of
+    /// the position row, so no changelog entry is appended.
+    public func setSaved(contentHash: String, saved: Bool) throws {
+        try dbQueue.write { db in
+            try db.execute(
+                sql: "UPDATE reading_position SET saved = ? WHERE content_hash = ?",
+                arguments: [saved, contentHash])
+        }
+    }
+
+    /// Drops the cached plan for one article and keeps its place. The next
+    /// open refetches the page; an unchanged page keeps the same resume key.
+    public func cacheBust(documentID: UUID) throws {
+        try deleteDocument(id: documentID)
+    }
+
+    /// Forgets one article completely: the plan and the place. Used by the
+    /// library's remove action, and safe on a missing row.
+    public func forget(contentHash: String, documentID: UUID) throws {
+        try cacheBust(documentID: documentID)
+        try dismissPosition(contentHash: contentHash)
     }
 
     public func save(phrase: Phrase) throws {
@@ -353,13 +403,14 @@ public final class Store: Sendable {
         let title: String = row["title"]
         let wordIndex: Int = row["word_index"]
         let finished: Bool = row["finished"]
+        let saved: Bool = row["saved"]
         let updatedAt: Double = row["updated_at"]
         guard let documentID = UUID(uuidString: documentString) else {
             throw StoreError.planDecodingFailed
         }
         return ReadingPosition(
             contentHash: hash, documentID: documentID, title: title,
-            wordIndex: wordIndex, finished: finished,
+            wordIndex: wordIndex, finished: finished, saved: saved,
             updatedAt: Date(timeIntervalSinceReferenceDate: updatedAt))
     }
 }

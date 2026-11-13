@@ -140,3 +140,82 @@ struct PositionTests {
         #expect(!afterForced)
     }
 }
+
+@Suite("Library: visits, saves, cache bust")
+struct LibraryTests {
+    @Test("Recent positions list newest first and cap at the limit")
+    func recentPositionsOrderAndLimit() throws {
+        let (store, dir) = try makeTemporaryStore()
+        defer { removeTemporaryStore(at: dir) }
+
+        let first = makeSampleDocument()
+        try store.save(document: first)
+        try store.recordPosition(of: first, wordIndex: 1, at: Date(timeIntervalSinceReferenceDate: 100))
+
+        var second = makeSampleDocument()
+        second.id = UUID()
+        second.plan.sourceSHA256 = "second"
+        second.title = "Second article"
+        try store.save(document: second)
+        try store.recordPosition(of: second, wordIndex: 2, at: Date(timeIntervalSinceReferenceDate: 200))
+
+        let rows = try store.recentPositions(limit: 10)
+        #expect(rows.count == 2)
+        #expect(rows.first?.title == "Second article")
+        #expect(try store.recentPositions(limit: 1).count == 1)
+    }
+
+    @Test("Saving is a flag, and reading again keeps it")
+    func saveFlagSurvivesRecording() throws {
+        let (store, dir) = try makeTemporaryStore()
+        defer { removeTemporaryStore(at: dir) }
+
+        let document = makeSampleDocument()
+        try store.save(document: document)
+        try store.recordPosition(of: document, wordIndex: 2)
+        let key = Store.resumeKey(for: document)
+        #expect(try store.position(contentHash: key)?.saved == false)
+
+        try store.setSaved(contentHash: key, saved: true)
+        #expect(try store.position(contentHash: key)?.saved == true)
+
+        // The reader keeps reading: the flag must not be reset by a write.
+        try store.recordPosition(of: document, wordIndex: 4)
+        #expect(try store.position(contentHash: key)?.saved == true)
+        #expect(try store.savedPositions().count == 1)
+
+        try store.setSaved(contentHash: key, saved: false)
+        #expect(try store.savedPositions().isEmpty)
+    }
+
+    @Test("Cache bust drops the plan and keeps the place")
+    func cacheBustKeepsPosition() throws {
+        let (store, dir) = try makeTemporaryStore()
+        defer { removeTemporaryStore(at: dir) }
+
+        let document = makeSampleDocument()
+        try store.save(document: document)
+        try store.recordPosition(of: document, wordIndex: 3)
+
+        try store.cacheBust(documentID: document.id)
+
+        #expect(try store.document(id: document.id) == nil)
+        #expect(try store.position(contentHash: Store.resumeKey(for: document))?.wordIndex == 3)
+    }
+
+    @Test("Forget removes the plan and the place")
+    func forgetRemovesBoth() throws {
+        let (store, dir) = try makeTemporaryStore()
+        defer { removeTemporaryStore(at: dir) }
+
+        let document = makeSampleDocument()
+        try store.save(document: document)
+        try store.recordPosition(of: document, wordIndex: 3)
+
+        try store.forget(contentHash: Store.resumeKey(for: document), documentID: document.id)
+
+        #expect(try store.document(id: document.id) == nil)
+        #expect(try store.position(contentHash: Store.resumeKey(for: document)) == nil)
+        #expect(try store.recentPositions().isEmpty)
+    }
+}
