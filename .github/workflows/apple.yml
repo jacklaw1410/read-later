@@ -11,6 +11,8 @@ on:
       - ".github/workflows/apple.yml"
   push:
     branches: [main]
+    # A release tag runs the full e2e suite. Path filters do not apply to tags.
+    tags: ["v*"]
     paths:
       - "apps/apple/**"
       - "packages/**"
@@ -18,6 +20,10 @@ on:
       - "fixtures/**"
       - "tools/**"
       - ".github/workflows/apple.yml"
+  # One nightly run, 18:00 UTC. It runs the full suite on the iOS simulator.
+  schedule:
+    - cron: "0 18 * * *"
+  workflow_dispatch:
 
 # A newer push on the same branch supersedes the older run.
 concurrency:
@@ -142,42 +148,274 @@ jobs:
             fi
           done
 
-  e2e:
-    name: e2e
+  # Core holds the three journeys that prove the product loop. It runs on a pull
+  # request and on a push to main. A failure is a failure: no retries.
+  e2e-core:
+    name: e2e-core (${{ matrix.platform }})
+    if: >-
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/'))
     runs-on: macos-15
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: ios
+            destination: "platform=iOS Simulator,name=iPhone 16"
+    env:
+      SUITE: core
+      MIN_TESTS: "3"
     steps:
       - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-      - name: decide scope
-        id: scope
-        run: |
-          BASE="${{ github.base_ref }}"
-          if [ -n "$BASE" ]; then
-            CHANGED=$(git diff --name-only "origin/$BASE...HEAD")
-          else
-            CHANGED=$(git diff --name-only HEAD~1 2>/dev/null || git ls-files)
-          fi
-          echo "changed files:"; echo "$CHANGED"
-          if echo "$CHANGED" | grep -q '^apps/'; then
-            echo "run-e2e=true" >> "$GITHUB_OUTPUT"
-          elif ! echo "$CHANGED" | grep -q -v '^packages/ReadLaterCore/'; then
-            echo "Core-only change; skipping e2e."
-            echo "run-e2e=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "run-e2e=true" >> "$GITHUB_OUTPUT"
-          fi
-      # The five reader journeys (paste, tap, miss, decline, install) land in M2.
-      # Until apps/apple/UITests exists this job reports the skip and succeeds.
-      - name: reader journeys
-        if: steps.scope.outputs.run-e2e == 'true'
+      - name: stub Device.xcconfig for xcodegen
         working-directory: apps/apple
         run: |
-          if [ -d UITests ]; then
-            xcodegen generate
-            xcodebuild test -project ReadLater.xcodeproj -scheme ReadLater \
-              -destination 'platform=iOS Simulator,name=iPhone 16' \
-              CODE_SIGNING_ALLOWED=NO
-          else
-            echo "NOTICE: apps/apple/UITests does not exist yet; e2e journeys land in M2. Skipping with success."
+          # The team id lives in a gitignored file. CI never signs, so the
+          # example placeholder satisfies the generator without a secret.
+          if [ ! -f Config/Device.xcconfig ]; then
+            cp Config/Device.xcconfig.example Config/Device.xcconfig
           fi
+      - name: install xcodegen
+        run: brew install xcodegen
+      - name: generate project
+        working-directory: apps/apple
+        run: xcodegen generate
+      - name: build for testing
+        working-directory: apps/apple
+        run: |
+          xcodebuild build-for-testing \
+            -project ReadLater.xcodeproj -scheme ReadLater \
+            -destination '${{ matrix.destination }}' \
+            -derivedDataPath build/e2e \
+            CODE_SIGNING_ALLOWED=NO
+      - name: run core journeys
+        working-directory: apps/apple
+        run: |
+          # One class per feature. A class that has not landed yet is left out,
+          # so the count guard reports a short suite instead of a bad
+          # identifier. The guard, not this list, decides pass or fail.
+          ONLY=()
+          for cls in EntryTests ReadingTests LookupTests; do
+            if [ -f "UITests/$cls.swift" ]; then
+              ONLY+=("-only-testing:ReadLaterUITests/$cls")
+            fi
+          done
+          printf 'selecting:%s\n' "${ONLY[*]:-none}"
+          rm -rf "artifacts/e2e-${{ matrix.platform }}.xcresult"
+          mkdir -p artifacts
+          xcodebuild test-without-building \
+            -project ReadLater.xcodeproj -scheme ReadLater \
+            -destination '${{ matrix.destination }}' \
+            -derivedDataPath build/e2e \
+            -resultBundlePath "artifacts/e2e-${{ matrix.platform }}.xcresult" \
+            "${ONLY[@]}" \
+            CODE_SIGNING_ALLOWED=NO
+      - name: count guard and summary
+        # Always: a failed run still needs its table and its named Scenario.
+        if: always()
+        working-directory: apps/apple
+        run: |
+          BUNDLE="artifacts/e2e-${{ matrix.platform }}.xcresult"
+          SUMMARY=$(mktemp)
+          TESTS=$(mktemp)
+          xcrun xcresulttool get test-results summary --path "$BUNDLE" --format json > "$SUMMARY"
+          xcrun xcresulttool get test-results tests --path "$BUNDLE" --format json > "$TESTS"
+          TOTAL=$(jq -r '.totalTestCount // 0' "$SUMMARY")
+          PASSED=$(jq -r '.passedTests // 0' "$SUMMARY")
+          FAILED=$(jq -r '.failedTests // 0' "$SUMMARY")
+          SKIPPED=$(jq -r '.skippedTests // 0' "$SUMMARY")
+          SECS=$(jq -r '((.finishTime // 0) - (.startTime // 0)) | floor' "$SUMMARY")
+          TIME=$(printf '%dm%02ds' $((SECS / 60)) $((SECS % 60)))
+          SCENARIO=$(jq -r '[.. | objects
+            | select(.nodeType? == "Test Case" and .result? != "Passed")
+            | .name] | first // "—"' "$TESTS")
+          {
+            echo "### e2e-$SUITE · ${{ matrix.platform }}"
+            echo
+            echo "| Platform | Suite | Passed | Failed | Skipped | Time | Failed Scenario |"
+            echo "|----------|-------|--------|--------|---------|------|-----------------|"
+            echo "| ${{ matrix.platform }} | $SUITE | $PASSED | $FAILED | $SKIPPED | $TIME | $SCENARIO |"
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ "$FAILED" -gt 0 ]; then
+            echo "::error::$FAILED of $TOTAL tests failed: $SCENARIO"
+            exit 1
+          fi
+          if [ "$TOTAL" -lt "$MIN_TESTS" ]; then
+            echo "::error::only $TOTAL tests ran; $MIN_TESTS required"
+            exit 1
+          fi
+          if [ "$SKIPPED" -gt 0 ]; then
+            echo "::error::$SKIPPED tests skipped; no journey may skip"
+            exit 1
+          fi
+      - name: export screenshots and failure context
+        if: failure()
+        working-directory: apps/apple
+        run: |
+          BUNDLE="artifacts/e2e-${{ matrix.platform }}.xcresult"
+          [ -d "$BUNDLE" ] || exit 0
+          mkdir -p screenshots
+          xcrun xcresulttool export attachments --path "$BUNDLE" --output-path screenshots || true
+      - name: upload failure artefacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-${{ matrix.platform }}
+          path: |
+            apps/apple/artifacts/e2e-${{ matrix.platform }}.xcresult
+            apps/apple/screenshots
+          if-no-files-found: ignore
+          retention-days: 14
+
+  # Full runs every journey. Nightly, on demand, and on a release tag.
+  # Artefacts upload on every run so a green night is readable.
+  # macOS is absent: its UI runner needs Automation permission that a hosted
+  # runner cannot grant. The same suite runs on a Mac with that permission;
+  # see the research spec. Add the job back with a self-hosted label.
+  e2e-full:
+    name: e2e-full (${{ matrix.platform }})
+    if: >-
+      github.event_name == 'schedule' ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
+    runs-on: macos-15
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: ios
+            destination: "platform=iOS Simulator,name=iPhone 16"
+    env:
+      SUITE: full
+      MIN_TESTS: "3"
+    steps:
+      - uses: actions/checkout@v5
+      - name: stub Device.xcconfig for xcodegen
+        working-directory: apps/apple
+        run: |
+          if [ ! -f Config/Device.xcconfig ]; then
+            cp Config/Device.xcconfig.example Config/Device.xcconfig
+          fi
+      - name: install xcodegen
+        run: brew install xcodegen
+      - name: generate project
+        working-directory: apps/apple
+        run: xcodegen generate
+      - name: build for testing
+        working-directory: apps/apple
+        run: |
+          xcodebuild build-for-testing \
+            -project ReadLater.xcodeproj -scheme ReadLater \
+            -destination '${{ matrix.destination }}' \
+            -derivedDataPath build/e2e \
+            CODE_SIGNING_ALLOWED=NO
+      - name: run every journey
+        working-directory: apps/apple
+        run: |
+          rm -rf "artifacts/e2e-${{ matrix.platform }}.xcresult"
+          mkdir -p artifacts
+          xcodebuild test-without-building \
+            -project ReadLater.xcodeproj -scheme ReadLater \
+            -destination '${{ matrix.destination }}' \
+            -derivedDataPath build/e2e \
+            -resultBundlePath "artifacts/e2e-${{ matrix.platform }}.xcresult" \
+            CODE_SIGNING_ALLOWED=NO
+      - name: count guard and summary
+        # Always: a bad night still needs its table and its named Scenario.
+        if: always()
+        working-directory: apps/apple
+        run: |
+          BUNDLE="artifacts/e2e-${{ matrix.platform }}.xcresult"
+          SUMMARY=$(mktemp)
+          TESTS=$(mktemp)
+          xcrun xcresulttool get test-results summary --path "$BUNDLE" --format json > "$SUMMARY"
+          xcrun xcresulttool get test-results tests --path "$BUNDLE" --format json > "$TESTS"
+          TOTAL=$(jq -r '.totalTestCount // 0' "$SUMMARY")
+          PASSED=$(jq -r '.passedTests // 0' "$SUMMARY")
+          FAILED=$(jq -r '.failedTests // 0' "$SUMMARY")
+          SKIPPED=$(jq -r '.skippedTests // 0' "$SUMMARY")
+          SECS=$(jq -r '((.finishTime // 0) - (.startTime // 0)) | floor' "$SUMMARY")
+          TIME=$(printf '%dm%02ds' $((SECS / 60)) $((SECS % 60)))
+          SCENARIO=$(jq -r '[.. | objects
+            | select(.nodeType? == "Test Case" and .result? != "Passed")
+            | .name] | first // "—"' "$TESTS")
+          {
+            echo "### e2e-$SUITE · ${{ matrix.platform }}"
+            echo
+            echo "| Platform | Suite | Passed | Failed | Skipped | Time | Failed Scenario |"
+            echo "|----------|-------|--------|--------|---------|------|-----------------|"
+            echo "| ${{ matrix.platform }} | $SUITE | $PASSED | $FAILED | $SKIPPED | $TIME | $SCENARIO |"
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ "$FAILED" -gt 0 ]; then
+            echo "::error::$FAILED of $TOTAL tests failed: $SCENARIO"
+            exit 1
+          fi
+          if [ "$TOTAL" -lt "$MIN_TESTS" ]; then
+            echo "::error::only $TOTAL tests ran; $MIN_TESTS required"
+            exit 1
+          fi
+          if [ "$SKIPPED" -gt 0 ]; then
+            echo "::error::$SKIPPED tests skipped; no journey may skip"
+            exit 1
+          fi
+      - name: export screenshots and failure context
+        if: always()
+        working-directory: apps/apple
+        run: |
+          BUNDLE="artifacts/e2e-${{ matrix.platform }}.xcresult"
+          [ -d "$BUNDLE" ] || exit 0
+          mkdir -p screenshots
+          xcrun xcresulttool export attachments --path "$BUNDLE" --output-path screenshots || true
+      - name: upload artefacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-${{ matrix.platform }}
+          path: |
+            apps/apple/artifacts/e2e-${{ matrix.platform }}.xcresult
+            apps/apple/screenshots
+          if-no-files-found: ignore
+          retention-days: 30
+
+  # The debug surface is DEBUG-only. A Release binary that still holds the
+  # flag prefix ships a back door, so the literal must be absent.
+  release-guard:
+    name: release-guard
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - name: stub Device.xcconfig for xcodegen
+        working-directory: apps/apple
+        run: |
+          if [ ! -f Config/Device.xcconfig ]; then
+            cp Config/Device.xcconfig.example Config/Device.xcconfig
+          fi
+      - name: install xcodegen
+        run: brew install xcodegen
+      - name: generate project
+        working-directory: apps/apple
+        run: xcodegen generate
+      - name: release build for the simulator
+        working-directory: apps/apple
+        run: |
+          xcodebuild -project ReadLater.xcodeproj -scheme ReadLater \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -configuration Release -derivedDataPath build/release \
+            build CODE_SIGNING_ALLOWED=NO
+      - name: the debug flag prefix is absent
+        working-directory: apps/apple
+        run: |
+          BIN="build/release/Build/Products/Release-iphonesimulator/ReadLater.app/ReadLater"
+          if [ ! -f "$BIN" ]; then
+            echo "::error::release binary not found at $BIN"
+            exit 1
+          fi
+          if strings -a "$BIN" | grep -F -e '--debug.'; then
+            echo "::error::the Release binary still holds the debug flag prefix"
+            exit 1
+          fi
+          echo "Release binary holds no --debug. marker."
+
