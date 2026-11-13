@@ -173,6 +173,7 @@ public struct PlayerBar: View {
             }
             .accessibilityLabel("Reading progress")
             .accessibilityValue(progress.timeLabel)
+            .accessibilityIdentifier(AccessibilityID.readerProgress)
             .accessibilityAdjustableAction { direction in
                 switch direction {
                 case .increment: seekStep(1)
