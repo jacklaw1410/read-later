@@ -59,7 +59,10 @@ targets:
       # Debug` with command-line signing instead, which keeps DEBUG everywhere.
       configs:
         Debug:
-          CODE_SIGNING_ALLOWED: NO
+          CODE_SIGNING_ALLOWED[sdk=iphonesimulator*]: NO
+          CODE_SIGNING_ALLOWED[sdk=macosx*]: YES
+          CODE_SIGN_IDENTITY[sdk=macosx*]: "-"
+          CODE_SIGNING_REQUIRED[sdk=macosx*]: NO
         Device:
           CODE_SIGNING_ALLOWED: YES
           CODE_SIGN_STYLE: Automatic
@@ -97,7 +100,10 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: app.readlater.reader.uitests
         GENERATE_INFOPLIST_FILE: YES
         TEST_TARGET_NAME: ReadLater
-        CODE_SIGNING_ALLOWED: NO
+        CODE_SIGNING_ALLOWED[sdk=iphonesimulator*]: NO
+        CODE_SIGNING_ALLOWED[sdk=macosx*]: YES
+        CODE_SIGN_IDENTITY[sdk=macosx*]: "-"
+        CODE_SIGNING_REQUIRED[sdk=macosx*]: NO
 
 schemes:
   ReadLater:
