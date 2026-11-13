@@ -48,5 +48,6 @@ public struct FootnoteOverlay: View {
         .frame(maxWidth: 400)
         .background(Theme.surface)
         .clipShape(RoundedRectangle(cornerRadius: Theme.cardRadius))
+        .accessibilityIdentifier(AccessibilityID.readerFootnote)
     }
 }

@@ -17,6 +17,10 @@ public enum AccessibilityID {
     public static let readerPlayPause = "reader.playPause"
     public static let readerWash = "reader.wash"
     public static let readerProgress = "reader.progress"
+    public static let readerStepForward = "reader.stepForward"
+    public static let readerStepBack = "reader.stepBack"
+    public static let readerSpeed = "reader.speed"
+    public static let readerFootnote = "reader.footnote"
 
     public static let lookupCard = "lookup.card"
     public static let lookupWord = "lookup.word"

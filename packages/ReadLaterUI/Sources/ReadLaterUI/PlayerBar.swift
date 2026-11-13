@@ -254,6 +254,7 @@ public struct PlayerBar: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel("Speed \(String(format: "%g", progress.speed)) times")
+        .accessibilityIdentifier(AccessibilityID.readerSpeed)
     }
 
     private var speedBinding: Binding<Float> {

@@ -65,6 +65,7 @@ public struct SentenceStepper: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(title)
+        .accessibilityIdentifier(delta < 0 ? AccessibilityID.readerStepBack : AccessibilityID.readerStepForward)
         .accessibilityHint("Swipe sideways for the next block")
         .accessibilityAction(named: Text(delta < 0 ? "Previous paragraph" : "Next paragraph")) {
             onStepBlock(delta)
