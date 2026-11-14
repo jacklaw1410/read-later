@@ -98,6 +98,11 @@ h3{margin:var(--paragraph-gap) 0 var(--inline-gap);color:var(--text-meta)}
 .pair h2{margin-top:0}
 .banner{margin:0 0 var(--stack-gap);max-width:none;padding-bottom:var(--control-gap);color:var(--text-meta);border-bottom:0.0625rem solid var(--line-hair)}
 .lede{color:var(--text-body)}
+.masthead{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:var(--stack-gap) var(--breathing-room)}
+.mode{display:inline-flex;gap:var(--inline-gap);padding:var(--inline-gap);border:0.0625rem solid var(--line-hair);border-radius:var(--radius-button);background:var(--page-surface)}
+.mode button{font:inherit;color:var(--text-body);background:transparent;border:0;border-radius:var(--radius-inner);min-height:var(--size-min-target);padding:var(--control-gap) var(--stack-gap);cursor:pointer}
+.mode button:hover{background:var(--page-raised)}
+.mode button[aria-pressed="true"]{background:var(--action-fill);color:var(--action-ink)}
 .num{font-variant-numeric:tabular-nums}
 code{font-family:var(--font-mono)}
 table{width:100%;border-collapse:collapse}
@@ -421,12 +426,12 @@ fn section_motion(doc: &Doc) -> String {
 /// Layers 1 and 2: sections 1–4 and 6–9, in the same order as before. Blocks
 /// and the boundary note are slice 3; the page must not show what the tokens
 /// cannot yet back.
-pub fn emit_specimen(doc: &Doc, fresh: &Freshness) -> Result<String, String> {
+pub fn emit_specimen(doc: &Doc) -> Result<String, String> {
     let mut out = head("Calm Editorial specimen · layers 1–2", &type_classes(doc)?);
     out.push_str(&format!(
-        "<header>\n<p class=\"banner t-caption\">{}</p>\n<h1 class=\"t-title\">Calm Editorial specimen</h1>\n<p class=\"t-body lede\">Layers 1 and 2 of {}. Every value on this page reads a CSS variable from the linked file. The page holds no colour, point size or platform value.</p>\n</header>\n",
-        banner(fresh),
+        "<header class=\"masthead\">\n<div class=\"intro\">\n<h1 class=\"t-title\">Calm Editorial specimen</h1>\n<p class=\"t-body lede\">Layers 1 and 2 of {}. Every value on this page reads a CSS variable from the linked file. The page holds no colour, point size or platform value.</p>\n</div>\n{}\n</header>\n",
         code("design/tokens.json"),
+        mode_switch(),
     ));
     out.push_str(&section_colour(doc));
     out.push_str("<div class=\"pair\">\n");
@@ -440,9 +445,49 @@ pub fn emit_specimen(doc: &Doc, fresh: &Freshness) -> Result<String, String> {
     out.push_str(&section_radius(doc)?);
     out.push_str("</div>\n");
     out.push_str(&section_motion(doc));
+    out.push_str(MODE_SCRIPT);
     out.push_str("</body>\n</html>\n");
     Ok(out)
 }
+
+/// The colour-mode switch. `system` removes `data-theme`, so the page follows
+/// the operating system. `light` and `dark` set it on `<html>`, which the
+/// generated `tokens.css` reads for the whole document. The switch never
+/// names a value; it only chooses which token block applies.
+fn mode_switch() -> String {
+    String::from(
+        r#"<div class="mode" role="group" aria-label="Colour mode">
+<button type="button" data-mode="system" aria-pressed="true">System</button>
+<button type="button" data-mode="light" aria-pressed="false">Light</button>
+<button type="button" data-mode="dark" aria-pressed="false">Dark</button>
+</div>"#,
+    )
+}
+
+/// The one piece of behaviour on the page. It runs from `file://` with no
+/// network and no dependency.
+const MODE_SCRIPT: &str = r#"<script>
+(function () {
+  var root = document.documentElement;
+  var buttons = document.querySelectorAll("[data-mode]");
+  function show(mode) {
+    if (mode === "system") {
+      root.removeAttribute("data-theme");
+    } else {
+      root.setAttribute("data-theme", mode);
+    }
+    buttons.forEach(function (button) {
+      button.setAttribute("aria-pressed", String(button.dataset.mode === mode));
+    });
+  }
+  buttons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      show(button.dataset.mode);
+    });
+  });
+})();
+</script>
+"#;
 
 /// The single entry point. Relative links stay inside one checkout; the
 /// research repo has no stable relative path, so those links pin a commit.
@@ -573,7 +618,7 @@ mod tests {
     #[test]
     fn the_specimen_holds_no_literal() {
         let doc = fixture();
-        let html = emit_specimen(&doc, &fresh()).expect("specimen emits");
+        let html = emit_specimen(&doc).expect("specimen emits");
         assert_eq!(restated(&html), Vec::<String>::new());
     }
 
@@ -600,7 +645,7 @@ mod tests {
 
     #[test]
     fn the_primitive_strip_reads_the_raw_layer() {
-        let html = emit_specimen(&fixture(), &fresh()).expect("specimen emits");
+        let html = emit_specimen(&fixture()).expect("specimen emits");
         assert!(html.contains("data-primitive=\"ink.900\""));
         assert!(html.contains("var(--primitive-ink-900)"));
     }
@@ -608,21 +653,34 @@ mod tests {
     #[test]
     fn the_specimen_reads_the_linked_css() {
         let doc = fixture();
-        let html = emit_specimen(&doc, &fresh()).expect("specimen emits");
+        let html = emit_specimen(&doc).expect("specimen emits");
         assert!(html.contains("../generated/tokens.css"));
         assert!(html.contains("var(--page-paper)"));
         assert!(html.contains("var(--type-body-size)"));
     }
 
     #[test]
-    fn both_pages_carry_the_banner() {
+    fn the_index_carries_the_banner_and_the_specimen_does_not() {
         let doc = real_doc();
         let line = banner(&fresh());
-        let specimen = emit_specimen(&doc, &fresh()).expect("specimen emits");
+        let specimen = emit_specimen(&doc).expect("specimen emits");
         let index = emit_index(&doc, &fresh()).expect("index emits");
-        assert!(specimen.contains(&line));
         assert!(index.contains(&line));
+        assert!(!specimen.contains("Source design/tokens.json."));
     }
+
+    /// The switch names three modes. `system` is the default, so the page
+    /// starts with `aria-pressed` on it and no forced `data-theme`.
+    #[test]
+    fn the_specimen_offers_system_light_and_dark() {
+        let html = emit_specimen(&real_doc()).expect("specimen emits");
+        for mode in ["system", "light", "dark"] {
+            assert!(html.contains(&format!("data-mode=\"{mode}\"")), "no {mode} button");
+        }
+        assert!(html.contains("data-mode=\"system\" aria-pressed=\"true\""));
+        assert!(html.contains("document.documentElement"));
+    }
+
 
     /// Custom properties a stylesheet declares (`--name:`) and reads
     /// (`var(--name`). A name is letters, digits and hyphens.
@@ -653,7 +711,7 @@ mod tests {
         let css = crate::emit::css::emit(&doc).expect("css emits");
         let (from_css, _) = declared_and_read(&css);
         for html in [
-            emit_specimen(&doc, &fresh()).expect("specimen emits"),
+            emit_specimen(&doc).expect("specimen emits"),
             emit_index(&doc, &fresh()).expect("index emits"),
         ] {
             let (from_page, read) = declared_and_read(&html);
@@ -696,7 +754,7 @@ mod tests {
     fn the_page_body_holds_no_length_literal() {
         let doc = real_doc();
         for html in [
-            emit_specimen(&doc, &fresh()).expect("specimen emits"),
+            emit_specimen(&doc).expect("specimen emits"),
             emit_index(&doc, &fresh()).expect("index emits"),
         ] {
             assert_eq!(length_literals(&html), Vec::<String>::new());
@@ -705,7 +763,7 @@ mod tests {
 
     #[test]
     fn the_chrome_reads_calm_editorial_tokens() {
-        let html = emit_specimen(&real_doc(), &fresh()).expect("specimen emits");
+        let html = emit_specimen(&real_doc()).expect("specimen emits");
         for rule in [
             "body{margin:0 auto;max-width:64rem;padding:var(--breathing-room) var(--screen-gutter);background:var(--page-paper)",
             "a{color:var(--brand-link)",
@@ -722,7 +780,7 @@ mod tests {
     #[test]
     fn every_typography_role_has_a_generated_class() {
         let doc = real_doc();
-        let html = emit_specimen(&doc, &fresh()).expect("specimen emits");
+        let html = emit_specimen(&doc).expect("specimen emits");
         for role in doc.semantic.typography.keys() {
             let class = format!(".t-{}{{", kebab(role));
             assert!(html.contains(&class), "no class for {role}");
@@ -753,7 +811,7 @@ mod tests {
 
     #[test]
     fn the_page_has_sections_one_to_four_and_six_to_nine_only() {
-        let html = emit_specimen(&real_doc(), &fresh()).expect("specimen emits");
+        let html = emit_specimen(&real_doc()).expect("specimen emits");
         let numbers: Vec<char> = html
             .match_indices("<h2>")
             .filter_map(|(index, _)| html[index + 4..].chars().next())
