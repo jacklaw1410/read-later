@@ -155,6 +155,31 @@ public struct BlockPlan: Codable, Sendable, Hashable {
         self.skipped = skipped
     }
 
+    /// The newest plan version this build reads.
+    public static let currentVersion = 1
+
+    /// Evolution rule (adopted 2026-11-15, research repo `spec/device-test-plan.md`):
+    /// a new field is optional or has a default, and it is decoded with
+    /// `decodeIfPresent`. Keys are never renamed or removed. A breaking change
+    /// bumps `currentVersion` and adds `contracts/block-plan.vN.json`. Unknown
+    /// keys are ignored. A plan with no `version` key reads as version 1.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        version = try container.decodeIfPresent(Int.self, forKey: .version) ?? 1
+        guard version <= Self.currentVersion else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .version, in: container,
+                debugDescription: "plan version \(version) is newer than supported version \(Self.currentVersion)")
+        }
+        source = try container.decode(String.self, forKey: .source)
+        sourceSHA256 = try container.decode(String.self, forKey: .sourceSHA256)
+        sentenceCount = try container.decode(Int.self, forKey: .sentenceCount)
+        spokenWords = try container.decode(Int.self, forKey: .spokenWords)
+        validationFailures = try container.decode(Int.self, forKey: .validationFailures)
+        blocks = try container.decode([Block].self, forKey: .blocks)
+        skipped = try container.decode([SkippedBlock].self, forKey: .skipped)
+    }
+
     private enum CodingKeys: String, CodingKey {
         case version, source
         case sourceSHA256 = "source_sha256"
