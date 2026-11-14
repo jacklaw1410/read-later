@@ -106,6 +106,8 @@ final class ReaderSession: ObservableObject {
 
     func togglePlay() {
         guard card == nil, note == nil else { return }
+        // Logged at handler entry, before any state change, for M1 and M2.
+        TelemetryHub.shared.record(speech.state == .speaking ? TelemetryName.tapPause : TelemetryName.tapPlay)
         if speech.state == .speaking {
             speech.pause()
             checkpoint()
@@ -175,6 +177,11 @@ final class ReaderSession: ObservableObject {
     func scrub(toFraction fraction: Double) {
         guard spoken.totalWords > 0 else { return }
         let index = wordIndex(for: fraction)
+        // Logged at commit entry, for M4 (release to sound).
+        TelemetryHub.shared.record(TelemetryName.scrubCommit, fields: [
+            "fraction": String(format: "%.4f", fraction),
+            "word": String(index),
+        ])
         isFinished = false
         wash.wordIndex = index
         wash.isPlaying = false
@@ -468,6 +475,8 @@ final class ReaderSession: ObservableObject {
     }
 
     private func speechStateChanged(_ state: SpeechState) {
+        // Every delegate change is logged, including late callbacks (F20.4).
+        TelemetryHub.shared.record("state.\(state)")
         switch state {
         case .speaking:
             isPlaying = true

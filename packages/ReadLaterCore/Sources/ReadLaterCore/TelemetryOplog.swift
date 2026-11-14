@@ -55,6 +55,14 @@ public enum TelemetryName {
     public static let holdEnd = "hold-end"
     public static let appHide = "app-hide"
     public static let appReturn = "app-return"
+    /// Probe events for the device latency runs (device-verification-latency.md §5).
+    public static let launchBuild = "launch.build"
+    public static let tapPlay = "tap.play"
+    public static let tapPause = "tap.pause"
+    public static let scrubCommit = "scrub.commit"
+    public static let storeWrite = "store.write"
+    public static let markerRequest = "marker.request"
+    public static let framesSecond = "frames.second"
 }
 
 /// Append-only JSONL event log. The app writes it; the analyst takes it off

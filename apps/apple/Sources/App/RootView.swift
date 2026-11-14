@@ -215,12 +215,24 @@ final class AppModel: ObservableObject {
     /// throttle might miss: close, background, and anywhere the app can die.
     func flushPosition() {
         guard let session, let store, session.progress.totalWords > 0 else { return }
-        try? store.recordPosition(of: session.document, wordIndex: session.progress.wordIndex)
+        timedStoreWrite { try store.recordPosition(of: session.document, wordIndex: session.progress.wordIndex) }
     }
 
     private func recordPosition(index: Int) {
         guard let session, let store else { return }
-        try? store.recordPosition(of: session.document, wordIndex: index)
+        timedStoreWrite { try store.recordPosition(of: session.document, wordIndex: index) }
+    }
+
+    /// Times one place write and logs its duration and thread (M8: no
+    /// main-thread writes). The write itself is unchanged.
+    private func timedStoreWrite(_ write: () throws -> Void) {
+        let start = CFAbsoluteTimeGetCurrent()
+        try? write()
+        let ms = (CFAbsoluteTimeGetCurrent() - start) * 1000
+        TelemetryHub.shared.record(TelemetryName.storeWrite, fields: [
+            "ms": String(format: "%.2f", ms),
+            "main": Thread.isMainThread ? "1" : "0",
+        ])
     }
 
     private func refreshResumeOffer() {
