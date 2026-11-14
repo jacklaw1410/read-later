@@ -138,14 +138,9 @@ final class ReadingExtendedTests: XCTestCase {
     private func setSpeed(_ app: XCUIApplication, to option: String, label: String) {
         let speed = app.buttons[AccessibilityID.readerSpeed]
         XCTAssertTrue(speed.waitForExistence(timeout: Waits.screen), "the speed control is missing")
+        // The rail increments one step per tap. 1.0 -> 1.2 is two steps.
         JourneySteps.tap(app, speed)
-        Artefacts.capture(app, name: "ios-speed-menu", in: self)
-        let choice = JourneySteps.speedChoice(app, label: option)
-        XCTAssertTrue(
-            choice.waitForExistence(timeout: Waits.state),
-            "the speed menu did not offer \(option)"
-        )
-        JourneySteps.tap(app, choice)
+        JourneySteps.tap(app, speed)
         waitForLabel(label, on: speed, timeout: Waits.state, "the speed change did not land")
     }
 

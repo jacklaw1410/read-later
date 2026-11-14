@@ -22,6 +22,18 @@ public enum AccessibilityID {
     public static let readerSpeed = "reader.speed"
     public static let readerFootnote = "reader.footnote"
 
+    // C1 revised rail controls
+    public static let readerRail = "reader.rail"
+    public static let railSpeed = "rail.speed"
+    public static let railSpeedMinus = "rail.speed.minus"
+    public static let railSpeedPlus = "rail.speed.plus"
+    public static let railScrub = "rail.scrub"
+    public static let railPlayPause = "rail.playPause"
+    public static let railPrevSentence = "rail.prevSentence"
+    public static let railNextSentence = "rail.nextSentence"
+    public static let followDot = "follow.dot"
+    public static let clock = "clock"
+
     public static let lookupCard = "lookup.card"
     public static let lookupWord = "lookup.word"
     public static let lookupGloss = "lookup.gloss"

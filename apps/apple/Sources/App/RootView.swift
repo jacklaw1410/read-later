@@ -369,56 +369,65 @@ struct ReaderScreen: View {
     var body: some View {
         VStack(spacing: 0) {
             chrome
-            ReaderView(
-                document: session.document,
-                wash: session.wash,
-                spoken: session.spoken,
-                autoScroll: session.autoScroll && !session.isScrubbing,
-                isScrubbing: session.isScrubbing,
-                returnToken: returnToken,
-                onTapWord: { blockID, slot, word in
-                    session.tapped(blockID: blockID, slot: slot, word: word)
-                },
-                onTapNote: { session.openNote($0) },
-                onHold: { session.userScrolled() },
-                onWashVisibilityChanged: { washVisible = $0 },
-                player: {
-                    VStack(spacing: 0) {
-                        HoldBadge(
-                            isHeld: session.isHeld,
-                            isPlaying: session.isPlaying,
-                            onResume: { session.resumeFollowing() }
-                        )
-                        if shouldShowReturnPill(
-                            washVisible: washVisible,
-                            isHeld: session.isHeld,
-                            isPlaying: session.isPlaying
-                        ) {
-                            ReturnToWashPill {
-                                session.resumeFollowing()
-                                returnToken += 1
+            HStack(spacing: 0) {
+                ReaderView(
+                    document: session.document,
+                    wash: session.wash,
+                    spoken: session.spoken,
+                    autoScroll: session.autoScroll && !session.isScrubbing,
+                    isScrubbing: session.isScrubbing,
+                    returnToken: returnToken,
+                    onTapWord: { blockID, slot, word in
+                        session.tapped(blockID: blockID, slot: slot, word: word)
+                    },
+                    onTapNote: { session.openNote($0) },
+                    onHold: { session.userScrolled() },
+                    onWashVisibilityChanged: { washVisible = $0 },
+                    player: {
+                        VStack(spacing: 0) {
+                            HoldBadge(
+                                isHeld: session.isHeld,
+                                isPlaying: session.isPlaying,
+                                onResume: { session.resumeFollowing() }
+                            )
+                            if shouldShowReturnPill(
+                                washVisible: washVisible,
+                                isHeld: session.isHeld,
+                                isPlaying: session.isPlaying
+                            ) {
+                                ReturnToWashPill {
+                                    session.resumeFollowing()
+                                    returnToken += 1
+                                }
                             }
                         }
-                        SentenceStepper(
-                            onStepSentence: { session.stepSentence($0) },
-                            onStepBlock: { session.stepBlock($0) }
-                        )
-                        PlayerBar(
-                            progress: session.progress,
-                            isPlaying: session.isPlaying,
-                            onPlayPause: { session.togglePlay() },
-                            onSpeed: { session.setSpeed($0) },
-                            onScrub: { session.scrub(toFraction: $0) },
-                            onPreviewScrub: { session.previewScrub(toFraction: $0) },
-                            onScrubbingChanged: { scrubbing in
-                                session.isScrubbing = scrubbing
-                                if !scrubbing { session.finishScrubbing() }
-                            }
-                        )
-                    }
-                },
-                overlay: { overlay }
-            )
+                    },
+                    overlay: { overlay }
+                )
+                RailView(
+                    progress: session.progress,
+                    isPlaying: session.isPlaying,
+                    onPlayPause: { session.togglePlay() },
+                    onSpeed: { session.setSpeed($0) },
+                    onScrub: { session.scrub(toFraction: $0) },
+                    onPreviewScrub: { session.previewScrub(toFraction: $0) },
+                    onScrubbingChanged: { scrubbing in
+                        session.isScrubbing = scrubbing
+                        if !scrubbing { session.finishScrubbing() }
+                    },
+                    onStepSentence: { session.stepSentence($0) }
+                )
+            }
+            // Bottom row: clock only.
+            HStack {
+                Spacer()
+                Text(session.progress.timeLabel)
+                    .font(Theme.mono())
+                    .foregroundStyle(Theme.inkSecondary)
+                    .accessibilityIdentifier(AccessibilityID.clock)
+            }
+            .padding(.horizontal, Theme.screenGutter)
+            .frame(height: 32)
         }
         .onKeyPress(.escape) {
             if session.card != nil {
@@ -437,6 +446,7 @@ struct ReaderScreen: View {
         ReaderChrome(
             title: session.document.title,
             autoScroll: session.autoScroll,
+            isHeld: session.isHeld,
             isFinished: session.isFinished,
             onExit: onExit,
             onRestart: {
@@ -520,6 +530,7 @@ struct ReaderScreen: View {
 struct ReaderChrome: View {
     let title: String
     let autoScroll: Bool
+    let isHeld: Bool
     let isFinished: Bool
     let onExit: () -> Void
     let onRestart: () -> Void
@@ -552,12 +563,20 @@ struct ReaderChrome: View {
 
             Spacer(minLength: 8)
 
+            // Persistent follow dot (C1 revised).
+            Button(action: onToggleFollow) {
+                Image(systemName: (autoScroll && !isHeld) ? "circle.fill" : "circle")
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundStyle((autoScroll && !isHeld) ? Theme.brand : Theme.holdInk)
+                    .frame(width: 44, height: 44)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel((autoScroll && !isHeld) ? "Following wash, tap to hold" : "Held, tap to resume follow")
+            .accessibilityIdentifier(AccessibilityID.followDot)
+
             Menu {
                 Button("Restart from the first word") {
                     onRestart()
-                }
-                Button(autoScroll ? "Stop following the wash" : "Follow the wash") {
-                    onToggleFollow()
                 }
                 if isFinished {
                     Button("Replay") { onReplay() }
