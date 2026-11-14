@@ -77,22 +77,37 @@ fn esc(text: &str) -> String {
         .replace('>', "&gt;")
 }
 
-/// Page chrome only: layout in `rem`, no token value. A swatch that needs a
-/// token value uses an inline `var()`, never this block.
-const CHROME: &str = r"
-body{font-family:system-ui,sans-serif;margin:0 auto;max-width:64rem;padding:1rem;line-height:1.5}
-.banner{border:0.125rem solid currentColor;padding:0.5rem 1rem;font-weight:bold}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(13rem,1fr));gap:1rem}
-.cell{border:0.0625rem solid currentColor;padding:0.5rem}
-.sw{height:3rem}
-.stack{padding:1.5rem}
-.stack .stack{margin-top:1rem}
-.row{display:flex;align-items:center;gap:1rem;margin:0.5rem 0}
-.bar{height:1.5rem}
-.demo{border:0.0625rem solid currentColor;padding:1rem;margin:1rem 0}
-.prose{max-width:40rem}
-a{color:inherit}
-";
+/// Page chrome. Every colour, size and gap reads a token through `var()`.
+/// Rem is kept only for structure no token owns: hairline widths, the radius
+/// preview width, and the grid column minimum. The font stacks are the
+/// reference's stacks. No font family is a token, so they live here and not in
+/// `tokens.css`, which stays token-only.
+const CHROME: &str = r#"
+:root{--font-serif:"Iowan Old Style",Palatino,Georgia,serif;--font-sans:-apple-system,BlinkMacSystemFont,"SF Pro Text",Arial,sans-serif;--font-mono:ui-monospace,Menlo,monospace}
+body{background:var(--page-paper);color:var(--text-body);font-family:var(--font-sans);font-size:var(--type-body-size);line-height:var(--type-body-line);margin:0 auto;max-width:64rem;padding:var(--screen-gutter)}
+h1,h2,h3{font-family:var(--font-serif);color:var(--text-body)}
+[data-theme]{color:var(--text-body)}
+h1{font-size:var(--type-title-size)}
+h2{font-size:var(--type-heading-size)}
+h3{font-size:var(--type-caption-size)}
+a{color:var(--brand-link)}
+.banner{border:0.125rem solid var(--line-hair);background:var(--page-surface);color:var(--text-body);padding:var(--control-gap) var(--stack-gap);font-weight:bold}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(13rem,1fr));gap:var(--stack-gap)}
+.cell{border:0.0625rem solid var(--line-hair);padding:var(--control-gap);background:var(--page-surface)}
+.sw{height:var(--size-min-target)}
+.preview{width:6rem}
+.stack{padding:var(--screen-gutter);background:var(--page-raised)}
+.stack .stack{margin-top:var(--stack-gap)}
+.row{display:flex;align-items:center;gap:var(--control-gap);margin:var(--inline-gap) 0}
+.bar{height:var(--control-gap)}
+.demo{border:0.0625rem solid var(--line-hair);padding:var(--screen-gutter);margin:var(--paragraph-gap) 0;background:var(--page-surface)}
+.frame{border:0.0625rem solid var(--line-hair);background:var(--page-surface)}
+.pad{padding:var(--control-gap) var(--stack-gap)}
+.ring{outline:0.125rem solid var(--mark-coincide)}
+.ring-paused{outline:0.125rem solid var(--rule-ring)}
+.saved{border-left:0.25rem solid var(--mark-saved)}
+.prose{max-width:var(--size-max-line-width)}
+"#;
 
 fn head(title: &str) -> String {
     format!(
@@ -135,14 +150,14 @@ fn section_page() -> String {
 /// Section 3: the spoken word, the tapped word, their overlap, the frozen wash.
 fn section_voice() -> String {
     String::from(
-        "<h2>3 · Voice and tap</h2>\n<p>Core product interaction.</p>\n<div data-theme=\"light\">\n<div class=\"demo\" style=\"background:var(--page-paper);color:var(--text-body);font-size:var(--type-body-size)\">\n<span>The voice is </span><span style=\"background:var(--wash-fill);color:var(--wash-ink)\">on this word</span><span>, the reader </span><span style=\"background:var(--mark-selected)\">tapped that one</span><span>, and </span><span style=\"background:var(--wash-fill);color:var(--wash-ink);outline:0.125rem solid var(--mark-coincide)\">this one is both</span><span>.</span>\n</div>\n<ul>\n<li><b>wash.fill</b> plus <b>wash.ink</b> · the spoken word.</li>\n<li><b>mark.selected</b> · the tapped word.</li>\n<li><b>mark.coincide</b> · ring when the tap lands on the spoken word.</li>\n</ul>\n<div class=\"demo\" style=\"background:var(--page-paper);color:var(--text-body);font-size:var(--type-body-size)\">\n<span>Audio paused: </span><span style=\"background:var(--rule-paused);outline:0.125rem solid var(--rule-ring)\">the wash freezes here</span><span>.</span>\n</div>\n<ul>\n<li><b>rule.paused</b> plus <b>rule.ring</b> · the frozen wash.</li>\n</ul>\n</div>\n",
+        "<h2>3 · Voice and tap</h2>\n<p>Core product interaction.</p>\n<div data-theme=\"light\">\n<div class=\"demo\" style=\"background:var(--page-paper);color:var(--text-body);font-size:var(--type-body-size)\">\n<span>The voice is </span><span style=\"background:var(--wash-fill);color:var(--wash-ink)\">on this word</span><span>, the reader </span><span style=\"background:var(--mark-selected)\">tapped that one</span><span>, and </span><span class=\"ring\" style=\"background:var(--wash-fill);color:var(--wash-ink)\">this one is both</span><span>.</span>\n</div>\n<ul>\n<li><b>wash.fill</b> plus <b>wash.ink</b> · the spoken word.</li>\n<li><b>mark.selected</b> · the tapped word.</li>\n<li><b>mark.coincide</b> · ring when the tap lands on the spoken word.</li>\n</ul>\n<div class=\"demo\" style=\"background:var(--page-paper);color:var(--text-body);font-size:var(--type-body-size)\">\n<span>Audio paused: </span><span class=\"ring-paused\" style=\"background:var(--rule-paused)\">the wash freezes here</span><span>.</span>\n</div>\n<ul>\n<li><b>rule.paused</b> plus <b>rule.ring</b> · the frozen wash.</li>\n</ul>\n</div>\n",
     )
 }
 
 /// Section 4: controls after reading states. Saved marks are tier 2.
 fn section_actions() -> String {
     String::from(
-        "<h2>4 · Actions and marks</h2>\n<p>Controls after reading states.</p>\n<div data-theme=\"light\">\n<div class=\"demo\" style=\"background:var(--page-surface)\">\n<div class=\"row\"><span style=\"background:var(--action-fill);color:var(--action-ink);padding:0.5rem 1rem;border-radius:var(--radius-button)\">Listen</span><span><b>action.fill</b> plus <b>action.ink</b> · primary button. The fill stays dark in both modes so white ink keeps its contrast.</span></div>\n<div class=\"row\"><span style=\"background:var(--ghost-fill);color:var(--text-body);padding:0.5rem 1rem;border-radius:var(--radius-button)\">Later</span><span><b>ghost.fill</b> · secondary button fill on a card.</span></div>\n<div class=\"row\"><span style=\"color:var(--brand-link)\"><u>Quoted passage</u></span><span><b>brand.link</b> · quote rule, track fill, marker ink.</span></div>\n<div class=\"row\"><span style=\"background:var(--mark-saved-fill);border-left:0.25rem solid var(--mark-saved);padding:0.5rem 1rem\">Kept for study</span><span><b>mark.saved</b> plus <b>mark.savedFill</b> · tier 2, not part of the flow.</span></div>\n</div>\n</div>\n",
+        "<h2>4 · Actions and marks</h2>\n<p>Controls after reading states.</p>\n<div data-theme=\"light\">\n<div class=\"demo\" style=\"background:var(--page-surface)\">\n<div class=\"row\"><span class=\"pad\" style=\"background:var(--action-fill);color:var(--action-ink);border-radius:var(--radius-button)\">Listen</span><span><b>action.fill</b> plus <b>action.ink</b> · primary button. The fill stays dark in both modes so white ink keeps its contrast.</span></div>\n<div class=\"row\"><span class=\"pad\" style=\"background:var(--ghost-fill);color:var(--text-body);border-radius:var(--radius-button)\">Later</span><span><b>ghost.fill</b> · secondary button fill on a card.</span></div>\n<div class=\"row\"><span style=\"color:var(--brand-link)\"><u>Quoted passage</u></span><span><b>brand.link</b> · quote rule, track fill, marker ink.</span></div>\n<div class=\"row\"><span class=\"saved pad\" style=\"background:var(--mark-saved-fill)\">Kept for study</span><span><b>mark.saved</b> plus <b>mark.savedFill</b> · tier 2, not part of the flow.</span></div>\n</div>\n</div>\n",
     )
 }
 
@@ -208,7 +223,7 @@ fn section_radius(doc: &Doc) -> Result<String, String> {
             ""
         };
         out.push_str(&format!(
-            "<div class=\"row\" data-radius=\"{role}\"><div class=\"sw\" style=\"width:6rem;background:var(--chip-surface);border-radius:var(--radius-{var})\"></div><span><b>{role}</b> · step {value}{flag} · {desc}</span></div>\n",
+            "<div class=\"row\" data-radius=\"{role}\"><div class=\"sw preview\" style=\"background:var(--chip-surface);border-radius:var(--radius-{var})\"></div><span><b>{role}</b> · step {value}{flag} · {desc}</span></div>\n",
             var = kebab(role),
             value = spec.value,
             desc = esc(&spec.description),
@@ -223,12 +238,12 @@ fn section_radius(doc: &Doc) -> Result<String, String> {
         desc = esc(&target.description),
     ));
     out.push_str(&format!(
-        "<div class=\"row\" data-size=\"playerBar\"><div style=\"width:100%;height:var(--size-player-bar);background:var(--page-surface);border:0.0625rem solid currentColor\"></div><span><b>playerBar</b> · step {value} · {desc}</span></div>\n",
+        "<div class=\"row\" data-size=\"playerBar\"><div class=\"frame\" style=\"width:100%;height:var(--size-player-bar)\"></div><span><b>playerBar</b> · step {value} · {desc}</span></div>\n",
         value = bar.value,
         desc = esc(&bar.description),
     ));
     out.push_str(&format!(
-        "<div class=\"row\" data-size=\"chrome\"><div style=\"width:100%;height:var(--size-chrome);background:var(--page-raised);border:0.0625rem solid currentColor\"></div><span><b>chrome</b> · step {value} · {desc}</span></div>\n",
+        "<div class=\"row\" data-size=\"chrome\"><div class=\"frame\" style=\"width:100%;height:var(--size-chrome);background:var(--page-raised)\"></div><span><b>chrome</b> · step {value} · {desc}</span></div>\n",
         value = chrome.value,
         desc = esc(&chrome.description),
     ));
@@ -298,6 +313,7 @@ pub fn emit_index(fresh: &Freshness) -> Result<String, String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::collections::HashSet;
 
     fn fixture() -> Doc {
         let json = r##"{
@@ -436,5 +452,131 @@ mod tests {
         let index = emit_index(&fresh()).expect("index emits");
         assert!(specimen.contains(&line));
         assert!(index.contains(&line));
+    }
+
+    /// The real `tokens.json`, not the fixture. The fixture lacks most roles,
+    /// so a test over it could not catch a typo in a page variable name.
+    fn real_doc() -> Doc {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .and_then(Path::parent)
+            .expect("tools/tokens is two levels below the root");
+        let text = std::fs::read_to_string(root.join("design/tokens.json"))
+            .expect("tokens.json reads");
+        Doc::parse(&text).expect("tokens.json parses")
+    }
+
+    /// Custom properties a stylesheet declares (`--name:`) and reads
+    /// (`var(--name`). A name is letters, digits and hyphens.
+    fn declared_and_read(text: &str) -> (HashSet<String>, HashSet<String>) {
+        let mut declared = HashSet::new();
+        let mut read = HashSet::new();
+        for (index, _) in text.match_indices("--") {
+            let name: String = text[index + 2..]
+                .chars()
+                .take_while(|c| c.is_ascii_alphanumeric() || *c == '-')
+                .collect();
+            if name.is_empty() {
+                continue;
+            }
+            if text[index + 2 + name.len()..].starts_with(':') {
+                declared.insert(name.clone());
+            }
+            if text[..index].ends_with("var(") {
+                read.insert(name);
+            }
+        }
+        (declared, read)
+    }
+
+    #[test]
+    fn every_variable_the_page_reads_is_declared() {
+        let doc = real_doc();
+        let css = crate::emit::css::emit(&doc).expect("css emits");
+        let (from_css, _) = declared_and_read(&css);
+        for html in [
+            emit_specimen(&doc, &fresh()).expect("specimen emits"),
+            emit_index(&fresh()).expect("index emits"),
+        ] {
+            let (from_page, read) = declared_and_read(&html);
+            let declared: HashSet<String> = from_css.union(&from_page).cloned().collect();
+            let mut missing: Vec<&String> = read.difference(&declared).collect();
+            missing.sort();
+            assert!(missing.is_empty(), "read but never declared: {missing:?}");
+        }
+    }
+
+    /// A number written against a unit, such as `6rem` or `1px`. A unit with a
+    /// space before it, as in `44 pt hit row`, is prose and passes. Chrome in
+    /// the `<style>` block may hold structural rem; the page body may not.
+    fn length_literals(html: &str) -> Vec<String> {
+        let body = match (html.find("<style>"), html.find("</style>")) {
+            (Some(open), Some(close)) => format!("{}{}", &html[..open], &html[close..]),
+            _ => html.to_string(),
+        };
+        let bytes = body.as_bytes();
+        let mut out = Vec::new();
+        for unit in ["px", "rem", "em", "pt", "dp"] {
+            for (index, _) in body.match_indices(unit) {
+                let before = index.checked_sub(1).map(|i| bytes[i]);
+                let after = bytes.get(index + unit.len());
+                if before.is_some_and(|b| b.is_ascii_digit())
+                    && after.is_none_or(|b| !b.is_ascii_alphanumeric())
+                {
+                    out.push(body.get(index.saturating_sub(4)..index + unit.len()).unwrap_or(unit).to_string());
+                }
+            }
+        }
+        out
+    }
+
+    #[test]
+    fn the_page_body_holds_no_length_literal() {
+        let doc = real_doc();
+        for html in [
+            emit_specimen(&doc, &fresh()).expect("specimen emits"),
+            emit_index(&fresh()).expect("index emits"),
+        ] {
+            assert_eq!(length_literals(&html), Vec::<String>::new());
+        }
+    }
+
+    #[test]
+    fn the_chrome_reads_calm_editorial_tokens() {
+        let html = emit_specimen(&real_doc(), &fresh()).expect("specimen emits");
+        for rule in [
+            "body{background:var(--page-paper)",
+            "h1,h2,h3{font-family:var(--font-serif)",
+            "a{color:var(--brand-link)",
+            "[data-theme]{color:var(--text-body)",
+            "h1{font-size:var(--type-title-size)",
+        ] {
+            assert!(html.contains(rule), "missing chrome rule: {rule}");
+        }
+    }
+
+    /// Font stacks are not a token. Writing them into `tokens.css` would let
+    /// a platform value leak into the token-only artifact.
+    #[test]
+    fn the_font_stacks_stay_out_of_the_token_css() {
+        let css = crate::emit::css::emit(&real_doc()).expect("css emits");
+        assert!(!css.contains("--font-"));
+    }
+
+    #[test]
+    fn the_index_uses_the_same_chrome() {
+        let index = emit_index(&fresh()).expect("index emits");
+        assert!(index.contains(CHROME));
+    }
+
+    #[test]
+    fn the_page_has_sections_one_to_four_and_six_to_nine_only() {
+        let html = emit_specimen(&real_doc(), &fresh()).expect("specimen emits");
+        let numbers: Vec<char> = html
+            .match_indices("<h2>")
+            .filter_map(|(index, _)| html[index + 4..].chars().next())
+            .collect();
+        assert_eq!(numbers, vec!['1', '2', '3', '4', '6', '7', '8', '9']);
+        assert!(!html.contains("ReaderCard"));
     }
 }

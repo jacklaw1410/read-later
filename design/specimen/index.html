@@ -5,18 +5,30 @@
 <title>Calm Editorial specimen · index</title>
 <link rel="stylesheet" href="../generated/tokens.css">
 <style>
-body{font-family:system-ui,sans-serif;margin:0 auto;max-width:64rem;padding:1rem;line-height:1.5}
-.banner{border:0.125rem solid currentColor;padding:0.5rem 1rem;font-weight:bold}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(13rem,1fr));gap:1rem}
-.cell{border:0.0625rem solid currentColor;padding:0.5rem}
-.sw{height:3rem}
-.stack{padding:1.5rem}
-.stack .stack{margin-top:1rem}
-.row{display:flex;align-items:center;gap:1rem;margin:0.5rem 0}
-.bar{height:1.5rem}
-.demo{border:0.0625rem solid currentColor;padding:1rem;margin:1rem 0}
-.prose{max-width:40rem}
-a{color:inherit}
+:root{--font-serif:"Iowan Old Style",Palatino,Georgia,serif;--font-sans:-apple-system,BlinkMacSystemFont,"SF Pro Text",Arial,sans-serif;--font-mono:ui-monospace,Menlo,monospace}
+body{background:var(--page-paper);color:var(--text-body);font-family:var(--font-sans);font-size:var(--type-body-size);line-height:var(--type-body-line);margin:0 auto;max-width:64rem;padding:var(--screen-gutter)}
+h1,h2,h3{font-family:var(--font-serif);color:var(--text-body)}
+[data-theme]{color:var(--text-body)}
+h1{font-size:var(--type-title-size)}
+h2{font-size:var(--type-heading-size)}
+h3{font-size:var(--type-caption-size)}
+a{color:var(--brand-link)}
+.banner{border:0.125rem solid var(--line-hair);background:var(--page-surface);color:var(--text-body);padding:var(--control-gap) var(--stack-gap);font-weight:bold}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(13rem,1fr));gap:var(--stack-gap)}
+.cell{border:0.0625rem solid var(--line-hair);padding:var(--control-gap);background:var(--page-surface)}
+.sw{height:var(--size-min-target)}
+.preview{width:6rem}
+.stack{padding:var(--screen-gutter);background:var(--page-raised)}
+.stack .stack{margin-top:var(--stack-gap)}
+.row{display:flex;align-items:center;gap:var(--control-gap);margin:var(--inline-gap) 0}
+.bar{height:var(--control-gap)}
+.demo{border:0.0625rem solid var(--line-hair);padding:var(--screen-gutter);margin:var(--paragraph-gap) 0;background:var(--page-surface)}
+.frame{border:0.0625rem solid var(--line-hair);background:var(--page-surface)}
+.pad{padding:var(--control-gap) var(--stack-gap)}
+.ring{outline:0.125rem solid var(--mark-coincide)}
+.ring-paused{outline:0.125rem solid var(--rule-ring)}
+.saved{border-left:0.25rem solid var(--mark-saved)}
+.prose{max-width:var(--size-max-line-width)}
 </style>
 </head>
 <body>

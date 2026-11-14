@@ -5,18 +5,30 @@
 <title>Calm Editorial specimen · layers 1–2</title>
 <link rel="stylesheet" href="../generated/tokens.css">
 <style>
-body{font-family:system-ui,sans-serif;margin:0 auto;max-width:64rem;padding:1rem;line-height:1.5}
-.banner{border:0.125rem solid currentColor;padding:0.5rem 1rem;font-weight:bold}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(13rem,1fr));gap:1rem}
-.cell{border:0.0625rem solid currentColor;padding:0.5rem}
-.sw{height:3rem}
-.stack{padding:1.5rem}
-.stack .stack{margin-top:1rem}
-.row{display:flex;align-items:center;gap:1rem;margin:0.5rem 0}
-.bar{height:1.5rem}
-.demo{border:0.0625rem solid currentColor;padding:1rem;margin:1rem 0}
-.prose{max-width:40rem}
-a{color:inherit}
+:root{--font-serif:"Iowan Old Style",Palatino,Georgia,serif;--font-sans:-apple-system,BlinkMacSystemFont,"SF Pro Text",Arial,sans-serif;--font-mono:ui-monospace,Menlo,monospace}
+body{background:var(--page-paper);color:var(--text-body);font-family:var(--font-sans);font-size:var(--type-body-size);line-height:var(--type-body-line);margin:0 auto;max-width:64rem;padding:var(--screen-gutter)}
+h1,h2,h3{font-family:var(--font-serif);color:var(--text-body)}
+[data-theme]{color:var(--text-body)}
+h1{font-size:var(--type-title-size)}
+h2{font-size:var(--type-heading-size)}
+h3{font-size:var(--type-caption-size)}
+a{color:var(--brand-link)}
+.banner{border:0.125rem solid var(--line-hair);background:var(--page-surface);color:var(--text-body);padding:var(--control-gap) var(--stack-gap);font-weight:bold}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(13rem,1fr));gap:var(--stack-gap)}
+.cell{border:0.0625rem solid var(--line-hair);padding:var(--control-gap);background:var(--page-surface)}
+.sw{height:var(--size-min-target)}
+.preview{width:6rem}
+.stack{padding:var(--screen-gutter);background:var(--page-raised)}
+.stack .stack{margin-top:var(--stack-gap)}
+.row{display:flex;align-items:center;gap:var(--control-gap);margin:var(--inline-gap) 0}
+.bar{height:var(--control-gap)}
+.demo{border:0.0625rem solid var(--line-hair);padding:var(--screen-gutter);margin:var(--paragraph-gap) 0;background:var(--page-surface)}
+.frame{border:0.0625rem solid var(--line-hair);background:var(--page-surface)}
+.pad{padding:var(--control-gap) var(--stack-gap)}
+.ring{outline:0.125rem solid var(--mark-coincide)}
+.ring-paused{outline:0.125rem solid var(--rule-ring)}
+.saved{border-left:0.25rem solid var(--mark-saved)}
+.prose{max-width:var(--size-max-line-width)}
 </style>
 </head>
 <body>
@@ -164,7 +176,7 @@ a{color:inherit}
 <p>Core product interaction.</p>
 <div data-theme="light">
 <div class="demo" style="background:var(--page-paper);color:var(--text-body);font-size:var(--type-body-size)">
-<span>The voice is </span><span style="background:var(--wash-fill);color:var(--wash-ink)">on this word</span><span>, the reader </span><span style="background:var(--mark-selected)">tapped that one</span><span>, and </span><span style="background:var(--wash-fill);color:var(--wash-ink);outline:0.125rem solid var(--mark-coincide)">this one is both</span><span>.</span>
+<span>The voice is </span><span style="background:var(--wash-fill);color:var(--wash-ink)">on this word</span><span>, the reader </span><span style="background:var(--mark-selected)">tapped that one</span><span>, and </span><span class="ring" style="background:var(--wash-fill);color:var(--wash-ink)">this one is both</span><span>.</span>
 </div>
 <ul>
 <li><b>wash.fill</b> plus <b>wash.ink</b> · the spoken word.</li>
@@ -172,7 +184,7 @@ a{color:inherit}
 <li><b>mark.coincide</b> · ring when the tap lands on the spoken word.</li>
 </ul>
 <div class="demo" style="background:var(--page-paper);color:var(--text-body);font-size:var(--type-body-size)">
-<span>Audio paused: </span><span style="background:var(--rule-paused);outline:0.125rem solid var(--rule-ring)">the wash freezes here</span><span>.</span>
+<span>Audio paused: </span><span class="ring-paused" style="background:var(--rule-paused)">the wash freezes here</span><span>.</span>
 </div>
 <ul>
 <li><b>rule.paused</b> plus <b>rule.ring</b> · the frozen wash.</li>
@@ -182,10 +194,10 @@ a{color:inherit}
 <p>Controls after reading states.</p>
 <div data-theme="light">
 <div class="demo" style="background:var(--page-surface)">
-<div class="row"><span style="background:var(--action-fill);color:var(--action-ink);padding:0.5rem 1rem;border-radius:var(--radius-button)">Listen</span><span><b>action.fill</b> plus <b>action.ink</b> · primary button. The fill stays dark in both modes so white ink keeps its contrast.</span></div>
-<div class="row"><span style="background:var(--ghost-fill);color:var(--text-body);padding:0.5rem 1rem;border-radius:var(--radius-button)">Later</span><span><b>ghost.fill</b> · secondary button fill on a card.</span></div>
+<div class="row"><span class="pad" style="background:var(--action-fill);color:var(--action-ink);border-radius:var(--radius-button)">Listen</span><span><b>action.fill</b> plus <b>action.ink</b> · primary button. The fill stays dark in both modes so white ink keeps its contrast.</span></div>
+<div class="row"><span class="pad" style="background:var(--ghost-fill);color:var(--text-body);border-radius:var(--radius-button)">Later</span><span><b>ghost.fill</b> · secondary button fill on a card.</span></div>
 <div class="row"><span style="color:var(--brand-link)"><u>Quoted passage</u></span><span><b>brand.link</b> · quote rule, track fill, marker ink.</span></div>
-<div class="row"><span style="background:var(--mark-saved-fill);border-left:0.25rem solid var(--mark-saved);padding:0.5rem 1rem">Kept for study</span><span><b>mark.saved</b> plus <b>mark.savedFill</b> · tier 2, not part of the flow.</span></div>
+<div class="row"><span class="saved pad" style="background:var(--mark-saved-fill)">Kept for study</span><span><b>mark.saved</b> plus <b>mark.savedFill</b> · tier 2, not part of the flow.</span></div>
 </div>
 </div>
 <h2>6 · Type ramp</h2>
@@ -223,15 +235,15 @@ a{color:inherit}
 <p>Shape beside scale.</p>
 <div data-theme="light">
 <div class="demo" style="background:var(--page-paper);color:var(--text-body)">
-<div class="row" data-radius="chip"><div class="sw" style="width:6rem;background:var(--chip-surface);border-radius:var(--radius-chip)"></div><span><b>chip</b> · step 4 · Wash chip.</span></div>
-<div class="row" data-radius="inner"><div class="sw" style="width:6rem;background:var(--chip-surface);border-radius:var(--radius-inner)"></div><span><b>inner</b> · step 8 · Skip inner table.</span></div>
-<div class="row" data-radius="button"><div class="sw" style="width:6rem;background:var(--chip-surface);border-radius:var(--radius-button)"></div><span><b>button</b> · step 10 · Buttons and fields.</span></div>
-<div class="row" data-radius="card"><div class="sw" style="width:6rem;background:var(--chip-surface);border-radius:var(--radius-card)"></div><span><b>card</b> · step 12 · Card, skip shell, sheet.</span></div>
-<div class="row" data-radius="sheet"><div class="sw" style="width:6rem;background:var(--chip-surface);border-radius:var(--radius-sheet)"></div><span><b>sheet</b> · step 16 · provisional · Sheet top.</span></div>
-<div class="row" data-radius="pill"><div class="sw" style="width:6rem;background:var(--chip-surface);border-radius:var(--radius-pill)"></div><span><b>pill</b> · step 999 · Capsule.</span></div>
+<div class="row" data-radius="chip"><div class="sw preview" style="background:var(--chip-surface);border-radius:var(--radius-chip)"></div><span><b>chip</b> · step 4 · Wash chip.</span></div>
+<div class="row" data-radius="inner"><div class="sw preview" style="background:var(--chip-surface);border-radius:var(--radius-inner)"></div><span><b>inner</b> · step 8 · Skip inner table.</span></div>
+<div class="row" data-radius="button"><div class="sw preview" style="background:var(--chip-surface);border-radius:var(--radius-button)"></div><span><b>button</b> · step 10 · Buttons and fields.</span></div>
+<div class="row" data-radius="card"><div class="sw preview" style="background:var(--chip-surface);border-radius:var(--radius-card)"></div><span><b>card</b> · step 12 · Card, skip shell, sheet.</span></div>
+<div class="row" data-radius="sheet"><div class="sw preview" style="background:var(--chip-surface);border-radius:var(--radius-sheet)"></div><span><b>sheet</b> · step 16 · provisional · Sheet top.</span></div>
+<div class="row" data-radius="pill"><div class="sw preview" style="background:var(--chip-surface);border-radius:var(--radius-pill)"></div><span><b>pill</b> · step 999 · Capsule.</span></div>
 <div class="row" data-size="minTarget"><div style="width:var(--size-min-target);height:var(--size-min-target);background:var(--action-fill)"></div><span><b>minTarget</b> · step 44 · Smallest control, both axes.</span></div>
-<div class="row" data-size="playerBar"><div style="width:100%;height:var(--size-player-bar);background:var(--page-surface);border:0.0625rem solid currentColor"></div><span><b>playerBar</b> · step 58 · Bar height, including the 44 pt hit row.</span></div>
-<div class="row" data-size="chrome"><div style="width:100%;height:var(--size-chrome);background:var(--page-raised);border:0.0625rem solid currentColor"></div><span><b>chrome</b> · step 44 · Reader top bar.</span></div>
+<div class="row" data-size="playerBar"><div class="frame" style="width:100%;height:var(--size-player-bar)"></div><span><b>playerBar</b> · step 58 · Bar height, including the 44 pt hit row.</span></div>
+<div class="row" data-size="chrome"><div class="frame" style="width:100%;height:var(--size-chrome);background:var(--page-raised)"></div><span><b>chrome</b> · step 44 · Reader top bar.</span></div>
 </div>
 </div>
 <h2>9 · Motion</h2>
