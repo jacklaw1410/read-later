@@ -20,6 +20,11 @@ public struct RailView: View {
     /// The 4-value speed ladder. Full 0.1-step range stays on +/-.
     public static let ladder: [Float] = [0.5, 1.0, 1.2, 1.5]
 
+    /// Right margin. Keeps the play button off the window border.
+    private static let trailingGutter: CGFloat = 12
+    /// Smallest scrub height. The track never collapses to nothing.
+    private static let scrubMinHeight: CGFloat = 80
+
     @State private var scrubFraction: Double?
     @State private var lastFire = Date.distantPast
     @State private var ladderOpen = false
@@ -48,18 +53,18 @@ public struct RailView: View {
         VStack(spacing: 8) {
             speedStack
             scrubTrack
-            playButton
-            sentenceChevrons
+            bottomGroup
         }
         .frame(width: 44)
         .padding(.vertical, 8)
+        .padding(.trailing, Self.trailingGutter)
         .tint(Theme.brand)
         // A container identifier propagates to every descendant and hides
         // their own IDs. `children: .contain` keeps the rail as one group
         // while each control keeps the identifier the tests query.
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(AccessibilityID.readerRail)
-        .overlay(alignment: .leading) {
+        .overlay(alignment: .topLeading) {
             if ladderOpen {
                 ladderOverlay
             }
@@ -128,7 +133,9 @@ public struct RailView: View {
         .background(Theme.surface)
         .clipShape(RoundedRectangle(cornerRadius: 10))
         .overlay(RoundedRectangle(cornerRadius: 10).stroke(Theme.line, lineWidth: 1))
-        .offset(x: -64)
+        // Sit left of the rail, level with the speed stack. The top inset
+        // cancels the rail's vertical padding.
+        .offset(x: -64, y: 8)
         .accessibilityIdentifier(AccessibilityID.railSpeedLadder)
     }
 
@@ -157,7 +164,8 @@ public struct RailView: View {
             .contentShape(Rectangle())
             .gesture(scrubGesture(height: geo.size.height))
         }
-        .frame(width: 44, height: 120)
+        .frame(width: 44)
+        .frame(minHeight: Self.scrubMinHeight, maxHeight: .infinity)
         .focusable()
         .onKeyPress(phases: .down) { press in
             switch press.key {
@@ -184,6 +192,15 @@ public struct RailView: View {
     }
 
     // MARK: - Play + sentences
+
+    /// Play and sentence chevrons. The group sits at the bottom of the rail,
+    /// on the clock row band.
+    private var bottomGroup: some View {
+        VStack(spacing: 8) {
+            playButton
+            sentenceChevrons
+        }
+    }
 
     private var playButton: some View {
         Button(action: onPlayPause) {

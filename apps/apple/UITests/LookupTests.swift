@@ -29,49 +29,52 @@ final class LookupTests: XCTestCase {
         // Measured before the scroll. The hold badge can shorten the scroll
         // area after the drag, and the tap point must not move with it.
 
-        // Scroll the second prose paragraph into view. Slow, with a hold at the
-        // end: no fling, so the offset change is the drag distance on every
-        // run. Measured offset change: 433 pt.
-        let start = wash.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.85))
-        let end = wash.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.15))
-        start.press(forDuration: 0.2, thenDragTo: end, withVelocity: .slow, thenHoldForDuration: 0.6)
-
-        // A card from the release would swallow the measured tap. Close one
-        // only if the drag was read as a tap.
-        let close = app.buttons.matching(
-            NSPredicate(format: "label BEGINSWITH %@", "Close")
-        ).firstMatch
-        if close.exists {
-            JourneySteps.tap(app, close)
-            XCTAssertTrue(
-                close.waitForNonExistence(timeout: Waits.state),
-                "the card left by the scroll did not close"
-            )
+        func dismissLookupCardIfPresent() {
+            for prefix in ["Close", "Not now"] {
+                let button = app.buttons.matching(
+                    NSPredicate(format: "label BEGINSWITH %@", prefix)
+                ).firstMatch
+                if button.exists {
+                    JourneySteps.tap(app, button)
+                    _ = card.waitForNonExistence(timeout: Waits.state)
+                    _ = app.otherElements[AccessibilityID.missCard].waitForNonExistence(timeout: Waits.state)
+                }
+            }
         }
 
-        // "susurrus" is on the sixth line of that paragraph. Measured point on
-        // an iPhone 16, whose reader is 393 pt wide: (270, 665), which is 0.687
-        // across the wash frame and 0.917 down it.
+        // The target word is in the second prose paragraph. Scroll in short
+        // steps and scan the wash after each step. The exact point moves with
+        // layout, so the scan covers the visible text area instead of relying
+        // on one measured coordinate.
         var opened = false
-        for dx in [0.687, 0.5, 0.3, 0.75] {
-            for dy in [0.917, 0.85, 0.75, 0.6] {
-                JourneySteps.front(app)
-                let tapCoord = wash.coordinate(withNormalizedOffset: CGVector(dx: dx, dy: dy))
-                #if os(macOS)
-                tapCoord.click()
-                #else
-                tapCoord.tap()
-                #endif
-                if card.waitForExistence(timeout: Waits.state) {
-                    if JourneySteps.displayed(word) == "susurrus" {
-                        opened = true
-                        break
+        for scroll in 0..<4 {
+            if scroll > 0 {
+                let start = wash.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.8))
+                let end = wash.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.35))
+                start.press(forDuration: 0.2, thenDragTo: end, withVelocity: .slow, thenHoldForDuration: 0.4)
+                dismissLookupCardIfPresent()
+            }
+
+            for dy in stride(from: 0.25, through: 0.9, by: 0.08) {
+                for dx in [0.2, 0.35, 0.5, 0.65, 0.8] {
+                    JourneySteps.front(app)
+                    let tapCoord = wash.coordinate(withNormalizedOffset: CGVector(dx: dx, dy: dy))
+                    #if os(macOS)
+                    tapCoord.click()
+                    #else
+                    tapCoord.tap()
+                    #endif
+                    if card.waitForExistence(timeout: 0.8) {
+                        if JourneySteps.displayed(word) == "susurrus" {
+                            opened = true
+                            break
+                        }
+                        dismissLookupCardIfPresent()
+                    } else if app.otherElements[AccessibilityID.missCard].exists {
+                        dismissLookupCardIfPresent()
                     }
-                    // close and try next
-                    let closeBtn = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Close")).firstMatch
-                    if closeBtn.exists { JourneySteps.tap(app, closeBtn) }
-                    _ = card.waitForNonExistence(timeout: Waits.state)
                 }
+                if opened { break }
             }
             if opened { break }
         }

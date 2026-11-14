@@ -91,17 +91,25 @@ public func washScrollTarget(
 /// The chip behind one word: the type's own box, not the line box. A washed
 /// word is drawn from its font's ascent and descent, so a 19 pt word on a
 /// 31 pt line gets a 23 pt chip. Pure so tests pin the word-not-slab rule.
+///
+/// `verticalNudge` moves the chip down. The line box does not centre the type
+/// box: TextKit puts the extra leading above the glyphs. On a 19 pt word in a
+/// 31 pt line the baseline sits 26 pt from the glyph box top, so the type box
+/// starts 7.9 pt down, not the 4.2 pt that centring gives. A 4 pt nudge puts
+/// the chip on the type box. Without it the chip sits high and looks tight
+/// below the word.
 public func washChipBox(
     glyphBox: CGRect,
     origin: CGPoint,
     ascender: CGFloat,
     descender: CGFloat,
-    sidePad: CGFloat = 2
+    sidePad: CGFloat = 2,
+    verticalNudge: CGFloat = 4
 ) -> CGRect {
     let height = ascender - descender
     return CGRect(
         x: glyphBox.minX + origin.x - sidePad,
-        y: glyphBox.minY + origin.y + (glyphBox.height - height) / 2,
+        y: glyphBox.minY + origin.y + (glyphBox.height - height) / 2 + verticalNudge,
         width: glyphBox.width + sidePad * 2,
         height: height
     )
@@ -400,13 +408,13 @@ final class _WashedTextView: NSTextView {
             // The y comes from the glyph box because
             // `location(forGlyphAt:)` reports the baseline inside the line
             // fragment, not inside the container: on the fifth line it still
-            // says 26, which put every chip on the first line.
-            let height = font.ascender - font.descender
-            let box = NSRect(
-                x: glyphBox.minX + origin.x - 2,
-                y: glyphBox.minY + origin.y + (glyphBox.height - height) / 2,
-                width: glyphBox.width + 4,
-                height: height
+            // says 26, which put every chip on the first line. `washChipBox`
+            // owns the nudge that puts the chip on the type box.
+            let box = washChipBox(
+                glyphBox: glyphBox,
+                origin: origin,
+                ascender: font.ascender,
+                descender: font.descender
             )
 
             let path = NSBezierPath(roundedRect: box, xRadius: 4, yRadius: 4)

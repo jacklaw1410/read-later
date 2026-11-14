@@ -100,8 +100,9 @@ final class ReaderSurfaceTests: XCTestCase {
     // MARK: - Wash chip box
 
     func testWashChipBoxCoversTypeNotLineBox() {
-        // A 19 pt word on a 31 pt line: the chip is the 23 pt type box,
-        // centred in the line, with 2 pt of side air.
+        // A 19 pt word on a 31 pt line: the chip is the 23 pt type box, with
+        // 2 pt of side air. TextKit puts the extra leading above the glyphs,
+        // so the chip carries a 4 pt downward nudge to sit on the type box.
         let box = washChipBox(
             glyphBox: CGRect(x: 10, y: 100, width: 60, height: 31),
             origin: .zero,
@@ -109,8 +110,30 @@ final class ReaderSurfaceTests: XCTestCase {
             descender: -5
         )
         XCTAssertEqual(box.height, 23)
-        XCTAssertEqual(box.minY, 104)
+        XCTAssertEqual(box.minY, 108)
         XCTAssertEqual(box.minX, 8)
         XCTAssertEqual(box.width, 64)
+    }
+
+    func testWashChipBoxNudgeMovesChipDown() {
+        // The nudge is the whole fix for a chip that sits high. Pin it: the
+        // default is 4 pt, and a 0 pt nudge is the old centred box.
+        let glyphBox = CGRect(x: 10, y: 100, width: 60, height: 31)
+        let centred = washChipBox(
+            glyphBox: glyphBox,
+            origin: .zero,
+            ascender: 18,
+            descender: -5,
+            verticalNudge: 0
+        )
+        let nudged = washChipBox(
+            glyphBox: glyphBox,
+            origin: .zero,
+            ascender: 18,
+            descender: -5
+        )
+        XCTAssertEqual(centred.minY, 104)
+        XCTAssertEqual(nudged.minY - centred.minY, 4)
+        XCTAssertEqual(nudged.height, centred.height)
     }
 }

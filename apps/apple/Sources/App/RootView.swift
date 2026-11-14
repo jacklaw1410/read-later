@@ -388,83 +388,16 @@ struct ReaderScreen: View {
     var body: some View {
         VStack(spacing: 0) {
             chrome
+            // The rail is a sibling of the reader and the clock row. It spans
+            // the full height below the chrome, so its bottom group sits on
+            // the clock row band.
             HStack(spacing: 0) {
-                ReaderView(
-                    document: session.document,
-                    wash: session.wash,
-                    spoken: session.spoken,
-                    autoScroll: session.autoScroll && !session.isScrubbing,
-                    isScrubbing: session.isScrubbing,
-                    returnToken: returnToken,
-                    onTapWord: { blockID, slot, word in
-                        session.tapped(blockID: blockID, slot: slot, word: word)
-                    },
-                    onTapNote: { session.openNote($0) },
-                    onHold: {
-                        // Programmatic scroll guard (spec: 500 ms). A reveal
-                        // kicked by Return/Follow just moved the page; the
-                        // settling scroll events must not re-hold.
-                        guard Date().timeIntervalSince(lastProgrammaticFollow) >= 0.5 else { return }
-                        session.userScrolled()
-                    },
-                    onWashVisibilityChanged: { washVisible = $0 },
-                    player: {
-                        VStack(spacing: 0) {
-                            HoldBadge(
-                                isHeld: session.isHeld,
-                                isPlaying: session.isPlaying,
-                                onResume: {
-                                    lastProgrammaticFollow = Date()
-                                    session.resumeFollowing()
-                                }
-                            )
-                            if shouldShowReturnPill(
-                                washVisible: washVisible,
-                                isHeld: session.isHeld,
-                                isPlaying: session.isPlaying
-                            ) {
-                                ReturnToWashPill {
-                                    lastProgrammaticFollow = Date()
-                                    session.resumeFollowing()
-                                    returnToken += 1
-                                }
-                            }
-                        }
-                    },
-                    overlay: { overlay }
-                )
-                RailView(
-                    progress: session.progress,
-                    isPlaying: session.isPlaying,
-                    onPlayPause: { session.togglePlay() },
-                    onSpeed: { session.setSpeed($0) },
-                    onScrub: { session.scrub(toFraction: $0) },
-                    onPreviewScrub: { session.previewScrub(toFraction: $0) },
-                    onScrubbingChanged: { scrubbing in
-                        session.isScrubbing = scrubbing
-                        if !scrubbing { session.finishScrubbing() }
-                    },
-                    onStepSentence: { session.stepSentence($0) }
-                )
-            }
-            // Bottom row: clock only. Tap cycles 0 time+count, 1 count, 2 percent.
-            HStack {
-                Spacer()
-                Button {
-                    clockMode = (clockMode + 1) % 3
-                } label: {
-                    Text(session.progress.clockText(mode: clockMode))
-                        .font(Theme.mono())
-                        .foregroundStyle(Theme.inkSecondary)
+                VStack(spacing: 0) {
+                    reader
+                    clockRow
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Clock \(clockModeLabel), tap to change format")
-                .accessibilityValue(session.progress.clockText(mode: clockMode))
-                .accessibilityAddTraits(.updatesFrequently)
-                .accessibilityIdentifier(AccessibilityID.clock)
+                rail
             }
-            .padding(.horizontal, Theme.screenGutter)
-            .frame(height: 32)
         }
         .onKeyPress(.escape) {
             if session.card != nil {
@@ -477,6 +410,95 @@ struct ReaderScreen: View {
             }
             return .ignored
         }
+    }
+
+    private var reader: some View {
+        ReaderView(
+            document: session.document,
+            wash: session.wash,
+            spoken: session.spoken,
+            autoScroll: session.autoScroll && !session.isScrubbing,
+            isScrubbing: session.isScrubbing,
+            returnToken: returnToken,
+            onTapWord: { blockID, slot, word in
+                session.tapped(blockID: blockID, slot: slot, word: word)
+            },
+            onTapNote: { session.openNote($0) },
+            onHold: {
+                // Programmatic scroll guard (spec: 500 ms). A reveal
+                // kicked by Return/Follow just moved the page; the
+                // settling scroll events must not re-hold.
+                guard Date().timeIntervalSince(lastProgrammaticFollow) >= 0.5 else { return }
+                session.userScrolled()
+            },
+            onWashVisibilityChanged: { washVisible = $0 },
+            player: {
+                VStack(spacing: 0) {
+                    HoldBadge(
+                        isHeld: session.isHeld,
+                        isPlaying: session.isPlaying,
+                        onResume: {
+                            lastProgrammaticFollow = Date()
+                            session.resumeFollowing()
+                        }
+                    )
+                    if shouldShowReturnPill(
+                        washVisible: washVisible,
+                        isHeld: session.isHeld,
+                        isPlaying: session.isPlaying
+                    ) {
+                        ReturnToWashPill {
+                            lastProgrammaticFollow = Date()
+                            session.resumeFollowing()
+                            returnToken += 1
+                        }
+                    }
+                }
+            },
+            overlay: { overlay }
+        )
+    }
+
+    private var rail: some View {
+        RailView(
+            progress: session.progress,
+            isPlaying: session.isPlaying,
+            onPlayPause: { session.togglePlay() },
+            onSpeed: { session.setSpeed($0) },
+            onScrub: { session.scrub(toFraction: $0) },
+            onPreviewScrub: { session.previewScrub(toFraction: $0) },
+            onScrubbingChanged: { scrubbing in
+                session.isScrubbing = scrubbing
+                if !scrubbing { session.finishScrubbing() }
+            },
+            onStepSentence: { session.stepSentence($0) }
+        )
+    }
+
+    /// Bottom row: clock at the left edge. Tap cycles 0 time+count, 1 count,
+    /// 2 percent.
+    private var clockRow: some View {
+        HStack(spacing: 0) {
+            clockButton
+            Spacer(minLength: 0)
+        }
+        .padding(.leading, Theme.screenGutter)
+        .frame(height: 32)
+    }
+
+    private var clockButton: some View {
+        Button {
+            clockMode = (clockMode + 1) % 3
+        } label: {
+            Text(session.progress.clockText(mode: clockMode))
+                .font(Theme.mono())
+                .foregroundStyle(Theme.inkSecondary)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Clock \(clockModeLabel), tap to change format")
+        .accessibilityValue(session.progress.clockText(mode: clockMode))
+        .accessibilityAddTraits(.updatesFrequently)
+        .accessibilityIdentifier(AccessibilityID.clock)
     }
 
     private var clockModeLabel: String {
