@@ -14,15 +14,10 @@ public enum AccessibilityID {
 
     public static let readerTitle = "reader.title"
     public static let readerBack = "reader.back"
-    public static let readerPlayPause = "reader.playPause"
     public static let readerWash = "reader.wash"
-    public static let readerProgress = "reader.progress"
-    public static let readerStepForward = "reader.stepForward"
-    public static let readerStepBack = "reader.stepBack"
-    public static let readerSpeed = "reader.speed"
     public static let readerFootnote = "reader.footnote"
 
-    // C1 revised rail controls
+    // C1 revised rail controls (canonical IDs)
     public static let readerRail = "reader.rail"
     public static let railSpeed = "rail.speed"
     public static let railSpeedMinus = "rail.speed.minus"
@@ -31,8 +26,18 @@ public enum AccessibilityID {
     public static let railPlayPause = "rail.playPause"
     public static let railPrevSentence = "rail.prevSentence"
     public static let railNextSentence = "rail.nextSentence"
+    public static let railSpeedLadder = "rail.speed.ladder"
     public static let followDot = "follow.dot"
     public static let clock = "clock"
+
+    // Legacy aliases. SwiftUI keeps one identifier per view, so the rail
+    // carries the canonical rail ID. Tests query through these constants,
+    // which point at the rail IDs, so old call sites stay green.
+    public static let readerPlayPause = railPlayPause
+    public static let readerProgress = railScrub
+    public static let readerSpeed = railSpeed
+    public static let readerStepForward = railNextSentence
+    public static let readerStepBack = railPrevSentence
 
     public static let lookupCard = "lookup.card"
     public static let lookupWord = "lookup.word"

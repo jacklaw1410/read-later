@@ -1,6 +1,12 @@
 import ReadLaterCore
 import SwiftUI
 
+/// Vertical right rail for the C1 revised control set: speed stack, vertical
+/// scrub, docked play, sentence chevrons. Replaces the bottom player bar.
+///
+/// Spec: spec/c1-revised-refined.md in read-later-research.
+/// IDs are the canonical rail IDs; legacy `reader.*` constants alias to
+/// them, so one identifier per view still satisfies old queries.
 public struct RailView: View {
     private let progress: PlayerProgress
     private let isPlaying: Bool
@@ -11,8 +17,12 @@ public struct RailView: View {
     private let onScrubbingChanged: (Bool) -> Void
     private let onStepSentence: (Int) -> Void
 
+    /// The 4-value speed ladder. Full 0.1-step range stays on +/-.
+    public static let ladder: [Float] = [0.5, 1.0, 1.2, 1.5]
+
     @State private var scrubFraction: Double?
     @State private var lastFire = Date.distantPast
+    @State private var ladderOpen = false
 
     public init(
         progress: PlayerProgress,
@@ -36,73 +46,211 @@ public struct RailView: View {
 
     public var body: some View {
         VStack(spacing: 8) {
-            VStack(spacing: 2) {
-                Button { stepSpeed(-1) } label: { Text("-").font(.system(size: 16, weight: .bold)) }
-                    .buttonStyle(.plain).frame(width: 44, height: 36)
-                    .accessibilityLabel("Decrease speed")
-                                    Button { stepSpeed(1) } label: { Text(Pace.speedLabel(progress.speed)).font(Theme.chip()) }
-                    .buttonStyle(.plain).frame(width: 44, height: 36)
-                    .accessibilityLabel("Speed \(String(format: "%g", progress.speed)) times")
-                                        .accessibilityIdentifier(AccessibilityID.readerSpeed)
-                Button { stepSpeed(1) } label: { Text("+").font(.system(size: 16, weight: .bold)) }
-                    .buttonStyle(.plain).frame(width: 44, height: 36)
-                    .accessibilityLabel("Increase speed")
-                                }
-            GeometryReader { geo in
-                ZStack(alignment: .top) {
-                    Capsule().fill(Theme.line).frame(width: 4)
-                    Capsule().fill(Theme.brand).frame(width: 4, height: shownFraction * geo.size.height)
-                    Circle().fill(Theme.brand).frame(width: 16, height: 16)
-                        .offset(y: shownFraction * geo.size.height - 8)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .contentShape(Rectangle())
-                .gesture(scrubGesture(height: geo.size.height))
-            }
-            .frame(width: 44, height: 120)
-            .accessibilityLabel("Reading progress")
-            .accessibilityValue(progress.timeLabel)
-                        .accessibilityIdentifier(AccessibilityID.readerProgress)
-            Button(action: onPlayPause) {
-                Image(systemName: playGlyph)
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundStyle(Theme.actionInk)
-                    .frame(width: 44, height: 44)
-                    .background(Theme.actionFill)
-                    .clipShape(Circle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel(playLabel)
-                        .accessibilityIdentifier(AccessibilityID.readerPlayPause)
-            VStack(spacing: 2) {
-                Button { onStepSentence(-1) } label: { Text("<").font(.system(size: 16, weight: .bold)) }
-                    .buttonStyle(.plain).frame(width: 44, height: 36)
-                    .accessibilityLabel("Previous sentence")
-                                        .accessibilityIdentifier(AccessibilityID.readerStepBack)
-                Button { onStepSentence(1) } label: { Text(">").font(.system(size: 16, weight: .bold)) }
-                    .buttonStyle(.plain).frame(width: 44, height: 36)
-                    .accessibilityLabel("Next sentence")
-                                        .accessibilityIdentifier(AccessibilityID.readerStepForward)
-            }
+            speedStack
+            scrubTrack
+            playButton
+            sentenceChevrons
         }
         .frame(width: 44)
         .padding(.vertical, 8)
+        .tint(Theme.brand)
+        .accessibilityIdentifier(AccessibilityID.readerRail)
+        .overlay(alignment: .leading) {
+            if ladderOpen {
+                ladderOverlay
+            }
+        }
+    }
+
+    // MARK: - Speed
+
+    private var speedStack: some View {
+        VStack(spacing: 2) {
+            Button { stepSpeed(-1) } label: {
+                Text("−").font(.system(size: 16, weight: .bold))
+            }
+            .buttonStyle(.plain)
+            .frame(width: 44, height: 36)
+            .accessibilityLabel("Decrease speed")
+            .accessibilityIdentifier(AccessibilityID.railSpeedMinus)
+
+            Button { stepSpeed(1) } label: {
+                Text(Pace.speedLabel(progress.speed)).font(Theme.chip())
+            }
+            .buttonStyle(.plain)
+            .frame(width: 44, height: 36)
+            .accessibilityLabel("Speed \(String(format: "%g", progress.speed)) times")
+            .accessibilityHint("Tap for next step. Long press for the speed ladder.")
+            .accessibilityIdentifier(AccessibilityID.railSpeed)
+            .onLongPressGesture(minimumDuration: 0.5) { ladderOpen = true }
+            .contextMenu {
+                ForEach(Self.ladder, id: \.self) { value in
+                    Button(Pace.speedLabel(value)) {
+                        onSpeed(value)
+                        ladderOpen = false
+                    }
+                }
             }
 
+            Button { stepSpeed(1) } label: {
+                Text("+").font(.system(size: 16, weight: .bold))
+            }
+            .buttonStyle(.plain)
+            .frame(width: 44, height: 36)
+            .accessibilityLabel("Increase speed")
+            .accessibilityIdentifier(AccessibilityID.railSpeedPlus)
+        }
+    }
+
+    private var ladderOverlay: some View {
+        VStack(spacing: 2) {
+            ForEach(Self.ladder, id: \.self) { value in
+                Button {
+                    onSpeed(value)
+                    ladderOpen = false
+                } label: {
+                    Text(Pace.speedLabel(value))
+                        .font(Theme.chip())
+                        .frame(width: 52, height: 36)
+                        .background(value == progress.speed ? Theme.brand : Theme.surface)
+                        .foregroundStyle(value == progress.speed ? Theme.actionInk : Theme.ink)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Speed \(Pace.speedLabel(value))")
+            }
+        }
+        .padding(6)
+        .background(Theme.surface)
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Theme.line, lineWidth: 1))
+        .offset(x: -64)
+        .accessibilityIdentifier(AccessibilityID.railSpeedLadder)
+    }
+
+    // MARK: - Scrub
+
+    private var scrubTrack: some View {
+        GeometryReader { geo in
+            ZStack(alignment: .top) {
+                Capsule().fill(Theme.line).frame(width: 4)
+                Capsule().fill(Theme.brand).frame(width: 4, height: shownFraction * geo.size.height)
+                Circle().fill(Theme.brand).frame(width: 16, height: 16)
+                    .offset(y: shownFraction * geo.size.height - 8)
+                if scrubFraction != nil {
+                    Text(previewLabel)
+                        .font(Theme.chip())
+                        .foregroundStyle(Theme.ink)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 4)
+                        .background(Theme.surface)
+                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                        .overlay(RoundedRectangle(cornerRadius: 6).stroke(Theme.line, lineWidth: 1))
+                        .offset(x: -64, y: shownFraction * geo.size.height - 8)
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .contentShape(Rectangle())
+            .gesture(scrubGesture(height: geo.size.height))
+        }
+        .frame(width: 44, height: 120)
+        .focusable()
+        .onKeyPress(phases: .down) { press in
+            switch press.key {
+            case .upArrow:
+                seekStep(-1)
+                return .handled
+            case .downArrow:
+                seekStep(1)
+                return .handled
+            default:
+                return .ignored
+            }
+        }
+        .accessibilityLabel("Reading progress")
+        .accessibilityValue(progress.timeLabel)
+        .accessibilityAdjustableAction { direction in
+            switch direction {
+            case .increment: seekStep(1)
+            case .decrement: seekStep(-1)
+            @unknown default: break
+            }
+        }
+        .accessibilityIdentifier(AccessibilityID.railScrub)
+    }
+
+    // MARK: - Play + sentences
+
+    private var playButton: some View {
+        Button(action: onPlayPause) {
+            Image(systemName: playGlyph)
+                .font(.system(size: 16, weight: .bold))
+                .foregroundStyle(Theme.actionInk)
+                .frame(width: 44, height: 44)
+                .background(Theme.actionFill)
+                .clipShape(Circle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(playLabel)
+        .accessibilityIdentifier(AccessibilityID.railPlayPause)
+    }
+
+    private var sentenceChevrons: some View {
+        VStack(spacing: 2) {
+            Button { onStepSentence(-1) } label: {
+                Text("‹").font(.system(size: 16, weight: .bold))
+            }
+            .buttonStyle(.plain)
+            .frame(width: 44, height: 36)
+            .accessibilityLabel("Previous sentence")
+            .accessibilityIdentifier(AccessibilityID.railPrevSentence)
+            Button { onStepSentence(1) } label: {
+                Text("›").font(.system(size: 16, weight: .bold))
+            }
+            .buttonStyle(.plain)
+            .frame(width: 44, height: 36)
+            .accessibilityLabel("Next sentence")
+            .accessibilityIdentifier(AccessibilityID.railNextSentence)
+        }
+    }
+
+    // MARK: - Helpers
+
     private var shownFraction: Double { scrubFraction ?? progress.fraction }
+
+    /// Tooltip while scrubbing: word index plus time left.
+    private var previewLabel: String {
+        let fraction = shownFraction
+        let total = max(progress.totalWords, 1)
+        let index = min(total - 1, max(0, Int((fraction * Double(total)).rounded())))
+        let left = max(0, total - index)
+        let seconds = Pace.secondsRemaining(wordsLeft: left, speed: progress.speed)
+        return "\(index)/\(total) · \(clockLabel(seconds: seconds)) left"
+    }
+
     private var playGlyph: String {
         if progress.isFinished { return "arrow.counterclockwise" }
         return isPlaying ? "pause.fill" : "play.fill"
     }
+
     private var playLabel: String {
         if progress.isFinished { return "Replay" }
         return isPlaying ? "Pause" : "Play"
     }
+
     private func stepSpeed(_ delta: Int) {
         let idx = Pace.steps.firstIndex(of: progress.speed) ?? 0
         let next = min(Pace.steps.count - 1, max(0, idx + delta))
         onSpeed(Pace.steps[next])
     }
+
+    /// Keyboard and VoiceOver step, in words. Seeks without scrub state.
+    private func seekStep(_ delta: Int) {
+        guard progress.totalWords > 0 else { return }
+        let target = min(progress.totalWords, max(0, progress.wordIndex + delta))
+        onScrub(Double(target) / Double(progress.totalWords))
+    }
+
     private func scrubGesture(height: CGFloat) -> some Gesture {
         DragGesture(minimumDistance: 0)
             .onChanged { value in
@@ -123,11 +271,14 @@ public struct RailView: View {
                 onScrubbingChanged(false)
             }
     }
+
     private func clamped(_ value: Double) -> Double { min(1, max(0, value)) }
+
     private func firePreviewThrottled(_ fraction: Double) {
         guard Date().timeIntervalSince(lastFire) >= 0.05 else { return }
         firePreview(fraction)
     }
+
     private func firePreview(_ fraction: Double) {
         lastFire = Date()
         onPreviewScrub(fraction)

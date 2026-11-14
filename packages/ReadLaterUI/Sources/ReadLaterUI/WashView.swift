@@ -81,7 +81,7 @@ public func washScrollTarget(
     viewportHeight: CGFloat,
     maxOffset: CGFloat,
     anchorFraction: CGFloat = 0.5,
-    deadBand: CGFloat = 32
+    deadBand: CGFloat = 60
 ) -> CGFloat? {
     let target = min(max(washMidY - viewportHeight * anchorFraction, 0), maxOffset)
     guard abs(target - viewportOriginY) > deadBand else { return nil }

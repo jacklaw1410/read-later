@@ -32,6 +32,26 @@ public struct PlayerProgress: Sendable, Equatable {
         let seconds = Pace.secondsRemaining(wordsLeft: left, speed: speed)
         return "\(clockLabel(seconds: seconds)) left · \(wordIndex)/\(totalWords)"
     }
+
+    /// Clock mode 1: count only, such as "138/447".
+    public var countLabel: String {
+        "\(wordIndex)/\(totalWords)"
+    }
+
+    /// Clock mode 2: percent only, such as "31%".
+    public var percentLabel: String {
+        "\(Int((fraction * 100).rounded()))%"
+    }
+
+    /// Bottom-row clock text for a mode. 0 time+count, 1 count, 2 percent.
+    /// Out-of-range modes fall back to time+count.
+    public func clockText(mode: Int) -> String {
+        switch mode {
+        case 1: return countLabel
+        case 2: return percentLabel
+        default: return timeLabel
+        }
+    }
 }
 
 /// Docked transport bar: play/pause, scrub track, speed, clock.

@@ -365,6 +365,8 @@ struct ReaderScreen: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var washVisible = true
     @State private var returnToken = 0
+    @State private var clockMode = 0
+    @State private var lastProgrammaticFollow = Date.distantPast
 
     var body: some View {
         VStack(spacing: 0) {
@@ -381,14 +383,23 @@ struct ReaderScreen: View {
                         session.tapped(blockID: blockID, slot: slot, word: word)
                     },
                     onTapNote: { session.openNote($0) },
-                    onHold: { session.userScrolled() },
+                    onHold: {
+                        // Programmatic scroll guard (spec: 500 ms). A reveal
+                        // kicked by Return/Follow just moved the page; the
+                        // settling scroll events must not re-hold.
+                        guard Date().timeIntervalSince(lastProgrammaticFollow) >= 0.5 else { return }
+                        session.userScrolled()
+                    },
                     onWashVisibilityChanged: { washVisible = $0 },
                     player: {
                         VStack(spacing: 0) {
                             HoldBadge(
                                 isHeld: session.isHeld,
                                 isPlaying: session.isPlaying,
-                                onResume: { session.resumeFollowing() }
+                                onResume: {
+                                    lastProgrammaticFollow = Date()
+                                    session.resumeFollowing()
+                                }
                             )
                             if shouldShowReturnPill(
                                 washVisible: washVisible,
@@ -396,6 +407,7 @@ struct ReaderScreen: View {
                                 isPlaying: session.isPlaying
                             ) {
                                 ReturnToWashPill {
+                                    lastProgrammaticFollow = Date()
                                     session.resumeFollowing()
                                     returnToken += 1
                                 }
@@ -418,13 +430,21 @@ struct ReaderScreen: View {
                     onStepSentence: { session.stepSentence($0) }
                 )
             }
-            // Bottom row: clock only.
+            // Bottom row: clock only. Tap cycles 0 time+count, 1 count, 2 percent.
             HStack {
                 Spacer()
-                Text(session.progress.timeLabel)
-                    .font(Theme.mono())
-                    .foregroundStyle(Theme.inkSecondary)
-                    .accessibilityIdentifier(AccessibilityID.clock)
+                Button {
+                    clockMode = (clockMode + 1) % 3
+                } label: {
+                    Text(session.progress.clockText(mode: clockMode))
+                        .font(Theme.mono())
+                        .foregroundStyle(Theme.inkSecondary)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Clock \(clockModeLabel), tap to change format")
+                .accessibilityValue(session.progress.clockText(mode: clockMode))
+                .accessibilityAddTraits(.updatesFrequently)
+                .accessibilityIdentifier(AccessibilityID.clock)
             }
             .padding(.horizontal, Theme.screenGutter)
             .frame(height: 32)
@@ -442,11 +462,20 @@ struct ReaderScreen: View {
         }
     }
 
+    private var clockModeLabel: String {
+        switch clockMode {
+        case 1: return "count"
+        case 2: return "percent"
+        default: return "time and count"
+        }
+    }
+
     private var chrome: some View {
         ReaderChrome(
             title: session.document.title,
             autoScroll: session.autoScroll,
             isHeld: session.isHeld,
+            offScreen: !washVisible,
             isFinished: session.isFinished,
             onExit: onExit,
             onRestart: {
@@ -454,7 +483,12 @@ struct ReaderScreen: View {
                 session.resumeFollowing()
             },
             onToggleFollow: {
-                if session.autoScroll { session.holdFollowing() } else { session.resumeFollowing() }
+                if session.autoScroll {
+                    session.holdFollowing()
+                } else {
+                    lastProgrammaticFollow = Date()
+                    session.resumeFollowing()
+                }
             },
             onReplay: { session.togglePlay() }
         )
@@ -531,11 +565,16 @@ struct ReaderChrome: View {
     let title: String
     let autoScroll: Bool
     let isHeld: Bool
+    let offScreen: Bool
     let isFinished: Bool
     let onExit: () -> Void
     let onRestart: () -> Void
     let onToggleFollow: () -> Void
     let onReplay: () -> Void
+
+    private var isFollowing: Bool {
+        autoScroll && !isHeld && !offScreen
+    }
 
     var body: some View {
         HStack(spacing: 8) {
@@ -563,15 +602,16 @@ struct ReaderChrome: View {
 
             Spacer(minLength: 8)
 
-            // Persistent follow dot (C1 revised).
+            // Persistent follow dot (C1 revised). Filled only while
+            // following and on-screen; hollow when held or off-screen.
             Button(action: onToggleFollow) {
-                Image(systemName: (autoScroll && !isHeld) ? "circle.fill" : "circle")
+                Image(systemName: isFollowing ? "circle.fill" : "circle")
                     .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle((autoScroll && !isHeld) ? Theme.brand : Theme.holdInk)
+                    .foregroundStyle(isFollowing ? Theme.brand : Theme.holdInk)
                     .frame(width: 44, height: 44)
             }
             .buttonStyle(.plain)
-            .accessibilityLabel((autoScroll && !isHeld) ? "Following wash, tap to hold" : "Held, tap to resume follow")
+            .accessibilityLabel(isFollowing ? "Following wash, tap to hold" : "Held, tap to resume follow")
             .accessibilityIdentifier(AccessibilityID.followDot)
 
             Menu {

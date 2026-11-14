@@ -22,6 +22,21 @@ import XCTest
 ///   Given the sample article is open at the fast scripted voice
 ///   When I scrub near the end and play
 ///   Then the play button offers replay
+///
+/// Scenario: Rail controls are present
+///   Given the sample article is open
+///   Then the rail, follow dot and clock are visible
+///
+/// Scenario: Clock cycles its format
+///   Given the sample article is open
+///   When I tap the clock
+///   Then the clock shows count, then percent, then time again
+///
+/// Scenario: Follow dot holds and resumes
+///   Given the sample article is open
+///   When I tap the follow dot
+///   Then the dot reports held
+///   And tapping again reports following
 final class ReadingExtendedTests: XCTestCase {
     func test_sentenceStepMovesTheWash() throws {
 #if os(macOS)
@@ -132,13 +147,82 @@ final class ReadingExtendedTests: XCTestCase {
         Artefacts.capture(app, name: "ios-replay", in: self)
     }
 
+    func test_railControlsPresent() throws {
+        let app = AppLauncher.launch()
+        JourneySteps.openSample(app)
+
+        for id in [
+            AccessibilityID.readerRail,
+            AccessibilityID.railSpeed,
+            AccessibilityID.railSpeedMinus,
+            AccessibilityID.railSpeedPlus,
+            AccessibilityID.railScrub,
+            AccessibilityID.railPlayPause,
+            AccessibilityID.railPrevSentence,
+            AccessibilityID.railNextSentence,
+            AccessibilityID.followDot,
+            AccessibilityID.clock,
+        ] {
+            XCTAssertTrue(
+                app.descendants(matching: .any)[id].waitForExistence(timeout: Waits.screen),
+                "missing rail control \(id)"
+            )
+        }
+        Artefacts.capture(app, name: "ios-rail", in: self)
+    }
+
+    func test_clockCyclesMode() throws {
+        let app = AppLauncher.launch()
+        JourneySteps.openSample(app)
+
+        let clock = app.buttons[AccessibilityID.clock]
+        XCTAssertTrue(clock.waitForExistence(timeout: Waits.screen), "the clock is missing")
+        let start = JourneySteps.displayed(clock)
+        XCTAssertTrue(start.contains("left"), "the clock did not start in time+count mode: \(start)")
+
+        JourneySteps.tap(app, clock)
+        waitForPredicate(
+            NSPredicate(format: "label CONTAINS %@", "/"),
+            on: clock,
+            timeout: Waits.state,
+            "the clock did not switch to count mode"
+        )
+        XCTAssertFalse(JourneySteps.displayed(clock).contains("left"), "count mode still shows time")
+
+        JourneySteps.tap(app, clock)
+        waitForPredicate(
+            NSPredicate(format: "label CONTAINS %@", "%"),
+            on: clock,
+            timeout: Waits.state,
+            "the clock did not switch to percent mode"
+        )
+
+        JourneySteps.tap(app, clock)
+        waitForLabel(start, on: clock, timeout: Waits.state, "the clock did not cycle back to time+count")
+    }
+
+    func test_followDotHoldsAndResumes() throws {
+        let app = AppLauncher.launch()
+        JourneySteps.openSample(app)
+
+        let dot = app.buttons[AccessibilityID.followDot]
+        XCTAssertTrue(dot.waitForExistence(timeout: Waits.screen), "the follow dot is missing")
+        XCTAssertEqual(dot.label, "Following wash, tap to hold", "the dot did not start following")
+
+        JourneySteps.tap(app, dot)
+        waitForLabel("Held, tap to resume follow", on: dot, timeout: Waits.state, "the dot did not hold")
+
+        JourneySteps.tap(app, dot)
+        waitForLabel("Following wash, tap to hold", on: dot, timeout: Waits.state, "the dot did not resume")
+    }
+
     // MARK: - Journey steps
 
-    /// Picks one speed from the speed menu and waits for the label to follow.
+    /// Rail speed: tap steps 0.1 per tap (1.0 -> 1.2 is two taps); the
+    /// 4-value ladder (0.5, 1.0, 1.2, 1.5) is the long-press/context menu.
     private func setSpeed(_ app: XCUIApplication, to option: String, label: String) {
-        let speed = app.buttons[AccessibilityID.readerSpeed]
+        let speed = app.buttons[AccessibilityID.railSpeed]
         XCTAssertTrue(speed.waitForExistence(timeout: Waits.screen), "the speed control is missing")
-        // The rail increments one step per tap. 1.0 -> 1.2 is two steps.
         JourneySteps.tap(app, speed)
         JourneySteps.tap(app, speed)
         waitForLabel(label, on: speed, timeout: Waits.state, "the speed change did not land")

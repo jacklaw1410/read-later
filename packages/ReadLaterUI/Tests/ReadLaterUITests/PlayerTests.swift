@@ -45,6 +45,36 @@ final class PlayerTests: XCTestCase {
         )
     }
 
+    // MARK: - PlayerProgress.clockText(mode)
+
+    func testClockTextModes() {
+        let progress = PlayerProgress(wordIndex: 138, totalWords: 447, speed: 1, isFinished: false)
+        XCTAssertEqual(progress.clockText(mode: 0), progress.timeLabel)
+        XCTAssertEqual(progress.clockText(mode: 1), "138/447")
+        XCTAssertEqual(progress.clockText(mode: 2), "31%")
+        XCTAssertEqual(progress.clockText(mode: 99), progress.timeLabel)
+    }
+
+    func testClockTextFinishedModes() {
+        let progress = PlayerProgress(wordIndex: 447, totalWords: 447, speed: 1, isFinished: true)
+        XCTAssertEqual(progress.clockText(mode: 1), "447/447")
+        XCTAssertEqual(progress.clockText(mode: 2), "100%")
+    }
+
+    // MARK: - Rail ladder + ID aliases
+
+    func testRailLadderHoldsFourValues() {
+        XCTAssertEqual(RailView.ladder, [0.5, 1.0, 1.2, 1.5])
+    }
+
+    func testLegacyIDsAliasRailIDs() {
+        XCTAssertEqual(AccessibilityID.readerSpeed, AccessibilityID.railSpeed)
+        XCTAssertEqual(AccessibilityID.readerProgress, AccessibilityID.railScrub)
+        XCTAssertEqual(AccessibilityID.readerPlayPause, AccessibilityID.railPlayPause)
+        XCTAssertEqual(AccessibilityID.readerStepForward, AccessibilityID.railNextSentence)
+        XCTAssertEqual(AccessibilityID.readerStepBack, AccessibilityID.railPrevSentence)
+    }
+
     // MARK: - PlayerProgress.fraction
 
     func testFractionAtStart() {
