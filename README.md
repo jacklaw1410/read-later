@@ -94,29 +94,35 @@ plutil -p ~/Library/Preferences/com.apple.dt.Xcode.plist \
   | grep -A4 IDEProvisioningTeamByIdentifier
 ```
 
-2. Build with the `Device` configuration. It turns signing on, because Xcode
-   does not apply a command-line `CODE_SIGNING_ALLOWED` to a target that sets
-   the value itself. The team id comes from a gitignored file:
+2. Build with the `Debug` configuration and pass signing on the command line.
+   Do not use the `Device` configuration: a custom config name makes the local
+   packages compile Release, which drops the `DEBUG` launch surface and fails
+   with `cannot find 'LaunchOptions' in scope`.
 
 ```bash
 cd apps/apple
 cp Config/Device.xcconfig.example Config/Device.xcconfig  # once; add your team id
 xcodegen generate
 xcodebuild -project ReadLater.xcodeproj -scheme ReadLater \
-  -configuration Device \
+  -configuration Debug \
   -destination 'id=<UDID>' \
   -derivedDataPath build-device \
-  -allowProvisioningUpdates build
+  -allowProvisioningUpdates \
+  CODE_SIGN_IDENTITY="Apple Development" \
+  DEVELOPMENT_TEAM=<TEAM_ID> \
+  CODE_SIGN_STYLE=Automatic build
 ```
 
 `-allowProvisioningUpdates` lets xcodebuild register the App ID and create the
 profile; without it the build fails with `No profiles … were found`. The build
-lands in `build-device/Build/Products/Device-iphoneos/ReadLater.app`.
+lands in `build-device/Build/Products/Debug-iphoneos/ReadLater.app`. A stale
+`Device-iphoneos` folder can sit beside it and fails signature verification on
+install, so install the `Debug-iphoneos` path explicitly.
 
 3. Install and launch:
 
 ```bash
-APP=build-device/Build/Products/Device-iphoneos/ReadLater.app
+APP=build-device/Build/Products/Debug-iphoneos/ReadLater.app
 xcrun devicectl device install app --device <UDID> "$APP"
 xcrun devicectl device process launch --device <UDID> app.readlater.reader
 ```
