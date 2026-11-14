@@ -95,7 +95,8 @@ h1,h2,h3{margin:0;color:var(--text-body);text-wrap:balance}
 h1{margin-bottom:var(--paragraph-gap)}
 h2{margin-top:var(--breathing-room);margin-bottom:var(--stack-gap);padding-top:var(--stack-gap);border-top:0.0625rem solid var(--line-hair)}
 h3{margin:var(--paragraph-gap) 0 var(--inline-gap);color:var(--text-meta)}
-.pair h2{margin-top:0}
+.pair>section{min-width:0}
+.scroll{overflow-x:auto}
 .banner{margin:0 0 var(--stack-gap);max-width:none;padding-bottom:var(--control-gap);color:var(--text-meta);border-bottom:0.0625rem solid var(--line-hair)}
 .lede{color:var(--text-body)}
 .masthead{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:var(--stack-gap) var(--breathing-room)}
@@ -127,7 +128,7 @@ tbody th{color:var(--text-body)}
 .saved{border-left:0.25rem solid var(--mark-saved)}
 .ring{outline:0.125rem solid var(--mark-coincide)}
 .ring-paused{outline:0.125rem solid var(--rule-ring)}
-.scale{display:grid;grid-template-columns:calc(var(--size-max-line-width) / 3) minmax(0,1fr) auto;align-items:center;gap:var(--control-gap);padding:var(--inline-gap) 0;border-top:0.0625rem solid var(--line-hair)}
+.scale{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr) auto;align-items:center;gap:var(--control-gap);padding:var(--inline-gap) 0;border-top:0.0625rem solid var(--line-hair)}
 .scale p{margin:0;color:var(--text-meta)}
 .track{display:block;height:var(--control-gap);background:var(--page-raised);border-radius:var(--radius-chip)}
 .bar{display:block;height:100%;background:var(--brand-link);border-radius:var(--radius-chip)}
@@ -216,7 +217,7 @@ fn chip(var: &str, theme: Option<&str>) -> String {
 /// the primitive chips. A primitive has no mode, so its chips never change.
 fn section_colour(doc: &Doc) -> String {
     let mut out = String::from(
-        "<section>\n<h2>1 · Mode switch</h2>\n<p>Mode governs every semantic colour. Each row shows light and dark side by side.</p>\n<table>\n<thead><tr><th>Role</th><th>Light</th><th>Dark</th><th>Use</th></tr></thead>\n<tbody>\n",
+        "<section>\n<h2>1 · Mode switch</h2>\n<p>Mode governs every semantic colour. Each row shows light and dark side by side.</p>\n<div class=\"scroll\" tabindex=\"0\" role=\"region\" aria-label=\"Semantic colour roles\">\n<table>\n<thead><tr><th>Role</th><th>Light</th><th>Dark</th><th>Use</th></tr></thead>\n<tbody>\n",
     );
     for (role, entry) in &doc.semantic.color {
         let var = kebab(role);
@@ -229,7 +230,7 @@ fn section_colour(doc: &Doc) -> String {
         ));
     }
     out.push_str(
-        "</tbody>\n</table>\n<h3>Layer 1 · primitives</h3>\n<p>Raw values with no meaning. A primitive belongs to no mode, so each chip keeps its colour in light and dark.</p>\n<ul class=\"prims\">\n",
+        "</tbody>\n</table>\n</div>\n<h3>Layer 1 · primitives</h3>\n<p>Raw values with no meaning. A primitive belongs to no mode, so each chip keeps its colour in light and dark.</p>\n<ul class=\"prims\">\n",
     );
     for name in doc.primitive.color.keys() {
         out.push_str(&format!(
@@ -311,7 +312,7 @@ fn section_actions() -> String {
 /// Section 6: every type role, shown with the values its class reads.
 fn section_type(doc: &Doc) -> Result<String, String> {
     let mut out = String::from(
-        "<section>\n<h2>6 · Type ramp</h2>\n<p>Every role at its real size, face and weight. Each sample is the role's own generated class.</p>\n<table>\n<thead><tr><th>Role</th><th>Sample</th><th>Size</th><th>Face</th><th>Weight</th><th>Tracking</th><th>Use</th></tr></thead>\n<tbody>\n",
+        "<section>\n<h2>6 · Type ramp</h2>\n<p>Every role at its real size, face and weight. Each sample is the role's own generated class.</p>\n<div class=\"scroll\" tabindex=\"0\" role=\"region\" aria-label=\"Type roles\">\n<table>\n<thead><tr><th>Role</th><th>Sample</th><th>Size</th><th>Face</th><th>Weight</th><th>Tracking</th><th>Use</th></tr></thead>\n<tbody>\n",
     );
     for (role, spec) in &doc.semantic.typography {
         check_family(&spec.family)?;
@@ -329,7 +330,7 @@ fn section_type(doc: &Doc) -> Result<String, String> {
             desc = esc(&spec.description),
         ));
     }
-    out.push_str("</tbody>\n</table>\n</section>\n");
+    out.push_str("</tbody>\n</table>\n</div>\n</section>\n");
     Ok(out)
 }
 
@@ -405,7 +406,7 @@ fn section_radius(doc: &Doc) -> Result<String, String> {
 /// animation, so durations print as text and restate nothing.
 fn section_motion(doc: &Doc) -> String {
     let mut out = String::from(
-        "<section>\n<h2>9 · Motion</h2>\n<p>Time after static form. The page sets no animation; the platforms read these values.</p>\n<table>\n<thead><tr><th>Role</th><th>Duration</th><th>Curve</th><th>Trigger</th></tr></thead>\n<tbody>\n",
+        "<section>\n<h2>9 · Motion</h2>\n<p>Time after static form. The page sets no animation; the platforms read these values.</p>\n<div class=\"scroll\" tabindex=\"0\" role=\"region\" aria-label=\"Motion roles\">\n<table>\n<thead><tr><th>Role</th><th>Duration</th><th>Curve</th><th>Trigger</th></tr></thead>\n<tbody>\n",
     );
     for (role, spec) in &doc.semantic.motion {
         let curve = match spec.curve.cubic() {
@@ -419,7 +420,7 @@ fn section_motion(doc: &Doc) -> String {
             desc = esc(&spec.description),
         ));
     }
-    out.push_str("</tbody>\n</table>\n</section>\n");
+    out.push_str("</tbody>\n</table>\n</div>\n</section>\n");
     out
 }
 
@@ -433,6 +434,7 @@ pub fn emit_specimen(doc: &Doc) -> Result<String, String> {
         code("design/tokens.json"),
         mode_switch(),
     ));
+    out.push_str("<main>\n");
     out.push_str(&section_colour(doc));
     out.push_str("<div class=\"pair\">\n");
     out.push_str(&section_page());
@@ -445,6 +447,7 @@ pub fn emit_specimen(doc: &Doc) -> Result<String, String> {
     out.push_str(&section_radius(doc)?);
     out.push_str("</div>\n");
     out.push_str(&section_motion(doc));
+    out.push_str("</main>\n");
     out.push_str(MODE_SCRIPT);
     out.push_str("</body>\n</html>\n");
     Ok(out)

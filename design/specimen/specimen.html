@@ -28,7 +28,8 @@ h1,h2,h3{margin:0;color:var(--text-body);text-wrap:balance}
 h1{margin-bottom:var(--paragraph-gap)}
 h2{margin-top:var(--breathing-room);margin-bottom:var(--stack-gap);padding-top:var(--stack-gap);border-top:0.0625rem solid var(--line-hair)}
 h3{margin:var(--paragraph-gap) 0 var(--inline-gap);color:var(--text-meta)}
-.pair h2{margin-top:0}
+.pair>section{min-width:0}
+.scroll{overflow-x:auto}
 .banner{margin:0 0 var(--stack-gap);max-width:none;padding-bottom:var(--control-gap);color:var(--text-meta);border-bottom:0.0625rem solid var(--line-hair)}
 .lede{color:var(--text-body)}
 .masthead{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:var(--stack-gap) var(--breathing-room)}
@@ -60,7 +61,7 @@ tbody th{color:var(--text-body)}
 .saved{border-left:0.25rem solid var(--mark-saved)}
 .ring{outline:0.125rem solid var(--mark-coincide)}
 .ring-paused{outline:0.125rem solid var(--rule-ring)}
-.scale{display:grid;grid-template-columns:calc(var(--size-max-line-width) / 3) minmax(0,1fr) auto;align-items:center;gap:var(--control-gap);padding:var(--inline-gap) 0;border-top:0.0625rem solid var(--line-hair)}
+.scale{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr) auto;align-items:center;gap:var(--control-gap);padding:var(--inline-gap) 0;border-top:0.0625rem solid var(--line-hair)}
 .scale p{margin:0;color:var(--text-meta)}
 .track{display:block;height:var(--control-gap);background:var(--page-raised);border-radius:var(--radius-chip)}
 .bar{display:block;height:100%;background:var(--brand-link);border-radius:var(--radius-chip)}
@@ -84,9 +85,11 @@ figcaption span{color:var(--text-meta)}
 <button type="button" data-mode="dark" aria-pressed="false">Dark</button>
 </div>
 </header>
+<main>
 <section>
 <h2>1 · Mode switch</h2>
 <p>Mode governs every semantic colour. Each row shows light and dark side by side.</p>
+<div class="scroll" tabindex="0" role="region" aria-label="Semantic colour roles">
 <table>
 <thead><tr><th>Role</th><th>Light</th><th>Dark</th><th>Use</th></tr></thead>
 <tbody>
@@ -121,6 +124,7 @@ figcaption span{color:var(--text-meta)}
 <tr data-role="hold.border"><th scope="row"><code class="t-code">hold.border</code></th><td><span class="chip" data-theme="light" style="background:var(--hold-border)"></span></td><td><span class="chip" data-theme="dark" style="background:var(--hold-border)"></span></td><td>Hold badge edge.</td></tr>
 </tbody>
 </table>
+</div>
 <h3>Layer 1 · primitives</h3>
 <p>Raw values with no meaning. A primitive belongs to no mode, so each chip keeps its colour in light and dark.</p>
 <ul class="prims">
@@ -216,6 +220,7 @@ figcaption span{color:var(--text-meta)}
 <section>
 <h2>6 · Type ramp</h2>
 <p>Every role at its real size, face and weight. Each sample is the role's own generated class.</p>
+<div class="scroll" tabindex="0" role="region" aria-label="Type roles">
 <table>
 <thead><tr><th>Role</th><th>Sample</th><th>Size</th><th>Face</th><th>Weight</th><th>Tracking</th><th>Use</th></tr></thead>
 <tbody>
@@ -233,6 +238,7 @@ figcaption span{color:var(--text-meta)}
 <tr data-type="mono"><th scope="row"><code class="t-code">mono</code></th><td><span class="t-mono">Ag</span></td><td class="num">11</td><td>mono</td><td>regular</td><td class="num">none</td><td>NOTES label, footnote marker.</td></tr>
 </tbody>
 </table>
+</div>
 </section>
 <div class="pair">
 <section>
@@ -265,6 +271,7 @@ figcaption span{color:var(--text-meta)}
 <section>
 <h2>9 · Motion</h2>
 <p>Time after static form. The page sets no animation; the platforms read these values.</p>
+<div class="scroll" tabindex="0" role="region" aria-label="Motion roles">
 <table>
 <thead><tr><th>Role</th><th>Duration</th><th>Curve</th><th>Trigger</th></tr></thead>
 <tbody>
@@ -274,7 +281,9 @@ figcaption span{color:var(--text-meta)}
 <tr data-motion="entryProgress"><th scope="row"><code class="t-code">entryProgress</code></th><td class="num">300 ms</td><td>cubic 0.42, 0, 0.58, 1</td><td>Entry progress bar.</td></tr>
 </tbody>
 </table>
+</div>
 </section>
+</main>
 <script>
 (function () {
   var root = document.documentElement;
