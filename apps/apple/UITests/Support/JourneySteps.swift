@@ -1,0 +1,134 @@
+import ReadLaterUI
+import XCTest
+#if os(macOS)
+import AppKit
+#endif
+
+/// One phrasing for journey steps that differ by platform.
+///
+/// iOS exposes a segmented picker as a SegmentedControl of Buttons and menu
+/// content as Buttons. macOS exposes a segmented picker as a RadioGroup of
+/// RadioButtons and menu content as MenuItems. Identifiers and labels are
+/// shared, so only the element type branches here. Queries branch; taps do
+/// not: delivery is the runner's job.
+enum JourneySteps {
+    /// Opens the sample article from a fresh entry screen. A first click on
+    /// an inactive macOS window can be swallowed by activation, so a tap
+    /// that leaves the entry screen up is retried once.
+    static func openSample(_ app: XCUIApplication) {
+        let open = app.buttons[AccessibilityID.entryOpen]
+        XCTAssertTrue(open.waitForExistence(timeout: Waits.screen), "entry screen did not appear")
+        tap(app, open)
+        #if os(macOS)
+        if open.waitForExistence(timeout: 3) {
+            JourneySteps.tap(app, open)
+        }
+        #endif
+        XCTAssertTrue(
+            JourneySteps.texts(app, id: AccessibilityID.readerTitle).waitForExistence(timeout: Waits.screen),
+            "the article did not open"
+        )
+    }
+
+    /// Text by identifier or label. On macOS a heading-trait text surfaces
+    /// as AXHeading, which XCUI types as Other and never StaticText, so
+    /// the query must be type-agnostic there. iOS keeps the typed query.
+    static func texts(_ app: XCUIApplication, id: String) -> XCUIElement {
+        #if os(macOS)
+        app.descendants(matching: .any)[id]
+        #else
+        app.staticTexts[id]
+        #endif
+    }
+
+    /// The string a Text element actually shows. macOS exposes heading-trait
+    /// and some text elements via `value` with an empty `label`; iOS uses
+    /// `label`. Prefer `label`, fall back to `value`.
+    static func displayed(_ element: XCUIElement) -> String {
+        if !element.label.isEmpty { return element.label }
+        return (element.value as? String) ?? ""
+    }
+
+    /// Every tap routes through here. On macOS the tap synthesizes at
+    /// screen coordinates, so the app must own the tap point: assert
+    /// frontmost first and re-front until it is. A launch-time front is
+    /// not enough; anything re-fronted later re-covers the window.
+    static func tap(_ app: XCUIApplication, _ element: XCUIElement) {
+        front(app)
+        #if os(macOS)
+        element.click()
+        #else
+        element.tap()
+        #endif
+    }
+
+    /// Brings the app under test frontmost and waits until the window
+    /// manager agrees. Matches by bundle URL, not identifier: a stale
+    /// copy from another build directory shares the identifier and
+    /// would satisfy an identifier check while stealing the tap.
+    /// Elsewhere a no-op.
+    static func front(_ app: XCUIApplication) {
+        #if os(macOS)
+        let appURL = Bundle.main.bundleURL
+            .deletingLastPathComponent()
+            .appendingPathComponent("ReadLater.app", isDirectory: true)
+            .standardizedFileURL
+        for _ in 0..<10 {
+            if NSWorkspace.shared.frontmostApplication?.bundleURL?.standardizedFileURL == appURL {
+                return
+            }
+            let open = Process()
+            open.executableURL = URL(fileURLWithPath: "/usr/bin/open")
+            open.arguments = ["-a", appURL.path]
+            try? open.run()
+            Thread.sleep(forTimeInterval: 1)
+        }
+        #endif
+    }
+
+    /// The "Text" segment of the entry mode picker.
+    static func textModeOption(_ app: XCUIApplication) -> XCUIElement {
+        #if os(macOS)
+        app.radioButtons["Text"]
+        #else
+        app.buttons["Text"]
+        #endif
+    }
+
+    /// Dismisses the software keyboard when one is showing. macOS has no
+    /// keyboard bar, so this is a no-op there.
+    static func dismissKeyboardIfPresent(_ app: XCUIApplication) {
+        #if os(iOS)
+        if app.buttons["Done"].exists {
+            app.buttons["Done"].tap()
+        }
+        #endif
+    }
+
+    /// A settings segmented picker: appearance or play side.
+    static func settingsControl(_ app: XCUIApplication, id: String) -> XCUIElement {
+        #if os(macOS)
+        app.radioGroups[id]
+        #else
+        app.segmentedControls[id]
+        #endif
+    }
+
+    /// One option inside a settings picker.
+    static func settingsOption(in control: XCUIElement, label: String) -> XCUIElement {
+        #if os(macOS)
+        control.radioButtons[label]
+        #else
+        control.buttons[label]
+        #endif
+    }
+
+    /// One row of the speed menu.
+    static func speedChoice(_ app: XCUIApplication, label: String) -> XCUIElement {
+        #if os(macOS)
+        app.menuItems[label]
+        #else
+        app.buttons[label]
+        #endif
+    }
+}

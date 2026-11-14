@@ -141,6 +141,7 @@ struct LibraryView: View {
                     .font(.system(size: 15))
                     .foregroundStyle(Theme.ink)
                     .lineLimit(2)
+                    .accessibilityIdentifier(row.title)
                 HStack(spacing: 6) {
                     let place = LibraryCopy.placeLine(
                         wordIndex: row.wordIndex, totalWords: row.totalWords)

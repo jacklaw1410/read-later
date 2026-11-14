@@ -2,6 +2,9 @@ import ReadLaterCore
 import ReadLaterStore
 import ReadLaterUI
 import SwiftUI
+#if os(macOS)
+import AppKit
+#endif
 
 /// A started article with a saved place, for the launch affordance.
 struct PendingResume: Equatable {
@@ -266,6 +269,18 @@ struct RootView: View {
             }
         }
         .frame(minWidth: 380, minHeight: 560)
+#if os(macOS)
+        .onAppear {
+            let options = LaunchOptions()
+            if options.isActive {
+                DispatchQueue.main.async {
+                    for window in NSApplication.shared.windows where window.isVisible {
+                        window.level = .floating
+                    }
+                }
+            }
+        }
+#endif
         .background(Theme.paper)
         .preferredColorScheme((debugAppearance ?? Appearance(rawValue: appearance))?.colorScheme)
         .environment(\.locale, debugLocale ?? .autoupdatingCurrent)
@@ -532,6 +547,7 @@ struct ReaderChrome: View {
                 .foregroundStyle(Theme.inkSecondary)
                 .lineLimit(1)
                 .truncationMode(.tail)
+                .accessibilityLabel(title)
                 .accessibilityIdentifier(AccessibilityID.readerTitle)
 
             Spacer(minLength: 8)

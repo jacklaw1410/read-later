@@ -281,6 +281,11 @@ func revealWash(in textView: NSTextView) {
 /// the glyph bounding rect gives the prototype's shape, keeps the layout
 /// untouched, and lets the paused and coincidence states carry an edge rule.
 final class _WashedTextView: NSTextView {
+    weak var coordinator: _WashableTextView.Coordinator?
+    override func mouseDown(with event: NSEvent) {
+        let point = convert(event.locationInWindow, from: nil)
+        coordinator?.handleClick(at: point, in: self)
+    }
     /// UTF-16 length of the block text. Anything past it is the footnote
     /// marker run, which is a target, not a word.
     var bodyLength = 0 {
@@ -495,6 +500,7 @@ struct _WashableTextView: NSViewRepresentable {
         textView.autoresizingMask = [.width]
         let click = NSClickGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleClick(_:)))
         textView.addGestureRecognizer(click)
+        textView.coordinator = context.coordinator
         context.coordinator.onTapWord = onTapWord
         context.coordinator.onTapMarker = onTapMarker
         context.coordinator.bodyLength = (text as NSString).length
@@ -582,11 +588,14 @@ struct _WashableTextView: NSViewRepresentable {
         var lastRevealedMarks: [WashMark] = []
 
         @objc func handleClick(_ gesture: NSClickGestureRecognizer) {
-            guard let view = gesture.view as? NSTextView,
-                  let layoutManager = view.layoutManager,
+            guard let view = gesture.view as? NSTextView else { return }
+            handleClick(at: gesture.location(in: view), in: view)
+        }
+
+        func handleClick(at point: NSPoint, in view: NSTextView) {
+            guard let layoutManager = view.layoutManager,
                   let container = view.textContainer
             else { return }
-            let point = gesture.location(in: view)
             let index = layoutManager.characterIndex(for: point, in: container, fractionOfDistanceBetweenInsertionPoints: nil)
             // The marker is a target, not a word, and the prototype grows it to
             // 44 pt for the finger. A tap inside that grown rect counts even

@@ -19,25 +19,22 @@ import XCTest
 final class EntryExtendedTests: XCTestCase {
     func test_resumeAfterRelaunch() {
         var app = AppLauncher.launch()
-
-        let open = app.buttons[AccessibilityID.entryOpen]
-        XCTAssertTrue(open.waitForExistence(timeout: Waits.screen), "entry screen did not appear")
-        open.tap()
-
-        let title = app.staticTexts[AccessibilityID.readerTitle]
-        XCTAssertTrue(title.waitForExistence(timeout: Waits.screen), "the article did not open")
-        XCTAssertEqual(title.label, "The Quiet Power of Slow Reading")
+        JourneySteps.openSample(app)
+        XCTAssertEqual(
+            JourneySteps.displayed(JourneySteps.texts(app, id: AccessibilityID.readerTitle)),
+            "The Quiet Power of Slow Reading"
+        )
 
         // Play briefly so a place is recorded, then pause. The pause
         // checkpoints the word; the exit below flushes it to the store.
         let play = app.buttons[AccessibilityID.readerPlayPause]
         XCTAssertTrue(play.waitForExistence(timeout: Waits.screen), "the play button is missing")
-        play.tap()
+        JourneySteps.tap(app, play)
         waitForLabel("Pause", on: play, "playback did not start")
-        play.tap()
+        JourneySteps.tap(app, play)
         waitForLabel("Play", on: play, "pause did not land")
 
-        app.buttons[AccessibilityID.readerBack].tap()
+        JourneySteps.tap(app, app.buttons[AccessibilityID.readerBack])
         XCTAssertTrue(
             app.buttons[AccessibilityID.entryOpen].waitForExistence(timeout: Waits.screen),
             "back did not return to the entry screen"
@@ -53,14 +50,14 @@ final class EntryExtendedTests: XCTestCase {
             resume.waitForExistence(timeout: Waits.screen),
             "the resume offer did not appear after relaunch"
         )
-        resume.tap()
+        JourneySteps.tap(app, resume)
 
-        let reopened = app.staticTexts[AccessibilityID.readerTitle]
+        let reopened = JourneySteps.texts(app, id: AccessibilityID.readerTitle)
         XCTAssertTrue(
             reopened.waitForExistence(timeout: Waits.screen),
             "resume did not reopen the article"
         )
-        XCTAssertEqual(reopened.label, "The Quiet Power of Slow Reading")
+        XCTAssertEqual(JourneySteps.displayed(reopened), "The Quiet Power of Slow Reading")
         Artefacts.capture(app, name: "ios-resumed", in: self)
     }
 
@@ -70,29 +67,28 @@ final class EntryExtendedTests: XCTestCase {
         let open = app.buttons[AccessibilityID.entryOpen]
         XCTAssertTrue(open.waitForExistence(timeout: Waits.screen), "entry screen did not appear")
 
-        let textMode = app.buttons["Text"]
+        let textMode = JourneySteps.textModeOption(app)
         XCTAssertTrue(textMode.waitForExistence(timeout: Waits.screen), "the Text mode option is missing")
-        textMode.tap()
+        JourneySteps.tap(app, textMode)
 
         let raw = app.textViews[AccessibilityID.entryRawField]
         XCTAssertTrue(raw.waitForExistence(timeout: Waits.state), "the raw text field did not appear")
-        raw.tap()
+        JourneySteps.tap(app, raw)
         // Six words: the derived title is the text itself, no ellipsis.
         raw.typeText("Slow readers keep the whole field")
 
         // The keyboard Done dismisses the editor; the open tap must land on
         // the button, not the keyboard.
-        if app.buttons["Done"].exists {
-            app.buttons["Done"].tap()
-        }
-        open.tap()
+        JourneySteps.dismissKeyboardIfPresent(app)
+        let openAgain = app.buttons[AccessibilityID.entryOpen]
+        JourneySteps.tap(app, openAgain)
 
-        let title = app.staticTexts[AccessibilityID.readerTitle]
+        let title = JourneySteps.texts(app, id: AccessibilityID.readerTitle)
         XCTAssertTrue(
             title.waitForExistence(timeout: Waits.screen),
             "the pasted article did not open"
         )
-        XCTAssertEqual(title.label, "Slow readers keep the whole field")
+        XCTAssertEqual(JourneySteps.displayed(title), "Slow readers keep the whole field")
         Artefacts.capture(app, name: "ios-raw", in: self)
     }
 

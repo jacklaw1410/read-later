@@ -19,45 +19,49 @@ final class LibraryTests: XCTestCase {
         let app = AppLauncher.launch()
         let title = ArticleLibrary.title
 
-        let open = app.buttons[AccessibilityID.entryOpen]
-        XCTAssertTrue(open.waitForExistence(timeout: Waits.screen), "entry screen did not appear")
-        open.tap()
+        JourneySteps.openSample(app)
 
+        JourneySteps.tap(app, app.buttons[AccessibilityID.readerBack])
         XCTAssertTrue(
-            app.staticTexts[AccessibilityID.readerTitle].waitForExistence(timeout: Waits.screen),
-            "the article did not open"
+            app.buttons[AccessibilityID.entryOpen].waitForExistence(timeout: Waits.screen),
+            "exit did not return to entry"
         )
 
-        app.buttons[AccessibilityID.readerBack].tap()
-        XCTAssertTrue(open.waitForExistence(timeout: Waits.screen), "exit did not return to entry")
-
-        app.buttons[AccessibilityID.entryLibrary].tap()
-        let actions = app.buttons[AccessibilityID.libraryActions]
+        JourneySteps.tap(app, app.buttons[AccessibilityID.entryLibrary])
+        let actions = app.descendants(matching: .any)[AccessibilityID.libraryActions]
         XCTAssertTrue(actions.waitForExistence(timeout: Waits.screen), "the library did not open")
 
         // Save keeps the row.
-        actions.tap()
+        let actions1 = app.descendants(matching: .any)[AccessibilityID.libraryActions]
+        JourneySteps.tap(app, actions1)
         let save = app.descendants(matching: .any)[AccessibilityID.librarySave]
         XCTAssertTrue(save.waitForExistence(timeout: Waits.state), "the save item did not appear")
-        save.tap()
-        let row = app.staticTexts[title]
+        JourneySteps.tap(app, save)
+        let row = JourneySteps.texts(app, id: title)
         XCTAssertTrue(row.waitForExistence(timeout: Waits.state), "the saved row is missing")
 
         // Refresh drops the cached plan; the row and the place stay.
-        actions.tap()
+        let actions2 = app.descendants(matching: .any)[AccessibilityID.libraryActions]
+        JourneySteps.tap(app, actions2)
         let refresh = app.descendants(matching: .any)[AccessibilityID.libraryRefresh]
         XCTAssertTrue(refresh.waitForExistence(timeout: Waits.state), "the refresh item did not appear")
-        refresh.tap()
+        JourneySteps.tap(app, refresh)
         XCTAssertTrue(row.waitForExistence(timeout: Waits.state), "the refreshed row is missing")
 
         // Remove drops the row after confirmation.
-        actions.tap()
+        let actions3 = app.descendants(matching: .any)[AccessibilityID.libraryActions]
+        JourneySteps.tap(app, actions3)
         let remove = app.descendants(matching: .any)[AccessibilityID.libraryRemove]
         XCTAssertTrue(remove.waitForExistence(timeout: Waits.state), "the remove item did not appear")
-        remove.tap()
+        JourneySteps.tap(app, remove)
         let alert = app.alerts.firstMatch
-        XCTAssertTrue(alert.waitForExistence(timeout: Waits.state), "the remove confirmation did not appear")
-        alert.buttons[LibraryCopy.remove].tap()
+        let sheet = app.sheets.firstMatch
+        let container = alert.exists ? alert : sheet
+        XCTAssertTrue(container.waitForExistence(timeout: Waits.state), "the remove confirmation did not appear")
+        let confirm = container.buttons[LibraryCopy.remove].exists
+            ? container.buttons[LibraryCopy.remove]
+            : app.buttons[LibraryCopy.remove]
+        JourneySteps.tap(app, confirm)
         XCTAssertTrue(
             row.waitForNonExistence(timeout: Waits.state),
             "the removed row is still showing"

@@ -20,11 +20,16 @@ final class EntryTests: XCTestCase {
             app.textFields[AccessibilityID.entryLinkField].exists,
             "the link field is missing"
         )
-        open.tap()
+        JourneySteps.tap(app, open)
+        #if os(macOS)
+        if open.waitForExistence(timeout: 3) {
+            JourneySteps.tap(app, open)
+        }
+        #endif
 
-        let title = app.staticTexts[AccessibilityID.readerTitle]
+        let title = JourneySteps.texts(app, id: AccessibilityID.readerTitle)
         XCTAssertTrue(title.waitForExistence(timeout: Waits.screen), "the article did not open")
-        XCTAssertEqual(title.label, "The Quiet Power of Slow Reading")
+        XCTAssertEqual(JourneySteps.displayed(title), "The Quiet Power of Slow Reading")
         Artefacts.capture(app, name: "ios-article", in: self)
     }
 }

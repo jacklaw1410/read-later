@@ -30,14 +30,14 @@ final class LifecycleTests: XCTestCase {
 
         let open = app.buttons[AccessibilityID.entryOpen]
         XCTAssertTrue(open.waitForExistence(timeout: Waits.screen), "entry screen did not appear")
-        open.tap()
+        JourneySteps.tap(app, open)
 
-        let title = app.staticTexts[AccessibilityID.readerTitle]
+        let title = JourneySteps.texts(app, id: AccessibilityID.readerTitle)
         XCTAssertTrue(title.waitForExistence(timeout: Waits.screen), "the article did not open")
 
         let play = app.buttons[AccessibilityID.readerPlayPause]
         XCTAssertTrue(play.waitForExistence(timeout: Waits.screen), "the play button is missing")
-        play.tap()
+        JourneySteps.tap(app, play)
         waitForLabel("Pause", on: play, timeout: Waits.state, "playback did not start")
 
         XCUIDevice.shared.press(.home)
@@ -57,24 +57,16 @@ final class LifecycleTests: XCTestCase {
         // Keeps the e2e preset (scripted voice, determinism). Asserts only
         // Play/Pause label transitions, never timing or pace.
         let app = AppLauncher.launch()
-
-        let open = app.buttons[AccessibilityID.entryOpen]
-        XCTAssertTrue(open.waitForExistence(timeout: Waits.screen), "entry screen did not appear")
-        open.tap()
-
-        XCTAssertTrue(
-            app.staticTexts[AccessibilityID.readerTitle].waitForExistence(timeout: Waits.screen),
-            "the article did not open"
-        )
+        JourneySteps.openSample(app)
 
         let play = app.buttons[AccessibilityID.readerPlayPause]
         XCTAssertTrue(play.waitForExistence(timeout: Waits.screen), "the play button is missing")
         XCTAssertEqual(play.label, "Play", "the reader did not start paused")
 
-        play.tap()
+        JourneySteps.tap(app, play)
         waitForLabel("Pause", on: play, timeout: Waits.state, "playback did not start")
 
-        play.tap()
+        JourneySteps.tap(app, play)
         waitForLabel("Play", on: play, timeout: Waits.state, "pause did not land")
         Artefacts.capture(app, name: "ios-voice-state", in: self)
     }
