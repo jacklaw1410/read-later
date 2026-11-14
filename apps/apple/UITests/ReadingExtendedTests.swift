@@ -175,30 +175,36 @@ final class ReadingExtendedTests: XCTestCase {
         let app = AppLauncher.launch()
         JourneySteps.openSample(app)
 
+        // The label names the control; the clock text lives in `value`.
         let clock = app.buttons[AccessibilityID.clock]
         XCTAssertTrue(clock.waitForExistence(timeout: Waits.screen), "the clock is missing")
-        let start = JourneySteps.displayed(clock)
+        let start = JourneySteps.displayedValue(clock)
         XCTAssertTrue(start.contains("left"), "the clock did not start in time+count mode: \(start)")
 
         JourneySteps.tap(app, clock)
         waitForPredicate(
-            NSPredicate(format: "label CONTAINS %@", "/"),
+            NSPredicate(format: "value CONTAINS %@", "/"),
             on: clock,
             timeout: Waits.state,
             "the clock did not switch to count mode"
         )
-        XCTAssertFalse(JourneySteps.displayed(clock).contains("left"), "count mode still shows time")
+        XCTAssertFalse(JourneySteps.displayedValue(clock).contains("left"), "count mode still shows time")
 
         JourneySteps.tap(app, clock)
         waitForPredicate(
-            NSPredicate(format: "label CONTAINS %@", "%"),
+            NSPredicate(format: "value CONTAINS %@", "%"),
             on: clock,
             timeout: Waits.state,
             "the clock did not switch to percent mode"
         )
 
         JourneySteps.tap(app, clock)
-        waitForLabel(start, on: clock, timeout: Waits.state, "the clock did not cycle back to time+count")
+        waitForPredicate(
+            NSPredicate(format: "value == %@", start),
+            on: clock,
+            timeout: Waits.state,
+            "the clock did not cycle back to time+count"
+        )
     }
 
     func test_followDotHoldsAndResumes() throws {

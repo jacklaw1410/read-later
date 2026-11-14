@@ -274,8 +274,25 @@ struct RootView: View {
             let options = LaunchOptions()
             if options.isActive {
                 DispatchQueue.main.async {
+                    // The e2e suite drives clicks at screen coordinates. A
+                    // window on another display can sit in a full-screen
+                    // Space, where XCUI cannot hit it at all, and a restored
+                    // frame can hang past a screen edge, where no display
+                    // owns the point. Keep the whole test window inside the
+                    // built-in display so the host desktop elsewhere does
+                    // not block the run.
+                    let home = NSScreen.screens.first
                     for window in NSApplication.shared.windows where window.isVisible {
                         window.level = .floating
+                        guard let home else { continue }
+                        let area = home.visibleFrame
+                        guard !area.contains(window.frame) else { continue }
+                        var frame = window.frame
+                        frame.origin.x = area.minX + 40
+                        frame.origin.y = area.maxY - frame.height - 60
+                        frame.origin.x = min(max(frame.origin.x, area.minX), max(area.maxX - frame.width, area.minX))
+                        frame.origin.y = min(max(frame.origin.y, area.minY), max(area.maxY - frame.height, area.minY))
+                        window.setFrame(frame, display: true)
                     }
                 }
             }

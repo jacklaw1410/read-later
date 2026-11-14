@@ -54,6 +54,10 @@ public struct RailView: View {
         .frame(width: 44)
         .padding(.vertical, 8)
         .tint(Theme.brand)
+        // A container identifier propagates to every descendant and hides
+        // their own IDs. `children: .contain` keeps the rail as one group
+        // while each control keeps the identifier the tests query.
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier(AccessibilityID.readerRail)
         .overlay(alignment: .leading) {
             if ladderOpen {

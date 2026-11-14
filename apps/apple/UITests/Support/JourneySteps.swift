@@ -49,6 +49,13 @@ enum JourneySteps {
         return (element.value as? String) ?? ""
     }
 
+    /// The accessibility value alone. Use it for a control whose `label`
+    /// names the control and whose `value` carries the content, such as the
+    /// reader clock.
+    static func displayedValue(_ element: XCUIElement) -> String {
+        (element.value as? String) ?? ""
+    }
+
     /// Every tap routes through here. On macOS the tap synthesizes at
     /// screen coordinates, so the app must own the tap point: assert
     /// frontmost first and re-front until it is. A launch-time front is
