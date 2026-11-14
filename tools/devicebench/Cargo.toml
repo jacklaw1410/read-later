@@ -1,0 +1,16 @@
+[package]
+name = "readlater-devicebench"
+version = "0.1.0"
+edition = "2024"
+publish = false
+description = "Record the Mac microphone and measure reader response on the phone: clock alignment from click markers, pause-to-silence and play-to-sound latency."
+
+[dependencies]
+cpal = "0.15"
+hound = "3.5"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[profile.release]
+strip = true
+lto = true
