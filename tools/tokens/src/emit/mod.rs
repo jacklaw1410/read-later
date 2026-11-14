@@ -43,7 +43,7 @@ pub fn emit_all(doc: &Doc, fresh: &specimen::Freshness) -> Result<Vec<Output>, S
         },
         Output {
             path: "design/specimen/index.html",
-            text: specimen::emit_index(fresh)?,
+            text: specimen::emit_index(doc, fresh)?,
         },
     ])
 }

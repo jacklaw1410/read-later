@@ -1,10 +1,11 @@
 //! The visual specimen: layers 1 and 2 as one HTML page, plus an index.
 //!
 //! The page reads `design/generated/tokens.css` through a link and CSS custom
-//! properties. It holds no literal: no hex, no point size, no dp. A reviewer
-//! opens it from a checkout with `file://`, so every same-repo link is
-//! relative. Research-repo links pin a commit, because two checkouts share no
-//! stable path.
+//! properties. Text takes its size, face, weight and line from one generated
+//! class per typography role, so the page never copies a type value. The page
+//! body holds no length literal and no hex; a reviewer opens it from a
+//! checkout with `file://`, so every same-repo link is relative. Research-repo
+//! links pin a commit, because two checkouts share no stable path.
 
 use std::path::Path;
 
@@ -77,101 +78,245 @@ fn esc(text: &str) -> String {
         .replace('>', "&gt;")
 }
 
-/// Page chrome. Every colour, size and gap reads a token through `var()`.
-/// Rem is kept only for structure no token owns: hairline widths, the radius
-/// preview width, and the grid column minimum. The font stacks are the
-/// reference's stacks. No font family is a token, so they live here and not in
-/// `tokens.css`, which stays token-only.
+/// Page chrome. Colour, gap and radius read a token through `var()`. Rem and
+/// unitless numbers stay only where no token owns the value: the page width,
+/// hairline widths, the chip height multiplier and the outline width. The font
+/// stacks are the reference's stacks. No font stack is a token, so they live
+/// here and not in `tokens.css`, which stays token-only.
 const CHROME: &str = r#"
 :root{--font-serif:"Iowan Old Style",Palatino,Georgia,serif;--font-sans:-apple-system,BlinkMacSystemFont,"SF Pro Text",Arial,sans-serif;--font-mono:ui-monospace,Menlo,monospace}
-body{background:var(--page-paper);color:var(--text-body);font-family:var(--font-sans);font-size:var(--type-body-size);line-height:var(--type-body-line);margin:0 auto;max-width:64rem;padding:var(--screen-gutter)}
-h1,h2,h3{font-family:var(--font-serif);color:var(--text-body)}
+body{margin:0 auto;max-width:64rem;padding:var(--breathing-room) var(--screen-gutter);background:var(--page-paper);color:var(--text-body)}
 [data-theme]{color:var(--text-body)}
-h1{font-size:var(--type-title-size)}
-h2{font-size:var(--type-heading-size)}
-h3{font-size:var(--type-caption-size)}
-a{color:var(--brand-link)}
-.banner{border:0.125rem solid var(--line-hair);background:var(--page-surface);color:var(--text-body);padding:var(--control-gap) var(--stack-gap);font-weight:bold}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(13rem,1fr));gap:var(--stack-gap)}
-.cell{border:0.0625rem solid var(--line-hair);padding:var(--control-gap);background:var(--page-surface)}
-.sw{height:var(--size-min-target)}
-.preview{width:6rem}
-.stack{padding:var(--screen-gutter);background:var(--page-raised)}
-.stack .stack{margin-top:var(--stack-gap)}
-.row{display:flex;align-items:center;gap:var(--control-gap);margin:var(--inline-gap) 0}
-.bar{height:var(--control-gap)}
-.demo{border:0.0625rem solid var(--line-hair);padding:var(--screen-gutter);margin:var(--paragraph-gap) 0;background:var(--page-surface)}
-.frame{border:0.0625rem solid var(--line-hair);background:var(--page-surface)}
+::selection{background:var(--mark-selected);color:var(--text-body)}
+:focus-visible{outline:0.125rem solid var(--rule-ring);outline-offset:0.125rem}
+a{color:var(--brand-link);text-decoration-thickness:0.0625rem;text-underline-offset:0.125em}
+p{margin:0 0 var(--stack-gap);max-width:var(--size-max-line-width);text-wrap:pretty}
+h1,h2,h3{margin:0;color:var(--text-body);text-wrap:balance}
+h1{margin-bottom:var(--paragraph-gap)}
+h2{margin-top:var(--breathing-room);margin-bottom:var(--stack-gap);padding-top:var(--stack-gap);border-top:0.0625rem solid var(--line-hair)}
+h3{margin:var(--paragraph-gap) 0 var(--inline-gap);color:var(--text-meta)}
+.pair h2{margin-top:0}
+.banner{margin:0 0 var(--stack-gap);max-width:none;padding-bottom:var(--control-gap);color:var(--text-meta);border-bottom:0.0625rem solid var(--line-hair)}
+.lede{color:var(--text-body)}
+.num{font-variant-numeric:tabular-nums}
+code{font-family:var(--font-mono)}
+table{width:100%;border-collapse:collapse}
+th,td{padding:var(--inline-gap) var(--control-gap);border-top:0.0625rem solid var(--line-hair);text-align:left;vertical-align:middle;font-weight:normal}
+thead th{color:var(--text-meta)}
+tbody th{color:var(--text-body)}
+.chip{display:inline-block;width:var(--size-min-target);height:calc(var(--stack-gap) * 2);border:0.0625rem solid var(--line-hair);border-radius:var(--radius-chip);vertical-align:middle}
+.prims{display:flex;flex-wrap:wrap;gap:var(--control-gap) var(--stack-gap);list-style:none;margin:var(--stack-gap) 0 0;padding:0}
+.prims li{display:flex;flex-direction:column;gap:var(--inline-gap);width:calc(var(--size-min-target) * 2)}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(calc(var(--size-max-line-width) / 2),1fr));gap:var(--breathing-room)}
+.panel{display:flex;flex-direction:column;gap:var(--stack-gap);padding:var(--stack-gap);border:0.0625rem solid var(--line-hair);background:var(--page-paper)}
+.layer{padding:var(--control-gap) var(--stack-gap);border:0.0625rem solid var(--line-hair)}
+.layer .layer{margin-top:var(--control-gap)}
+.hair{width:100%;margin:0;border:0;border-top:0.0625rem solid var(--line-hair)}
+.defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(calc(var(--size-max-line-width) / 3),1fr));gap:var(--inline-gap) var(--breathing-room);margin:0}
+.defs dd{margin:0;color:var(--text-meta)}
+.defs div{display:flex;flex-direction:column;gap:var(--inline-gap)}
+.acts{display:grid;grid-template-columns:repeat(auto-fit,minmax(calc(var(--size-max-line-width) / 4),1fr));gap:var(--stack-gap) var(--breathing-room)}
+.act{display:flex;flex-direction:column;align-items:flex-start;gap:var(--control-gap)}
+.act p{margin:0;color:var(--text-meta)}
 .pad{padding:var(--control-gap) var(--stack-gap)}
+.saved{border-left:0.25rem solid var(--mark-saved)}
 .ring{outline:0.125rem solid var(--mark-coincide)}
 .ring-paused{outline:0.125rem solid var(--rule-ring)}
-.saved{border-left:0.25rem solid var(--mark-saved)}
-.prose{max-width:var(--size-max-line-width)}
+.scale{display:grid;grid-template-columns:calc(var(--size-max-line-width) / 3) minmax(0,1fr) auto;align-items:center;gap:var(--control-gap);padding:var(--inline-gap) 0;border-top:0.0625rem solid var(--line-hair)}
+.scale p{margin:0;color:var(--text-meta)}
+.track{display:block;height:var(--control-gap);background:var(--page-raised);border-radius:var(--radius-chip)}
+.bar{display:block;height:100%;background:var(--brand-link);border-radius:var(--radius-chip)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(calc(var(--size-max-line-width) / 4),1fr));gap:var(--stack-gap)}
+figure{margin:0;display:flex;flex-direction:column;align-items:flex-start;gap:var(--control-gap)}
+figcaption{display:flex;flex-direction:column;gap:var(--inline-gap)}
+figcaption span{color:var(--text-meta)}
+.shape{display:block;width:var(--size-min-target);height:var(--size-min-target);background:var(--chip-surface);border:0.0625rem solid var(--line-hair)}
+.wide{width:100%}
 "#;
 
-fn head(title: &str) -> String {
+/// Weight names the validator allows, with the CSS number each one stands for.
+const WEIGHTS: [(&str, u16); 4] = [
+    ("regular", 400),
+    ("medium", 500),
+    ("semibold", 600),
+    ("bold", 700),
+];
+
+fn weight_number(name: &str) -> Result<u16, String> {
+    WEIGHTS
+        .iter()
+        .find(|(known, _)| *known == name)
+        .map(|(_, number)| *number)
+        .ok_or_else(|| format!("unknown weight {name:?}"))
+}
+
+/// Family names select one of the stacks in `CHROME`. Any other name fails the
+/// build, so a new family cannot render in a fallback face without notice.
+fn check_family(family: &str) -> Result<(), String> {
+    match family {
+        "serif" | "sans" | "mono" => Ok(()),
+        other => Err(format!("unknown family {other:?}")),
+    }
+}
+
+/// One class per typography role, generated from its token. The page styles
+/// text only through `class="t-<role>"`, so no size, face, weight or line is
+/// copied into the page.
+fn type_classes(doc: &Doc) -> Result<String, String> {
+    let mut out = String::new();
+    for (role, spec) in &doc.semantic.typography {
+        let k = kebab(role);
+        check_family(&spec.family)?;
+        let weight = weight_number(&spec.weight)?;
+        let line = if spec.line.is_some() {
+            format!("var(--type-{k}-line)")
+        } else {
+            // No token owns a line for this role. A unitless ratio keeps the
+            // text from collapsing onto its own leading.
+            "1.5".to_string()
+        };
+        out.push_str(&format!(
+            ".t-{k}{{font-family:var(--font-{family});font-size:var(--type-{k}-size);font-weight:{weight};line-height:{line}",
+            family = spec.family,
+        ));
+        if spec.tracking.is_some() {
+            out.push_str(&format!(";letter-spacing:var(--type-{k}-tracking)"));
+        }
+        out.push_str("}\n");
+    }
+    Ok(out)
+}
+
+fn head(title: &str, types: &str) -> String {
     format!(
-        "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>{title}</title>\n<link rel=\"stylesheet\" href=\"../generated/tokens.css\">\n<style>{CHROME}</style>\n</head>\n<body>\n"
+        "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>{title}</title>\n<link rel=\"stylesheet\" href=\"../generated/tokens.css\">\n<style>{types}{CHROME}</style>\n</head>\n<body class=\"t-note\">\n"
     )
 }
 
-/// Section 1: every semantic role in both modes, plus the primitive strip.
-fn section_modes(doc: &Doc) -> String {
-    let mut out = String::from("<h2>1 · Mode switch</h2>\n<p>Mode governs every semantic colour. Same roles, light and dark.</p>\n");
-    for mode in ["light", "dark"] {
-        out.push_str(&format!("<h3>{mode}</h3>\n<div data-theme=\"{mode}\">\n<div class=\"grid\">\n"));
-        for (role, entry) in &doc.semantic.color {
-            out.push_str(&format!(
-                "<div class=\"cell\" data-role=\"{role}\"><div class=\"sw\" style=\"background:var(--{var})\"></div><div><b>{role}</b></div><div>{desc}</div></div>\n",
-                var = kebab(role),
-                desc = esc(&entry.description),
-            ));
-        }
-        out.push_str("</div>\n</div>\n");
+/// A `<code>` element that prints a token name in the mono role.
+fn code(name: &str) -> String {
+    format!("<code class=\"t-code\">{}</code>", esc(name))
+}
+
+/// A colour chip that reads one semantic role. `theme` pins the mode the chip
+/// resolves in, so light and dark chips can sit side by side in one row.
+fn chip(var: &str, theme: Option<&str>) -> String {
+    let attr = theme
+        .map(|mode| format!(" data-theme=\"{mode}\""))
+        .unwrap_or_default();
+    format!("<span class=\"chip\"{attr} style=\"background:var(--{var})\"></span>")
+}
+
+/// Section 1: each semantic role on one row, light and dark side by side, then
+/// the primitive chips. A primitive has no mode, so its chips never change.
+fn section_colour(doc: &Doc) -> String {
+    let mut out = String::from(
+        "<section>\n<h2>1 · Mode switch</h2>\n<p>Mode governs every semantic colour. Each row shows light and dark side by side.</p>\n<table>\n<thead><tr><th>Role</th><th>Light</th><th>Dark</th><th>Use</th></tr></thead>\n<tbody>\n",
+    );
+    for (role, entry) in &doc.semantic.color {
+        let var = kebab(role);
+        out.push_str(&format!(
+            "<tr data-role=\"{role}\"><th scope=\"row\">{name}</th><td>{light}</td><td>{dark}</td><td>{desc}</td></tr>\n",
+            name = code(role),
+            light = chip(&var, Some("light")),
+            dark = chip(&var, Some("dark")),
+            desc = esc(&entry.description),
+        ));
     }
-    out.push_str("<h3>Layer 1 · primitives</h3>\n<p>Raw values, no meaning. A primitive belongs to no mode, so these swatches stay the same in light and dark. Each reads <code>--primitive-*</code> from the linked CSS.</p>\n<div class=\"grid\">\n");
+    out.push_str(
+        "</tbody>\n</table>\n<h3>Layer 1 · primitives</h3>\n<p>Raw values with no meaning. A primitive belongs to no mode, so each chip keeps its colour in light and dark.</p>\n<ul class=\"prims\">\n",
+    );
     for name in doc.primitive.color.keys() {
         out.push_str(&format!(
-            "<div class=\"cell\" data-primitive=\"{name}\"><div class=\"sw\" style=\"background:var(--primitive-{var})\"></div><div><b>{name}</b></div></div>\n",
+            "<li data-primitive=\"{name}\"><span class=\"chip\" style=\"background:var(--primitive-{var})\"></span><code class=\"t-mono\">{name}</code></li>\n",
             var = kebab(name),
         ));
     }
-    out.push_str("</div>\n");
+    out.push_str("</ul>\n</section>\n");
     out
 }
 
-/// Section 2: paper, surface and raised as a stack, not three squares.
+/// Section 2: paper, surface and raised as nested layers, then body text in
+/// the page's own roles.
 fn section_page() -> String {
     String::from(
-        "<h2>2 · Page and text</h2>\n<p>Foundation before accents.</p>\n<div data-theme=\"light\">\n<div class=\"demo\" style=\"background:var(--page-paper)\">\n<div><b>page.paper</b> · Reader and entry background.</div>\n<div class=\"stack\" style=\"background:var(--page-surface)\">\n<div><b>page.surface</b> · Card, player bar, chrome.</div>\n<div class=\"stack\" style=\"background:var(--page-raised)\">\n<div><b>page.raised</b> · Hold badge fill, mono chip.</div>\n</div>\n</div>\n<p class=\"prose\" style=\"color:var(--text-body);font-size:var(--type-body-size)\">Body text reads here. The wash will mark the spoken word.</p>\n<p style=\"color:var(--text-meta);font-size:var(--type-caption-size)\">Meta line · provenance · clock</p>\n<hr style=\"border-color:var(--line-hair)\">\n<div>line.hair · Divider, field border.</div>\n</div>\n</div>\n",
+        r#"<section>
+<h2>2 · Page and text</h2>
+<p>Foundation before accents. Paper is the page, surface holds cards, raised holds badges.</p>
+<div class="panel" data-theme="light">
+<div class="layer" style="background:var(--page-paper)"><code class="t-code">page.paper</code> · Reader and entry background.
+<div class="layer" style="background:var(--page-surface)"><code class="t-code">page.surface</code> · Card, player bar, chrome.
+<div class="layer" style="background:var(--page-raised)"><code class="t-code">page.raised</code> · Hold badge fill, mono chip.</div>
+</div>
+</div>
+<p class="t-body" style="color:var(--text-body)">Body text reads here. The wash will mark the spoken word.</p>
+<p class="t-caption" style="color:var(--text-meta)">Meta line · provenance · clock</p>
+<hr class="hair">
+<p><code class="t-code">line.hair</code> · Divider and field border.</p>
+</div>
+</section>
+"#,
     )
 }
 
 /// Section 3: the spoken word, the tapped word, their overlap, the frozen wash.
 fn section_voice() -> String {
     String::from(
-        "<h2>3 · Voice and tap</h2>\n<p>Core product interaction.</p>\n<div data-theme=\"light\">\n<div class=\"demo\" style=\"background:var(--page-paper);color:var(--text-body);font-size:var(--type-body-size)\">\n<span>The voice is </span><span style=\"background:var(--wash-fill);color:var(--wash-ink)\">on this word</span><span>, the reader </span><span style=\"background:var(--mark-selected)\">tapped that one</span><span>, and </span><span class=\"ring\" style=\"background:var(--wash-fill);color:var(--wash-ink)\">this one is both</span><span>.</span>\n</div>\n<ul>\n<li><b>wash.fill</b> plus <b>wash.ink</b> · the spoken word.</li>\n<li><b>mark.selected</b> · the tapped word.</li>\n<li><b>mark.coincide</b> · ring when the tap lands on the spoken word.</li>\n</ul>\n<div class=\"demo\" style=\"background:var(--page-paper);color:var(--text-body);font-size:var(--type-body-size)\">\n<span>Audio paused: </span><span class=\"ring-paused\" style=\"background:var(--rule-paused)\">the wash freezes here</span><span>.</span>\n</div>\n<ul>\n<li><b>rule.paused</b> plus <b>rule.ring</b> · the frozen wash.</li>\n</ul>\n</div>\n",
+        r#"<section>
+<h2>3 · Voice and tap</h2>
+<p>The core interaction. The voice marks one word, a tap marks another, and a tap on the spoken word rings it.</p>
+<div class="panel t-body" data-theme="light" style="color:var(--text-body)">
+<p><span>The voice is </span><span style="background:var(--wash-fill);color:var(--wash-ink)">on this word</span><span>, the reader </span><span style="background:var(--mark-selected)">tapped that one</span><span>, and </span><span class="ring" style="background:var(--wash-fill);color:var(--wash-ink)">this one is both</span><span>.</span></p>
+<p><span>Audio paused: </span><span class="ring-paused" style="background:var(--rule-paused)">the wash freezes here</span><span>.</span></p>
+</div>
+<dl class="defs">
+<div><dt>{wash_fill} + {wash_ink}</dt><dd>The spoken word.</dd></div>
+<div><dt>{mark_selected}</dt><dd>The tapped word.</dd></div>
+<div><dt>{mark_coincide}</dt><dd>Ring when the tap lands on the spoken word.</dd></div>
+<div><dt>{rule_paused} + {rule_ring}</dt><dd>The frozen wash.</dd></div>
+</dl>
+</section>
+"#,
     )
+    .replace("{wash_fill}", &code("wash.fill"))
+    .replace("{wash_ink}", &code("wash.ink"))
+    .replace("{mark_selected}", &code("mark.selected"))
+    .replace("{mark_coincide}", &code("mark.coincide"))
+    .replace("{rule_paused}", &code("rule.paused"))
+    .replace("{rule_ring}", &code("rule.ring"))
 }
 
 /// Section 4: controls after reading states. Saved marks are tier 2.
 fn section_actions() -> String {
     String::from(
-        "<h2>4 · Actions and marks</h2>\n<p>Controls after reading states.</p>\n<div data-theme=\"light\">\n<div class=\"demo\" style=\"background:var(--page-surface)\">\n<div class=\"row\"><span class=\"pad\" style=\"background:var(--action-fill);color:var(--action-ink);border-radius:var(--radius-button)\">Listen</span><span><b>action.fill</b> plus <b>action.ink</b> · primary button. The fill stays dark in both modes so white ink keeps its contrast.</span></div>\n<div class=\"row\"><span class=\"pad\" style=\"background:var(--ghost-fill);color:var(--text-body);border-radius:var(--radius-button)\">Later</span><span><b>ghost.fill</b> · secondary button fill on a card.</span></div>\n<div class=\"row\"><span style=\"color:var(--brand-link)\"><u>Quoted passage</u></span><span><b>brand.link</b> · quote rule, track fill, marker ink.</span></div>\n<div class=\"row\"><span class=\"saved pad\" style=\"background:var(--mark-saved-fill)\">Kept for study</span><span><b>mark.saved</b> plus <b>mark.savedFill</b> · tier 2, not part of the flow.</span></div>\n</div>\n</div>\n",
+        r#"<section>
+<h2>4 · Actions and marks</h2>
+<p>Controls sit after the reading states. Saved marks are tier 2 and stay out of the flow.</p>
+<div class="acts">
+<div class="act"><span class="pad" style="background:var(--action-fill);color:var(--action-ink);border-radius:var(--radius-button)">Listen</span><p>action.fill + action.ink. Primary button. Stays dark in both modes so white ink keeps its contrast.</p></div>
+<div class="act"><span class="pad" style="background:var(--ghost-fill);color:var(--text-body);border-radius:var(--radius-button)">Later</span><p>ghost.fill. Secondary button fill on a card.</p></div>
+<div class="act"><span style="color:var(--brand-link)"><u>Quoted passage</u></span><p>brand.link. Quote rule, track fill, marker ink.</p></div>
+<div class="act"><span class="saved pad" style="background:var(--mark-saved-fill)">Kept for study</span><p>mark.saved + mark.savedFill. Tier 2, not part of the flow.</p></div>
+</div>
+</section>
+"#,
     )
 }
 
-/// Section 6: all 12 type roles at their real size. Sizes print as bare
-/// numbers: a `px` value in the page would restate the token.
-fn section_type(doc: &Doc) -> String {
-    let mut out = String::from("<h2>6 · Type ramp</h2>\n<p>Editorial voice. Every role at its real size from the CSS variables.</p>\n<div data-theme=\"light\">\n<div class=\"demo\" style=\"background:var(--page-paper);color:var(--text-body)\">\n");
+/// Section 6: every type role, shown with the values its class reads.
+fn section_type(doc: &Doc) -> Result<String, String> {
+    let mut out = String::from(
+        "<section>\n<h2>6 · Type ramp</h2>\n<p>Every role at its real size, face and weight. Each sample is the role's own generated class.</p>\n<table>\n<thead><tr><th>Role</th><th>Sample</th><th>Size</th><th>Face</th><th>Weight</th><th>Tracking</th><th>Use</th></tr></thead>\n<tbody>\n",
+    );
     for (role, spec) in &doc.semantic.typography {
+        check_family(&spec.family)?;
         let tracking = spec
             .tracking
-            .map(|t| format!(" · tracking {t} em"))
-            .unwrap_or_default();
+            .map(|t| format!("{t} em"))
+            .unwrap_or_else(|| "none".to_string());
         out.push_str(&format!(
-            "<div class=\"row\" data-type=\"{role}\"><span style=\"font-size:var(--type-{var}-size)\">Ag</span><span><b>{role}</b> · size {size} · {family} {weight}{tracking} · {desc}</span></div>\n",
+            "<tr data-type=\"{role}\"><th scope=\"row\">{name}</th><td><span class=\"t-{var}\">Ag</span></td><td class=\"num\">{size}</td><td>{family}</td><td>{weight}</td><td class=\"num\">{tracking}</td><td>{desc}</td></tr>\n",
+            name = code(role),
             var = kebab(role),
             size = spec.size,
             family = spec.family,
@@ -179,8 +324,8 @@ fn section_type(doc: &Doc) -> String {
             desc = esc(&spec.description),
         ));
     }
-    out.push_str("</div>\n</div>\n");
-    out
+    out.push_str("</tbody>\n</table>\n</section>\n");
+    Ok(out)
 }
 
 /// A size step the page must show. A missing one fails the build, so the page
@@ -192,30 +337,38 @@ fn size<'a>(doc: &'a Doc, role: &str) -> Result<&'a ScalarRole, String> {
         .ok_or_else(|| format!("size.{role} is required by the specimen"))
 }
 
-/// Section 7: six space steps as bars, plus the reading measure.
+/// Section 7: each space step as a bar, plus the reading measure. The track
+/// behind each bar is the full extent, so a short bar reads as short.
 fn section_space(doc: &Doc) -> Result<String, String> {
-    let mut out = String::from("<h2>7 · Space and measure</h2>\n<p>Rhythm needs a bar. Each bar is the step itself, from the CSS variable.</p>\n<div data-theme=\"light\">\n<div class=\"demo\" style=\"background:var(--page-paper);color:var(--text-body)\">\n");
+    let mut out = String::from(
+        "<section>\n<h2>7 · Space and measure</h2>\n<p>Each bar is the step itself, read from its CSS variable.</p>\n",
+    );
     for (role, spec) in &doc.semantic.space {
         out.push_str(&format!(
-            "<div class=\"row\" data-space=\"{role}\"><div class=\"bar\" style=\"width:var(--{var});background:var(--brand-link)\"></div><span><b>{role}</b> · step {value} · {desc}</span></div>\n",
+            "<div class=\"scale\" data-space=\"{role}\"><div>{name}<p class=\"t-caption\">{desc}</p></div><span class=\"track\"><span class=\"bar\" style=\"width:var(--{var})\"></span></span><span class=\"num t-mono\">{value}</span></div>\n",
+            name = code(role),
             var = kebab(role),
-            value = spec.value,
             desc = esc(&spec.description),
+            value = spec.value,
         ));
     }
     let measure = size(doc, "maxLineWidth")?;
     out.push_str(&format!(
-        "<div class=\"row\" data-space=\"maxLineWidth\"><div class=\"bar\" style=\"width:100%;max-width:var(--size-max-line-width);background:var(--brand-link)\"></div><span><b>maxLineWidth</b> · step {value} · {desc}</span></div>\n",
-        value = measure.value,
+        "<div class=\"scale\" data-space=\"maxLineWidth\"><div>{name}<p class=\"t-caption\">{desc}</p></div><span class=\"track\"><span class=\"bar\" style=\"width:100%\"></span></span><span class=\"num t-mono\">{value}</span></div>\n",
+        name = code("maxLineWidth"),
         desc = esc(&measure.description),
+        value = measure.value,
     ));
-    out.push_str("</div>\n</div>\n");
+    out.push_str("</section>\n");
     Ok(out)
 }
 
-/// Section 8: six radii, the 44 target, the 58 player bar.
+/// Section 8: each radius on a token-sized square, then the three sizes as
+/// shapes at their own heights.
 fn section_radius(doc: &Doc) -> Result<String, String> {
-    let mut out = String::from("<h2>8 · Radius and size</h2>\n<p>Shape beside scale.</p>\n<div data-theme=\"light\">\n<div class=\"demo\" style=\"background:var(--page-paper);color:var(--text-body)\">\n");
+    let mut out = String::from(
+        "<section>\n<h2>8 · Radius and size</h2>\n<p>Shape beside scale. Each tile draws the token, not a copy of it.</p>\n<div class=\"tiles\">\n",
+    );
     for (role, spec) in &doc.semantic.radius {
         let flag = if spec.status.as_deref() == Some("provisional") {
             " · provisional"
@@ -223,66 +376,69 @@ fn section_radius(doc: &Doc) -> Result<String, String> {
             ""
         };
         out.push_str(&format!(
-            "<div class=\"row\" data-radius=\"{role}\"><div class=\"sw preview\" style=\"background:var(--chip-surface);border-radius:var(--radius-{var})\"></div><span><b>{role}</b> · step {value}{flag} · {desc}</span></div>\n",
+            "<figure data-radius=\"{role}\"><span class=\"shape\" style=\"border-radius:var(--radius-{var})\"></span><figcaption>{name}<span class=\"num t-mono\">{value}{flag}</span><span class=\"t-caption\">{desc}</span></figcaption></figure>\n",
+            name = code(role),
             var = kebab(role),
             value = spec.value,
             desc = esc(&spec.description),
         ));
     }
-    let target = size(doc, "minTarget")?;
-    let bar = size(doc, "playerBar")?;
-    let chrome = size(doc, "chrome")?;
-    out.push_str(&format!(
-        "<div class=\"row\" data-size=\"minTarget\"><div style=\"width:var(--size-min-target);height:var(--size-min-target);background:var(--action-fill)\"></div><span><b>minTarget</b> · step {value} · {desc}</span></div>\n",
-        value = target.value,
-        desc = esc(&target.description),
-    ));
-    out.push_str(&format!(
-        "<div class=\"row\" data-size=\"playerBar\"><div class=\"frame\" style=\"width:100%;height:var(--size-player-bar)\"></div><span><b>playerBar</b> · step {value} · {desc}</span></div>\n",
-        value = bar.value,
-        desc = esc(&bar.description),
-    ));
-    out.push_str(&format!(
-        "<div class=\"row\" data-size=\"chrome\"><div class=\"frame\" style=\"width:100%;height:var(--size-chrome);background:var(--page-raised)\"></div><span><b>chrome</b> · step {value} · {desc}</span></div>\n",
-        value = chrome.value,
-        desc = esc(&chrome.description),
-    ));
-    out.push_str("</div>\n</div>\n");
+    for (role, height) in [("minTarget", "--size-min-target"), ("playerBar", "--size-player-bar"), ("chrome", "--size-chrome")] {
+        let spec = size(doc, role)?;
+        out.push_str(&format!(
+            "<figure data-size=\"{role}\"><span class=\"shape wide\" style=\"height:var({height})\"></span><figcaption>{name}<span class=\"num t-mono\">{value}</span><span class=\"t-caption\">{desc}</span></figcaption></figure>\n",
+            name = code(role),
+            value = spec.value,
+            desc = esc(&spec.description),
+        ));
+    }
+    out.push_str("</div>\n</section>\n");
     Ok(out)
 }
 
-/// Section 9: four motions with duration, trigger and curve points. Durations
-/// print as text; the page sets no animation, so it restates nothing.
+/// Section 9: four motions with duration, trigger and curve. The page sets no
+/// animation, so durations print as text and restate nothing.
 fn section_motion(doc: &Doc) -> String {
-    let mut out = String::from("<h2>9 · Motion</h2>\n<p>Time after static form. Trigger names come from the token descriptions.</p>\n<div data-theme=\"light\">\n<div class=\"demo\" style=\"background:var(--page-paper);color:var(--text-body)\">\n");
+    let mut out = String::from(
+        "<section>\n<h2>9 · Motion</h2>\n<p>Time after static form. The page sets no animation; the platforms read these values.</p>\n<table>\n<thead><tr><th>Role</th><th>Duration</th><th>Curve</th><th>Trigger</th></tr></thead>\n<tbody>\n",
+    );
     for (role, spec) in &doc.semantic.motion {
         let curve = match spec.curve.cubic() {
             Some([x1, y1, x2, y2]) => format!("cubic {x1}, {y1}, {x2}, {y2}"),
             None => spec.curve.name.clone(),
         };
         out.push_str(&format!(
-            "<div class=\"row\" data-motion=\"{role}\"><span><b>{role}</b> · {duration} ms · {desc} · {curve}</span></div>\n",
+            "<tr data-motion=\"{role}\"><th scope=\"row\">{name}</th><td class=\"num\">{duration} ms</td><td>{curve}</td><td>{desc}</td></tr>\n",
+            name = code(role),
             duration = spec.duration,
             desc = esc(&spec.description),
         ));
     }
-    out.push_str("</div>\n</div>\n");
+    out.push_str("</tbody>\n</table>\n</section>\n");
     out
 }
 
-/// Layers 1 and 2: sections 1–4 and 6–9. Blocks and the boundary note are
-/// slice 3; the page must not show what the tokens cannot yet back.
+/// Layers 1 and 2: sections 1–4 and 6–9, in the same order as before. Blocks
+/// and the boundary note are slice 3; the page must not show what the tokens
+/// cannot yet back.
 pub fn emit_specimen(doc: &Doc, fresh: &Freshness) -> Result<String, String> {
-    let mut out = head("Calm Editorial specimen · layers 1–2");
-    out.push_str(&format!("<p class=\"banner\">{}</p>\n", banner(fresh)));
-    out.push_str("<h1>Calm Editorial specimen</h1>\n<p>Layers 1 and 2 from <b>design/tokens.json</b>. Every swatch, bar and row reads the linked CSS file. This page holds no colour, no point size, no platform value.</p>\n");
-    out.push_str(&section_modes(doc));
+    let mut out = head("Calm Editorial specimen · layers 1–2", &type_classes(doc)?);
+    out.push_str(&format!(
+        "<header>\n<p class=\"banner t-caption\">{}</p>\n<h1 class=\"t-title\">Calm Editorial specimen</h1>\n<p class=\"t-body lede\">Layers 1 and 2 of {}. Every value on this page reads a CSS variable from the linked file. The page holds no colour, point size or platform value.</p>\n</header>\n",
+        banner(fresh),
+        code("design/tokens.json"),
+    ));
+    out.push_str(&section_colour(doc));
+    out.push_str("<div class=\"pair\">\n");
     out.push_str(&section_page());
     out.push_str(&section_voice());
+    out.push_str("</div>\n");
     out.push_str(&section_actions());
-    out.push_str(&section_type(doc));
+    out.push_str(&section_type(doc)?);
+    out.push_str("<div class=\"pair\">\n");
     out.push_str(&section_space(doc)?);
     out.push_str(&section_radius(doc)?);
+    out.push_str("</div>\n");
     out.push_str(&section_motion(doc));
     out.push_str("</body>\n</html>\n");
     Ok(out)
@@ -290,11 +446,14 @@ pub fn emit_specimen(doc: &Doc, fresh: &Freshness) -> Result<String, String> {
 
 /// The single entry point. Relative links stay inside one checkout; the
 /// research repo has no stable relative path, so those links pin a commit.
-pub fn emit_index(fresh: &Freshness) -> Result<String, String> {
-    let mut out = head("Calm Editorial specimen · index");
-    out.push_str(&format!("<p class=\"banner\">{}</p>\n", banner(fresh)));
+pub fn emit_index(doc: &Doc, fresh: &Freshness) -> Result<String, String> {
+    let mut out = head("Calm Editorial specimen · index", &type_classes(doc)?);
+    out.push_str(&format!(
+        "<p class=\"banner t-caption\">{}</p>\n",
+        banner(fresh)
+    ));
     out.push_str(
-        "<h1>Specimen index</h1>\n<ul>\n<li><a href=\"specimen.html\">specimen.html</a> · layers 1–2, the page itself.</li>\n<li><a href=\"../generated/tokens.css\">tokens.css</a> · the CSS variables the page reads.</li>\n<li><a href=\"../../docs/design-system.md\">design-system.md</a> · the written system.</li>\n<li><a href=\"../../docs/gloss-samples.html\">gloss-samples.html</a> · the review sheet.</li>\n<li><a href=\"../../docs/adr/\">adr/</a> · architecture decisions.</li>\n</ul>\n<h2>Captures</h2>\n<p>No PNG is committed. Take them locally with <code>ReadLater.app/Contents/MacOS/ReadLater --snapshot &lt;dir&gt;</code> from <code>apps/apple/Sources/App/SnapshotHarness.swift</code>; the harness pins the window to 430 by 760. A release copies the set into <code>evidence/</code>, dated, never edited.</p>\n<h2>Research repo</h2>\n<ul>\n",
+        "<h1 class=\"t-title\">Specimen index</h1>\n<ul>\n<li><a href=\"specimen.html\">specimen.html</a> · layers 1–2, the page itself.</li>\n<li><a href=\"../generated/tokens.css\">tokens.css</a> · the CSS variables the page reads.</li>\n<li><a href=\"../../docs/design-system.md\">design-system.md</a> · the written system.</li>\n<li><a href=\"../../docs/gloss-samples.html\">gloss-samples.html</a> · the review sheet.</li>\n<li><a href=\"../../docs/adr/\">adr/</a> · architecture decisions.</li>\n</ul>\n<h2>Captures</h2>\n<p>No PNG is committed. Take them locally with <code>ReadLater.app/Contents/MacOS/ReadLater --snapshot &lt;dir&gt;</code> from <code>apps/apple/Sources/App/SnapshotHarness.swift</code>; the harness pins the window to 430 by 760. A release copies the set into <code>evidence/</code>, dated, never edited.</p>\n<h2>Research repo</h2>\n<ul>\n",
     );
     for (name, path) in [
         ("layer-3-components.md", "design/layer-3-components.md"),
@@ -344,6 +503,18 @@ mod tests {
             sha: "54f6b16".to_string(),
             date: "2026-11-12".to_string(),
         }
+    }
+
+    /// The real `tokens.json`, not the fixture. The fixture lacks most roles,
+    /// so a test over it could not catch a typo in a page variable name.
+    fn real_doc() -> Doc {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .and_then(Path::parent)
+            .expect("tools/tokens is two levels below the root");
+        let text = std::fs::read_to_string(root.join("design/tokens.json"))
+            .expect("tokens.json reads");
+        Doc::parse(&text).expect("tokens.json parses")
     }
 
     #[test]
@@ -408,7 +579,7 @@ mod tests {
 
     #[test]
     fn the_index_holds_no_literal() {
-        let html = emit_index(&fresh()).expect("index emits");
+        let html = emit_index(&real_doc(), &fresh()).expect("index emits");
         assert_eq!(restated(&html), Vec::<String>::new());
     }
 
@@ -432,7 +603,6 @@ mod tests {
         let html = emit_specimen(&fixture(), &fresh()).expect("specimen emits");
         assert!(html.contains("data-primitive=\"ink.900\""));
         assert!(html.contains("var(--primitive-ink-900)"));
-        assert!(!html.contains("var(--text-body)\"></div><div><b>ink.900"));
     }
 
     #[test]
@@ -446,24 +616,12 @@ mod tests {
 
     #[test]
     fn both_pages_carry_the_banner() {
-        let doc = fixture();
+        let doc = real_doc();
         let line = banner(&fresh());
         let specimen = emit_specimen(&doc, &fresh()).expect("specimen emits");
-        let index = emit_index(&fresh()).expect("index emits");
+        let index = emit_index(&doc, &fresh()).expect("index emits");
         assert!(specimen.contains(&line));
         assert!(index.contains(&line));
-    }
-
-    /// The real `tokens.json`, not the fixture. The fixture lacks most roles,
-    /// so a test over it could not catch a typo in a page variable name.
-    fn real_doc() -> Doc {
-        let root = Path::new(env!("CARGO_MANIFEST_DIR"))
-            .parent()
-            .and_then(Path::parent)
-            .expect("tools/tokens is two levels below the root");
-        let text = std::fs::read_to_string(root.join("design/tokens.json"))
-            .expect("tokens.json reads");
-        Doc::parse(&text).expect("tokens.json parses")
     }
 
     /// Custom properties a stylesheet declares (`--name:`) and reads
@@ -496,7 +654,7 @@ mod tests {
         let (from_css, _) = declared_and_read(&css);
         for html in [
             emit_specimen(&doc, &fresh()).expect("specimen emits"),
-            emit_index(&fresh()).expect("index emits"),
+            emit_index(&doc, &fresh()).expect("index emits"),
         ] {
             let (from_page, read) = declared_and_read(&html);
             let declared: HashSet<String> = from_css.union(&from_page).cloned().collect();
@@ -507,8 +665,8 @@ mod tests {
     }
 
     /// A number written against a unit, such as `6rem` or `1px`. A unit with a
-    /// space before it, as in `44 pt hit row`, is prose and passes. Chrome in
-    /// the `<style>` block may hold structural rem; the page body may not.
+    /// space before it, as in `44 pt hit row`, is prose and passes. The page
+    /// body may not hold a length; the `<style>` block may, for structure.
     fn length_literals(html: &str) -> Vec<String> {
         let body = match (html.find("<style>"), html.find("</style>")) {
             (Some(open), Some(close)) => format!("{}{}", &html[..open], &html[close..]),
@@ -523,7 +681,11 @@ mod tests {
                 if before.is_some_and(|b| b.is_ascii_digit())
                     && after.is_none_or(|b| !b.is_ascii_alphanumeric())
                 {
-                    out.push(body.get(index.saturating_sub(4)..index + unit.len()).unwrap_or(unit).to_string());
+                    out.push(
+                        body.get(index.saturating_sub(4)..index + unit.len())
+                            .unwrap_or(unit)
+                            .to_string(),
+                    );
                 }
             }
         }
@@ -535,7 +697,7 @@ mod tests {
         let doc = real_doc();
         for html in [
             emit_specimen(&doc, &fresh()).expect("specimen emits"),
-            emit_index(&fresh()).expect("index emits"),
+            emit_index(&doc, &fresh()).expect("index emits"),
         ] {
             assert_eq!(length_literals(&html), Vec::<String>::new());
         }
@@ -545,18 +707,38 @@ mod tests {
     fn the_chrome_reads_calm_editorial_tokens() {
         let html = emit_specimen(&real_doc(), &fresh()).expect("specimen emits");
         for rule in [
-            "body{background:var(--page-paper)",
-            "h1,h2,h3{font-family:var(--font-serif)",
+            "body{margin:0 auto;max-width:64rem;padding:var(--breathing-room) var(--screen-gutter);background:var(--page-paper)",
             "a{color:var(--brand-link)",
             "[data-theme]{color:var(--text-body)",
-            "h1{font-size:var(--type-title-size)",
+            ".t-title{font-family:var(--font-serif)",
+            "font-size:var(--type-title-size)",
         ] {
             assert!(html.contains(rule), "missing chrome rule: {rule}");
         }
     }
 
-    /// Font stacks are not a token. Writing them into `tokens.css` would let
-    /// a platform value leak into the token-only artifact.
+    /// Every typography role gets a class that reads its token. A role without
+    /// one would render in the body face, silently.
+    #[test]
+    fn every_typography_role_has_a_generated_class() {
+        let doc = real_doc();
+        let html = emit_specimen(&doc, &fresh()).expect("specimen emits");
+        for role in doc.semantic.typography.keys() {
+            let class = format!(".t-{}{{", kebab(role));
+            assert!(html.contains(&class), "no class for {role}");
+            assert!(html.contains(&format!("data-type=\"{role}\"")), "no row for {role}");
+        }
+    }
+
+    #[test]
+    fn a_weight_name_outside_the_map_fails_the_build() {
+        assert_eq!(weight_number("semibold"), Ok(600));
+        assert!(weight_number("heavy").is_err());
+        assert!(check_family("display").is_err());
+    }
+
+    /// The font stacks are not a token. Writing them into `tokens.css` would
+    /// let a platform value leak into the token-only artifact.
     #[test]
     fn the_font_stacks_stay_out_of_the_token_css() {
         let css = crate::emit::css::emit(&real_doc()).expect("css emits");
@@ -565,7 +747,7 @@ mod tests {
 
     #[test]
     fn the_index_uses_the_same_chrome() {
-        let index = emit_index(&fresh()).expect("index emits");
+        let index = emit_index(&real_doc(), &fresh()).expect("index emits");
         assert!(index.contains(CHROME));
     }
 
