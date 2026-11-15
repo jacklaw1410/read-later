@@ -1,27 +1,24 @@
 import ReadLaterCore
 import SwiftUI
 
-/// Vertical right rail for the C1 revised control set: speed stack, vertical
-/// scrub, docked play, sentence chevrons. Replaces the bottom player bar.
+/// Vertical right rail: speed stack and vertical scrub. The play and sentence
+/// chevrons sit in the bottom bar, see `BottomTransport`.
 ///
 /// Spec: spec/c1-revised-refined.md in read-later-research.
 /// IDs are the canonical rail IDs; legacy `reader.*` constants alias to
 /// them, so one identifier per view still satisfies old queries.
 public struct RailView: View {
     private let progress: PlayerProgress
-    private let isPlaying: Bool
-    private let onPlayPause: () -> Void
     private let onSpeed: (Float) -> Void
     private let onScrub: (Double) -> Void
     private let onPreviewScrub: (Double) -> Void
     private let onScrubbingChanged: (Bool) -> Void
-    private let onStepSentence: (Int) -> Void
 
     /// The 4-value speed ladder. Full 0.1-step range stays on +/-.
     public static let ladder: [Float] = [0.5, 1.0, 1.2, 1.5]
 
     /// Right margin. Keeps the play button off the window border.
-    private static let trailingGutter: CGFloat = 12
+    public static let trailingGutter: CGFloat = Theme.stackGap
     /// Smallest scrub height. The track never collapses to nothing.
     private static let scrubMinHeight: CGFloat = 80
 
@@ -31,32 +28,25 @@ public struct RailView: View {
 
     public init(
         progress: PlayerProgress,
-        isPlaying: Bool,
-        onPlayPause: @escaping () -> Void,
         onSpeed: @escaping (Float) -> Void,
         onScrub: @escaping (Double) -> Void,
         onPreviewScrub: @escaping (Double) -> Void = { _ in },
-        onScrubbingChanged: @escaping (Bool) -> Void,
-        onStepSentence: @escaping (Int) -> Void
+        onScrubbingChanged: @escaping (Bool) -> Void
     ) {
         self.progress = progress
-        self.isPlaying = isPlaying
-        self.onPlayPause = onPlayPause
         self.onSpeed = onSpeed
         self.onScrub = onScrub
         self.onPreviewScrub = onPreviewScrub
         self.onScrubbingChanged = onScrubbingChanged
-        self.onStepSentence = onStepSentence
     }
 
     public var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: Theme.controlGap) {
             speedStack
             scrubTrack
-            bottomGroup
         }
         .frame(width: 44)
-        .padding(.vertical, 8)
+        .padding(.vertical, Theme.controlGap)
         .padding(.trailing, Self.trailingGutter)
         .tint(Theme.brand)
         // A container identifier propagates to every descendant and hides
@@ -74,7 +64,7 @@ public struct RailView: View {
     // MARK: - Speed
 
     private var speedStack: some View {
-        VStack(spacing: Theme.inlineGap) {
+        VStack(spacing: 0) {
             IconButton(systemName: "minus", label: "Decrease speed") { stepSpeed(-1) }
                 .accessibilityIdentifier(AccessibilityID.railSpeedMinus)
 
@@ -99,6 +89,9 @@ public struct RailView: View {
             IconButton(systemName: "plus", label: "Increase speed") { stepSpeed(1) }
                 .accessibilityIdentifier(AccessibilityID.railSpeedPlus)
         }
+        .background(Theme.surface)
+        .clipShape(RoundedRectangle(cornerRadius: Theme.buttonRadius))
+        .overlay(RoundedRectangle(cornerRadius: Theme.buttonRadius).stroke(Theme.line, lineWidth: 1))
     }
 
     private var ladderOverlay: some View {
@@ -155,8 +148,10 @@ public struct RailView: View {
             .gesture(scrubGesture(height: geo.size.height))
         }
         .frame(width: 44)
+        .padding(.vertical, Theme.controlGap)
         .frame(minHeight: Self.scrubMinHeight, maxHeight: .infinity)
         .focusable()
+        .focusEffectDisabled()
         .onKeyPress(phases: .down) { press in
             switch press.key {
             case .upArrow:
@@ -181,31 +176,6 @@ public struct RailView: View {
         .accessibilityIdentifier(AccessibilityID.railScrub)
     }
 
-    // MARK: - Play + sentences
-
-    /// Play and sentence chevrons. The group sits at the bottom of the rail,
-    /// on the clock row band.
-    private var bottomGroup: some View {
-        VStack(spacing: 8) {
-            playButton
-            sentenceChevrons
-        }
-    }
-
-    private var playButton: some View {
-        IconButton(systemName: playGlyph, label: playLabel, variant: .circle, action: onPlayPause)
-            .accessibilityIdentifier(AccessibilityID.railPlayPause)
-    }
-
-    private var sentenceChevrons: some View {
-        VStack(spacing: Theme.inlineGap) {
-            IconButton(systemName: "chevron.up", label: "Previous sentence") { onStepSentence(-1) }
-                .accessibilityIdentifier(AccessibilityID.railPrevSentence)
-            IconButton(systemName: "chevron.down", label: "Next sentence") { onStepSentence(1) }
-                .accessibilityIdentifier(AccessibilityID.railNextSentence)
-        }
-    }
-
     // MARK: - Helpers
 
     private var shownFraction: Double { scrubFraction ?? progress.fraction }
@@ -218,16 +188,6 @@ public struct RailView: View {
         let left = max(0, total - index)
         let seconds = Pace.secondsRemaining(wordsLeft: left, speed: progress.speed)
         return "\(index)/\(total) · \(clockLabel(seconds: seconds)) left"
-    }
-
-    private var playGlyph: String {
-        if progress.isFinished { return "arrow.counterclockwise" }
-        return isPlaying ? "pause.fill" : "play.fill"
-    }
-
-    private var playLabel: String {
-        if progress.isFinished { return "Replay" }
-        return isPlaying ? "Pause" : "Play"
     }
 
     private func stepSpeed(_ delta: Int) {

@@ -400,15 +400,14 @@ struct ReaderScreen: View {
     var body: some View {
         VStack(spacing: 0) {
             chrome
-            // The rail is a sibling of the reader and the clock row. It spans
-            // the full height below the chrome, so its bottom group sits on
-            // the clock row band.
-            HStack(spacing: 0) {
-                VStack(spacing: 0) {
+            // The rail stops above the full-width bottom bar, which holds the
+            // clock and the transport.
+            VStack(spacing: 0) {
+                HStack(spacing: 0) {
                     reader
-                    clockRow
+                    rail
                 }
-                rail
+                bottomBar
             }
         }
         .onKeyPress(.escape) {
@@ -474,28 +473,40 @@ struct ReaderScreen: View {
     private var rail: some View {
         RailView(
             progress: session.progress,
-            isPlaying: session.isPlaying,
-            onPlayPause: { session.togglePlay() },
             onSpeed: { session.setSpeed($0) },
             onScrub: { session.scrub(toFraction: $0) },
             onPreviewScrub: { session.previewScrub(toFraction: $0) },
             onScrubbingChanged: { scrubbing in
                 session.isScrubbing = scrubbing
                 if !scrubbing { session.finishScrubbing() }
-            },
-            onStepSentence: { session.stepSentence($0) }
+            }
         )
     }
 
-    /// Bottom row: clock at the left edge. Tap cycles 0 time+count, 1 count,
-    /// 2 percent.
-    private var clockRow: some View {
+    /// Bottom bar: clock at the left edge, transport at the right. Tapping the
+    /// clock cycles 0 time+count, 1 count, 2 percent. The trailing edge matches
+    /// the rail's gutter. The top and bottom gaps keep the play button off the
+    /// hairline and the window border.
+    private var bottomBar: some View {
         HStack(spacing: 0) {
             clockButton
             Spacer(minLength: 0)
+            BottomTransport(
+                progress: session.progress,
+                isPlaying: session.isPlaying,
+                onPlayPause: { session.togglePlay() },
+                onStepSentence: { session.stepSentence($0) }
+            )
         }
         .padding(.leading, Theme.screenGutter)
-        .frame(height: 32)
+        .frame(height: Theme.minTarget)
+        .padding(.trailing, RailView.trailingGutter)
+        .padding(.top, Theme.stackGap)
+        .padding(.bottom, Theme.stackGap)
+        .background(Theme.surface)
+        .overlay(alignment: .top) {
+            Theme.line.frame(height: 1)
+        }
     }
 
     private var clockButton: some View {
