@@ -71,8 +71,7 @@ fn run(check: bool) -> Result<(), String> {
         println!("tokens: provisional {role}");
     }
 
-    let fresh = emit::specimen::freshness_from_git(&root)?;
-    let outputs = emit::emit_all(&doc, &fresh)?;
+    let outputs = emit::emit_all(&doc)?;
     let mut stale: Vec<&str> = Vec::new();
 
     for output in &outputs {
@@ -142,11 +141,9 @@ mod repo_tests {
         let text = fs::read_to_string(root().join("design/tokens.json")).expect("token file reads");
         let doc = Doc::parse(&text).expect("token file parses");
         validate::validate(&doc).expect("token file validates");
-        let fresh =
-            emit::specimen::freshness_from_git(root()).expect("banner values read from git");
 
         let mut stale: Vec<&str> = Vec::new();
-        for output in emit::emit_all(&doc, &fresh).expect("emitters run") {
+        for output in emit::emit_all(&doc).expect("emitters run") {
             let on_disk = fs::read_to_string(root().join(output.path)).unwrap_or_default();
             if on_disk != output.text {
                 stale.push(output.path);
@@ -196,9 +193,7 @@ mod repo_tests {
     fn the_generated_xaml_is_well_formed() {
         let text = fs::read_to_string(root().join("design/tokens.json")).expect("token file reads");
         let doc = Doc::parse(&text).expect("token file parses");
-        let fresh =
-            emit::specimen::freshness_from_git(root()).expect("banner values read from git");
-        let outputs = emit::emit_all(&doc, &fresh).expect("emitters run");
+        let outputs = emit::emit_all(&doc).expect("emitters run");
         let xaml = outputs
             .iter()
             .find(|output| output.path.ends_with(".xaml"))

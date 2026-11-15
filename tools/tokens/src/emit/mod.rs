@@ -19,7 +19,7 @@ pub struct Output {
     pub text: String,
 }
 
-pub fn emit_all(doc: &Doc, fresh: &specimen::Freshness) -> Result<Vec<Output>, String> {
+pub fn emit_all(doc: &Doc) -> Result<Vec<Output>, String> {
     Ok(vec![
         Output {
             path: "packages/ReadLaterUI/Sources/ReadLaterUI/Generated/ThemeTokens.swift",
@@ -43,7 +43,7 @@ pub fn emit_all(doc: &Doc, fresh: &specimen::Freshness) -> Result<Vec<Output>, S
         },
         Output {
             path: "design/specimen/index.html",
-            text: specimen::emit_index(doc, fresh)?,
+            text: specimen::emit_index(doc)?,
         },
     ])
 }

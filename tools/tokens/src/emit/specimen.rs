@@ -7,67 +7,11 @@
 //! checkout with `file://`, so every same-repo link is relative. Research-repo
 //! links pin a commit, because two checkouts share no stable path.
 
-use std::path::Path;
-
 use crate::model::{Doc, ScalarRole};
 use crate::naming::kebab;
 
-/// The source commit behind the banner. Both values come from the last commit
-/// that touched `design/tokens.json`, never from the wall clock: a date from
-/// the clock would make `--check` fail on every commit after the page was
-/// written.
-pub struct Freshness {
-    /// Seven hex digits of the source commit.
-    pub sha: String,
-    /// UTC date of the source commit, `YYYY-MM-DD`.
-    pub date: String,
-}
 
-/// Reads the banner values from git history. Fails outside a checkout, so a
-/// page built where history is missing never ships a guessed date.
-pub fn freshness_from_git(root: &Path) -> Result<Freshness, String> {
-    let full = git(root, &["log", "-1", "--format=%H", "--", "design/tokens.json"])?;
-    let full = full.trim();
-    if full.len() < 7 || !full.chars().all(|c| c.is_ascii_hexdigit()) {
-        return Err(format!("design/tokens.json: bad commit {full:?}"));
-    }
-    let date = git(
-        root,
-        &["log", "-1", "--format=%cs", full, "--", "design/tokens.json"],
-    )?;
-    let date = date.trim().to_string();
-    if date.len() != 10 {
-        return Err(format!("design/tokens.json: bad date {date:?}"));
-    }
-    Ok(Freshness {
-        sha: full[..7].to_string(),
-        date,
-    })
-}
-
-fn git(root: &Path, args: &[&str]) -> Result<String, String> {
-    let output = std::process::Command::new("git")
-        .arg("-C")
-        .arg(root)
-        .args(args)
-        .output()
-        .map_err(|error| format!("git: {error}"))?;
-    if !output.status.success() {
-        return Err(format!("git {}: {}", args.join(" "), output.status));
-    }
-    String::from_utf8(output.stdout).map_err(|error| format!("git: {error}"))
-}
-
-/// One banner line on both pages. Same shape as the plan: source, not clock.
-pub fn banner(fresh: &Freshness) -> String {
-    format!(
-        "Specimen from {} on {}. Source design/tokens.json.",
-        fresh.sha, fresh.date
-    )
-}
-
-/// Research-repo links pin this commit. A moving target would break `--check`
-/// the same way a clock date would.
+/// Research-repo links pin this commit. A moving target would break `--check`.
 const RESEARCH_PIN: &str = "f3c1e36";
 const RESEARCH: &str = "https://github.com/jacklaw1410/read-later-research";
 
@@ -97,7 +41,6 @@ h2{margin-top:var(--breathing-room);margin-bottom:var(--stack-gap);padding-top:v
 h3{margin:var(--paragraph-gap) 0 var(--inline-gap);color:var(--text-meta)}
 .pair>section{min-width:0}
 .scroll{overflow-x:auto}
-.banner{margin:0 0 var(--stack-gap);max-width:none;padding-bottom:var(--control-gap);color:var(--text-meta);border-bottom:0.0625rem solid var(--line-hair)}
 .lede{color:var(--text-body)}
 .masthead{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:var(--stack-gap) var(--breathing-room)}
 .mode{display:inline-flex;gap:var(--inline-gap);padding:var(--inline-gap);border:0.0625rem solid var(--line-hair);border-radius:var(--radius-button);background:var(--page-surface)}
@@ -524,26 +467,41 @@ const MODE_SCRIPT: &str = r#"<script>
 
 /// The single entry point. Relative links stay inside one checkout; the
 /// research repo has no stable relative path, so those links pin a commit.
-pub fn emit_index(doc: &Doc, fresh: &Freshness) -> Result<String, String> {
+pub fn emit_index(doc: &Doc) -> Result<String, String> {
     let mut out = head("Calm Editorial specimen · index", &type_classes(doc)?);
     out.push_str(&format!(
-        "<p class=\"banner t-caption\">{}</p>\n",
-        banner(fresh)
+        "<header class=\"masthead\">\n<div class=\"intro\">\n<h1 class=\"t-title\">Specimen index</h1>\n<p class=\"t-body lede\">The pages, captures and research behind the Calm Editorial system. The written rules live in the design system doc. The pages show what the tokens produce.</p>\n</div>\n{}\n</header>\n",
+        mode_switch(),
     ));
+    out.push_str("<main>\n");
+
     out.push_str(
-        "<h1 class=\"t-title\">Specimen index</h1>\n<ul>\n<li><a href=\"specimen.html\">specimen.html</a> · layers 1–2, the page itself.</li>\n<li><a href=\"../generated/tokens.css\">tokens.css</a> · the CSS variables the page reads.</li>\n<li><a href=\"../../docs/design-system.md\">design-system.md</a> · the written system.</li>\n<li><a href=\"../../docs/gloss-samples.html\">gloss-samples.html</a> · the review sheet.</li>\n<li><a href=\"../../docs/adr/\">adr/</a> · architecture decisions.</li>\n</ul>\n<h2>Captures</h2>\n<p>No PNG is committed. Take them locally with <code>ReadLater.app/Contents/MacOS/ReadLater --snapshot &lt;dir&gt;</code> from <code>apps/apple/Sources/App/SnapshotHarness.swift</code>; the harness pins the window to 430 by 760. A release copies the set into <code>evidence/</code>, dated, never edited.</p>\n<h2>Research repo</h2>\n<ul>\n",
+        "<section>\n<h2>1 · Pages</h2>\n<p>Each page reads the generated CSS, so every value traces back to design/tokens.json.</p>\n<div class=\"scroll\" tabindex=\"0\" role=\"region\" aria-label=\"Pages\">\n<table>\n<thead><tr><th>Page</th><th>Holds</th></tr></thead>\n<tbody>\n<tr><th scope=\"row\"><a href=\"specimen.html\"><code class=\"t-code\">specimen.html</code></a></th><td>Layers 1 and 2, the page itself.</td></tr>\n<tr><th scope=\"row\"><a href=\"../generated/tokens.css\"><code class=\"t-code\">tokens.css</code></a></th><td>The CSS variables the page reads.</td></tr>\n<tr><th scope=\"row\"><a href=\"../../docs/design-system.md\"><code class=\"t-code\">design-system.md</code></a></th><td>The written system.</td></tr>\n<tr><th scope=\"row\"><a href=\"../../docs/gloss-samples.html\"><code class=\"t-code\">gloss-samples.html</code></a></th><td>The review sheet.</td></tr>\n<tr><th scope=\"row\"><a href=\"../../docs/adr/\"><code class=\"t-code\">adr/</code></a></th><td>Architecture decisions.</td></tr>\n</tbody>\n</table>\n</div>\n</section>\n",
     );
-    for (name, path) in [
-        ("layer-3-components.md", "design/layer-3-components.md"),
-        ("token-gaps.md", "design/token-gaps.md"),
+
+    out.push_str(
+        "<section>\n<h2>2 · Captures</h2>\n<p>No PNG is committed. Take them locally with <code class=\"t-code\">ReadLater.app/Contents/MacOS/ReadLater --snapshot &lt;dir&gt;</code> from <code class=\"t-code\">apps/apple/Sources/App/SnapshotHarness.swift</code>; the harness pins the window to 430 by 760. A release copies the set into <code class=\"t-code\">evidence/</code>, dated, never edited.</p>\n</section>\n",
+    );
+
+    out.push_str(&format!(
+        "<section>\n<h2>3 · Research repo</h2>\n<p>Every link is pinned to one commit, so the research cannot move under these pages.</p>\n<div class=\"scroll\" tabindex=\"0\" role=\"region\" aria-label=\"Research links\">\n<table>\n<thead><tr><th>Document</th><th>Holds</th><th>Pinned</th></tr></thead>\n<tbody>\n"
+    ));
+    for (label, path, holds) in [
+        ("layer-3-components.md", format!("blob/{RESEARCH_PIN}/design/layer-3-components.md"), "Layer 3 component notes."),
+        ("token-gaps.md", format!("blob/{RESEARCH_PIN}/design/token-gaps.md"), "Gaps the tokens do not yet cover."),
+        ("prototypes", format!("tree/{RESEARCH_PIN}/prototypes"), "Prototype builds."),
+        ("findings", format!("tree/{RESEARCH_PIN}/findings"), "What the prototypes showed."),
+        ("evidence/", format!("tree/{RESEARCH_PIN}/evidence"), "Dated, write-once measurements."),
     ] {
         out.push_str(&format!(
-            "<li><a href=\"{RESEARCH}/blob/{RESEARCH_PIN}/{path}\">{name}</a> · pinned to {RESEARCH_PIN}.</li>\n",
+            "<tr><th scope=\"row\"><a href=\"{RESEARCH}/{path}\"><code class=\"t-code\">{label}</code></a></th><td>{holds}</td><td><code class=\"t-code\">{RESEARCH_PIN}</code></td></tr>\n"
         ));
     }
-    out.push_str(&format!(
-        "<li><a href=\"{RESEARCH}/tree/{RESEARCH_PIN}/prototypes\">prototypes</a> and <a href=\"{RESEARCH}/tree/{RESEARCH_PIN}/findings\">findings</a> · pinned to {RESEARCH_PIN}.</li>\n<li><a href=\"{RESEARCH}/tree/{RESEARCH_PIN}/evidence\">evidence/</a> · dated, write-once measurements, pinned to {RESEARCH_PIN}.</li>\n</ul>\n</body>\n</html>\n",
-    ));
+    out.push_str("</tbody>\n</table>\n</div>\n</section>\n");
+
+    out.push_str("</main>\n");
+    out.push_str(MODE_SCRIPT);
+    out.push_str("</body>\n</html>\n");
     Ok(out)
 }
 
@@ -551,6 +509,7 @@ pub fn emit_index(doc: &Doc, fresh: &Freshness) -> Result<String, String> {
 mod tests {
     use super::*;
     use std::collections::HashSet;
+    use std::path::Path;
 
     fn fixture() -> Doc {
         let json = r##"{
@@ -576,13 +535,6 @@ mod tests {
         Doc::parse(json).expect("fixture parses")
     }
 
-    fn fresh() -> Freshness {
-        Freshness {
-            sha: "54f6b16".to_string(),
-            date: "2026-11-12".to_string(),
-        }
-    }
-
     /// The real `tokens.json`, not the fixture. The fixture lacks most roles,
     /// so a test over it could not catch a typo in a page variable name.
     fn real_doc() -> Doc {
@@ -593,28 +545,6 @@ mod tests {
         let text = std::fs::read_to_string(root.join("design/tokens.json"))
             .expect("tokens.json reads");
         Doc::parse(&text).expect("tokens.json parses")
-    }
-
-    #[test]
-    fn the_banner_names_the_source_commit() {
-        assert_eq!(
-            banner(&fresh()),
-            "Specimen from 54f6b16 on 2026-11-12. Source design/tokens.json."
-        );
-    }
-
-    #[test]
-    fn freshness_reads_git_not_the_clock() {
-        let root = Path::new(env!("CARGO_MANIFEST_DIR"))
-            .parent()
-            .and_then(Path::parent)
-            .expect("tools/tokens is two levels below the root");
-        let first = freshness_from_git(root).expect("git history reads");
-        let second = freshness_from_git(root).expect("git history reads");
-        assert_eq!(first.sha, second.sha);
-        assert_eq!(first.date, second.date);
-        assert_eq!(first.sha.len(), 7);
-        assert_eq!(first.date.len(), 10);
     }
 
     /// A hex, an attached `pt` or an attached `dp` in the page means a value
@@ -657,7 +587,7 @@ mod tests {
 
     #[test]
     fn the_index_holds_no_literal() {
-        let html = emit_index(&real_doc(), &fresh()).expect("index emits");
+        let html = emit_index(&real_doc()).expect("index emits");
         assert_eq!(restated(&html), Vec::<String>::new());
     }
 
@@ -693,12 +623,12 @@ mod tests {
     }
 
     #[test]
-    fn the_index_carries_the_banner_and_the_specimen_does_not() {
+    fn the_index_has_no_source_banner() {
         let doc = real_doc();
-        let line = banner(&fresh());
         let specimen = emit_specimen(&doc).expect("specimen emits");
-        let index = emit_index(&doc, &fresh()).expect("index emits");
-        assert!(index.contains(&line));
+        let index = emit_index(&doc).expect("index emits");
+        assert!(!index.contains("Source design/tokens.json."));
+        assert!(!index.contains("Specimen from "));
         assert!(!specimen.contains("Source design/tokens.json."));
     }
 
@@ -714,6 +644,15 @@ mod tests {
         assert!(html.contains("document.documentElement"));
     }
 
+
+    #[test]
+    fn the_index_offers_the_same_mode_switch() {
+        let html = emit_index(&real_doc()).expect("index emits");
+        for mode in ["system", "light", "dark"] {
+            assert!(html.contains(&format!("data-mode=\"{mode}\"")), "no {mode} button");
+        }
+        assert!(html.contains("document.documentElement"));
+    }
 
     /// Custom properties a stylesheet declares (`--name:`) and reads
     /// (`var(--name`). A name is letters, digits and hyphens.
@@ -745,7 +684,7 @@ mod tests {
         let (from_css, _) = declared_and_read(&css);
         for html in [
             emit_specimen(&doc).expect("specimen emits"),
-            emit_index(&doc, &fresh()).expect("index emits"),
+            emit_index(&doc).expect("index emits"),
         ] {
             let (from_page, read) = declared_and_read(&html);
             let declared: HashSet<String> = from_css.union(&from_page).cloned().collect();
@@ -788,7 +727,7 @@ mod tests {
         let doc = real_doc();
         for html in [
             emit_specimen(&doc).expect("specimen emits"),
-            emit_index(&doc, &fresh()).expect("index emits"),
+            emit_index(&doc).expect("index emits"),
         ] {
             assert_eq!(length_literals(&html), Vec::<String>::new());
         }
@@ -838,7 +777,7 @@ mod tests {
 
     #[test]
     fn the_index_uses_the_same_chrome() {
-        let index = emit_index(&real_doc(), &fresh()).expect("index emits");
+        let index = emit_index(&real_doc()).expect("index emits");
         assert!(index.contains(CHROME));
     }
 

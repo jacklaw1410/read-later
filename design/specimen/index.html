@@ -31,7 +31,6 @@ h2{margin-top:var(--breathing-room);margin-bottom:var(--stack-gap);padding-top:v
 h3{margin:var(--paragraph-gap) 0 var(--inline-gap);color:var(--text-meta)}
 .pair>section{min-width:0}
 .scroll{overflow-x:auto}
-.banner{margin:0 0 var(--stack-gap);max-width:none;padding-bottom:var(--control-gap);color:var(--text-meta);border-bottom:0.0625rem solid var(--line-hair)}
 .lede{color:var(--text-body)}
 .masthead{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:var(--stack-gap) var(--breathing-room)}
 .mode{display:inline-flex;gap:var(--inline-gap);padding:var(--inline-gap);border:0.0625rem solid var(--line-hair);border-radius:var(--radius-button);background:var(--page-surface)}
@@ -85,23 +84,75 @@ figcaption span{color:var(--text-meta)}
 </style>
 </head>
 <body class="t-note">
-<p class="banner t-caption">Specimen from bf3393d on 2026-11-15. Source design/tokens.json.</p>
+<header class="masthead">
+<div class="intro">
 <h1 class="t-title">Specimen index</h1>
-<ul>
-<li><a href="specimen.html">specimen.html</a> · layers 1–2, the page itself.</li>
-<li><a href="../generated/tokens.css">tokens.css</a> · the CSS variables the page reads.</li>
-<li><a href="../../docs/design-system.md">design-system.md</a> · the written system.</li>
-<li><a href="../../docs/gloss-samples.html">gloss-samples.html</a> · the review sheet.</li>
-<li><a href="../../docs/adr/">adr/</a> · architecture decisions.</li>
-</ul>
-<h2>Captures</h2>
-<p>No PNG is committed. Take them locally with <code>ReadLater.app/Contents/MacOS/ReadLater --snapshot &lt;dir&gt;</code> from <code>apps/apple/Sources/App/SnapshotHarness.swift</code>; the harness pins the window to 430 by 760. A release copies the set into <code>evidence/</code>, dated, never edited.</p>
-<h2>Research repo</h2>
-<ul>
-<li><a href="https://github.com/jacklaw1410/read-later-research/blob/f3c1e36/design/layer-3-components.md">layer-3-components.md</a> · pinned to f3c1e36.</li>
-<li><a href="https://github.com/jacklaw1410/read-later-research/blob/f3c1e36/design/token-gaps.md">token-gaps.md</a> · pinned to f3c1e36.</li>
-<li><a href="https://github.com/jacklaw1410/read-later-research/tree/f3c1e36/prototypes">prototypes</a> and <a href="https://github.com/jacklaw1410/read-later-research/tree/f3c1e36/findings">findings</a> · pinned to f3c1e36.</li>
-<li><a href="https://github.com/jacklaw1410/read-later-research/tree/f3c1e36/evidence">evidence/</a> · dated, write-once measurements, pinned to f3c1e36.</li>
-</ul>
+<p class="t-body lede">The pages, captures and research behind the Calm Editorial system. The written rules live in the design system doc. The pages show what the tokens produce.</p>
+</div>
+<div class="mode" role="group" aria-label="Colour mode">
+<button type="button" data-mode="system" aria-pressed="true">System</button>
+<button type="button" data-mode="light" aria-pressed="false">Light</button>
+<button type="button" data-mode="dark" aria-pressed="false">Dark</button>
+</div>
+</header>
+<main>
+<section>
+<h2>1 · Pages</h2>
+<p>Each page reads the generated CSS, so every value traces back to design/tokens.json.</p>
+<div class="scroll" tabindex="0" role="region" aria-label="Pages">
+<table>
+<thead><tr><th>Page</th><th>Holds</th></tr></thead>
+<tbody>
+<tr><th scope="row"><a href="specimen.html"><code class="t-code">specimen.html</code></a></th><td>Layers 1 and 2, the page itself.</td></tr>
+<tr><th scope="row"><a href="../generated/tokens.css"><code class="t-code">tokens.css</code></a></th><td>The CSS variables the page reads.</td></tr>
+<tr><th scope="row"><a href="../../docs/design-system.md"><code class="t-code">design-system.md</code></a></th><td>The written system.</td></tr>
+<tr><th scope="row"><a href="../../docs/gloss-samples.html"><code class="t-code">gloss-samples.html</code></a></th><td>The review sheet.</td></tr>
+<tr><th scope="row"><a href="../../docs/adr/"><code class="t-code">adr/</code></a></th><td>Architecture decisions.</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section>
+<h2>2 · Captures</h2>
+<p>No PNG is committed. Take them locally with <code class="t-code">ReadLater.app/Contents/MacOS/ReadLater --snapshot &lt;dir&gt;</code> from <code class="t-code">apps/apple/Sources/App/SnapshotHarness.swift</code>; the harness pins the window to 430 by 760. A release copies the set into <code class="t-code">evidence/</code>, dated, never edited.</p>
+</section>
+<section>
+<h2>3 · Research repo</h2>
+<p>Every link is pinned to one commit, so the research cannot move under these pages.</p>
+<div class="scroll" tabindex="0" role="region" aria-label="Research links">
+<table>
+<thead><tr><th>Document</th><th>Holds</th><th>Pinned</th></tr></thead>
+<tbody>
+<tr><th scope="row"><a href="https://github.com/jacklaw1410/read-later-research/blob/f3c1e36/design/layer-3-components.md"><code class="t-code">layer-3-components.md</code></a></th><td>Layer 3 component notes.</td><td><code class="t-code">f3c1e36</code></td></tr>
+<tr><th scope="row"><a href="https://github.com/jacklaw1410/read-later-research/blob/f3c1e36/design/token-gaps.md"><code class="t-code">token-gaps.md</code></a></th><td>Gaps the tokens do not yet cover.</td><td><code class="t-code">f3c1e36</code></td></tr>
+<tr><th scope="row"><a href="https://github.com/jacklaw1410/read-later-research/tree/f3c1e36/prototypes"><code class="t-code">prototypes</code></a></th><td>Prototype builds.</td><td><code class="t-code">f3c1e36</code></td></tr>
+<tr><th scope="row"><a href="https://github.com/jacklaw1410/read-later-research/tree/f3c1e36/findings"><code class="t-code">findings</code></a></th><td>What the prototypes showed.</td><td><code class="t-code">f3c1e36</code></td></tr>
+<tr><th scope="row"><a href="https://github.com/jacklaw1410/read-later-research/tree/f3c1e36/evidence"><code class="t-code">evidence/</code></a></th><td>Dated, write-once measurements.</td><td><code class="t-code">f3c1e36</code></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+</main>
+<script>
+(function () {
+  var root = document.documentElement;
+  var buttons = document.querySelectorAll("[data-mode]");
+  function show(mode) {
+    if (mode === "system") {
+      root.removeAttribute("data-theme");
+    } else {
+      root.setAttribute("data-theme", mode);
+    }
+    buttons.forEach(function (button) {
+      button.setAttribute("aria-pressed", String(button.dataset.mode === mode));
+    });
+  }
+  buttons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      show(button.dataset.mode);
+    });
+  });
+})();
+</script>
 </body>
 </html>
