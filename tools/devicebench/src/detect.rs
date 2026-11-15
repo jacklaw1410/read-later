@@ -40,9 +40,37 @@ pub fn noise_floor(env: &Envelope, seconds: f64) -> f32 {
     head[head.len() / 2]
 }
 
+/// A level that counts as sound: `factor` times the noise floor, never below `min`.
+pub fn threshold_factor(floor: f32, factor: f32, min: f32) -> f32 {
+    (floor * factor).max(min)
+}
+
 /// A level that counts as sound: eight times the noise floor, never below `min`.
 pub fn threshold(floor: f32, min: f32) -> f32 {
-    (floor * 8.0).max(min)
+    threshold_factor(floor, 8.0, min)
+}
+
+/// The level that counts as silence: four times the noise floor of the same
+/// recording. There is no fixed minimum, so a quiet room sets a low bar and a
+/// loud room a higher one.
+pub fn silence_level(floor: f32) -> f32 {
+    (floor * 4.0).max(f32::MIN_POSITIVE)
+}
+
+/// Merges onsets that are at most `gap` seconds after the previous raw onset.
+/// A click rings for a few milliseconds and crosses the threshold several
+/// times, so one click gives a cluster of onsets. The first onset of each
+/// cluster is the click's start.
+pub fn collapse(onsets: &[f64], gap: f64) -> Vec<f64> {
+    let mut out = Vec::new();
+    let mut previous: Option<f64> = None;
+    for &t in onsets {
+        if previous.is_none_or(|p| t - p > gap) {
+            out.push(t);
+        }
+        previous = Some(t);
+    }
+    out
 }
 
 /// Rising edges above `threshold`. Each edge is the start of a window that is
@@ -80,6 +108,20 @@ pub fn silence_after(env: &Envelope, seconds: f64, threshold: f32, min_quiet: f6
         i += 1;
     }
     None
+}
+
+/// The `p`-quantile of the RMS over `window` seconds from `start`. After a
+/// pause, a held pause leaves most of the window quiet, so a low quantile gives
+/// the quiet level of that place in the recording.
+pub fn quantile(env: &Envelope, start: f64, window: f64, p: f64) -> f32 {
+    let from = env.index_at(start).min(env.rms.len());
+    let to = env.index_at(start + window).min(env.rms.len());
+    if to <= from {
+        return 0.0;
+    }
+    let mut slice = env.rms[from..to].to_vec();
+    slice.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    slice[((slice.len() - 1) as f64 * p).round() as usize]
 }
 
 #[cfg(test)]
@@ -144,6 +186,29 @@ mod tests {
         let thr = threshold(0.0, 0.01);
         let stop = silence_after(&env, 0.0, thr, 0.3).expect("silence");
         assert!((stop - 0.7).abs() < 0.002, "stop {stop}");
+    }
+
+    #[test]
+    fn a_click_cluster_collapses_to_its_first_onset() {
+        // Four crossings within 25 ms, then a separate click 1 s later.
+        let found = [8.262, 8.277, 8.279, 8.286, 9.243];
+        assert_eq!(collapse(&found, 0.05), vec![8.262, 9.243]);
+        assert_eq!(collapse(&[], 0.05), Vec::<f64>::new());
+    }
+
+    #[test]
+    fn silence_level_follows_the_noise_floor() {
+        assert!((silence_level(0.002) - 0.008).abs() < 1e-7);
+        assert!(silence_level(0.0) > 0.0, "a silent head must still give a positive level");
+    }
+
+    #[test]
+    fn quantile_reads_the_quiet_part_of_the_window() {
+        // Sound from 0 to 2 s, then silence to 6 s. Four of six seconds are quiet.
+        let samples = burst(6.0, 0.0, 2000.0);
+        let env = Envelope::new(&samples, RATE, 1.0);
+        assert_eq!(quantile(&env, 0.0, 6.0, 0.10), 0.0);
+        assert!(quantile(&env, 0.0, 6.0, 1.0) > 0.1, "the loud part is above the quiet part");
     }
 
     #[test]

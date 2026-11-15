@@ -15,6 +15,10 @@ use serde::Deserialize;
 #[derive(Debug, Clone, Deserialize)]
 pub struct OplogEvent {
     pub t: f64,
+    /// The phone's wall clock in UTC, for example `2026-11-15T07:27:45.567Z`.
+    /// Shared by every app launch, unlike `t`.
+    #[serde(default)]
+    pub iso: String,
     pub session: String,
     pub event: String,
     #[serde(default)]
@@ -33,8 +37,10 @@ pub fn parse_oplog(text: &str) -> Vec<OplogEvent> {
 pub struct Alignment {
     /// Add this to a phone time to get a recording time.
     pub offset: f64,
-    /// Largest distance of one click from the median, in seconds. This is the clock error.
+    /// Largest distance of clicks 2 onward from the offset, in seconds. This is the clock error.
     pub spread: f64,
+    /// Click 1's distance from the offset. It carries the cold-start delay.
+    pub first_residual: f64,
     pub clicks: usize,
 }
 
@@ -51,31 +57,137 @@ pub fn align(marker_times: &[(f64, f64)], onsets: &[f64]) -> Result<Alignment, S
             onsets.len()
         ));
     }
-    let mut diffs: Vec<f64> = marker_times
+    let residuals: Vec<f64> = marker_times
         .iter()
         .zip(onsets)
         .map(|((t, latency), onset)| onset - (t + latency))
         .collect();
-    diffs.sort_by(|a, b| a.partial_cmp(b).unwrap());
-    let offset = diffs[diffs.len() / 2];
-    let spread = diffs.iter().map(|d| (d - offset).abs()).fold(0.0, f64::max);
-    Ok(Alignment { offset, spread, clicks: diffs.len() })
+    let mut sorted = residuals.clone();
+    sorted.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    let offset = sorted[sorted.len() / 2];
+    // Every run so far started its first click late by 35 to 57 ms, a cold-start
+    // delay. The clock error is therefore measured over clicks 2 onward, and the
+    // first click's residual is reported apart. The offset still uses every click.
+    let later = if residuals.len() >= 3 { &residuals[1..] } else { &residuals[..] };
+    let spread = later.iter().map(|d| (d - offset).abs()).fold(0.0, f64::max);
+    let first_residual = residuals[0] - offset;
+    Ok(Alignment { offset, spread, first_residual, clicks: residuals.len() })
 }
 
-/// Finds the run of onsets whose spacing matches the marker requests. Speech
-/// also makes onsets, so the clicks cannot be taken as "the first N onsets".
-/// Returns the index of the first onset of the matching run, or `None`.
-pub fn find_click_run(marker_times: &[(f64, f64)], onsets: &[f64], tolerance: f64) -> Option<usize> {
+/// Tolerance for the first step of a click run. The first click starts up to
+/// about 60 ms late, so only the first spacing needs the wider window.
+pub const FIRST_STEP_TOLERANCE: f64 = 0.08;
+
+/// Matches the marker requests to onsets. Every onset is tried as the first
+/// click. From it, each later click must land within `tolerance` of the
+/// previous matched click plus the requested spacing. Speech is dense enough
+/// (about 13 onsets a second in the M2 recording) that a few chains can match by
+/// chance, so the chain with the most regular spacing wins. The first step is
+/// excluded from that score, because the late first click is expected.
+/// Returns the matched onsets in order, or `None` when no chain fits.
+pub fn match_clicks(marker_times: &[(f64, f64)], onsets: &[f64], tolerance: f64) -> Option<Vec<f64>> {
     let k = marker_times.len();
     if k == 0 || onsets.len() < k {
         return None;
     }
     let spacing: Vec<f64> = marker_times.windows(2).map(|w| w[1].0 - w[0].0).collect();
-    (0..=onsets.len() - k).find(|&s| {
-        spacing.iter().enumerate().all(|(j, want)| {
-            ((onsets[s + j + 1] - onsets[s + j]) - want).abs() <= tolerance
+    let mut best: Option<(f64, Vec<f64>)> = None;
+    for &first in onsets {
+        let Some(chain) = chain_from(first, &spacing, onsets, tolerance) else {
+            continue;
+        };
+        let score = spacing_error(&chain, &spacing);
+        if best.as_ref().is_none_or(|(s, _)| score < *s) {
+            best = Some((score, chain));
+        }
+    }
+    best.map(|(_, chain)| chain)
+}
+
+/// One candidate run that starts at `first`, or `None` when a step has no onset.
+fn chain_from(first: f64, spacing: &[f64], onsets: &[f64], tolerance: f64) -> Option<Vec<f64>> {
+    let mut chain = vec![first];
+    let mut previous = first;
+    for (step, want) in spacing.iter().enumerate() {
+        let window = if step == 0 { FIRST_STEP_TOLERANCE } else { tolerance };
+        let target = previous + want;
+        let from = onsets.partition_point(|&o| o < target - window);
+        let next = onsets[from..]
+            .iter()
+            .take_while(|&&o| o <= target + window)
+            .find(|&&o| o > previous)?;
+        chain.push(*next);
+        previous = *next;
+    }
+    Some(chain)
+}
+
+/// Root mean square of the spacing errors, excluding the first step. Zero for
+/// a run with no spacing to compare.
+fn spacing_error(chain: &[f64], spacing: &[f64]) -> f64 {
+    let errors: Vec<f64> = chain
+        .windows(2)
+        .zip(spacing)
+        .skip(1)
+        .map(|(pair, want)| (pair[1] - pair[0] - want).powi(2))
+        .collect();
+    if errors.is_empty() {
+        return 0.0;
+    }
+    (errors.iter().sum::<f64>() / errors.len() as f64).sqrt()
+}
+
+/// Seconds since 1970 for an oplog `iso` stamp. Returns `None` for any other
+/// shape, so an event without a stamp is skipped, not misread.
+pub fn wall_seconds(iso: &str) -> Option<f64> {
+    let (date, time) = iso.trim_end_matches('Z').split_once('T')?;
+    let mut parts = date.split('-').map(|p| p.parse::<i64>().ok());
+    let (year, month, day) = (parts.next()??, parts.next()??, parts.next()??);
+    let (hms, fraction) = time.split_once('.').unwrap_or((time, "0"));
+    let mut clock = hms.split(':').map(|p| p.parse::<i64>().ok());
+    let (hour, minute, second) = (clock.next()??, clock.next()??, clock.next()??);
+    let fraction: f64 = format!("0.{fraction}").parse().ok()?;
+    let whole = days_from_civil(year, month, day) * 86_400 + hour * 3_600 + minute * 60 + second;
+    Some(whole as f64 + fraction)
+}
+
+/// Days since 1970-01-01 for a proleptic Gregorian date (Howard Hinnant's algorithm).
+fn days_from_civil(year: i64, month: i64, day: i64) -> i64 {
+    let y = if month <= 2 { year - 1 } else { year };
+    let era = (if y >= 0 { y } else { y - 399 }) / 400;
+    let year_of_era = y - era * 400;
+    let month_from_march = (month + 9) % 12;
+    let day_of_year = (153 * month_from_march + 2) / 5 + day - 1;
+    let day_of_era = year_of_era * 365 + year_of_era / 4 - year_of_era / 100 + day_of_year;
+    era * 146_097 + day_of_era - 719_468
+}
+
+/// Marker requests of one session as (wall-clock seconds, output latency).
+pub fn markers_wall_for(events: &[OplogEvent], session: &str) -> Vec<(f64, f64)> {
+    events
+        .iter()
+        .filter(|e| e.session == session && e.event == "marker.request")
+        .filter_map(|e| {
+            let wall = wall_seconds(&e.iso)?;
+            let latency = e
+                .fields
+                .get("outputLatency")
+                .and_then(|v| v.parse::<f64>().ok())
+                .unwrap_or(0.0);
+            Some((wall, latency))
         })
-    })
+        .collect()
+}
+
+/// Every session in the oplog, in first-seen order.
+pub fn sessions_in(events: &[OplogEvent]) -> Vec<String> {
+    let mut seen: Vec<String> = Vec::new();
+    for e in events {
+        if !seen.contains(&e.session) {
+            seen.push(e.session.clone());
+        }
+    }
+    seen
 }
 
 /// The marker requests of one session, as (time, output latency).
@@ -126,8 +238,34 @@ mod tests {
         // Clicks 1 s apart, with two speech onsets before them.
         let markers = [(10.0, 0.0), (11.0, 0.0), (12.0, 0.0)];
         let onsets = [0.3, 2.1, 5.0, 6.0, 7.0, 8.4];
-        assert_eq!(find_click_run(&markers, &onsets, 0.02), Some(2));
-        assert_eq!(find_click_run(&markers, &[0.3, 0.9], 0.02), None);
+        assert_eq!(match_clicks(&markers, &onsets, 0.02), Some(vec![5.0, 6.0, 7.0]));
+        assert_eq!(match_clicks(&markers, &[0.3, 0.9], 0.02), None);
+    }
+
+    #[test]
+    fn a_stray_peak_between_clicks_is_skipped() {
+        let markers = [(10.0, 0.0), (11.0, 0.0), (12.0, 0.0)];
+        let onsets = [10.0, 10.4, 11.0, 12.0];
+        assert_eq!(match_clicks(&markers, &onsets, 0.02), Some(vec![10.0, 11.0, 12.0]));
+    }
+
+    #[test]
+    fn a_late_first_click_matches_because_the_first_step_is_wider() {
+        // The first click starts 55 ms late, so the first spacing is 0.945 s
+        // against 1.0 s requested. The first step uses FIRST_STEP_TOLERANCE,
+        // and the later spacings agree within 0.02 s.
+        let markers = [(10.0, 0.0), (11.0, 0.0), (12.0, 0.0)];
+        let onsets = [10.055, 11.0, 12.0];
+        assert_eq!(match_clicks(&markers, &onsets, 0.02), Some(vec![10.055, 11.0, 12.0]));
+    }
+
+    #[test]
+    fn the_most_regular_chain_wins_over_an_earlier_irregular_one() {
+        // A chain at 10 s is exact. A chain at 20 s also fits the tolerance,
+        // but its second spacing is 30 ms off, so the exact one is kept.
+        let markers = [(10.0, 0.0), (11.0, 0.0), (12.0, 0.0)];
+        let onsets = [10.0, 11.0, 12.0, 20.0, 21.03, 22.0];
+        assert_eq!(match_clicks(&markers, &onsets, 0.03), Some(vec![10.0, 11.0, 12.0]));
     }
 
     #[test]
@@ -140,6 +278,17 @@ mod tests {
         let a = align(&[(10.0, 0.05)], &[10.55]).unwrap();
         let phone_tap = 14.0;
         assert!((phone_tap + a.offset - 14.5).abs() < 1e-9);
+    }
+
+    #[test]
+    fn wall_clock_stamps_convert_across_midnight_and_month_ends() {
+        let a = wall_seconds("2026-11-15T07:27:45.567Z").unwrap();
+        let b = wall_seconds("2026-11-15T07:27:46.000Z").unwrap();
+        assert!((b - a - 0.433).abs() < 1e-6, "diff {}", b - a);
+        let late = wall_seconds("2026-11-30T23:59:59.500Z").unwrap();
+        let early = wall_seconds("2026-12-01T00:00:00.500Z").unwrap();
+        assert!((early - late - 1.0).abs() < 1e-6, "across month end: {}", early - late);
+        assert_eq!(wall_seconds("not a stamp"), None);
     }
 
     #[test]

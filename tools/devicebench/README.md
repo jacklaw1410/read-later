@@ -19,15 +19,26 @@ $B gen --out clicks.wav --times 1,2,3 --seconds 5   # test clicks for the speake
 `align` prints CSV on stdout:
 
 ```
-session,event,phone_t,rec_t,response_ms
+session,event,phone_t,rec_t,response_ms,silence_level
 ```
 
 - `tap.pause` gives the time from the tap to silence (M2). Silence is the first
   quiet run of at least `--silence` seconds (default 0.3 s), so a short gap
-  between words does not count.
+  between words does not count. The silence level is the quiet level of the 6 s
+  window after the tap, times `--quiet-factor` (default 1.5), and never below
+  four times the noise floor of the recording. The level is in the last column.
 - `tap.play` and `scrub.commit` give the time from the event to the first sound (M3, M4).
-- The clock offset and its error go to stderr:
-  `offset ... (phone to recording), clock error ... ms over N clicks`.
+- A click is a cluster of onsets. Its first onset is the click. A click is
+  matched to the phone's spacing with a 0.03 s tolerance, and 0.08 s for the
+  first step. Sessions with a stray peak still match.
+- The offset and the clock error go to stderr:
+  `offset ... clock error ... ms over clicks 2 to N, click 1 residual ... ms`.
+  Click 1 starts late in every run seen so far, so the error skips it.
+- `--click-factor` sets the click threshold as a multiple of the noise floor
+  (default 8). A quiet recording may need 4.
+- `--clock-session ID` takes the clicks from one app launch and applies the
+  offset to the taps of other launches, through the phone's wall clock (`iso`).
+  Use it when the markers and the taps are in different sessions.
 
 ## Clock alignment
 
@@ -42,7 +53,8 @@ The plan's `δ` is the phone clock minus the Mac clock, so `δ = -offset`.
 
 `align` matches the clicks by their spacing. Speech also makes onsets, so
 "the first N onsets" would be wrong. The clock error is the largest distance of
-one click from the median. Report it with every batch.
+clicks 2 onward from the median. Click 1 is reported apart, because its cold-start
+delay is real and appears in every run. Report the error with every batch.
 
 ## Protocol for one run
 
