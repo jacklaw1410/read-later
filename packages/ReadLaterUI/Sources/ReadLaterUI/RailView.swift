@@ -74,20 +74,15 @@ public struct RailView: View {
     // MARK: - Speed
 
     private var speedStack: some View {
-        VStack(spacing: 2) {
-            Button { stepSpeed(-1) } label: {
-                Text("−").font(.system(size: 16, weight: .bold))
-            }
-            .buttonStyle(.plain)
-            .frame(width: 44, height: 36)
-            .accessibilityLabel("Decrease speed")
-            .accessibilityIdentifier(AccessibilityID.railSpeedMinus)
+        VStack(spacing: Theme.inlineGap) {
+            IconButton(systemName: "minus", label: "Decrease speed") { stepSpeed(-1) }
+                .accessibilityIdentifier(AccessibilityID.railSpeedMinus)
 
             Button { stepSpeed(1) } label: {
                 Text(Pace.speedLabel(progress.speed)).font(Theme.chip())
             }
             .buttonStyle(.plain)
-            .frame(width: 44, height: 36)
+            .frame(width: Theme.minTarget, height: Theme.minTarget)
             .accessibilityLabel("Speed \(String(format: "%g", progress.speed)) times")
             .accessibilityHint("Tap for next step. Long press for the speed ladder.")
             .accessibilityIdentifier(AccessibilityID.railSpeed)
@@ -101,13 +96,8 @@ public struct RailView: View {
                 }
             }
 
-            Button { stepSpeed(1) } label: {
-                Text("+").font(.system(size: 16, weight: .bold))
-            }
-            .buttonStyle(.plain)
-            .frame(width: 44, height: 36)
-            .accessibilityLabel("Increase speed")
-            .accessibilityIdentifier(AccessibilityID.railSpeedPlus)
+            IconButton(systemName: "plus", label: "Increase speed") { stepSpeed(1) }
+                .accessibilityIdentifier(AccessibilityID.railSpeedPlus)
         }
     }
 
@@ -203,35 +193,16 @@ public struct RailView: View {
     }
 
     private var playButton: some View {
-        Button(action: onPlayPause) {
-            Image(systemName: playGlyph)
-                .font(.system(size: 16, weight: .bold))
-                .foregroundStyle(Theme.actionInk)
-                .frame(width: 44, height: 44)
-                .background(Theme.actionFill)
-                .clipShape(Circle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(playLabel)
-        .accessibilityIdentifier(AccessibilityID.railPlayPause)
+        IconButton(systemName: playGlyph, label: playLabel, variant: .circle, action: onPlayPause)
+            .accessibilityIdentifier(AccessibilityID.railPlayPause)
     }
 
     private var sentenceChevrons: some View {
-        VStack(spacing: 2) {
-            Button { onStepSentence(-1) } label: {
-                Text("‹").font(.system(size: 16, weight: .bold))
-            }
-            .buttonStyle(.plain)
-            .frame(width: 44, height: 36)
-            .accessibilityLabel("Previous sentence")
-            .accessibilityIdentifier(AccessibilityID.railPrevSentence)
-            Button { onStepSentence(1) } label: {
-                Text("›").font(.system(size: 16, weight: .bold))
-            }
-            .buttonStyle(.plain)
-            .frame(width: 44, height: 36)
-            .accessibilityLabel("Next sentence")
-            .accessibilityIdentifier(AccessibilityID.railNextSentence)
+        VStack(spacing: Theme.inlineGap) {
+            IconButton(systemName: "chevron.up", label: "Previous sentence") { onStepSentence(-1) }
+                .accessibilityIdentifier(AccessibilityID.railPrevSentence)
+            IconButton(systemName: "chevron.down", label: "Next sentence") { onStepSentence(1) }
+                .accessibilityIdentifier(AccessibilityID.railNextSentence)
         }
     }
 

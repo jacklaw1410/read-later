@@ -128,3 +128,31 @@ Kotlin and XAML output as correct-by-construction until a project builds it.
 - A token change is a design change. Show the owner the snapshot that proves it.
 - `Theme.swift` may hold the resolver and platform adapters. It may not hold a
   new value. Both adapters read generated hex pairs.
+
+## 7 · Icon button
+
+An icon button names one action with a glyph. Its accessibility label is
+required at construction, because the glyph carries no text.
+
+| Part | Token | Value |
+|---|---|---|
+| Box | `size.minTarget` | 44 × 44. The whole box takes taps. |
+| Shape | `radius.button` | Same radius as a text button, so the two share a row and a height. Play alone is a circle (`radius.pill`). |
+| Glyph | `typography.icon` | Sans, 20, medium. An SF Symbol on Apple. Scales with the font on the web. |
+| Gap between controls | `space.controlGap` | 8 |
+| Quiet ink | `text.body` | No surface. The ink of a text button's label. |
+| Filled | `action.fill`, `action.ink` | The primary button pair. |
+| Pressed | none | Quiet at 0.7 opacity, filled at 0.82. Matches `ButtonStyles.swift`. |
+| Focus | `rule.ring` | The ring every control uses. |
+
+Rules:
+
+- Three looks: quiet, filled, and circle. Circle is the one exception, for the
+  play control. A ghost-surface look waits for a screen that needs one.
+- Glyphs are drawn at the token size, so a 20 pt glyph sits in a 44 pt box
+  (45 %). A smaller glyph reads as a dot in the box.
+- One glyph family. Use a filled glyph only to show a state, such as
+  `bookmark.fill` for saved. A text character is not a glyph.
+- At a bar edge, the box sits `screenGutter − (minTarget − icon) / 2` into the
+  gutter, so the glyph lands on the gutter line. At the current values that is
+  6 pt.

@@ -125,6 +125,7 @@ object TypeScale {
     val codeSize = 12.sp
     val noteSize = 14.sp
     val monoSize = 11.sp
+    val iconSize = 20.sp
 }
 
 /** Layer 2 motion: milliseconds plus the curve, not its name. */

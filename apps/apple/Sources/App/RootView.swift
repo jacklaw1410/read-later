@@ -629,16 +629,9 @@ struct ReaderChrome: View {
 
     var body: some View {
         HStack(spacing: 8) {
-            Button {
+            IconButton(systemName: "chevron.left", label: "Back to library") {
                 onExit()
-            } label: {
-                Image(systemName: "chevron.left")
-                    .font(.system(size: 13, weight: .semibold))
-                    .frame(width: 44, height: 44)
             }
-            .buttonStyle(.plain)
-            .foregroundStyle(Theme.inkSecondary)
-            .accessibilityLabel("Back to library")
             .accessibilityIdentifier(AccessibilityID.readerBack)
 
             Spacer(minLength: 8)
@@ -673,14 +666,10 @@ struct ReaderChrome: View {
                     Button("Replay") { onReplay() }
                 }
             } label: {
-                Image(systemName: "ellipsis")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Theme.inkSecondary)
-                    .frame(width: 44, height: 44)
+                IconGlyph(systemName: "ellipsis")
             }
             .menuStyle(.borderlessButton)
             .menuIndicator(.hidden)
-            .frame(width: 44, height: 44)
             .accessibilityLabel("Reader options")
         }
         .padding(.horizontal, 8)

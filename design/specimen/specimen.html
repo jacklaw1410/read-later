@@ -16,6 +16,7 @@
 .t-code{font-family:var(--font-mono);font-size:var(--type-code-size);font-weight:400;line-height:1.5}
 .t-note{font-family:var(--font-sans);font-size:var(--type-note-size);font-weight:400;line-height:1.5}
 .t-mono{font-family:var(--font-mono);font-size:var(--type-mono-size);font-weight:400;line-height:1.5}
+.t-icon{font-family:var(--font-sans);font-size:var(--type-icon-size);font-weight:500;line-height:1.5}
 
 :root{--font-serif:"Iowan Old Style",Palatino,Georgia,serif;--font-sans:-apple-system,BlinkMacSystemFont,"SF Pro Text",Arial,sans-serif;--font-mono:ui-monospace,Menlo,monospace}
 body{margin:0 auto;max-width:64rem;padding:var(--breathing-room) var(--screen-gutter);background:var(--page-paper);color:var(--text-body)}
@@ -54,10 +55,20 @@ tbody th{color:var(--text-body)}
 .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(calc(var(--size-max-line-width) / 3),1fr));gap:var(--inline-gap) var(--breathing-room);margin:0}
 .defs dd{margin:0;color:var(--text-meta)}
 .defs div{display:flex;flex-direction:column;gap:var(--inline-gap)}
-.acts{display:grid;grid-template-columns:repeat(auto-fit,minmax(calc(var(--size-max-line-width) / 4),1fr));gap:var(--stack-gap) var(--breathing-room)}
-.act{display:flex;flex-direction:column;align-items:flex-start;gap:var(--control-gap)}
-.act p{margin:0;color:var(--text-meta)}
-.pad{padding:var(--control-gap) var(--stack-gap)}
+.ibrow{display:flex;flex-wrap:wrap;align-items:center;gap:var(--control-gap)}
+.btn{display:inline-flex;align-items:center;box-sizing:border-box;min-height:var(--size-min-target);padding:0 var(--stack-gap);border-radius:var(--radius-button);background:var(--action-fill);color:var(--action-ink)}
+.btn-ghost{background:var(--ghost-fill);color:var(--text-body);border:0.0625rem solid var(--line-hair)}
+.ib-box{display:block;width:var(--size-min-target);height:var(--size-min-target);border:0.0625rem dashed var(--line-hair);border-radius:var(--radius-button)}
+td.sample{width:calc(var(--size-min-target) * 4)}
+@media (max-width:36rem){.look-table thead{display:none}.look-table tbody tr{display:grid;grid-template-columns:auto 1fr;column-gap:var(--control-gap);align-items:center}.look-table th,.look-table td{border-top:0;padding:var(--inline-gap) 0}.look-table tbody tr{border-top:0.0625rem solid var(--line-hair);padding:var(--inline-gap) 0}.look-table th{grid-column:2;grid-row:1}.look-table td.sample{grid-column:1;grid-row:1 / span 2;width:auto}.look-table td:nth-child(3){grid-column:2;grid-row:2}.look-table td:nth-child(4){grid-column:1 / -1;grid-row:3;padding-top:var(--control-gap)}}
+.ib{display:inline-flex;align-items:center;justify-content:center;flex:none;width:var(--size-min-target);height:var(--size-min-target);padding:0;border:0;border-radius:var(--radius-button);cursor:pointer}
+.ib-quiet{background:transparent;color:var(--text-body)}
+.ib-filled{background:var(--action-fill);color:var(--action-ink)}
+.ib-quiet:active{opacity:0.7}
+.ib-filled:active{opacity:0.82}
+.ib svg{width:var(--type-icon-size);height:var(--type-icon-size);fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ib svg.solid{fill:currentColor;stroke:none}
+.ib-circle{border-radius:var(--radius-pill)}
 .saved{border-left:0.25rem solid var(--mark-saved)}
 .ring{outline:0.125rem solid var(--mark-coincide)}
 .ring-paused{outline:0.125rem solid var(--rule-ring)}
@@ -210,11 +221,31 @@ figcaption span{color:var(--text-meta)}
 <section>
 <h2>4 · Actions and marks</h2>
 <p>Controls sit after the reading states. Saved marks are tier 2 and stay out of the flow.</p>
-<div class="acts">
-<div class="act"><span class="pad" style="background:var(--action-fill);color:var(--action-ink);border-radius:var(--radius-button)">Listen</span><p>action.fill + action.ink. Primary button. Stays dark in both modes so white ink keeps its contrast.</p></div>
-<div class="act"><span class="pad" style="background:var(--ghost-fill);color:var(--text-body);border-radius:var(--radius-button)">Later</span><p>ghost.fill. Secondary button fill on a card.</p></div>
-<div class="act"><span style="color:var(--brand-link)"><u>Quoted passage</u></span><p>brand.link. Quote rule, track fill, marker ink.</p></div>
-<div class="act"><span class="saved pad" style="background:var(--mark-saved-fill)">Kept for study</span><p>mark.saved + mark.savedFill. Tier 2, not part of the flow.</p></div>
+<h3>Text buttons</h3>
+<div class="scroll" tabindex="0" role="region" aria-label="Text action looks">
+<table class="look-table">
+<thead><tr><th>Look</th><th>Sample</th><th>Tokens</th><th>Use</th></tr></thead>
+<tbody>
+<tr><th scope="row"><code class="t-code">primary</code></th><td class="sample"><span class="btn">Listen</span></td><td><code class="t-code">action.fill</code> · <code class="t-code">action.ink</code></td><td>Primary button. Stays dark in both modes so white ink keeps its contrast.</td></tr>
+<tr><th scope="row"><code class="t-code">secondary</code></th><td class="sample"><span class="btn btn-ghost">Later</span></td><td><code class="t-code">ghost.fill</code> · <code class="t-code">line.hair</code> edge</td><td>Secondary button on a card. One hairline edge.</td></tr>
+<tr><th scope="row"><code class="t-code">link</code></th><td class="sample"><span style="color:var(--brand-link)"><u>Quoted passage</u></span></td><td><code class="t-code">brand.link</code></td><td>Quote rule, track fill, marker ink.</td></tr>
+<tr><th scope="row"><code class="t-code">mark</code></th><td class="sample"><span class="btn saved" style="background:var(--mark-saved-fill);color:var(--text-body)">Kept for study</span></td><td><code class="t-code">mark.saved</code> · <code class="t-code">mark.savedFill</code></td><td>Tier 2, not part of the flow.</td></tr>
+</tbody>
+</table>
+</div>
+<h3>Icon buttons</h3>
+<p>One action, named by a glyph. The whole 44 pt box takes taps. The glyph is typography.icon.</p>
+<div class="scroll" tabindex="0" role="region" aria-label="Icon button looks">
+<table class="look-table">
+<thead><tr><th>Look</th><th>Sample</th><th>Tokens</th><th>Use</th></tr></thead>
+<tbody>
+<tr><th scope="row"><code class="t-code">box</code></th><td class="sample"><span class="ib-box" aria-hidden="true"></span></td><td><code class="t-code">size.minTarget</code> · <code class="t-code">radius.button</code></td><td>Smallest control, both axes. Every point of the box takes a tap.</td></tr>
+<tr><th scope="row"><code class="t-code">quiet</code></th><td class="sample"><button type="button" class="ib ib-quiet t-icon" aria-label="Back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></td><td><code class="t-code">text.body</code>, no surface</td><td>Top bar, rows, settings. Pressed at 0.7 opacity.</td></tr>
+<tr><th scope="row"><code class="t-code">filled</code></th><td class="sample"><button type="button" class="ib ib-filled t-icon" aria-label="Done"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button></td><td><code class="t-code">action.fill</code> · <code class="t-code">action.ink</code></td><td>Primary action, the same pair as Listen. Pressed at 0.82 opacity.</td></tr>
+<tr><th scope="row"><code class="t-code">circle</code></th><td class="sample"><button type="button" class="ib ib-filled ib-circle t-icon" aria-label="Play"><svg class="solid" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l11 7-11 7z"/></svg></button></td><td><code class="t-code">action.fill</code> · <code class="t-code">radius.pill</code></td><td>Play only. The one circle.</td></tr>
+<tr><th scope="row"><code class="t-code">beside text</code></th><td class="sample"><div class="ibrow"><button type="button" class="ib ib-quiet t-icon" aria-label="Back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><span class="btn">Listen</span></div></td><td><code class="t-code">size.minTarget</code> height on both</td><td>Icon and text buttons share a row and a height.</td></tr>
+</tbody>
+</table>
 </div>
 </section>
 <section>
@@ -236,6 +267,7 @@ figcaption span{color:var(--text-meta)}
 <tr data-type="code"><th scope="row"><code class="t-code">code</code></th><td><span class="t-code">Ag</span></td><td class="num">12</td><td>mono</td><td>regular</td><td class="num">none</td><td>Code block.</td></tr>
 <tr data-type="note"><th scope="row"><code class="t-code">note</code></th><td><span class="t-note">Ag</span></td><td class="num">14</td><td>sans</td><td>regular</td><td class="num">none</td><td>Footnote body.</td></tr>
 <tr data-type="mono"><th scope="row"><code class="t-code">mono</code></th><td><span class="t-mono">Ag</span></td><td class="num">11</td><td>mono</td><td>regular</td><td class="num">none</td><td>NOTES label, footnote marker.</td></tr>
+<tr data-type="icon"><th scope="row"><code class="t-code">icon</code></th><td><span class="t-icon">Ag</span></td><td class="num">20</td><td>sans</td><td>medium</td><td class="num">none</td><td>Glyph inside an icon button. An SF Symbol on Apple, a glyph that scales with the font on the web. The button box is size.minTarget.</td></tr>
 </tbody>
 </table>
 </div>

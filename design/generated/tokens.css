@@ -148,6 +148,8 @@
   --type-note-size: 14px;
 
   --type-mono-size: 11px;
+
+  --type-icon-size: 20px;
 }
 
 @media (prefers-color-scheme: dark) {

@@ -172,15 +172,8 @@ public struct EntryView: View {
                     .accessibilityIdentifier(AccessibilityID.entryLibrary)
                 }
                 if let onSettings {
-                    Button(action: onSettings) {
-                        Image(systemName: "gearshape")
-                            .font(.system(size: 14, weight: .regular))
-                            .foregroundStyle(Theme.inkSecondary)
-                            .frame(width: 44, height: 44)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("Settings")
-                    .accessibilityIdentifier(AccessibilityID.entrySettings)
+                    IconButton(systemName: "gearshape", label: "Settings", action: onSettings)
+                        .accessibilityIdentifier(AccessibilityID.entrySettings)
                 }
             }
             // The resume line sits above the form so a returning reader sees

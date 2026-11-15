@@ -178,6 +178,10 @@ public extension Theme {
     static func mono() -> Font { .system(size: 11, weight: .regular, design: .monospaced) }
     static let monoSize: CGFloat = 11
 
+    /// `icon`. Glyph inside an icon button. An SF Symbol on Apple, a glyph that scales with the font on the web. The button box is size.minTarget.
+    static func icon() -> Font { .system(size: 20, weight: .medium, design: .default) }
+    static let iconSize: CGFloat = 20
+
     // MARK: - Space, shape, size (layer 2)
 
     /// `inlineGap`. Chip inset, tight pairs.
