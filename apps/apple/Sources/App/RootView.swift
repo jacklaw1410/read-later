@@ -355,6 +355,25 @@ struct RootView: View {
                 break
             }
         }
+        #if os(iOS) && DEBUG
+        .task { @MainActor in
+            guard let delay = DebugLaunch.options.autoPlayAfterMs else { return }
+            do {
+                try await Task.sleep(nanoseconds: UInt64(delay) * 1_000_000)
+            } catch {
+                return
+            }
+            // Same path as the entry tap and the play button. The tap starts
+            // the telemetry run, so T7.firstWord lands in the trace.
+            TelemetryHub.shared.record(TelemetryName.tap)
+            if model.session == nil {
+                model.resumePending()
+            }
+            if let session = model.session, !session.isPlaying {
+                session.togglePlay()
+            }
+        }
+        #endif
         #if os(macOS)
         .task {
             if SnapshotHarness.isEnabled {

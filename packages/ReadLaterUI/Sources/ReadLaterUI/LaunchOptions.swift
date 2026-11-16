@@ -17,6 +17,7 @@ import Foundation
 ///     --debug.appearance=dark
 ///     --debug.locale=zh_HK
 ///     --debug.reset=all
+///     --debug.autoplay=3000
 ///
 /// Unknown keys and bad values are ignored with a warning, never a crash: a
 /// mistyped flag must not hide the behaviour under test.
@@ -51,6 +52,10 @@ public struct LaunchOptions: Equatable, Sendable {
     /// text. The app saves it to the store with its place at word zero, so
     /// the test opens the resume offer instead of typing the raw text.
     public private(set) var seedTextB64: String?
+    /// Milliseconds after launch to resume the offered article and start
+    /// playback. Nil = off. Exists for CLI SwiftUI traces, which interpose
+    /// only at launch and cannot host a test runner's taps (M7).
+    public private(set) var autoPlayAfterMs: Int?
     /// True when at least one `--debug.` flag was present.
     public private(set) var isActive = false
     /// Human-readable notes for flags that were ignored.
@@ -131,6 +136,14 @@ public struct LaunchOptions: Equatable, Sendable {
             }
         }
 
+        if let raw = values["autoplay"] {
+            if let milliseconds = Int(raw), (0 ... 600_000).contains(milliseconds) {
+                autoPlayAfterMs = milliseconds
+            } else {
+                warnings.append("ignored autoplay=\(raw): expected milliseconds 0...600000")
+            }
+        }
+
         for key in values.keys where !Self.knownKeys.contains(key) {
             warnings.append("ignored unknown flag \(Self.flagPrefix)\(key)")
         }
@@ -151,7 +164,7 @@ public struct LaunchOptions: Equatable, Sendable {
 
     private static let knownKeys: Set<String> = [
         "preset", "reset", "voice", "voice-pace", "animations", "appearance", "locale",
-        "seedTextB64",
+        "seedTextB64", "autoplay",
     ]
 
     private static func pace(from raw: String?) -> Int? {
