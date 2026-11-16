@@ -50,6 +50,13 @@ const CLUSTER_GAP: f64 = 0.05;
 /// leaves most of this window quiet.
 const QUIET_WINDOW: f64 = 6.0;
 
+/// A scrub restart goes quiet for at least this long before sound returns.
+const SCRUB_QUIET_S: f64 = 0.05;
+
+/// The restart's quiet run must begin within this many seconds of the commit.
+/// A later quiet run is a pause in the speech, not the restart.
+const SCRUB_STOP_WINDOW_S: f64 = 0.5;
+
 /// The thresholds one align run uses. The silence level for a pause is the
 /// quiet level of its window times `quiet_factor`, never below `silence`.
 #[derive(Clone, Copy)]
@@ -214,27 +221,63 @@ fn print_residuals(markers: &[(f64, f64)], clicks: &[f64], offset: f64, wall: bo
     }
 }
 
-/// Prints one event row: the response in milliseconds, and for a pause the
+/// Prints one event row: the response in milliseconds, and for a pause or a scrub the
 /// silence level used. A response of `none` means no quiet run was found.
 fn print_event(env: &detect::Envelope, session: &str, e: &align::OplogEvent, rec_t: f64, levels: Levels) {
     let (response, level) = respond(env, &e.event, rec_t, levels);
+    if e.event == "scrub.commit" && response.is_none() {
+        explain_scrub(env, rec_t, levels);
+    }
     let response_ms = response.map(|r| format!("{:.1}", (r - rec_t) * 1000.0)).unwrap_or_else(|| "none".into());
     println!("{session},{},{:.4},{rec_t:.4},{response_ms},{level}", e.event, e.t);
 }
 
-/// The response of one event, and the silence level used for a pause ("" for
-/// other events). A pause ends at the first quiet run that follows it. Its
-/// level is the quiet level of the window after the tap, so it follows the
-/// recording, not only its head.
+/// Says on stderr why a scrub has no restart: where the first quiet run after
+/// the commit starts, and whether sound follows it. The CSV keeps its columns.
+fn explain_scrub(env: &detect::Envelope, rec_t: f64, levels: Levels) {
+    let level = quiet_level(env, rec_t, levels);
+    let note = match detect::silence_after(env, rec_t, level, SCRUB_QUIET_S) {
+        None => "no quiet run of at least 0.05 s after the commit".to_string(),
+        Some(stop) => {
+            let after = format!(
+                "first quiet run starts {:.3} s after the commit",
+                stop - rec_t
+            );
+            match detect::sound_after(env, stop, level) {
+                Some(_) => after,
+                None => format!("{after}; no sound follows it"),
+            }
+        }
+    };
+    eprintln!("# scrub at {rec_t:.4} s: no restart within {SCRUB_STOP_WINDOW_S} s; {note}");
+}
+
+/// The response of one event, and the silence level used for a pause or a scrub
+/// ("" for other events). A pause ends at the first quiet run that follows it.
+/// A scrub ends when the sentence it restarts sounds again. Both levels follow
+/// the recording, not only its head.
 fn respond(env: &detect::Envelope, event: &str, rec_t: f64, levels: Levels) -> (Option<f64>, String) {
     match event {
         "tap.pause" => {
-            let quiet = detect::quantile(env, rec_t, QUIET_WINDOW, 0.10);
-            let level = (quiet * levels.quiet_factor).max(levels.silence);
+            let level = quiet_level(env, rec_t, levels);
             (detect::silence_after(env, rec_t, level, levels.silence_s), format!("{level:.6}"))
+        }
+        "scrub.commit" => {
+            let level = quiet_level(env, rec_t, levels);
+            (
+                detect::resumed_after(env, rec_t, level, SCRUB_QUIET_S, SCRUB_STOP_WINDOW_S),
+                format!("{level:.6}"),
+            )
         }
         _ => (detect::sound_after(env, rec_t, levels.click), String::new()),
     }
+}
+
+/// The level below which the audio counts as quiet after `rec_t`: the quiet
+/// level of the window times `quiet_factor`, never below the silence level.
+fn quiet_level(env: &detect::Envelope, rec_t: f64, levels: Levels) -> f32 {
+    let quiet = detect::quantile(env, rec_t, QUIET_WINDOW, 0.10);
+    (quiet * levels.quiet_factor).max(levels.silence)
 }
 
 fn cmd_gen(args: &[String]) -> Result<(), String> {
@@ -258,4 +301,169 @@ fn cmd_gen(args: &[String]) -> Result<(), String> {
     record::write_wav(&out, &samples, rate)?;
     println!("wrote {} ({seconds} s)", out.display());
     Ok(())
+}
+
+#[cfg(test)]
+mod baseline_repro_tests {
+    //! Replays the filed baseline numbers from the surviving /tmp recordings.
+    //!
+    //! The oplogs that fixed the clock offset are gone (see results.md: only
+    //! /tmp WAVs survive), so this test takes the filed `rec_t` anchors from
+    //! the CSVs and re-runs the detection rule on the WAV at each anchor. It
+    //! proves the detector deterministically reproduces the filed M2/M3/M4
+    //! response values. It skips when the /tmp files are absent.
+
+    use super::*;
+    use std::path::Path;
+
+    struct Case {
+        wav: &'static str,
+        csv: &'static str,
+        click_factor: f32,
+        /// Whether to assert tap.play rows strictly. The M2 CSVs were made
+        /// with two click factors (rr-3 vs rr-4 play rows differ), which was
+        /// not recorded, so M2 play rows are reported, not asserted.
+        strict_play: bool,
+    }
+
+    fn median(values: &[f64]) -> f64 {
+        let mut sorted = values.to_vec();
+        sorted.sort_by(|v: &f64, w: &f64| v.partial_cmp(w).unwrap());
+        (sorted[sorted.len() / 2 - 1] + sorted[sorted.len() / 2]) / 2.0
+    }
+
+    fn check_case(case: &Case) -> bool {
+        if !Path::new(case.wav).exists() || !Path::new(case.csv).exists() {
+            eprintln!("baseline_repro: skip {} (files absent)", case.csv);
+            return false;
+        }
+        let (samples, rate) = record::read_wav(Path::new(case.wav)).expect("wav");
+        let env = detect::Envelope::new(&samples, rate, 1.0);
+        let floor = detect::noise_floor(&env, 0.5);
+        let levels = Levels {
+            click: detect::threshold_factor(floor, case.click_factor, 0.01),
+            silence: detect::silence_level(floor),
+            silence_s: 0.3,
+            quiet_factor: 1.5,
+        };
+        eprintln!(
+            "baseline_repro: {} floor {floor:.6} click {:.6} silence {:.6}",
+            case.wav, levels.click, levels.silence
+        );
+        let text = std::fs::read_to_string(case.csv).expect("csv");
+        let mut bad = 0;
+        let mut pauses = Vec::new();
+        for (n, line) in text.lines().enumerate() {
+            if n == 0 {
+                continue;
+            }
+            let col: Vec<&str> = line.split(',').collect();
+            let (event, rec_t, filed_ms, filed_level) =
+                (col[1], col[3].parse::<f64>().unwrap(), col[4], col[5]);
+            let (response, level) = respond(&env, event, rec_t, levels);
+            if event != "tap.play" {
+                assert_eq!(level, filed_level, "{} row {n}: silence level", case.csv);
+            }
+            let filed = if filed_ms == "none" {
+                None
+            } else {
+                Some(filed_ms.parse::<f64>().unwrap())
+            };
+            let got = response.map(|r| (r - rec_t) * 1000.0);
+            let ok = match (got, filed) {
+                (None, None) => true,
+                (Some(g), Some(f)) => (g - f).abs() <= 0.06,
+                _ => false,
+            };
+            let strict = event != "tap.play" || case.strict_play;
+            if event == "tap.pause" {
+                if let Some(f) = filed {
+                    pauses.push(f);
+                }
+            }
+            if !ok && strict {
+                bad += 1;
+                eprintln!(
+                    "baseline_repro: {} row {n} {event} rec_t {rec_t}: filed {filed_ms}, got {got:?}",
+                    case.csv
+                );
+            } else if event == "tap.play" && !case.strict_play {
+                eprintln!(
+                    "baseline_repro: {} row {n} play rec_t {rec_t}: filed {filed_ms}, got {got:?} (info only)",
+                    case.csv
+                );
+            }
+        }
+        if !pauses.is_empty() {
+            eprintln!(
+                "baseline_repro: {} pause median {:.1} ms over {} pauses",
+                case.csv,
+                median(&pauses),
+                pauses.len()
+            );
+        }
+        assert_eq!(bad, 0, "{} mismatches in {}", bad, case.csv);
+        true
+    }
+
+    #[test]
+    fn baseline_numbers_reproduce_from_recordings() {
+        let cases = [
+            // Filed M2: median 133 to 173 ms, range 10 to 485 ms, 2 batches of 12.
+            Case {
+                wav: "/tmp/m2-rerun.wav",
+                csv: "/tmp/rr4-43C4625A.csv",
+                click_factor: 8.0,
+                strict_play: false,
+            },
+            Case {
+                wav: "/tmp/m2-rerun.wav",
+                csv: "/tmp/rr-3.csv",
+                click_factor: 8.0,
+                strict_play: false,
+            },
+            // Filed M3: 422 to 435 ms tap-to-sound; M4 best recording, 4 of 20 restarts.
+            Case {
+                wav: "/tmp/m4-rerun6.wav",
+                csv: "/tmp/m4-rerun6-final.csv",
+                click_factor: 8.0,
+                strict_play: true,
+            },
+            Case {
+                wav: "/tmp/m4-rerun4.wav",
+                csv: "/tmp/m4-rerun4-f2.csv",
+                click_factor: 2.0,
+                strict_play: true,
+            },
+        ];
+        let mut ran = 0;
+        for case in &cases {
+            if check_case(case) {
+                ran += 1;
+            }
+        }
+        eprintln!("baseline_repro: {ran} of {} cases ran", cases.len());
+    }
+
+    #[test]
+    fn filed_m2_medians_match_the_csvs() {
+        // Guards the arithmetic behind F23: batch medians 133.4 and 172.9 ms.
+        for (csv, want) in [("/tmp/rr-3.csv", 133.4), ("/tmp/rr4-43C4625A.csv", 172.9)] {
+            if !Path::new(csv).exists() {
+                eprintln!("baseline_repro: skip median check for {csv}");
+                continue;
+            }
+            let text = std::fs::read_to_string(csv).unwrap();
+            let pauses: Vec<f64> = text
+                .lines()
+                .skip(1)
+                .filter_map(|line| {
+                    let col: Vec<&str> = line.split(',').collect();
+                    (col[1] == "tap.pause").then(|| col[4].parse().unwrap())
+                })
+                .collect();
+            assert_eq!(pauses.len(), 12, "{csv} must hold one 12-pause batch");
+            assert!((median(&pauses) - want).abs() < 0.05, "{csv} median");
+        }
+    }
 }

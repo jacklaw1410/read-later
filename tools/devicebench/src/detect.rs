@@ -134,6 +134,24 @@ pub fn quantile(env: &Envelope, start: f64, window: f64, p: f64) -> f32 {
     slice[((slice.len() - 1) as f64 * p).round() as usize]
 }
 
+/// Sound that resumes after a restart. A scrub stops the sentence and starts it
+/// again, so the audio goes quiet within `stop_within` seconds of the commit.
+/// Returns the moment sound comes back above `threshold` after that quiet run,
+/// or None when the audio does not go quiet near the commit.
+pub fn resumed_after(
+    env: &Envelope,
+    commit: f64,
+    threshold: f32,
+    min_quiet: f64,
+    stop_within: f64,
+) -> Option<f64> {
+    let stop = silence_after(env, commit, threshold, min_quiet)?;
+    if stop - commit > stop_within {
+        return None;
+    }
+    sound_after(env, stop, threshold)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -247,8 +265,6 @@ mod tests {
 
     #[test]
     fn empty_input_gives_empty_results_not_a_panic() {
-        // Adapted: the stale copy also asserted `resumed_after` here, but main
-        // has no `resumed_after` yet, so that line is dropped.
         let env = Envelope::new(&[], RATE, 1.0);
         assert!(env.rms.is_empty());
         assert_eq!(noise_floor(&env, 0.5), 0.0);
@@ -256,6 +272,7 @@ mod tests {
         assert_eq!(sound_after(&env, 0.0, 0.01), None);
         assert_eq!(silence_after(&env, 0.0, 0.01, 0.3), None);
         assert_eq!(quantile(&env, 0.0, 6.0, 0.10), 0.0);
+        assert_eq!(resumed_after(&env, 0.0, 0.01, 0.05, 0.5), None);
     }
 
     #[test]
@@ -321,5 +338,75 @@ mod tests {
         let env = Envelope::new(&samples, RATE, 1.0);
         assert_eq!(env.index_at(-1.0), 0);
         assert_eq!(env.time(0), 0.0);
+    }
+
+    #[test]
+    fn a_restart_gap_gives_the_return_of_sound() {
+        // Speech through 1.0 s, a restart gap of 80 ms, speech again from 1.08 s.
+        // The commit is at 0.95 s, so the stop starts 50 ms later, inside the window.
+        let mut samples = burst(3.0, 0.0, 1000.0);
+        for (s, b) in samples.iter_mut().zip(burst(3.0, 1.08, 400.0)) {
+            *s += b;
+        }
+        let env = Envelope::new(&samples, RATE, 1.0);
+        let at = resumed_after(&env, 0.95, threshold(0.0, 0.01), 0.05, 0.5).expect("resumed");
+        assert!((at - 1.08).abs() < 0.002, "resumed {at}");
+    }
+
+    #[test]
+    fn continuous_sound_after_a_commit_is_not_a_restart() {
+        // Speech through 2.0 s, then a long pause. The stop begins 1.5 s after the commit,
+        // which is outside the window, so there is no restart to time.
+        let samples = burst(4.0, 0.0, 2000.0);
+        let env = Envelope::new(&samples, RATE, 1.0);
+        assert_eq!(
+            resumed_after(&env, 0.5, threshold(0.0, 0.01), 0.05, 0.5),
+            None
+        );
+    }
+
+    #[test]
+    fn a_restart_at_the_edge_of_the_window_counts() {
+        // Quiet starts exactly stop_within after the commit. The bound is
+        // inclusive: only a later start is rejected.
+        let mut samples = burst(3.0, 0.0, 1000.0);
+        for (s, b) in samples.iter_mut().zip(burst(3.0, 1.5, 400.0)) {
+            *s += b;
+        }
+        let env = Envelope::new(&samples, RATE, 1.0);
+        let at = resumed_after(&env, 0.5, threshold(0.0, 0.01), 0.05, 0.5).expect("resumed");
+        assert!((at - 1.5).abs() < 0.002, "resumed {at}");
+    }
+
+    #[test]
+    fn a_restart_just_outside_the_window_does_not_count() {
+        // Same audio, but the commit is 10 ms earlier, so the quiet start is
+        // outside the window.
+        let mut samples = burst(3.0, 0.0, 1000.0);
+        for (s, b) in samples.iter_mut().zip(burst(3.0, 1.5, 400.0)) {
+            *s += b;
+        }
+        let env = Envelope::new(&samples, RATE, 1.0);
+        assert_eq!(
+            resumed_after(&env, 0.49, threshold(0.0, 0.01), 0.05, 0.5),
+            None
+        );
+    }
+
+    #[test]
+    fn restart_stop_window_boundary_is_inclusive() {
+        // Speech through 1.0 s, an 80 ms gap, speech again from 1.08 s.
+        // The stop starts exactly 0.5 s after the commit, which still counts.
+        let mut samples = burst(3.0, 0.0, 1000.0);
+        for (s, b) in samples.iter_mut().zip(burst(3.0, 1.08, 400.0)) {
+            *s += b;
+        }
+        let env = Envelope::new(&samples, RATE, 1.0);
+        let at = resumed_after(&env, 0.5, threshold(0.0, 0.01), 0.05, 0.5);
+        assert!((at.unwrap() - 1.08).abs() < 0.002, "resumed {at:?}");
+        assert_eq!(
+            resumed_after(&env, 0.499, threshold(0.0, 0.01), 0.05, 0.5),
+            None
+        );
     }
 }
