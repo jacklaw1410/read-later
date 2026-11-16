@@ -42,7 +42,7 @@ final class DebugFrameMonitor: NSObject {
     private static let tapCapFrames = 120
 
     private var link: CADisplayLink?
-    private var counter = FrameCounter()
+    private var counter = ReadLaterCore.FrameCounter()
     private var mode = Mode.idle
     private var tapStamp: TimeInterval = 0
     private var stateStamp: TimeInterval?
