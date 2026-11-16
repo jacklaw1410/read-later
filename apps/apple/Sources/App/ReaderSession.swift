@@ -17,7 +17,19 @@ final class ReaderSession: ObservableObject {
     @Published private(set) var wash = WashState.idle
     @Published private(set) var isPlaying = false
     @Published private(set) var isFinished = false
-    @Published var isScrubbing = false
+    @Published var isScrubbing = false {
+        didSet {
+            #if DEBUG
+            if isScrubbing != oldValue {
+                if isScrubbing {
+                    DebugFrameMonitor.shared.noteScrubBegan()
+                } else {
+                    DebugFrameMonitor.shared.noteScrubEnded()
+                }
+            }
+            #endif
+        }
+    }
     @Published var autoScroll = true
     @Published private(set) var isHeld = false
     @Published private(set) var card: PaperCard?
@@ -110,6 +122,9 @@ final class ReaderSession: ObservableObject {
         // The word is the wash at tap time, for M9.
         TelemetryHub.shared.record(speech.state == .speaking ? TelemetryName.tapPause : TelemetryName.tapPlay,
                                    fields: ["word": String(wash.wordIndex ?? -1)])
+        #if DEBUG
+        DebugFrameMonitor.shared.noteTap()
+        #endif
         if speech.state == .speaking {
             speech.pause()
             checkpoint(source: "pause")
@@ -479,6 +494,9 @@ final class ReaderSession: ObservableObject {
     private func speechStateChanged(_ state: SpeechState) {
         // Every delegate change is logged, including late callbacks (F20.4).
         TelemetryHub.shared.record("state.\(state)")
+        #if DEBUG
+        DebugFrameMonitor.shared.noteStateChange()
+        #endif
         switch state {
         case .speaking:
             isPlaying = true

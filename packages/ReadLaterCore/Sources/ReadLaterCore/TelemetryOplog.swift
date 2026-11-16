@@ -63,6 +63,8 @@ public enum TelemetryName {
     public static let storeWrite = "store.write"
     public static let markerRequest = "marker.request"
     public static let framesSecond = "frames.second"
+    public static let frameTapWindow = "frame.tapWindow"
+    public static let frameScrubWindow = "frame.scrubWindow"
 }
 
 /// Append-only JSONL event log. The app writes it; the analyst takes it off
