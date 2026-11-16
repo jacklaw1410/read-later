@@ -4,13 +4,19 @@ import XCTest
 /// Device drivers for the latency plan
 /// (read-later-research `spec/device-verification-latency.md`, M2 and M4).
 ///
-/// Each test seeds one article through the raw text path, then runs its batch
-/// in the same launch. The batch taps play, pause or scrub at random times
-/// drawn from `LATENCY_SEED`, and attaches the schedule to the result bundle.
+/// Each test seeds one article through `--debug.seedTextB64`, then runs its
+/// batch in the same launch. The app saves the article with its place at
+/// word zero, so the test opens the resume offer. Nothing is typed: typing
+/// the raw text (4,500 words for M4) stalls the run, and its keystrokes
+/// land inside the measurement window.
+///
+/// The batch taps play, pause or scrub at random times drawn from
+/// `LATENCY_SEED`, and attaches the schedule to the result bundle.
 /// The phone's oplog holds the handler times that `devicebench align` reads.
 ///
 /// The article text is not in the repo. The Mac passes it as base64 in
 /// `TEST_RUNNER_LATENCY_TEXT_B64`, and the test checks the word count first.
+/// The runner forwards it to the app as `--debug.seedTextB64`.
 ///
 /// Every tap is preceded by a read of the play button. A pause is sent only
 /// when the button offers Pause, and a batch stops when the button offers
@@ -29,8 +35,8 @@ final class LatencyDeviceTests: XCTestCase {
     func test_m2_pauseBatchOnShortArticle() throws {
         let run = try DeviceRun.read(expectedWords: 200, defaultCycles: 12)
         terminateApp()
-        let app = AppLauncher.launch(extraArguments: DeviceRun.launchArguments)
-        seed(app, text: run.text)
+        let app = AppLauncher.launch(extraArguments: run.launchArguments)
+        openSeeded(app)
         pauseBatch(app, run: run)
     }
 
@@ -38,8 +44,8 @@ final class LatencyDeviceTests: XCTestCase {
     func test_m4_scrubBatchOnLongArticle() throws {
         let run = try DeviceRun.read(expectedWords: 4_500, defaultCycles: 20)
         terminateApp()
-        let app = AppLauncher.launch(extraArguments: DeviceRun.launchArguments)
-        seed(app, text: run.text)
+        let app = AppLauncher.launch(extraArguments: run.launchArguments)
+        openSeeded(app)
         scrubBatch(app, run: run)
     }
 
@@ -53,37 +59,17 @@ final class LatencyDeviceTests: XCTestCase {
 
     // MARK: - Seeding
 
-    /// Types the text into the raw field and opens it. Typing goes in chunks,
-    /// so one long `typeText` call does not stall the run.
-    private func seed(_ app: XCUIApplication, text: String) {
-        let open = app.buttons[AccessibilityID.entryOpen]
-        XCTAssertTrue(open.waitForExistence(timeout: Waits.screen), "entry screen did not appear")
+    /// Opens the seeded article through the resume offer. The seed flag
+    /// writes the article and its place (word zero) before the offer
+    /// refreshes, so the offer is there on launch. No typing.
+    private func openSeeded(_ app: XCUIApplication) {
+        let resume = app.buttons[AccessibilityID.entryResume]
+        XCTAssertTrue(resume.waitForExistence(timeout: Waits.screen), "the seeded resume offer is missing")
+        JourneySteps.tap(app, resume)
 
-        let textMode = JourneySteps.textModeOption(app)
-        XCTAssertTrue(textMode.waitForExistence(timeout: Waits.screen), "the Text mode option is missing")
-        JourneySteps.tap(app, textMode)
-
-        let raw = app.textViews[AccessibilityID.entryRawField]
-        XCTAssertTrue(raw.waitForExistence(timeout: Waits.state), "the raw text field did not appear")
-        JourneySteps.tap(app, raw)
-
-        var rest = Substring(text)
-        while !rest.isEmpty {
-            let chunk = rest.prefix(1_000)
-            raw.typeText(String(chunk))
-            rest = rest.dropFirst(chunk.count)
-        }
-
-        JourneySteps.dismissKeyboardIfPresent(app)
-        JourneySteps.tap(app, app.buttons[AccessibilityID.entryOpen])
-
-        XCTAssertTrue(
-            JourneySteps.texts(app, id: AccessibilityID.readerTitle).waitForExistence(timeout: Waits.screen),
-            "the seeded article did not open"
-        )
         XCTAssertTrue(
             app.buttons[AccessibilityID.readerPlayPause].waitForExistence(timeout: Waits.screen),
-            "the play button is missing"
+            "the seeded article did not open"
         )
     }
 
@@ -216,13 +202,17 @@ final class LatencyDeviceTests: XCTestCase {
 
 /// The environment for one device run. Missing `TEST_RUNNER_LATENCY_DEVICE_RUN`
 /// skips the test; a missing or wrong-length article also skips it, so a run
-/// never seeds the wrong text.
+/// never seeds the wrong text. The base64 text rides to the app as
+/// `--debug.seedTextB64`; `reset=none` keeps the store, and the seed write
+/// is the newest row, so every run starts at word zero.
 private struct DeviceRun {
-    let text: String
     let cycles: Int
     let seed: UInt64
+    private let encodedText: String
 
-    static let launchArguments = ["--debug.reset=none", "--debug.voice=system"]
+    var launchArguments: [String] {
+        ["--debug.reset=none", "--debug.voice=system", "--debug.seedTextB64=\(encodedText)"]
+    }
 
     static func read(expectedWords: Int, defaultCycles: Int) throws -> DeviceRun {
         let env = ProcessInfo.processInfo.environment
@@ -241,7 +231,7 @@ private struct DeviceRun {
         }
         let cycles = env["LATENCY_CYCLES"].flatMap(Int.init) ?? defaultCycles
         let seed = env["LATENCY_SEED"].flatMap(UInt64.init) ?? 1
-        return DeviceRun(text: text, cycles: cycles, seed: seed)
+        return DeviceRun(cycles: cycles, seed: seed, encodedText: encoded)
     }
 }
 

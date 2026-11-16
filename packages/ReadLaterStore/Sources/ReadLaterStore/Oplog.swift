@@ -10,17 +10,26 @@ import ReadLaterCore
 public final class Oplog: Sendable {
     private let dbQueue: DatabaseQueue
     public let device: String
+    let telemetry: TelemetryHub
 
-    init(dbQueue: DatabaseQueue, device: String) {
+    init(dbQueue: DatabaseQueue, device: String, telemetry: TelemetryHub = .shared) {
         self.dbQueue = dbQueue
         self.device = device
+        self.telemetry = telemetry
     }
 
     /// Appends one entry in its own transaction.
     public func append(op: String, payload: String, at date: Date = .now) throws {
+        let start = CFAbsoluteTimeGetCurrent()
         try dbQueue.write { db in
             try Self.insert(in: db, device: device, op: op, payload: payload, at: date)
         }
+        let ms = (CFAbsoluteTimeGetCurrent() - start) * 1000
+        telemetry.record(TelemetryName.storeWrite, fields: [
+            "op": "oplog.append",
+            "ms": String(format: "%.2f", ms),
+            "main": Thread.isMainThread ? "1" : "0",
+        ])
     }
 
     /// Entries after `seq`, oldest first, up to `limit` rows.

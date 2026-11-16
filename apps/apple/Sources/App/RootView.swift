@@ -32,9 +32,12 @@ final class AppModel: ObservableObject {
     private let speech: SpeechController
     private let lookup = PackLookupProvider()
     private let store: ReadLaterStore.Store?
+    private let recorder: ReadLaterStore.PositionRecorder?
     init() {
         self.speech = Self.makeSpeech()
         self.store = Self.openStore()
+        Self.seedIfRequested(store: self.store)
+        self.recorder = self.store.map { ReadLaterStore.PositionRecorder(store: $0) }
         refreshResumeOffer()
         refreshLibrary()
     }
@@ -66,12 +69,28 @@ final class AppModel: ObservableObject {
             databaseURL: dir.appendingPathComponent("store.sqlite"), device: "apple-app")
     }
 
+    /// Debug-only seeding for device latency runs (M2/M4 treatment). The
+    /// article arrives as base64 in `--debug.seedTextB64` and lands in the
+    /// store with its place at word zero, so the test opens the resume
+    /// offer instead of typing the raw text. Runs before the offer
+    /// refresh, so the offer is there on launch. Debug builds only.
+    private static func seedIfRequested(store: ReadLaterStore.Store?) {
+        #if DEBUG
+        guard let store, let b64 = DebugLaunch.options.seedTextB64,
+              let data = Data(base64Encoded: b64),
+              let text = String(data: data, encoding: .utf8),
+              case .success(let document) = ArticleIngress.pasted(text) else { return }
+        try? store.save(document: document)
+        try? store.recordPosition(of: document, wordIndex: 0, source: "seed")
+        #endif
+    }
+
     func open(_ document: ReadLaterCore.Document, startWord: Int? = nil) {
         flushPosition()
         session?.stop()
         try? store?.save(document: document)
         let next = ReaderSession(document: document, speech: speech, lookupProvider: lookup)
-        next.onProgress = { [weak self] index in self?.recordPosition(index: index) }
+        next.onProgress = { [weak self] index, source in self?.recordPosition(index: index, source: source) }
         if let startWord { next.begin(at: startWord) }
         session = next
         if pendingResume?.document.id == document.id { pendingResume = nil }
@@ -214,25 +233,14 @@ final class AppModel: ObservableObject {
     /// Writes the current place now. Called on pause-adjacent transitions the
     /// throttle might miss: close, background, and anywhere the app can die.
     func flushPosition() {
-        guard let session, let store, session.progress.totalWords > 0 else { return }
-        timedStoreWrite { try store.recordPosition(of: session.document, wordIndex: session.progress.wordIndex) }
+        guard let session, let recorder, session.progress.totalWords > 0 else { return }
+        recorder.record(document: session.document, wordIndex: session.progress.wordIndex, source: "flush")
+        recorder.wait()
     }
 
-    private func recordPosition(index: Int) {
-        guard let session, let store else { return }
-        timedStoreWrite { try store.recordPosition(of: session.document, wordIndex: index) }
-    }
-
-    /// Times one place write and logs its duration and thread (M8: no
-    /// main-thread writes). The write itself is unchanged.
-    private func timedStoreWrite(_ write: () throws -> Void) {
-        let start = CFAbsoluteTimeGetCurrent()
-        try? write()
-        let ms = (CFAbsoluteTimeGetCurrent() - start) * 1000
-        TelemetryHub.shared.record(TelemetryName.storeWrite, fields: [
-            "ms": String(format: "%.2f", ms),
-            "main": Thread.isMainThread ? "1" : "0",
-        ])
+    private func recordPosition(index: Int, source: String) {
+        guard let session, let recorder else { return }
+        recorder.record(document: session.document, wordIndex: index, source: source)
     }
 
     private func refreshResumeOffer() {

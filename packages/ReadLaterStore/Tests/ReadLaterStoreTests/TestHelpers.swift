@@ -3,11 +3,11 @@ import ReadLaterCore
 @testable import ReadLaterStore
 
 /// A store on a fresh temp file, removed when the test finishes.
-func makeTemporaryStore(device: String = "test-device") throws -> (Store, URL) {
+func makeTemporaryStore(device: String = "test-device", telemetry: TelemetryHub = TelemetryHub()) throws -> (Store, URL) {
     let dir = FileManager.default.temporaryDirectory
         .appendingPathComponent("ReadLaterStoreTests-\(UUID().uuidString)", isDirectory: true)
     try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-    let store = try Store(databaseURL: dir.appendingPathComponent("store.sqlite"), device: device)
+    let store = try Store(databaseURL: dir.appendingPathComponent("store.sqlite"), device: device, telemetry: telemetry)
     return (store, dir)
 }
 

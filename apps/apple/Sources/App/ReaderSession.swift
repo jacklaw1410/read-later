@@ -36,7 +36,7 @@ final class ReaderSession: ObservableObject {
     private var latch = ResumeLatch()
     /// Receives the current word index when the place should be recorded.
     /// Throttled during reading; immediate on pause, scrub and finish.
-    var onProgress: ((Int) -> Void)?
+    var onProgress: ((Int, String) -> Void)?
     private var progressThrottle = PositionWriteThrottle()
 
 
@@ -84,12 +84,12 @@ final class ReaderSession: ObservableObject {
 
     /// Records the place: at most once per throttle interval during reading,
     /// always for the out-of-band writes (pause, scrub, background flush).
-    private func record(_ index: Int, force: Bool = false) {
+    private func record(_ index: Int, force: Bool = false, source: String) {
         if force {
             progressThrottle.recordNow()
-            onProgress?(index)
+            onProgress?(index, source)
         } else if progressThrottle.shouldWrite() {
-            onProgress?(index)
+            onProgress?(index, source)
         }
     }
 
@@ -107,10 +107,12 @@ final class ReaderSession: ObservableObject {
     func togglePlay() {
         guard card == nil, note == nil else { return }
         // Logged at handler entry, before any state change, for M1 and M2.
-        TelemetryHub.shared.record(speech.state == .speaking ? TelemetryName.tapPause : TelemetryName.tapPlay)
+        // The word is the wash at tap time, for M9.
+        TelemetryHub.shared.record(speech.state == .speaking ? TelemetryName.tapPause : TelemetryName.tapPlay,
+                                   fields: ["word": String(wash.wordIndex ?? -1)])
         if speech.state == .speaking {
             speech.pause()
-            checkpoint()
+            checkpoint(source: "pause")
             TelemetryHub.shared.record(TelemetryName.pause)
             return
         }
@@ -196,7 +198,7 @@ final class ReaderSession: ObservableObject {
             latch.stash(index)
         }
 
-        checkpoint()
+        checkpoint(source: "scrub")
     }
 
     /// Wash preview for an in-flight scrub drag. Moves the highlight only:
@@ -230,7 +232,7 @@ final class ReaderSession: ObservableObject {
     func pauseForBackground() {
         guard speech.state == .speaking else { return }
         speech.pause()
-        checkpoint()
+        checkpoint(source: "background")
     }
 
     /// Reconcile on return to `.active`. Suspension can kill synthesis with
@@ -245,9 +247,9 @@ final class ReaderSession: ObservableObject {
     /// Hands the current word to the persistence slice, if one is attached.
     /// Delegates to the throttled record path, forced: checkpoints fire on
     /// pause, scrub commit and background, never per word.
-    private func checkpoint() {
+    private func checkpoint(source: String) {
         if let word = wash.wordIndex {
-            record(word, force: true)
+            record(word, force: true, source: source)
         }
     }
 
@@ -289,7 +291,7 @@ final class ReaderSession: ObservableObject {
             wash.wordIndex = word
             wash.isPlaying = false
         }
-        checkpoint()
+        checkpoint(source: "step")
     }
 
     private func seekToWord(_ word: Int) {
@@ -303,7 +305,7 @@ final class ReaderSession: ObservableObject {
             wash.wordIndex = word
             wash.isPlaying = false
         }
-        checkpoint()
+        checkpoint(source: "seek")
     }
 
     // MARK: - Lookup
@@ -471,7 +473,7 @@ final class ReaderSession: ObservableObject {
         }
         wash.wordIndex = index
         wash.isPlaying = isPlaying
-        record(index)
+        record(index, source: "tick")
     }
 
     private func speechStateChanged(_ state: SpeechState) {
@@ -484,7 +486,7 @@ final class ReaderSession: ObservableObject {
         case .paused, .warming:
             isPlaying = false
             if case .paused = state {
-                record(wash.wordIndex ?? 0, force: true)
+                record(wash.wordIndex ?? 0, force: true, source: "pause")
             }
         case .idle:
             isPlaying = false
@@ -492,7 +494,7 @@ final class ReaderSession: ObservableObject {
             isPlaying = false
             isFinished = true
             wash.isPlaying = false
-            record(max(spoken.totalWords - 1, 0), force: true)
+            record(max(spoken.totalWords - 1, 0), force: true, source: "finish")
             TelemetryHub.shared.record(TelemetryName.finished)
         }
         wash.isPlaying = isPlaying

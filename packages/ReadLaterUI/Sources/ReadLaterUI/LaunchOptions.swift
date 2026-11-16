@@ -47,6 +47,10 @@ public struct LaunchOptions: Equatable, Sendable {
     public private(set) var appearance: Appearance?
     /// Pins the locale. Nil follows the system.
     public private(set) var locale: String?
+    /// Debug seed for device latency runs (M2/M4 treatment): base64 article
+    /// text. The app saves it to the store with its place at word zero, so
+    /// the test opens the resume offer instead of typing the raw text.
+    public private(set) var seedTextB64: String?
     /// True when at least one `--debug.` flag was present.
     public private(set) var isActive = false
     /// Human-readable notes for flags that were ignored.
@@ -119,6 +123,14 @@ public struct LaunchOptions: Equatable, Sendable {
             }
         }
 
+        if let raw = values["seedTextB64"] {
+            if raw.isEmpty {
+                warnings.append("ignored seedTextB64: the value is empty")
+            } else {
+                seedTextB64 = raw
+            }
+        }
+
         for key in values.keys where !Self.knownKeys.contains(key) {
             warnings.append("ignored unknown flag \(Self.flagPrefix)\(key)")
         }
@@ -139,6 +151,7 @@ public struct LaunchOptions: Equatable, Sendable {
 
     private static let knownKeys: Set<String> = [
         "preset", "reset", "voice", "voice-pace", "animations", "appearance", "locale",
+        "seedTextB64",
     ]
 
     private static func pace(from raw: String?) -> Int? {

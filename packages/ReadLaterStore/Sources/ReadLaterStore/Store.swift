@@ -77,8 +77,9 @@ public struct ReadingPosition: Sendable, Hashable, Equatable {
 public final class Store: Sendable {
     let dbQueue: DatabaseQueue
     public let oplog: Oplog
+    let telemetry: TelemetryHub
 
-    public init(databaseURL: URL, device: String) throws {
+    public init(databaseURL: URL, device: String, telemetry: TelemetryHub = .shared) throws {
         var configuration = Configuration()
         configuration.foreignKeysEnabled = true
         configuration.journalMode = .wal
@@ -86,7 +87,24 @@ public final class Store: Sendable {
         let migrator = makeMigrator()
         try migrator.migrate(dbQueue)
         self.dbQueue = dbQueue
-        self.oplog = Oplog(dbQueue: dbQueue, device: device)
+        self.telemetry = telemetry
+        self.oplog = Oplog(dbQueue: dbQueue, device: device, telemetry: telemetry)
+    }
+
+    /// Single path for every write. Times the block and logs op, duration
+    /// and thread (M8: no main-thread writes). No write may call
+    /// `dbQueue.write` direct.
+    @discardableResult
+    func timedWrite<T>(_ op: String, fields: [String: String] = [:], _ work: (Database) throws -> T) throws -> T {
+        let start = CFAbsoluteTimeGetCurrent()
+        let value = try dbQueue.write(work)
+        let ms = (CFAbsoluteTimeGetCurrent() - start) * 1000
+        var logged = fields
+        logged["op"] = op
+        logged["ms"] = String(format: "%.2f", ms)
+        logged["main"] = Thread.isMainThread ? "1" : "0"
+        telemetry.record(TelemetryName.storeWrite, fields: logged)
+        return value
     }
 
     // MARK: - Documents
@@ -99,7 +117,7 @@ public final class Store: Sendable {
         guard let payload = encodedJSON(document) else {
             throw StoreError.payloadEncodingFailed
         }
-        try dbQueue.write { db in
+        try timedWrite("save.document") { db in
             try db.execute(sql: """
                 INSERT INTO document(id, url, title, added_at, plan_json)
                 VALUES (?, ?, ?, ?, ?)
@@ -139,7 +157,7 @@ public final class Store: Sendable {
 
     public func deleteDocument(id: UUID) throws {
         let payload = encodedJSON(["id": id.uuidString]) ?? "{}"
-        try dbQueue.write { db in
+        try timedWrite("document.delete") { db in
             try db.execute(sql: "DELETE FROM document WHERE id = ?", arguments: [id.uuidString])
             try Oplog.insert(in: db, device: oplog.device, op: "document.delete", payload: payload)
         }
@@ -164,12 +182,12 @@ public final class Store: Sendable {
     /// Finish rule: the wash reached the last spoken word. Speech `.finished`
     /// lands on that same word, so the pause path and the finish path agree
     /// with no manual mark.
-    public func recordPosition(of document: Document, wordIndex: Int, at date: Date = .now) throws {
+    public func recordPosition(of document: Document, wordIndex: Int, at date: Date = .now, source: String = "record") throws {
         let total = SpokenIndex(plan: document.plan).totalWords
         let clamped = min(max(wordIndex, 0), max(total - 1, 0))
         let finished = total > 0 && clamped >= total - 1
         let hash = Self.resumeKey(for: document)
-        try dbQueue.write { db in
+        try timedWrite("record.position", fields: ["source": source, "word": String(clamped)]) { db in
             try db.execute(sql: """
                 INSERT INTO reading_position(
                     content_hash, document_id, title, word_index, finished, saved, url, total_words, updated_at)
@@ -233,7 +251,7 @@ public final class Store: Sendable {
     /// Dismisses the launch affordance. The next pause re-records, so this
     /// only silences the current offer.
     public func dismissPosition(contentHash: String) throws {
-        try dbQueue.write { db in
+        try timedWrite("position.dismiss") { db in
             try db.execute(sql: "DELETE FROM reading_position WHERE content_hash = ?", arguments: [contentHash])
         }
     }
@@ -264,7 +282,7 @@ public final class Store: Sendable {
     /// Sets or clears the saved flag. The flag is local-only, like the rest of
     /// the position row, so no changelog entry is appended.
     public func setSaved(contentHash: String, saved: Bool) throws {
-        try dbQueue.write { db in
+        try timedWrite("position.saved") { db in
             try db.execute(
                 sql: "UPDATE reading_position SET saved = ? WHERE content_hash = ?",
                 arguments: [saved, contentHash])
@@ -288,7 +306,7 @@ public final class Store: Sendable {
         guard let payload = encodedJSON(phrase) else {
             throw StoreError.payloadEncodingFailed
         }
-        try dbQueue.write { db in
+        try timedWrite("phrase.save") { db in
             try db.execute(sql: """
                 INSERT INTO phrase(id, word, gloss, source, created_at)
                 VALUES (?, ?, ?, ?, ?)
@@ -333,7 +351,7 @@ public final class Store: Sendable {
             "block_id": String(blockID),
             "char_offset": String(charOffset),
         ]) ?? "{}"
-        return try dbQueue.write { db in
+        return try timedWrite("occurrence.record") { db in
             try db.execute(sql: """
                 INSERT INTO phrase_occurrence(phrase_id, document_id, block_id, char_offset, created_at)
                 VALUES (?, ?, ?, ?, ?)
