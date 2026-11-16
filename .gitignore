@@ -27,3 +27,6 @@ TestResults/
 
 # Wrangler
 .wrangler/
+
+# Per-session agent configs written by the opencode-kiro provider
+.kiro/agents/opencode-*.json
