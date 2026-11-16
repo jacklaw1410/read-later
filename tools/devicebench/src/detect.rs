@@ -17,7 +17,11 @@ impl Envelope {
                 (energy / chunk.len() as f32).sqrt()
             })
             .collect();
-        Envelope { sample_rate, hop, rms }
+        Envelope {
+            sample_rate,
+            hop,
+            rms,
+        }
     }
 
     /// Recording time, in seconds, at the start of window `index`.
@@ -27,13 +31,19 @@ impl Envelope {
 
     /// First window at or after `seconds`.
     pub fn index_at(&self, seconds: f64) -> usize {
-        ((seconds * self.sample_rate) / self.hop as f64).ceil().max(0.0) as usize
+        ((seconds * self.sample_rate) / self.hop as f64)
+            .ceil()
+            .max(0.0) as usize
     }
 }
 
 /// Median RMS over the first `seconds` of the recording. The recording must
-/// start in quiet, so this value is the room and device noise.
+/// start in quiet, so this value is the room and device noise. An empty
+/// recording has no floor, so it reads 0.0 instead of panicking.
 pub fn noise_floor(env: &Envelope, seconds: f64) -> f32 {
+    if env.rms.is_empty() {
+        return 0.0;
+    }
     let end = env.index_at(seconds).min(env.rms.len()).max(1);
     let mut head = env.rms[..end].to_vec();
     head.sort_by(|a, b| a.partial_cmp(b).unwrap());
@@ -137,7 +147,8 @@ mod tests {
         let start = (at * RATE) as usize;
         let len = (ms / 1000.0 * RATE) as usize;
         for i in 0..len {
-            out[start + i] = (0.8 * (2.0 * std::f64::consts::PI * 1000.0 * i as f64 / RATE).sin()) as f32;
+            out[start + i] =
+                (0.8 * (2.0 * std::f64::consts::PI * 1000.0 * i as f64 / RATE).sin()) as f32;
         }
         out
     }
@@ -199,7 +210,10 @@ mod tests {
     #[test]
     fn silence_level_follows_the_noise_floor() {
         assert!((silence_level(0.002) - 0.008).abs() < 1e-7);
-        assert!(silence_level(0.0) > 0.0, "a silent head must still give a positive level");
+        assert!(
+            silence_level(0.0) > 0.0,
+            "a silent head must still give a positive level"
+        );
     }
 
     #[test]
@@ -208,7 +222,10 @@ mod tests {
         let samples = burst(6.0, 0.0, 2000.0);
         let env = Envelope::new(&samples, RATE, 1.0);
         assert_eq!(quantile(&env, 0.0, 6.0, 0.10), 0.0);
-        assert!(quantile(&env, 0.0, 6.0, 1.0) > 0.1, "the loud part is above the quiet part");
+        assert!(
+            quantile(&env, 0.0, 6.0, 1.0) > 0.1,
+            "the loud part is above the quiet part"
+        );
     }
 
     #[test]
@@ -217,5 +234,92 @@ mod tests {
         let env = Envelope::new(&samples, RATE, 1.0);
         let at = sound_after(&env, 1.0, threshold(0.0, 0.01)).expect("sound");
         assert!((at - 1.2).abs() < 0.001);
+    }
+
+    #[test]
+    fn onsets_on_an_empty_envelope_is_empty() {
+        let env = Envelope::new(&[], RATE, 1.0);
+        assert!(env.rms.is_empty());
+        assert_eq!(onsets(&env, 0.01), Vec::<f64>::new());
+        assert_eq!(sound_after(&env, 0.0, 0.01), None);
+        assert_eq!(silence_after(&env, 0.0, 0.01, 0.3), None);
+    }
+
+    #[test]
+    fn empty_input_gives_empty_results_not_a_panic() {
+        // Adapted: the stale copy also asserted `resumed_after` here, but main
+        // has no `resumed_after` yet, so that line is dropped.
+        let env = Envelope::new(&[], RATE, 1.0);
+        assert!(env.rms.is_empty());
+        assert_eq!(noise_floor(&env, 0.5), 0.0);
+        assert_eq!(onsets(&env, 0.01), Vec::<f64>::new());
+        assert_eq!(sound_after(&env, 0.0, 0.01), None);
+        assert_eq!(silence_after(&env, 0.0, 0.01, 0.3), None);
+        assert_eq!(quantile(&env, 0.0, 6.0, 0.10), 0.0);
+    }
+
+    #[test]
+    fn queries_past_the_end_find_nothing() {
+        let samples = burst(2.0, 0.5, 100.0);
+        let env = Envelope::new(&samples, RATE, 1.0);
+        assert_eq!(sound_after(&env, 5.0, threshold(0.0, 0.01)), None);
+        assert_eq!(silence_after(&env, 5.0, threshold(0.0, 0.01), 0.3), None);
+        assert_eq!(quantile(&env, 5.0, 6.0, 0.10), 0.0);
+    }
+
+    #[test]
+    fn a_quiet_tail_shorter_than_min_quiet_is_not_silence() {
+        // Sound 0 to 0.9 s, then 0.1 s of quiet at the end. The tail run never
+        // reaches min_quiet inside the recording, so no silence is reported.
+        let samples = burst(1.0, 0.0, 900.0);
+        let env = Envelope::new(&samples, RATE, 1.0);
+        assert_eq!(silence_after(&env, 0.0, threshold(0.0, 0.01), 0.3), None);
+    }
+
+    #[test]
+    fn quantile_zero_and_one_are_min_and_max() {
+        let samples = burst(2.0, 0.0, 1000.0);
+        let env = Envelope::new(&samples, RATE, 1.0);
+        assert_eq!(quantile(&env, 0.0, 2.0, 0.0), 0.0);
+        assert!(quantile(&env, 0.0, 2.0, 1.0) > 0.1);
+    }
+
+    #[test]
+    fn quantile_endpoints_read_the_ends_of_the_window() {
+        // Sound from 0 to 2 s, then silence to 6 s.
+        let samples = burst(6.0, 0.0, 2000.0);
+        let env = Envelope::new(&samples, RATE, 1.0);
+        assert_eq!(quantile(&env, 0.0, 6.0, 0.0), 0.0);
+        assert!(quantile(&env, 0.0, 6.0, 1.0) > 0.1);
+    }
+
+    #[test]
+    fn collapse_merges_onsets_exactly_gap_apart() {
+        // 0.0625 is exact in binary, so this pins the "at most gap" bound
+        // without floating-point doubt.
+        assert_eq!(collapse(&[2.0, 2.0625, 3.0], 0.0625), vec![2.0, 3.0]);
+    }
+
+    #[test]
+    fn collapse_gap_boundary_merges_at_exactly_gap() {
+        // 0.25 is exact in binary, so the boundary comparison is deterministic.
+        assert_eq!(collapse(&[1.0, 1.25], 0.25), vec![1.0]);
+        assert_eq!(collapse(&[1.0, 1.250001], 0.25), vec![1.0, 1.250001]);
+        assert_eq!(collapse(&[1.0], 0.25), vec![1.0]);
+    }
+
+    #[test]
+    fn threshold_minimum_holds_for_a_quiet_head() {
+        assert_eq!(threshold(0.0, 0.01), 0.01);
+        assert_eq!(threshold_factor(0.001, 8.0, 0.01), 0.01);
+        assert!(threshold_factor(0.002, 8.0, 0.01) > 0.01);
+    }
+
+    #[test]
+    fn index_at_clamps_negative_time_to_zero() {
+        let samples = burst(1.0, 0.5, 10.0);
+        let env = Envelope::new(&samples, RATE, 1.0);
+        assert_eq!(env.index_at(-1.0), 0);
+        assert_eq!(env.time(0), 0.0);
     }
 }

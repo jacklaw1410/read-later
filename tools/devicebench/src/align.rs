@@ -68,10 +68,19 @@ pub fn align(marker_times: &[(f64, f64)], onsets: &[f64]) -> Result<Alignment, S
     // Every run so far started its first click late by 35 to 57 ms, a cold-start
     // delay. The clock error is therefore measured over clicks 2 onward, and the
     // first click's residual is reported apart. The offset still uses every click.
-    let later = if residuals.len() >= 3 { &residuals[1..] } else { &residuals[..] };
+    let later = if residuals.len() >= 3 {
+        &residuals[1..]
+    } else {
+        &residuals[..]
+    };
     let spread = later.iter().map(|d| (d - offset).abs()).fold(0.0, f64::max);
     let first_residual = residuals[0] - offset;
-    Ok(Alignment { offset, spread, first_residual, clicks: residuals.len() })
+    Ok(Alignment {
+        offset,
+        spread,
+        first_residual,
+        clicks: residuals.len(),
+    })
 }
 
 /// Tolerance for the first step of a click run. The first click starts up to
@@ -85,7 +94,11 @@ pub const FIRST_STEP_TOLERANCE: f64 = 0.08;
 /// chance, so the chain with the most regular spacing wins. The first step is
 /// excluded from that score, because the late first click is expected.
 /// Returns the matched onsets in order, or `None` when no chain fits.
-pub fn match_clicks(marker_times: &[(f64, f64)], onsets: &[f64], tolerance: f64) -> Option<Vec<f64>> {
+pub fn match_clicks(
+    marker_times: &[(f64, f64)],
+    onsets: &[f64],
+    tolerance: f64,
+) -> Option<Vec<f64>> {
     let k = marker_times.len();
     if k == 0 || onsets.len() < k {
         return None;
@@ -109,7 +122,11 @@ fn chain_from(first: f64, spacing: &[f64], onsets: &[f64], tolerance: f64) -> Op
     let mut chain = vec![first];
     let mut previous = first;
     for (step, want) in spacing.iter().enumerate() {
-        let window = if step == 0 { FIRST_STEP_TOLERANCE } else { tolerance };
+        let window = if step == 0 {
+            FIRST_STEP_TOLERANCE
+        } else {
+            tolerance
+        };
         let target = previous + want;
         let from = onsets.partition_point(|&o| o < target - window);
         let next = onsets[from..]
@@ -238,7 +255,10 @@ mod tests {
         // Clicks 1 s apart, with two speech onsets before them.
         let markers = [(10.0, 0.0), (11.0, 0.0), (12.0, 0.0)];
         let onsets = [0.3, 2.1, 5.0, 6.0, 7.0, 8.4];
-        assert_eq!(match_clicks(&markers, &onsets, 0.02), Some(vec![5.0, 6.0, 7.0]));
+        assert_eq!(
+            match_clicks(&markers, &onsets, 0.02),
+            Some(vec![5.0, 6.0, 7.0])
+        );
         assert_eq!(match_clicks(&markers, &[0.3, 0.9], 0.02), None);
     }
 
@@ -246,7 +266,10 @@ mod tests {
     fn a_stray_peak_between_clicks_is_skipped() {
         let markers = [(10.0, 0.0), (11.0, 0.0), (12.0, 0.0)];
         let onsets = [10.0, 10.4, 11.0, 12.0];
-        assert_eq!(match_clicks(&markers, &onsets, 0.02), Some(vec![10.0, 11.0, 12.0]));
+        assert_eq!(
+            match_clicks(&markers, &onsets, 0.02),
+            Some(vec![10.0, 11.0, 12.0])
+        );
     }
 
     #[test]
@@ -256,7 +279,10 @@ mod tests {
         // and the later spacings agree within 0.02 s.
         let markers = [(10.0, 0.0), (11.0, 0.0), (12.0, 0.0)];
         let onsets = [10.055, 11.0, 12.0];
-        assert_eq!(match_clicks(&markers, &onsets, 0.02), Some(vec![10.055, 11.0, 12.0]));
+        assert_eq!(
+            match_clicks(&markers, &onsets, 0.02),
+            Some(vec![10.055, 11.0, 12.0])
+        );
     }
 
     #[test]
@@ -265,7 +291,10 @@ mod tests {
         // but its second spacing is 30 ms off, so the exact one is kept.
         let markers = [(10.0, 0.0), (11.0, 0.0), (12.0, 0.0)];
         let onsets = [10.0, 11.0, 12.0, 20.0, 21.03, 22.0];
-        assert_eq!(match_clicks(&markers, &onsets, 0.03), Some(vec![10.0, 11.0, 12.0]));
+        assert_eq!(
+            match_clicks(&markers, &onsets, 0.03),
+            Some(vec![10.0, 11.0, 12.0])
+        );
     }
 
     #[test]
@@ -287,7 +316,11 @@ mod tests {
         assert!((b - a - 0.433).abs() < 1e-6, "diff {}", b - a);
         let late = wall_seconds("2026-11-30T23:59:59.500Z").unwrap();
         let early = wall_seconds("2026-12-01T00:00:00.500Z").unwrap();
-        assert!((early - late - 1.0).abs() < 1e-6, "across month end: {}", early - late);
+        assert!(
+            (early - late - 1.0).abs() < 1e-6,
+            "across month end: {}",
+            early - late
+        );
         assert_eq!(wall_seconds("not a stamp"), None);
     }
 
@@ -299,7 +332,89 @@ not json
 {"t":3.0,"iso":"","session":"b","event":"marker.request","fields":{"outputLatency":"0.2"}}"#;
         let events = parse_oplog(text);
         assert_eq!(events.len(), 3, "the bad line is skipped");
-        assert_eq!(sessions_with_markers(&events), vec!["a".to_string(), "b".to_string()]);
+        assert_eq!(
+            sessions_with_markers(&events),
+            vec!["a".to_string(), "b".to_string()]
+        );
         assert_eq!(markers_for(&events, "b"), vec![(3.0, 0.2)]);
+    }
+
+    #[test]
+    fn no_markers_is_an_error_and_no_onsets_is_none() {
+        assert!(align(&[], &[1.0]).is_err());
+        assert_eq!(match_clicks(&[], &[1.0, 2.0], 0.02), None);
+        assert_eq!(match_clicks(&[(1.0, 0.0)], &[], 0.02), None);
+    }
+
+    #[test]
+    fn a_single_click_aligns_with_zero_spread() {
+        let a = align(&[(10.0, 0.05)], &[10.55]).unwrap();
+        assert!((a.offset - 0.5).abs() < 1e-9);
+        assert_eq!(a.spread, 0.0);
+        assert_eq!(a.first_residual, 0.0);
+        assert_eq!(a.clicks, 1);
+    }
+
+    #[test]
+    fn two_markers_use_the_upper_median() {
+        let a = align(&[(10.0, 0.0), (11.0, 0.0)], &[10.5, 11.7]).unwrap();
+        assert!((a.offset - 0.7).abs() < 1e-9, "offset {}", a.offset);
+        assert!((a.spread - 0.2).abs() < 1e-9, "spread {}", a.spread);
+        assert!(
+            (a.first_residual + 0.2).abs() < 1e-9,
+            "first {}",
+            a.first_residual
+        );
+    }
+
+    #[test]
+    fn a_single_marker_matches_the_earliest_onset() {
+        // One click carries no spacing, so every onset is a candidate and the
+        // earliest wins. Callers must not rely on this to reject speech.
+        assert_eq!(
+            match_clicks(&[(10.0, 0.0)], &[5.0, 6.0], 0.02),
+            Some(vec![5.0])
+        );
+    }
+
+    #[test]
+    fn the_first_step_window_is_wider_than_tolerance() {
+        // 62.5 ms late on the first spacing passes with a 20 ms tolerance,
+        // because the first step uses FIRST_STEP_TOLERANCE. 90 ms late fails.
+        let markers = [(10.0, 0.0), (11.0, 0.0), (12.0, 0.0)];
+        assert_eq!(
+            match_clicks(&markers, &[10.0, 11.0625, 12.0625], 0.02),
+            Some(vec![10.0, 11.0625, 12.0625])
+        );
+        assert_eq!(match_clicks(&markers, &[10.0, 11.09, 12.09], 0.02), None);
+    }
+
+    #[test]
+    fn wall_seconds_parses_fractions_and_rejects_offsets() {
+        let half = wall_seconds("2026-11-15T07:27:45.5Z").unwrap();
+        let whole = wall_seconds("2026-11-15T07:27:45.000Z").unwrap();
+        assert!((half - whole - 0.5).abs() < 1e-6);
+        let no_z = wall_seconds("2026-11-15T07:27:45.5").unwrap();
+        assert!((no_z - half).abs() < 1e-9, "a missing Z changes nothing");
+        assert_eq!(wall_seconds("2026-11-15T07:27:45+08:00"), None);
+        let leap = wall_seconds("2024-02-29T00:00:00Z").unwrap();
+        let next = wall_seconds("2024-03-01T00:00:00Z").unwrap();
+        assert!(
+            (next - leap - 86_400.0).abs() < 1e-6,
+            "leap day is a real day"
+        );
+    }
+
+    #[test]
+    fn markers_wall_needs_a_stamp_but_not_a_latency() {
+        let text = r#"{"t":1.0,"iso":"2026-11-15T07:27:45.000Z","session":"a","event":"marker.request","fields":{}}
+{"t":2.0,"iso":"","session":"a","event":"marker.request","fields":{"outputLatency":"0.1"}}"#;
+        let events = parse_oplog(text);
+        let markers = markers_wall_for(&events, "a");
+        assert_eq!(markers.len(), 1, "the stamp-less event is skipped");
+        assert!(
+            (markers[0].1 - 0.0).abs() < 1e-12,
+            "a missing latency reads 0.0"
+        );
     }
 }
