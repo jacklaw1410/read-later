@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// The three icon button looks. Each one is a design decision, not a size.
-public enum IconButtonVariant: Sendable {
+public enum IconButtonVariant: Sendable, Equatable {
     /// No surface, text ink. Top bar, rows and settings.
     case quiet
     /// Primary fill on a rounded square, the same pair as the primary button.
@@ -15,13 +15,17 @@ public enum IconButtonVariant: Sendable {
 ///
 /// The box is `Theme.minTarget` on each side and takes every tap. The glyph
 /// is `Theme.icon()`, so the size and weight come from `typography.icon`.
-public struct IconGlyph: View {
+public struct IconGlyph: View, Equatable {
     private let systemName: String
     private let variant: IconButtonVariant
 
     public init(systemName: String, variant: IconButtonVariant = .quiet) {
         self.systemName = systemName
         self.variant = variant
+    }
+
+    nonisolated public static func == (lhs: IconGlyph, rhs: IconGlyph) -> Bool {
+        lhs.systemName == rhs.systemName && lhs.variant == rhs.variant
     }
 
     public var body: some View {
@@ -50,7 +54,7 @@ public struct IconGlyph: View {
 
 /// An icon-only action. The label is required, because a glyph has no text
 /// for VoiceOver to read.
-public struct IconButton: View {
+public struct IconButton: View, Equatable {
     private let systemName: String
     private let label: String
     private let variant: IconButtonVariant
@@ -66,6 +70,15 @@ public struct IconButton: View {
         self.label = label
         self.variant = variant
         self.action = action
+    }
+
+    /// Data-only: the action closure is recreated on every parent evaluation
+    /// but captures stable targets, so it never distinguishes a tick. Without
+    /// this the whole button subtree re-evaluates per wash word (M7).
+    nonisolated public static func == (lhs: IconButton, rhs: IconButton) -> Bool {
+        lhs.systemName == rhs.systemName
+            && lhs.label == rhs.label
+            && lhs.variant == rhs.variant
     }
 
     public var body: some View {

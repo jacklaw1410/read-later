@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Strip above the player while auto-scroll is held. One pill, one button.
-public struct HoldBadge: View {
+public struct HoldBadge: View, Equatable {
     private let isHeld: Bool
     private let isPlaying: Bool
     private let onResume: () -> Void
@@ -10,6 +10,12 @@ public struct HoldBadge: View {
         self.isHeld = isHeld
         self.isPlaying = isPlaying
         self.onResume = onResume
+    }
+
+    /// Data-only: the resume closure captures the stable session, so a wash
+    /// tick that rebuilds the parent must not re-evaluate this badge (M7).
+    nonisolated public static func == (lhs: HoldBadge, rhs: HoldBadge) -> Bool {
+        lhs.isHeld == rhs.isHeld && lhs.isPlaying == rhs.isPlaying
     }
 
     public var body: some View {
@@ -57,11 +63,17 @@ public func shouldShowReturnPill(washVisible: Bool, isHeld: Bool, isPlaying: Boo
 /// or held. Same surface, ink, edge and chip type as the hold badge, so
 /// the two read as one control. The tap is the explicit user action that
 /// scrolls back; play alone never yanks.
-public struct ReturnToWashPill: View {
+public struct ReturnToWashPill: View, Equatable {
     private let onReturn: () -> Void
 
     public init(onReturn: @escaping () -> Void) {
         self.onReturn = onReturn
+    }
+
+    /// No data: every instance is identical. The parent gates visibility, so
+    /// the pill itself never distinguishes a tick (M7).
+    nonisolated public static func == (lhs: ReturnToWashPill, rhs: ReturnToWashPill) -> Bool {
+        true
     }
 
     public var body: some View {

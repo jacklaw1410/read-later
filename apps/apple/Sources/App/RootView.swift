@@ -650,7 +650,11 @@ struct ReaderScreen: View {
 /// Reader top bar. Takes plain values, never the session, so a wash tick
 /// cannot invalidate it. The menu reads two values, follow state and
 /// finished state, and no per-word state. No behavior change.
-struct ReaderChrome: View {
+///
+/// Equatable (data-only, closures ignored): the parent rebuilds every tick
+/// with identical values, and without this the bar, menu and icon buttons
+/// re-evaluate per wash word (M7).
+struct ReaderChrome: View, Equatable {
     let title: String
     let autoScroll: Bool
     let isHeld: Bool
@@ -660,6 +664,14 @@ struct ReaderChrome: View {
     let onRestart: () -> Void
     let onToggleFollow: () -> Void
     let onReplay: () -> Void
+
+    nonisolated static func == (lhs: ReaderChrome, rhs: ReaderChrome) -> Bool {
+        lhs.title == rhs.title
+            && lhs.autoScroll == rhs.autoScroll
+            && lhs.isHeld == rhs.isHeld
+            && lhs.offScreen == rhs.offScreen
+            && lhs.isFinished == rhs.isFinished
+    }
 
     private var isFollowing: Bool {
         autoScroll && !isHeld && !offScreen
