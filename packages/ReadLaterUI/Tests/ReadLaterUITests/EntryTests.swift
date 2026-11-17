@@ -86,7 +86,6 @@ import ReadLaterCore
 @Test func entryRefusalStrings() {
     #expect(EntryCopy.emptyRefusal == "Nothing to open — paste a link or some text.")
     #expect(EntryCopy.emptyRefusalNoClipboard == "Nothing to open — copy a link or some text first.")
-    #expect(EntryCopy.loginWallRefusal == "Login wall: paste the text itself to keep reading.")
 }
 
 

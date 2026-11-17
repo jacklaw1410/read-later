@@ -41,10 +41,10 @@ public enum EntryCopy {
     public static let linkMode = "Link"
     public static let textMode = "Text"
     public static let linkCaption = "Paste link"
-    public static let linkHint = "The prefilled link opens the sample article. x.com and similar → login wall, paste text instead."
+    public static let linkHint = "The prefilled link opens the sample article."
     /// The caption for any link that is not the prefilled sample. Saying
     /// "prefilled" over an empty field is a lie the reader can see.
-    public static let linkHintEdited = "A web link opens the article. x.com and similar → login wall, paste text instead."
+    public static let linkHintEdited = "A web link opens the article."
     public static let rawCaption = "Raw text"
     public static let rawPlaceholder = "Paste a paragraph to read…"
     public static let open = "Open"
@@ -57,9 +57,6 @@ public enum EntryCopy {
     public static let emptyRefusal = "Nothing to open — paste a link or some text."
     public static let emptyRefusalNoClipboard =
         "Nothing to open — copy a link or some text first."
-    public static let loginWallRefusal =
-        "Login wall: paste the text itself to keep reading."
-    public static let wallLoadLine = "Login wall — paste text instead"
     public static let sampleLink = "https://www.theatlantic.com/reading/slow"
 
     /// Strip titles and subtitles for each detector kind.
@@ -67,7 +64,6 @@ public enum EntryCopy {
         switch kind {
         case .empty: return "Paste to begin"
         case .link: return "Article link"
-        case .warn: return "Login wall"
         case .text: return "Pasted text · \(wordCount) words"
         }
     }
@@ -78,8 +74,6 @@ public enum EntryCopy {
             return "A link or a few paragraphs"
         case .link:
             return "\(EntryDetector.domain(of: value)) · fetches full text + audio"
-        case .warn:
-            return "x.com — paste the text itself, links will not fetch."
         case .text:
             return "“\(EntryDetector.preview(of: value))…” · opens instantly"
         }
@@ -320,8 +314,7 @@ public struct EntryView: View {
     }
 
     /// The B2-S strip: a 4 pt state edge, a status line, and the paste
-    /// control folded inside while the field is empty. The warn state uses
-    /// an ink edge, never amber.
+    /// control folded inside while the field is empty.
     @ViewBuilder
     private var strip: some View {
         let words = EntryDetector.words(in: trimmedInput)
@@ -329,7 +322,7 @@ public struct EntryView: View {
         let edge: Color = {
             switch kind {
             case .link: return Theme.brand
-            case .warn, .text: return Theme.ink
+            case .text: return Theme.ink
             case .empty: return Theme.line
             }
         }()
@@ -368,10 +361,13 @@ public struct EntryView: View {
                 // iOS keeps the system PasteButton (a programmatic read
                 // would prompt and return nil): the visible line is ours
                 // and the button sits invisible in an overlay IN FRONT,
-                // taking the whole row. Alpha is 0.01, not 0: UIKit
-                // hitTest skips a bridged button below ~0.01, so 0 never
-                // fires though AX still reports it hittable (1% paint
-                // drift ≤ 3 LSB, snapshot-measured).
+                // taking the whole row. It takes plain-text and URL
+                // flavors — a bare Copy Link can hold public.url with no
+                // plain text, which a String-only button silently ignores.
+                // Alpha is 0.01, not 0: UIKit hitTest skips a bridged
+                // button below ~0.01, so 0 never fires though AX still
+                // reports it hittable (1% paint drift ≤ 3 LSB,
+                // snapshot-measured).
                 if showPaste {
                     #if os(macOS)
                     Button {
@@ -402,9 +398,11 @@ public struct EntryView: View {
                         .frame(maxWidth: .infinity, minHeight: 44, maxHeight: 44, alignment: .leading)
                         .accessibilityIdentifier(AccessibilityID.entryPasteLabel)
                         .overlay {
-                            PasteButton(payloadType: String.self) { strings in
-                                if let text = strings.first {
-                                    inputText = text
+                            PasteButton(
+                                supportedContentTypes: [.plainText, .url]
+                            ) { providers in
+                                EntryPaste.loadFirstText(from: providers) {
+                                    inputText = $0
                                 }
                             }
                             .labelStyle(.iconOnly)
@@ -456,23 +454,16 @@ public struct EntryView: View {
         switch state {
         case .idle: return 0
         case .loading(let stage, _): return stage.progress
-        case .refused(let message):
-            if message == EntryCopy.loginWallRefusal {
-                return EntryStage.fetching.progress
-            }
-            return settledStage?.progress ?? 0
+        case .refused: return settledStage?.progress ?? 0
         }
     }
 
-    /// The loadline step the bar has reached. Nil before the first stage
-    /// and on the login-wall short-circuit, which never fetches.
+    /// The loadline step the bar has reached. Nil before the first stage.
     private var currentStep: Int? {
         switch state {
         case .idle: return nil
         case .loading(let stage, _): return stepIndex(for: stage)
-        case .refused(let message):
-            if message == EntryCopy.loginWallRefusal { return nil }
-            return settledStage.map(stepIndex)
+        case .refused: return settledStage.map(stepIndex)
         }
     }
 
@@ -488,8 +479,7 @@ public struct EntryView: View {
         switch state {
         case .idle: return ""
         case .loading(let stage, _): return stage.label
-        case .refused(let message):
-            return message == EntryCopy.loginWallRefusal ? EntryCopy.wallLoadLine : ""
+        case .refused: return ""
         }
     }
 
@@ -611,11 +601,6 @@ public struct EntryView: View {
             state = .refused(
                 clipboardEmpty ? EntryCopy.emptyRefusalNoClipboard : EntryCopy.emptyRefusal
             )
-            return
-        }
-        // A login wall never fetches: the error names the fix.
-        if kind == .warn {
-            state = .refused(EntryCopy.loginWallRefusal)
             return
         }
         guard !isLoading else { return }

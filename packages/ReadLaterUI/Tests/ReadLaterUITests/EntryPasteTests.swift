@@ -51,8 +51,8 @@ final class EntryPasteTests: XCTestCase {
     }
 
     func testXComLinkIsOpenableAtPasteLayer() {
-        // The login-wall warn mapping belongs to classify, not the paste
-        // rule: the paste control still accepts the link; the strip warns.
+        // Every link fetches for real now: the paste rule accepts the link
+        // and a genuine wall surfaces from extraction, not a name check.
         XCTAssertEqual(
             EntryPaste.openableLink(from: "https://x.com/someone/status/123"),
             "https://x.com/someone/status/123"
