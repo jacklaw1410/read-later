@@ -391,6 +391,10 @@ final class ReaderSession: ObservableObject {
 
     func closeCard() {
         guard let card else { return }
+        // Close-request mark for M14: with card.shown (paint) and
+        // state.speaking (resume) this splits close-to-resume into test
+        // delivery (tap to here) and teardown-plus-resume (here to speaking).
+        TelemetryHub.shared.record(TelemetryName.cardClose)
         let wasPlaying = card.wasPlaying
         self.card = nil
         wash.selectedWordIndex = nil
