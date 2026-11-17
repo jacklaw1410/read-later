@@ -43,6 +43,11 @@ public enum TelemetryName {
     public static let extractFailed = "extract.failed"
     public static let articleReady = "article.ready"
     public static let speechDidStart = "speech.didStart"
+    /// Per-utterance start mark for M4, logged from the synthesizer delegate
+    /// without an active-run gate (the seeded flow never starts one), in the
+    /// `card.shown` style. `speech.didStart` fires once per `speak`; this
+    /// fires for every utterance so scrub releases have a phone-side mark.
+    public static let utteranceStart = "speech.utteranceStart"
     public static let readerOpen = "reader-open"
     public static let play = "play"
     public static let pause = "pause"

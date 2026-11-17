@@ -365,8 +365,12 @@ extension AVSpeechController {
         // late start must never promote the controller to `speaking`: that
         // leaves a state that claims to play while nothing is queued, and the
         // transport then swallows the reader's first press.
-        guard inFlight[utteranceID] != nil, !warmupIDs.contains(utteranceID) else { return }
+        guard let entry = inFlight[utteranceID], !warmupIDs.contains(utteranceID) else { return }
         state = .speaking
+        // M4 phone-side mark: every utterance start, ungated (see TelemetryName).
+        TelemetryHub.shared.record(TelemetryName.utteranceStart, fields: [
+            "utterance": String(entry.utteranceIndex),
+        ])
         if !ttfwVoiceStarted {
             ttfwVoiceStarted = true
             if TelemetryHub.shared.hasActiveRun {
