@@ -24,17 +24,14 @@ final class LookupExtendedTests: XCTestCase {
         let open = app.buttons[AccessibilityID.entryOpen]
         XCTAssertTrue(open.waitForExistence(timeout: Waits.screen), "entry screen did not appear")
 
-        let textMode = JourneySteps.textModeOption(app)
-        XCTAssertTrue(textMode.waitForExistence(timeout: Waits.screen), "the Text mode option is missing")
-        JourneySteps.tap(app, textMode)
-
-        let raw = app.textViews[AccessibilityID.entryRawField]
-        XCTAssertTrue(raw.waitForExistence(timeout: Waits.state), "the raw text field did not appear")
-        JourneySteps.tap(app, raw)
+        // One field takes a link or a paragraph; no mode switch.
+        let field = app.textViews[AccessibilityID.entryLinkField]
+        XCTAssertTrue(field.waitForExistence(timeout: Waits.state), "the entry field did not appear")
+        JourneySteps.tap(app, field)
         // "zxqv" is word-shaped but in neither the system dictionary (which
         // never answers on iOS) nor the demo pack, so every tap is a miss.
         // Eighty repetitions wrap a paragraph tall enough to cover the tap.
-        raw.typeText(String(repeating: "zxqv ", count: 80))
+        field.typeText(String(repeating: "zxqv ", count: 80))
 
         JourneySteps.dismissKeyboardIfPresent(app)
         JourneySteps.tap(app, open)

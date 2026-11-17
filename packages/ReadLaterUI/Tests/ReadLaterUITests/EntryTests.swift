@@ -84,8 +84,9 @@ import ReadLaterCore
 }
 
 @Test func entryRefusalStrings() {
-    #expect(EntryCopy.emptyRefusal == "nothing to open — paste a link or text")
-    #expect(EntryCopy.loginWallRefusal == "login wall — paste text instead")
+    #expect(EntryCopy.emptyRefusal == "Nothing to open — paste a link or some text.")
+    #expect(EntryCopy.emptyRefusalNoClipboard == "Nothing to open — copy a link or some text first.")
+    #expect(EntryCopy.loginWallRefusal == "Login wall: paste the text itself to keep reading.")
 }
 
 
@@ -117,13 +118,12 @@ import ReadLaterCore
     #expect(!EntryRequest(mode: .text, linkText: "", rawText: "a paragraph").isEmpty)
     #expect(EntryRequest(mode: .text, linkText: "https://example.com/a", rawText: "").isEmpty)
 }
-// MARK: - ResumeOffer
+// MARK: - Library place line
 
-@Test func resumeOfferPlaceLine() {
-    #expect(ResumeOffer(title: "T", wordIndex: 11, totalWords: 300).placeLine == "word 12 of 300")
-    #expect(ResumeOffer(title: "T", wordIndex: 999, totalWords: 300).placeLine == "word 300 of 300")
-    #expect(ResumeOffer(title: "Only title", wordIndex: 0, totalWords: 0).placeLine == "Only title")
-
+@Test func libraryPlaceLineStandsAlone() {
+    #expect(LibraryCopy.placeLine(wordIndex: 11, totalWords: 300) == "word 12 of 300")
+    #expect(LibraryCopy.placeLine(wordIndex: 999, totalWords: 300) == "word 300 of 300")
+    #expect(LibraryCopy.placeLine(wordIndex: 0, totalWords: 0) == "")
 }
 
 @Suite("Entry link caption")
@@ -134,4 +134,22 @@ struct EntryCaptionTests {
         #expect(EntryCopy.linkHint(for: "") == EntryCopy.linkHintEdited)
         #expect(EntryCopy.linkHint(for: "https://example.com") == EntryCopy.linkHintEdited)
     }
+}
+
+// MARK: - B2-S strip port
+
+@Test func entryStageProgressMatchesStripBeats() {
+    // Prototype beats: Fetch 30 / Clean 65 / Ready 100.
+    #expect(EntryStage.allCases.map { Int($0.progress * 100) } == [30, 65, 100])
+}
+
+@Test func stripIdentifiersAreUnique() {
+    let ids = [
+        AccessibilityID.entryStrip, AccessibilityID.entryError,
+        AccessibilityID.entryPaste, AccessibilityID.entryPasteLabel,
+        AccessibilityID.entryStepFetch,
+        AccessibilityID.entryStepClean, AccessibilityID.entryStepReady,
+    ]
+    #expect(ids.allSatisfy { !$0.isEmpty })
+    #expect(Set(ids).count == ids.count)
 }

@@ -29,8 +29,8 @@ public enum LibraryCopy {
     public static let forgetFailed = "could not remove this article"
 
     /// "word 12 of 300". The place in one glance, clamped to the article
-    /// length by the same rule as `ResumeOffer.placeLine`. Empty when the
-    /// length is unknown, so the row shows the title only.
+    /// length. Empty when the length is unknown, so the row shows the
+    /// title only.
     public static func placeLine(wordIndex: Int, totalWords: Int) -> String {
         guard totalWords > 0 else { return "" }
         return "word \(min(wordIndex + 1, totalWords)) of \(totalWords)"

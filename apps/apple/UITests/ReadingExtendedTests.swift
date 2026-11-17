@@ -78,9 +78,9 @@ final class ReadingExtendedTests: XCTestCase {
         JourneySteps.openSample(app)
         setSpeed(app, to: "1.2×", label: "Speed 1.2 times")
 
-        // Pause records the place. The relaunch then offers a resume, which
-        // is the way back in: the link field is empty after the first demo
-        // open, so tapping Open would open nothing.
+        // Pause records the place. The relaunch then lists it in the
+        // library, which is the way back in: the link field is empty
+        // after the first demo open, so tapping Open would open nothing.
         let play = app.buttons[AccessibilityID.readerPlayPause]
         XCTAssertTrue(play.waitForExistence(timeout: Waits.screen), "the play button is missing")
         JourneySteps.tap(app, play)
@@ -93,15 +93,11 @@ final class ReadingExtendedTests: XCTestCase {
         app.launchArguments += ["--debug.reset=none"]
         AppLauncher.relaunch(app)
 
-        let resume = app.buttons[AccessibilityID.entryResume]
-        XCTAssertTrue(
-            resume.waitForExistence(timeout: Waits.screen),
-            "the resume offer did not appear after relaunch"
-        )
-        JourneySteps.tap(app, resume)
+        // The resume offer is gone; the library row is the way back in.
+        JourneySteps.openLibraryRow(app, title: "The Quiet Power of Slow Reading")
         XCTAssertTrue(
             JourneySteps.texts(app, id: AccessibilityID.readerTitle).waitForExistence(timeout: Waits.screen),
-            "resume did not reopen the article"
+            "the library row did not reopen the article"
         )
 
         let speed = app.buttons[AccessibilityID.readerSpeed]

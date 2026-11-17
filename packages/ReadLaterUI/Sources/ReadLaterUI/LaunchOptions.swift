@@ -17,6 +17,7 @@ import Foundation
 ///     --debug.appearance=dark
 ///     --debug.locale=zh_HK
 ///     --debug.reset=all
+///     --debug.seedPasteboard=https://example.com/article
 ///     --debug.autoplay=3000
 ///
 /// Unknown keys and bad values are ignored with a warning, never a crash: a
@@ -52,6 +53,10 @@ public struct LaunchOptions: Equatable, Sendable {
     /// text. The app saves it to the store with its place at word zero, so
     /// the test opens the resume offer instead of typing the raw text.
     public private(set) var seedTextB64: String?
+    /// Debug seed for the pasteboard (paste journeys): plain text, no `=`.
+    /// Set at launch inside the app process, because a UI test runner
+    /// cannot reach the simulator's board from the host.
+    public private(set) var seedPasteboard: String?
     /// Milliseconds after launch to resume the offered article and start
     /// playback. Nil = off. Exists for CLI SwiftUI traces, which interpose
     /// only at launch and cannot host a test runner's taps (M7).
@@ -136,6 +141,14 @@ public struct LaunchOptions: Equatable, Sendable {
             }
         }
 
+        if let raw = values["seedPasteboard"] {
+            if raw.isEmpty {
+                warnings.append("ignored seedPasteboard: the value is empty")
+            } else {
+                seedPasteboard = raw
+            }
+        }
+
         if let raw = values["autoplay"] {
             if let milliseconds = Int(raw), (0 ... 600_000).contains(milliseconds) {
                 autoPlayAfterMs = milliseconds
@@ -164,7 +177,7 @@ public struct LaunchOptions: Equatable, Sendable {
 
     private static let knownKeys: Set<String> = [
         "preset", "reset", "voice", "voice-pace", "animations", "appearance", "locale",
-        "seedTextB64", "autoplay",
+        "seedTextB64", "seedPasteboard", "autoplay",
     ]
 
     private static func pace(from raw: String?) -> Int? {

@@ -103,6 +103,19 @@ final class LaunchOptionsTests: XCTestCase {
         XCTAssertEqual(options.warnings, ["ignored locale: the value is empty"])
     }
 
+    func test_seedPasteboardParsesAndEmptyIsIgnored() {
+        let options = LaunchOptions(arguments: [
+            "app", "--debug.seedPasteboard=https://example.com/paste-proof",
+        ])
+        XCTAssertTrue(options.isActive)
+        XCTAssertEqual(options.seedPasteboard, "https://example.com/paste-proof")
+        XCTAssertTrue(options.warnings.isEmpty)
+
+        let empty = LaunchOptions(arguments: ["app", "--debug.seedPasteboard="])
+        XCTAssertNil(empty.seedPasteboard)
+        XCTAssertEqual(empty.warnings, ["ignored seedPasteboard: the value is empty"])
+    }
+
     func test_realArgumentsAreNotMistakenForDebugFlags() {
         let options = LaunchOptions(arguments: [
             "app", "--snapshot", "/tmp/out", "--reset", "e2e",

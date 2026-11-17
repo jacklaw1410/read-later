@@ -6,11 +6,19 @@ import Foundation
 /// breaks the build in one place instead of a test at 2 a.m.
 public enum AccessibilityID {
     public static let entryLinkField = "entry.link"
-    public static let entryRawField = "entry.raw"
     public static let entryOpen = "entry.open"
-    public static let entryResume = "entry.resume"
     public static let entryLibrary = "entry.library"
     public static let entrySettings = "entry.settings"
+
+    // B2-S strip layout. The view worker wires these to the matching views;
+    // tests query the constants, never the strings.
+    public static let entryStrip = "entry.strip"
+    public static let entryError = "entry.error"
+    public static let entryPaste = "entry.paste"
+    public static let entryPasteLabel = "entry.paste.label"
+    public static let entryStepFetch = "entry.step.fetch"
+    public static let entryStepClean = "entry.step.clean"
+    public static let entryStepReady = "entry.step.ready"
 
     public static let readerTitle = "reader.title"
     public static let readerBack = "reader.back"

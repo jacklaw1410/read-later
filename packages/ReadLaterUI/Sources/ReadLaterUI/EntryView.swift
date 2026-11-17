@@ -1,5 +1,8 @@
 import ReadLaterCore
 import SwiftUI
+#if os(macOS)
+import AppKit
+#endif
 
 /// The three extraction stages, in order. One table maps each stage to its
 /// label and progress, so the view and the tests read the same values.
@@ -28,28 +31,13 @@ public enum EntryState: Sendable, Equatable {
     case refused(String)
 }
 
-/// One-line launch affordance for a started article: which article, where it
-/// stopped. Resume restores the word; dismiss drops the offer until the next
-/// pause re-records. An affordance, not a dialog: the entry form stays usable.
-public struct ResumeOffer: Sendable, Equatable {
-    public var title: String
-    public var wordIndex: Int
-    public var totalWords: Int
-
-    public init(title: String, wordIndex: Int, totalWords: Int) {
-        self.title = title
-        self.wordIndex = wordIndex
-        self.totalWords = totalWords
-    }
-
-    /// "word 12 of 300". The place, in one glance.
-    public var placeLine: String {
-        guard totalWords > 0 else { return title }
-        return "word \(min(wordIndex + 1, totalWords)) of \(totalWords)"
-    }
-}
 /// Every reader-facing string on the entry screen, in one type.
 public enum EntryCopy {
+    public static let heading = "Read it later"
+    public static let description =
+        "Paste a link or a few paragraphs. We fetch the clean text and prepare audio."
+    public static let fieldPlaceholder = "Paste a link or a paragraph…"
+    public static let fieldLabel = "Link or text"
     public static let linkMode = "Link"
     public static let textMode = "Text"
     public static let linkCaption = "Paste link"
@@ -59,14 +47,43 @@ public enum EntryCopy {
     public static let linkHintEdited = "A web link opens the article. x.com and similar → login wall, paste text instead."
     public static let rawCaption = "Raw text"
     public static let rawPlaceholder = "Paste a paragraph to read…"
-    public static let open = "Open in Read Later"
+    public static let open = "Open"
+    public static let opening = "Opening…"
+    public static let settings = "Settings"
     public static let paste = "Paste"
+    public static let pasteFromClipboard = "Paste from clipboard"
     public static let pasteHint = "Paste a link and open it"
     public static let extracting = "Extracting…"
-    public static let emptyRefusal = "nothing to open — paste a link or text"
-    public static let loginWallRefusal = "login wall — paste text instead"
-    public static let footer = "MVP cut: flow and tap-to-lookup. No drag-phrase, no notes."
+    public static let emptyRefusal = "Nothing to open — paste a link or some text."
+    public static let emptyRefusalNoClipboard =
+        "Nothing to open — copy a link or some text first."
+    public static let loginWallRefusal =
+        "Login wall: paste the text itself to keep reading."
+    public static let wallLoadLine = "Login wall — paste text instead"
     public static let sampleLink = "https://www.theatlantic.com/reading/slow"
+
+    /// Strip titles and subtitles for each detector kind.
+    public static func stripTitle(for kind: EntryKind, wordCount: Int) -> String {
+        switch kind {
+        case .empty: return "Paste to begin"
+        case .link: return "Article link"
+        case .warn: return "Login wall"
+        case .text: return "Pasted text · \(wordCount) words"
+        }
+    }
+
+    public static func stripSubtitle(for kind: EntryKind, value: String) -> String {
+        switch kind {
+        case .empty:
+            return "A link or a few paragraphs"
+        case .link:
+            return "\(EntryDetector.domain(of: value)) · fetches full text + audio"
+        case .warn:
+            return "x.com — paste the text itself, links will not fetch."
+        case .text:
+            return "“\(EntryDetector.preview(of: value))…” · opens instantly"
+        }
+    }
 
     /// The link caption follows the field: the sample variant only when the
     /// field really holds the sample.
@@ -75,8 +92,8 @@ public enum EntryCopy {
     }
 }
 
-/// One open reads one mode. Link stays first, so a pasted paragraph never
-/// hijacks a link open.
+/// One open reads the field as one kind. Link stays first, so a pasted
+/// paragraph never hijacks a link open.
 public enum EntryMode: String, Sendable, CaseIterable {
     case link
     case text
@@ -112,184 +129,140 @@ struct EntryRequest: Sendable, Equatable {
     }
 }
 
-/// The first screen. Prefilled link, optional raw text, one button, and a
-/// progress area that runs the three extraction stages before opening.
+/// The first screen: one field, a status strip, one Open button, and a
+/// loadline that appears below the button on the first open.
 public struct EntryView: View {
     private let onOpen: (ReadLaterCore.Document) -> Void
-    private let resumeOffer: ResumeOffer?
-    private let onResume: (() -> Void)?
-    private let onDismiss: (() -> Void)?
     private let onSettings: (() -> Void)?
     private let onLibrary: (() -> Void)?
+    /// True for the clipboard-empty variant: no paste button, and the empty
+    /// refusal names copying first. Never read live: the host picks the
+    /// variant, so iOS shows no permission prompt.
+    private let clipboardEmpty: Bool
 
-    private enum Field {
-        case link
-        case raw
-    }
-
-    @State private var linkText: String
-    @State private var rawText = ""
-    @State private var mode: EntryMode = .link
+    @State private var inputText: String
     @State private var state: EntryState = .idle
-    @FocusState private var focused: Field?
+    @State private var hasAttempted = false
+    @State private var settledStage: EntryStage?
+    @State private var pulseOn = false
+    @State private var shimmerX: CGFloat = -80
+    @State private var pasteHover = false
+    @FocusState private var fieldFocused: Bool
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     public init(
         onOpen: @escaping (ReadLaterCore.Document) -> Void,
-        resumeOffer: ResumeOffer? = nil,
-        onResume: (() -> Void)? = nil,
-        onDismiss: (() -> Void)? = nil,
         onSettings: (() -> Void)? = nil,
         onLibrary: (() -> Void)? = nil,
-        prefillLink: String = EntryCopy.sampleLink
+        prefillLink: String = EntryCopy.sampleLink,
+        clipboardEmpty: Bool = false
     ) {
         self.onOpen = onOpen
-        self.resumeOffer = resumeOffer
-        self.onResume = onResume
-        self.onDismiss = onDismiss
         self.onSettings = onSettings
         self.onLibrary = onLibrary
-        self._linkText = State(initialValue: prefillLink)
+        self.clipboardEmpty = clipboardEmpty
+        self._inputText = State(initialValue: prefillLink)
+    }
+
+    private var kind: EntryKind { EntryDetector.classify(inputText) }
+    private var trimmedInput: String {
+        inputText.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            // Settings live here, not in the reading menu: reading controls
-            // change while reading, Settings never does.
-            HStack(spacing: 8) {
-                Spacer(minLength: 0)
-                // The library is a place, not a reading control, so it sits
-                // beside the gear and stays out of the reader's menu.
-                if let onLibrary {
-                    Button(action: onLibrary) {
-                        Text(LibraryCopy.title)
-                            .font(.system(size: 13))
-                            .foregroundStyle(Theme.inkSecondary)
-                            .frame(minWidth: 44, minHeight: 44)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(LibraryCopy.title)
-                    .accessibilityIdentifier(AccessibilityID.entryLibrary)
-                }
-                if let onSettings {
-                    IconButton(systemName: "gearshape", label: "Settings", action: onSettings)
-                        .accessibilityIdentifier(AccessibilityID.entrySettings)
-                }
-            }
-            // The resume line sits above the form so a returning reader sees
-            // the place before the entry fields.
-            resumeAffordance
-            Spacer(minLength: 24)
-                .onTapGesture { focused = nil }
-            Picker("Input", selection: $mode) {
-                ForEach(EntryMode.allCases, id: \.self) { option in
-                    Text(option.title).tag(option)
-                }
-            }
-            .pickerStyle(.segmented)
-            .disabled(isLoading)
-            .accessibilityLabel("Input type")
-            .padding(.bottom, 10)
-            if mode == .link {
-                HStack(spacing: 8) {
-                    Text(EntryCopy.linkCaption)
-                        .font(Theme.eyebrow())
-                        .tracking(Theme.eyebrowTracking)
-                        .textCase(.uppercase)
-                        .foregroundStyle(Theme.inkSecondary)
-                        .accessibilityAddTraits(.isHeader)
-                    Spacer(minLength: 4)
-                    // One tap pastes and opens. The system paste button needs
-                    // no clipboard read, so iOS shows no permission prompt.
-                    PasteButton(payloadType: String.self) { strings in
-                        guard let text = strings.first else { return }
-                        pasteAndOpen(text)
-                    }
-                    .labelStyle(.titleAndIcon)
-                    .buttonStyle(.bordered)
-                    .controlSize(.small)
-                    .font(Theme.caption())
-                    .disabled(isLoading)
-                    .accessibilityLabel(EntryCopy.pasteHint)
-                }
-                TextField("Link", text: $linkText)
-                    .textFieldStyle(.plain)
-                    .font(.system(size: 14))
-                    .padding(10)
+        VStack(spacing: 0) {
+            chrome
+            VStack(alignment: .leading, spacing: 0) {
+                Text(EntryCopy.heading)
+                .font(Theme.title())
+                .foregroundStyle(Theme.ink)
+                .accessibilityAddTraits(.isHeader)
+                .padding(.top, 12)
+            Text(EntryCopy.description)
+                .font(Theme.caption())
+                .foregroundStyle(Theme.inkSecondary)
+                .padding(.top, 4)
+            ZStack(alignment: .topLeading) {
+                TextEditor(text: $inputText)
+                    .scrollContentBackground(.hidden)
+                    .font(.system(size: 15))
+                    .frame(minHeight: 88, maxHeight: 132)
+                    .padding(6)
                     .background(
-                        RoundedRectangle(cornerRadius: 10)
+                        RoundedRectangle(cornerRadius: Theme.cardRadius)
                             .stroke(Theme.line, lineWidth: 1)
                     )
-                    .padding(.top, 6)
-                    .accessibilityLabel("Link")
+                    .accessibilityLabel(EntryCopy.fieldLabel)
                     .accessibilityIdentifier(AccessibilityID.entryLinkField)
                     .disabled(isLoading)
-                    .focused($focused, equals: .link)
-                    .submitLabel(.go)
-                    .onSubmit { open() }
-                Text(EntryCopy.linkHint(for: linkText))
-                    .font(Theme.caption())
-                    .foregroundStyle(Theme.inkSecondary)
-                    .padding(.top, 6)
-            } else {
-                Text(EntryCopy.rawCaption)
-                    .font(Theme.eyebrow())
-                    .tracking(Theme.eyebrowTracking)
-                    .textCase(.uppercase)
-                    .foregroundStyle(Theme.inkSecondary)
-                    .accessibilityAddTraits(.isHeader)
-                ZStack(alignment: .topLeading) {
-                    TextEditor(text: $rawText)
-                        .scrollContentBackground(.hidden)
-                        .font(.system(size: 14))
-                        .frame(minHeight: 48, maxHeight: 96)
-                        .padding(6)
-                        .background(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Theme.line, lineWidth: 1)
-                        )
-                        .accessibilityLabel("Raw text")
-                        .accessibilityIdentifier(AccessibilityID.entryRawField)
-                        .focused($focused, equals: .raw)
-                    if rawText.isEmpty {
-                        Text(EntryCopy.rawPlaceholder)
-                            .font(.system(size: 14))
-                            .foregroundStyle(Theme.inkSecondary)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 14)
-                            .allowsHitTesting(false)
-                    }
+                    .focused($fieldFocused)
+                if trimmedInput.isEmpty {
+                    Text(EntryCopy.fieldPlaceholder)
+                        .font(.system(size: 15))
+                        .foregroundStyle(Theme.inkSecondary)
+                        .padding(.horizontal, 12)
+                        // The editor draws its text below its padding by the
+                        // platform text-container inset. iOS is 6 + 8 by
+                        // UITextView default. macOS measured: placeholder
+                        // glyph top 183 pt vs real-text 179.5 pt at padding
+                        // 9, so 6 meets the text.
+                        #if os(macOS)
+                        .padding(.vertical, 6)
+                        #else
+                        .padding(.vertical, 14)
+                        #endif
+                        .allowsHitTesting(false)
                 }
-                .padding(.top, 6)
-                .disabled(isLoading)
             }
-            Button(isLoading ? EntryCopy.extracting : EntryCopy.open) {
+            .padding(.top, 12)
+            strip
+                .padding(.top, 12)
+            Button(isLoading ? EntryCopy.opening : EntryCopy.open) {
                 open()
             }
             .buttonStyle(PrimaryActionButtonStyle())
-            .padding(.top, 16)
+            .padding(.top, 12)
             .disabled(isLoading)
-            .accessibilityLabel(isLoading ? EntryCopy.extracting : EntryCopy.open)
+            .accessibilityLabel(isLoading ? EntryCopy.opening : EntryCopy.open)
             .accessibilityIdentifier(AccessibilityID.entryOpen)
-            progressArea
-                .padding(.top, 14)
+            // Feedback expands below Open. Open never moves.
+            if hasAttempted {
+                loadline
+                    .padding(.top, 12)
+            }
+            if case .refused(let message) = state {
+                Text(message)
+                    .font(.system(size: 13))
+                    .foregroundStyle(Theme.holdInk)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(10)
+                    .background(
+                        RoundedRectangle(cornerRadius: Theme.buttonRadius)
+                            .fill(Theme.holdSurface)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: Theme.buttonRadius)
+                            .stroke(Theme.holdBorder, lineWidth: 1)
+                    )
+                    .padding(.top, 8)
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel(message)
+                    .accessibilityAddTraits(.updatesFrequently)
+                    .accessibilityIdentifier(AccessibilityID.entryError)
+            }
             Spacer(minLength: 0)
-                .onTapGesture { focused = nil }
-            Text(EntryCopy.footer)
-                .font(Theme.caption())
-                .foregroundStyle(Theme.inkSecondary)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .padding(.top, 12)
+                .onTapGesture { fieldFocused = false }
+            }
+            .padding(.horizontal, Theme.screenGutter)
         }
-        .padding(.horizontal, Theme.screenGutter)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(Theme.paper)
         .toolbar {
             // Return inserts a newline in the editor, so it needs its own
-            // dismiss path. The link field uses submitLabel(.go) instead.
+            // dismiss path.
             ToolbarItemGroup(placement: .keyboard) {
                 Spacer()
-                Button("Done") { focused = nil }
+                Button("Done") { fieldFocused = false }
             }
         }
         .onAppear { TelemetryHub.shared.markEntryReady() }
@@ -300,32 +273,183 @@ public struct EntryView: View {
         return false
     }
 
+    /// The top bar: library left, settings right, one shared look. The
+    /// system has no icon-plus-label bar variant (§7 is icon-only, the
+    /// library header close is text-only), so the chrome button is its own
+    /// thing: 13 semibold ink, 14 pt glyph, one control-gap between glyph
+    /// and label, 44 pt target, plain style.
     @ViewBuilder
-    private var resumeAffordance: some View {
-        if let offer = resumeOffer {
-            HStack(spacing: 8) {
-                Text("Resume “\(offer.title)” · \(offer.placeLine)")
-                    .font(Theme.caption())
-                    .foregroundStyle(Theme.inkSecondary)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
-                Spacer(minLength: 4)
-                Button("Resume") { onResume?() }
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Theme.brand)
-                    .accessibilityLabel("Resume \(offer.title)")
-                    .accessibilityIdentifier(AccessibilityID.entryResume)
-                Button("Dismiss") { onDismiss?() }
-                    .font(.system(size: 13))
-                    .foregroundStyle(Theme.inkSecondary)
-                    .accessibilityLabel("Dismiss resume offer")
+    private var chrome: some View {
+        // Settings live here, not in the reading menu: reading controls
+        // change while reading, Settings never does. The library is a
+        // place, not a reading control, so it sits opposite the gear.
+        HStack(spacing: Theme.controlGap) {
+            if let onLibrary {
+                chromeButton(
+                    title: LibraryCopy.title, systemImage: "book",
+                    id: AccessibilityID.entryLibrary, action: onLibrary)
             }
-            .padding(.bottom, 12)
+            Spacer(minLength: 0)
+            if let onSettings {
+                chromeButton(
+                    title: EntryCopy.settings, systemImage: "gearshape",
+                    id: AccessibilityID.entrySettings, action: onSettings)
+            }
         }
+        .padding(.horizontal, Theme.stackGap)
+        .background(Theme.surface)
+        .overlay(Divider(), alignment: .bottom)
     }
 
-    private var showsProgress: Bool {
-        state != .idle
+    private func chromeButton(
+        title: String, systemImage: String, id: String, action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            HStack(spacing: Theme.controlGap) {
+                Image(systemName: systemImage)
+                    .font(.system(size: 14, weight: .medium))
+                Text(title)
+                    .font(.system(size: 13, weight: .semibold))
+            }
+            .foregroundStyle(Theme.ink)
+            .frame(minHeight: Theme.minTarget)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(title)
+        .accessibilityIdentifier(id)
+    }
+
+    /// The B2-S strip: a 4 pt state edge, a status line, and the paste
+    /// control folded inside while the field is empty. The warn state uses
+    /// an ink edge, never amber.
+    @ViewBuilder
+    private var strip: some View {
+        let words = EntryDetector.words(in: trimmedInput)
+        let showPaste = trimmedInput.isEmpty && !clipboardEmpty
+        let edge: Color = {
+            switch kind {
+            case .link: return Theme.brand
+            case .warn, .text: return Theme.ink
+            case .empty: return Theme.line
+            }
+        }()
+        HStack(spacing: 0) {
+            edge
+                .frame(width: 4)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(kind == .empty && clipboardEmpty
+                    ? "Nothing on the clipboard"
+                    : EntryCopy.stripTitle(for: kind, wordCount: words.count))
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundStyle(Theme.ink)
+                    .lineLimit(1)
+                Text(kind == .empty && clipboardEmpty
+                    ? "Copy a link or some text first — then paste it here."
+                    : EntryCopy.stripSubtitle(for: kind, value: trimmedInput))
+                    .font(Theme.caption())
+                    .foregroundStyle(Theme.inkSecondary)
+                    // One line, tail-clipped: a long paste must not push
+                    // the card open.
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+                // Paste on tap, from the tap only: the host picks the
+                // variant, so there is no live clipboard read.
+                //
+                // macOS is one visible control: the label IS the button
+                // (styled line, whole 44 pt row, `.plain`, no chrome). A
+                // transparent overlay twin never fires on AppKit — an
+                // empty label has no hit area — so the label is the
+                // button. macOS reads the board directly (no prompt
+                // there): string flavor first, then a bare URL object
+                // (Copy Link / Universal Clipboard can hold public.url
+                // with no plain text; a String-only PasteButton silently
+                // ignores that tap).
+                //
+                // iOS keeps the system PasteButton (a programmatic read
+                // would prompt and return nil): the visible line is ours
+                // and the button sits invisible in an overlay IN FRONT,
+                // taking the whole row. Alpha is 0.01, not 0: UIKit
+                // hitTest skips a bridged button below ~0.01, so 0 never
+                // fires though AX still reports it hittable (1% paint
+                // drift ≤ 3 LSB, snapshot-measured).
+                if showPaste {
+                    #if os(macOS)
+                    Button {
+                        inputText = EntryPaste.appKitBoardText()
+                            ?? inputText
+                    } label: {
+                        Text(EntryCopy.pasteFromClipboard)
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundStyle(Theme.brand)
+                            .underline(pasteHover)
+                            .padding(.vertical, 10)
+                            .frame(maxWidth: .infinity, minHeight: 44, maxHeight: 44, alignment: .leading)
+                            .contentShape(Rectangle())
+                            .accessibilityIdentifier(AccessibilityID.entryPasteLabel)
+                    }
+                    .buttonStyle(.plain)
+                    .onHover { pasteHover = $0 }
+                    .disabled(isLoading)
+                    .accessibilityIdentifier(AccessibilityID.entryPaste)
+                    #else
+                    Text(EntryCopy.pasteFromClipboard)
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(Theme.brand)
+                        .underline(pasteHover)
+                        .padding(.vertical, 10)
+                        // Fixed 44 pt row: a min-only frame is flexible and
+                        // would drink the VStack leftover, stretching the card.
+                        .frame(maxWidth: .infinity, minHeight: 44, maxHeight: 44, alignment: .leading)
+                        .accessibilityIdentifier(AccessibilityID.entryPasteLabel)
+                        .overlay {
+                            PasteButton(payloadType: String.self) { strings in
+                                if let text = strings.first {
+                                    inputText = text
+                                }
+                            }
+                            .labelStyle(.iconOnly)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .opacity(0.01)
+                            .onHover { pasteHover = $0 }
+                            .disabled(isLoading)
+                            .accessibilityLabel(EntryCopy.pasteFromClipboard)
+                            .accessibilityIdentifier(AccessibilityID.entryPaste)
+                        }
+                    #endif
+                }
+            }
+            .padding(.vertical, 12)
+            .padding(.horizontal, 14)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .background(Theme.surface)
+        .clipShape(RoundedRectangle(cornerRadius: Theme.cardRadius))
+        .overlay(
+            RoundedRectangle(cornerRadius: Theme.cardRadius)
+                .stroke(
+                    Theme.line,
+                    style: kind == .empty
+                        ? StrokeStyle(lineWidth: 1, dash: [5, 4])
+                        : StrokeStyle(lineWidth: 1)
+                )
+        )
+        // The 4 pt edge is a bare Color, which is vertically flexible and
+        // would drink the VStack leftover, stretching the card. The strip
+        // hugs its content; the Spacer below takes the rest.
+        .fixedSize(horizontal: false, vertical: true)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(stripAccessibilityLabel(wordCount: words.count))
+        .accessibilityAddTraits(.updatesFrequently)
+        .accessibilityIdentifier(AccessibilityID.entryStrip)
+    }
+
+    private func stripAccessibilityLabel(wordCount: Int) -> String {
+        if kind == .empty && clipboardEmpty {
+            return "Nothing on the clipboard. Copy a link or some text first."
+        }
+        return EntryCopy.stripTitle(for: kind, wordCount: wordCount)
+            + ". "
+            + EntryCopy.stripSubtitle(for: kind, value: trimmedInput)
     }
 
     private var shownProgress: Double {
@@ -333,83 +457,193 @@ public struct EntryView: View {
         case .idle: return 0
         case .loading(let stage, _): return stage.progress
         case .refused(let message):
-            return message == EntryCopy.loginWallRefusal ? EntryStage.fetching.progress : 0
+            if message == EntryCopy.loginWallRefusal {
+                return EntryStage.fetching.progress
+            }
+            return settledStage?.progress ?? 0
         }
     }
 
-    private var progressLabel: String {
+    /// The loadline step the bar has reached. Nil before the first stage
+    /// and on the login-wall short-circuit, which never fetches.
+    private var currentStep: Int? {
+        switch state {
+        case .idle: return nil
+        case .loading(let stage, _): return stepIndex(for: stage)
+        case .refused(let message):
+            if message == EntryCopy.loginWallRefusal { return nil }
+            return settledStage.map(stepIndex)
+        }
+    }
+
+    private func stepIndex(for stage: EntryStage) -> Int {
+        switch stage {
+        case .fetching: return 0
+        case .stripping: return 1
+        case .ready: return 2
+        }
+    }
+
+    private var loadStatus: String {
         switch state {
         case .idle: return ""
         case .loading(let stage, _): return stage.label
-        case .refused(let message): return message
+        case .refused(let message):
+            return message == EntryCopy.loginWallRefusal ? EntryCopy.wallLoadLine : ""
         }
     }
 
+    /// The loadline: progress bar, Fetch / Clean / Ready ticks, status line.
+    /// Hidden until the first Open; steps stay out of the AT tree.
     @ViewBuilder
-    private var progressArea: some View {
-        // Always laid out, only revealed when a load starts. A view that
-        // inserts itself on press moves the button under the reader's finger
-        // and shifts the whole form; reserving the height costs two lines of
-        // empty space and no jolt.
+    private var loadline: some View {
         VStack(alignment: .leading, spacing: 8) {
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
                     Capsule()
                         .fill(Theme.line)
-                        .frame(height: 3)
                     Capsule()
                         .fill(Theme.brand)
-                        .frame(width: shownProgress * geo.size.width, height: 3)
+                        .frame(width: shownProgress * geo.size.width)
+                    if isLoading && !reduceMotion {
+                        Capsule()
+                            .fill(
+                                LinearGradient(
+                                    colors: [.clear, .white.opacity(0.65), .clear],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .frame(width: 80)
+                            .offset(x: shimmerX)
+                            .onAppear {
+                                shimmerX = -80
+                                withAnimation(
+                                    .linear(duration: 1.2).repeatForever(autoreverses: false)
+                                ) {
+                                    shimmerX = geo.size.width + 80
+                                }
+                            }
+                    }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
             }
             .frame(height: 3)
             .animation(reduceMotion ? nil : ThemeMotion.entryProgress, value: shownProgress)
-            Text(showsProgress ? progressLabel : " ")
+            HStack(spacing: 10) {
+                stepTick(
+                    title: "Fetch",
+                    id: AccessibilityID.entryStepFetch,
+                    index: 0
+                )
+                stepTick(
+                    title: "Clean",
+                    id: AccessibilityID.entryStepClean,
+                    index: 1
+                )
+                stepTick(
+                    title: "Ready",
+                    id: AccessibilityID.entryStepReady,
+                    index: 2,
+                    showsCheck: true
+                )
+            }
+            .accessibilityHidden(true)
+            Text(loadStatus)
                 .font(Theme.caption())
                 .foregroundStyle(Theme.inkSecondary)
+                .accessibilityAddTraits(.updatesFrequently)
         }
-        .opacity(showsProgress ? 1 : 0)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("Loading progress")
-        .accessibilityValue("\(Int(shownProgress * 100)) percent")
-        .accessibilityHidden(!showsProgress)
+        .onAppear {
+            if !reduceMotion {
+                withAnimation(
+                    .easeInOut(duration: 0.6).repeatForever(autoreverses: true)
+                ) {
+                    pulseOn = true
+                }
+            }
+        }
     }
 
-    /// A pasted link opens in one tap. Anything that is not a web link lands
-    /// in the field instead, so the reader can fix it.
-    private func pasteAndOpen(_ text: String) {
-        guard let link = EntryPaste.openableLink(from: text) else {
-            linkText = text.trimmingCharacters(in: .whitespacesAndNewlines)
-            return
+    @ViewBuilder
+    private func stepTick(
+        title: String,
+        id: String,
+        index: Int,
+        showsCheck: Bool = false
+    ) -> some View {
+        let step = currentStep
+        let done = step.map { $0 > index } ?? false
+        let now = step == index
+        let readyDone = showsCheck && done
+        HStack(spacing: 5) {
+            if readyDone {
+                Text("✓")
+                    .font(.system(size: 8, weight: .bold))
+                    .foregroundStyle(Theme.brand)
+                    .scaleEffect(step == 2 ? 1.0 : 0.4)
+                    .animation(
+                        reduceMotion ? nil : .spring(response: 0.45, dampingFraction: 0.5),
+                        value: step
+                    )
+            } else {
+                Circle()
+                    .fill(done || now ? Theme.brand : Theme.line)
+                    .frame(width: 8, height: 8)
+                    .opacity(now && !reduceMotion ? (pulseOn ? 0.35 : 1.0) : 1.0)
+            }
+            Text(title)
+                .font(.system(size: 10, weight: .bold))
+                .textCase(.uppercase)
+                .foregroundStyle(done || now ? (now && !done ? Theme.brand : Theme.ink) : Theme.inkSecondary)
         }
-        mode = .link
-        linkText = link
-        open()
+        .accessibilityIdentifier(id)
+    }
+
+    private func setLoading(_ stage: EntryStage) {
+        settledStage = stage
+        state = .loading(stage: stage, progress: stage.progress)
     }
 
     private func open() {
-        let request = EntryRequest(mode: mode, linkText: linkText, rawText: rawText)
-        if request.isEmpty {
-            state = .refused(EntryCopy.emptyRefusal)
+        hasAttempted = true
+        if trimmedInput.isEmpty {
+            state = .refused(
+                clipboardEmpty ? EntryCopy.emptyRefusalNoClipboard : EntryCopy.emptyRefusal
+            )
+            return
+        }
+        // A login wall never fetches: the error names the fix.
+        if kind == .warn {
+            state = .refused(EntryCopy.loginWallRefusal)
             return
         }
         guard !isLoading else { return }
         // The keyboard has done its job once the request leaves. Dismiss it
-        // here so the progress rule is visible on small screens.
-        focused = nil
+        // here so the loadline is visible on small screens.
+        fieldFocused = false
         TelemetryHub.shared.record(TelemetryName.tap)
+        let request: EntryRequest
+        if kind == .text {
+            request = EntryRequest(mode: .text, linkText: "", rawText: trimmedInput)
+        } else {
+            request = EntryRequest(
+                mode: .link,
+                linkText: EntryDetector.linkTarget(for: trimmedInput),
+                rawText: ""
+            )
+        }
         Task { await load(request) }
     }
 
-    /// The entry path follows the segmented mode. The bundled sample is
+    /// The entry path follows the field kind. The bundled sample is
     /// recognised here so the demo opens with no network, and a real link is
     /// fetched, extracted, then opened.
     @MainActor
     private func load(_ request: EntryRequest) async {
         switch request.mode {
         case .text:
-            state = .loading(stage: .stripping, progress: EntryStage.stripping.progress)
+            setLoading(.stripping)
             await reveal(.ready)
             switch ArticleIngress.pasted(request.raw) {
             case .success(let document):
@@ -423,7 +657,7 @@ public struct EntryView: View {
             break
         }
         if request.link == EntryCopy.sampleLink {
-            state = .loading(stage: .fetching, progress: EntryStage.fetching.progress)
+            setLoading(.fetching)
             await reveal(.stripping)
             await reveal(.ready)
             TelemetryHub.shared.record(TelemetryName.fetchSkipped, fields: ["reason": "sample-link"])
@@ -436,7 +670,7 @@ public struct EntryView: View {
             return
         }
 
-        state = .loading(stage: .fetching, progress: EntryStage.fetching.progress)
+        setLoading(.fetching)
         let fetched = await ArticleIngress.fetch(request.link)
         guard case .success(let page) = fetched else {
             if case .failure(let error) = fetched {
@@ -444,7 +678,7 @@ public struct EntryView: View {
             }
             return
         }
-        state = .loading(stage: .stripping, progress: EntryStage.stripping.progress)
+        setLoading(.stripping)
         switch ArticleIngress.read(page) {
         case .success(let document):
             await reveal(.ready)
@@ -460,7 +694,7 @@ public struct EntryView: View {
     /// the reader nothing.
     @MainActor
     private func reveal(_ stage: EntryStage) async {
-        state = .loading(stage: stage, progress: stage.progress)
+        setLoading(stage)
         try? await Task.sleep(for: .milliseconds(180))
     }
 }

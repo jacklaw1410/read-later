@@ -93,13 +93,19 @@ enum JourneySteps {
         #endif
     }
 
-    /// The "Text" segment of the entry mode picker.
-    static func textModeOption(_ app: XCUIApplication) -> XCUIElement {
-        #if os(macOS)
-        app.radioButtons["Text"]
-        #else
-        app.buttons["Text"]
-        #endif
+    /// Opens a library row by its title. The row button wraps the row text,
+    /// so the query finds buttons containing the titled static text.
+    static func openLibraryRow(_ app: XCUIApplication, title: String) {
+        let library = app.buttons[AccessibilityID.entryLibrary]
+        XCTAssertTrue(library.waitForExistence(timeout: Waits.screen), "the library button is missing")
+        tap(app, library)
+        let row = app.buttons.containing(.staticText, identifier: title).firstMatch
+        XCTAssertTrue(row.waitForExistence(timeout: Waits.screen), "no library row for \(title)")
+        tap(app, row)
+        XCTAssertTrue(
+            texts(app, id: AccessibilityID.readerTitle).waitForExistence(timeout: Waits.screen),
+            "the library row did not open"
+        )
     }
 
     /// Dismisses the software keyboard when one is showing. macOS has no

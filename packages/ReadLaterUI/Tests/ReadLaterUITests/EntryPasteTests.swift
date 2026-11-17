@@ -49,4 +49,20 @@ final class EntryPasteTests: XCTestCase {
             "HTTPS://example.com/x"
         )
     }
+
+    func testXComLinkIsOpenableAtPasteLayer() {
+        // The login-wall warn mapping belongs to classify, not the paste
+        // rule: the paste control still accepts the link; the strip warns.
+        XCTAssertEqual(
+            EntryPaste.openableLink(from: "https://x.com/someone/status/123"),
+            "https://x.com/someone/status/123"
+        )
+    }
+
+    func testBareHostNeedsSchemeEvenWhenShort() {
+        // The <3-word domain rule lives in classify; the paste rule needs a
+        // scheme, so a bare host never opens from paste.
+        XCTAssertNil(EntryPaste.openableLink(from: "example.com/article"))
+        XCTAssertNil(EntryPaste.openableLink(from: "example.com/a b"))
+    }
 }

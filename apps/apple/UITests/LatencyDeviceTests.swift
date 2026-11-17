@@ -36,7 +36,7 @@ final class LatencyDeviceTests: XCTestCase {
         let run = try DeviceRun.read(expectedWords: 200, defaultCycles: 12)
         terminateApp()
         let app = AppLauncher.launch(extraArguments: run.launchArguments)
-        openSeeded(app)
+        openSeeded(app, run: run)
         pauseBatch(app, run: run)
     }
 
@@ -45,7 +45,7 @@ final class LatencyDeviceTests: XCTestCase {
         let run = try DeviceRun.read(expectedWords: 4_500, defaultCycles: 20)
         terminateApp()
         let app = AppLauncher.launch(extraArguments: run.launchArguments)
-        openSeeded(app)
+        openSeeded(app, run: run)
         scrubBatch(app, run: run)
     }
 
@@ -59,13 +59,11 @@ final class LatencyDeviceTests: XCTestCase {
 
     // MARK: - Seeding
 
-    /// Opens the seeded article through the resume offer. The seed flag
-    /// writes the article and its place (word zero) before the offer
-    /// refreshes, so the offer is there on launch. No typing.
-    private func openSeeded(_ app: XCUIApplication) {
-        let resume = app.buttons[AccessibilityID.entryResume]
-        XCTAssertTrue(resume.waitForExistence(timeout: Waits.screen), "the seeded resume offer is missing")
-        JourneySteps.tap(app, resume)
+    /// Opens the seeded article through the newest library row. The seed
+    /// flag writes the article and its place (word zero) before the library
+    /// refresh, so its row is on top on launch. No typing.
+    private func openSeeded(_ app: XCUIApplication, run: DeviceRun) {
+        JourneySteps.openLibraryRow(app, title: run.articleTitle)
 
         XCTAssertTrue(
             app.buttons[AccessibilityID.readerPlayPause].waitForExistence(timeout: Waits.screen),
@@ -212,6 +210,14 @@ private struct DeviceRun {
 
     var launchArguments: [String] {
         ["--debug.reset=none", "--debug.voice=system", "--debug.seedTextB64=\(encodedText)"]
+    }
+
+    /// The library row title for the seeded article: same rule the app
+    /// uses to derive it, so the test taps the seeded row and no other.
+    var articleTitle: String {
+        guard let data = Data(base64Encoded: encodedText),
+              let text = String(data: data, encoding: .utf8) else { return "" }
+        return PasteLoader.derivedTitle(from: text)
     }
 
     static func read(expectedWords: Int, defaultCycles: Int) throws -> DeviceRun {

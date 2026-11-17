@@ -6,20 +6,11 @@ import SwiftUI
 import AppKit
 #endif
 
-/// A started article with a saved place, for the launch affordance.
-struct PendingResume: Equatable {
-    let contentHash: String
-    let document: ReadLaterCore.Document
-    let wordIndex: Int
-    let totalWords: Int
-}
-
 /// Holds the open document. One speech controller for the process, so a second
 /// document does not pay the cold start again.
 @MainActor
 final class AppModel: ObservableObject {
     @Published private(set) var session: ReaderSession?
-    @Published private(set) var pendingResume: PendingResume?
     /// The browse list: every started article, newest first.
     @Published private(set) var library: [ReadingPosition] = []
     /// One line the library view shows when an action fails.
@@ -38,7 +29,6 @@ final class AppModel: ObservableObject {
         self.store = Self.openStore()
         Self.seedIfRequested(store: self.store)
         self.recorder = self.store.map { ReadLaterStore.PositionRecorder(store: $0) }
-        refreshResumeOffer()
         refreshLibrary()
     }
 
@@ -71,9 +61,9 @@ final class AppModel: ObservableObject {
 
     /// Debug-only seeding for device latency runs (M2/M4 treatment). The
     /// article arrives as base64 in `--debug.seedTextB64` and lands in the
-    /// store with its place at word zero, so the test opens the resume
-    /// offer instead of typing the raw text. Runs before the offer
-    /// refresh, so the offer is there on launch. Debug builds only.
+    /// store with its place at word zero, so the test opens the newest
+    /// library row instead of typing the raw text. Runs before the library
+    /// refresh, so the row is there on launch. Debug builds only.
     private static func seedIfRequested(store: ReadLaterStore.Store?) {
         #if DEBUG
         guard let store, let b64 = DebugLaunch.options.seedTextB64,
@@ -93,7 +83,6 @@ final class AppModel: ObservableObject {
         next.onProgress = { [weak self] index, source in self?.recordPosition(index: index, source: source) }
         if let startWord { next.begin(at: startWord) }
         session = next
-        if pendingResume?.document.id == document.id { pendingResume = nil }
         next.warmUp()
         refreshLibrary()
         TelemetryHub.shared.record(TelemetryName.articleReady, fields: [
@@ -106,23 +95,20 @@ final class AppModel: ObservableObject {
         flushPosition()
         session?.stop()
         session = nil
-        refreshResumeOffer()
         refreshLibrary()
         TelemetryHub.shared.endRunIfActive(outcome: "closed")
     }
 
-    /// Opens the offered article at its saved word.
-    func resumePending() {
-        guard let pending = pendingResume else { return }
-        open(pending.document, startWord: pending.wordIndex)
-    }
-
-    /// Drops the launch offer. The next pause re-records, so this only
-    /// silences the current offer.
-    func dismissPending() {
-        guard let pending = pendingResume else { return }
-        try? store?.dismissPosition(contentHash: pending.contentHash)
-        pendingResume = nil
+    /// Opens the newest saved place, if any. The resume offer is gone, so
+    /// the debug autoplay and any future caller re-enter through the same
+    /// door the library uses: latest row, saved word.
+    func openLatestSavedPlace() {
+        guard let store,
+              let saved = try? store.latestUnfinishedPosition(),
+              let document = try? store.document(id: saved.documentID)
+        else { return }
+        let total = SpokenIndex(plan: document.plan).totalWords
+        open(document, startWord: min(saved.wordIndex, max(total - 1, 0)))
     }
 
     // MARK: - Library
@@ -242,20 +228,6 @@ final class AppModel: ObservableObject {
         guard let session, let recorder else { return }
         recorder.record(document: session.document, wordIndex: index, source: source)
     }
-
-    private func refreshResumeOffer() {
-        guard let store,
-              let saved = try? store.latestUnfinishedPosition(),
-              let document = try? store.document(id: saved.documentID)
-        else {
-            pendingResume = nil
-            return
-        }
-        let total = SpokenIndex(plan: document.plan).totalWords
-        pendingResume = PendingResume(
-            contentHash: saved.contentHash, document: document,
-            wordIndex: min(saved.wordIndex, max(total - 1, 0)), totalWords: total)
-    }
 }
 
 struct RootView: View {
@@ -292,13 +264,6 @@ struct RootView: View {
             } else {
                 EntryView(
                     onOpen: { model.open($0) },
-                    resumeOffer: model.pendingResume.map {
-                        ResumeOffer(
-                            title: $0.document.title, wordIndex: $0.wordIndex,
-                            totalWords: $0.totalWords)
-                    },
-                    onResume: model.resumePending,
-                    onDismiss: model.dismissPending,
                     onSettings: { model.isSettingsPresented = true },
                     onLibrary: { model.isLibraryPresented = true },
                     prefillLink: LibraryCopy.prefillLink(seenDemo: seenDemo)
@@ -350,7 +315,7 @@ struct RootView: View {
         }
         .animation((debugDisablesMotion || reduceMotion) ? nil : ThemeMotion.screen, value: model.session == nil)
         // One demo open sets the first-run flag, whichever path opened it:
-        // entry, resume or the library.
+        // entry or the library.
         .onChange(of: model.session?.document.url) { _, url in
             if LibraryCopy.isDemo(url: url) { seenDemo = true }
         }
@@ -385,7 +350,7 @@ struct RootView: View {
             // the telemetry run, so T7.firstWord lands in the trace.
             TelemetryHub.shared.record(TelemetryName.tap)
             if model.session == nil {
-                model.resumePending()
+                model.openLatestSavedPlace()
             }
             if let session = model.session, !session.isPlaying {
                 session.togglePlay()

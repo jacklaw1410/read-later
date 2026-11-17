@@ -18,10 +18,10 @@ import Foundation
     #expect(LibraryCopy.placeLine(wordIndex: 12, totalWords: -1) == "")
 }
 
-@Test func placeLineMatchesTheResumeOfferRule() {
+@Test func placeLineCountsWordsFromOne() {
     for (index, total) in [(0, 300), (11, 300), (299, 300), (400, 300)] {
-        let offer = ResumeOffer(title: "T", wordIndex: index, totalWords: total)
-        #expect(LibraryCopy.placeLine(wordIndex: index, totalWords: total) == offer.placeLine)
+        #expect(LibraryCopy.placeLine(wordIndex: index, totalWords: total)
+            == "word \(min(index + 1, total)) of \(total)")
     }
 }
 

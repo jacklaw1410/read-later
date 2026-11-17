@@ -2,6 +2,11 @@
 import Foundation
 import ReadLaterCore
 import ReadLaterUI
+#if os(macOS)
+import AppKit
+#else
+import UIKit
+#endif
 
 /// Applies `LaunchOptions`. This is the only place a debug flag changes the
 /// app. Release builds compile the whole file out.
@@ -27,6 +32,9 @@ enum DebugLaunch {
             resetStore()
             resetDefaults()
         }
+        if let seed = options.seedPasteboard {
+            seedBoard(seed)
+        }
     }
 
     /// The voice the reader runs on. The production default is the system
@@ -47,6 +55,17 @@ enum DebugLaunch {
     private static func resetDefaults() {
         guard let domain = Bundle.main.bundleIdentifier else { return }
         UserDefaults.standard.removePersistentDomain(forName: domain)
+    }
+
+    /// The board belongs to the app process. A UI test runner on the host
+    /// cannot seed the simulator's board, so the flag does it at launch.
+    private static func seedBoard(_ text: String) {
+        #if os(macOS)
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(text, forType: .string)
+        #else
+        UIPasteboard.general.string = text
+        #endif
     }
 }
 #endif
