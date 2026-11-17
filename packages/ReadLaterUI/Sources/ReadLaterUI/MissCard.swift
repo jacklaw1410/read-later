@@ -17,6 +17,7 @@ public struct MissCard: View {
     private let onNotNow: () -> Void
     private let onClose: () -> Void
     private let onSearchWeb: () -> Void
+    @State private var didLogShown = false
 
     public init(
         word: String,
@@ -113,6 +114,17 @@ public struct MissCard: View {
         // the card identifier onto every child.
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(AccessibilityID.missCard)
+        .onAppear {
+            // Same post-commit mark as the hit card (see LookupCard).
+            DispatchQueue.main.async {
+                guard !didLogShown else { return }
+                didLogShown = true
+                TelemetryHub.shared.record(
+                    TelemetryName.cardShown,
+                    fields: ["word": word, "kind": "miss"]
+                )
+            }
+        }
     }
 
     @ViewBuilder

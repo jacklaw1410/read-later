@@ -9,6 +9,7 @@ public struct LookupCard: View {
     private let wordIndex: Int?
     private let isCurrentWashWord: Bool
     private let onClose: () -> Void
+    @State private var didLogShown = false
 
     public init(
         result: LookupResult,
@@ -87,6 +88,19 @@ public struct LookupCard: View {
         // onto every child, and `lookup.word` and `lookup.gloss` stop existing.
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(AccessibilityID.lookupCard)
+        .onAppear {
+            // One main-loop turn past attach: past the current CATransaction
+            // commit, within one runloop of first pixels. init/body run
+            // before layout, so they would mark intent, not paint.
+            DispatchQueue.main.async {
+                guard !didLogShown else { return }
+                didLogShown = true
+                TelemetryHub.shared.record(
+                    TelemetryName.cardShown,
+                    fields: ["word": result.word, "kind": "hit"]
+                )
+            }
+        }
     }
 
     @ViewBuilder
