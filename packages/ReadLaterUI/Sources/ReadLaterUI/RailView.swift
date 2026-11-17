@@ -1,6 +1,53 @@
 import ReadLaterCore
 import SwiftUI
 
+/// Speed stack: minus, read-out, plus. Speed only changes on tap, so the
+/// whole stack skips every wash tick even though the rail rebuilds per tick
+/// (M7 second cut). Data-only `Equatable`: the tap closures read speed at
+/// tap time and speed changes only through these controls, so a skipped
+/// value never goes stale.
+struct SpeedStepper: View, Equatable {
+    let speed: Float
+    let ladderOpen: Binding<Bool>
+    let onStep: (Int) -> Void
+    let onSpeed: (Float) -> Void
+
+    nonisolated static func == (lhs: SpeedStepper, rhs: SpeedStepper) -> Bool {
+        lhs.speed == rhs.speed
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            IconButton(systemName: "minus", label: "Decrease speed") { onStep(-1) }
+                .accessibilityIdentifier(AccessibilityID.railSpeedMinus)
+
+            Button { onStep(1) } label: {
+                Text(Pace.speedLabel(speed)).font(Theme.chip())
+            }
+            .buttonStyle(.plain)
+            .frame(width: Theme.minTarget, height: Theme.minTarget)
+            .accessibilityLabel("Speed \(String(format: "%g", speed)) times")
+            .accessibilityHint("Tap for next step. Long press for the speed ladder.")
+            .accessibilityIdentifier(AccessibilityID.railSpeed)
+            .onLongPressGesture(minimumDuration: 0.5) { ladderOpen.wrappedValue = true }
+            .contextMenu {
+                ForEach(RailView.ladder, id: \.self) { value in
+                    Button(Pace.speedLabel(value)) {
+                        onSpeed(value)
+                        ladderOpen.wrappedValue = false
+                    }
+                }
+            }
+
+            IconButton(systemName: "plus", label: "Increase speed") { onStep(1) }
+                .accessibilityIdentifier(AccessibilityID.railSpeedPlus)
+        }
+        .background(Theme.surface)
+        .clipShape(RoundedRectangle(cornerRadius: Theme.buttonRadius))
+        .overlay(RoundedRectangle(cornerRadius: Theme.buttonRadius).stroke(Theme.line, lineWidth: 1))
+    }
+}
+
 /// Vertical right rail: speed stack and vertical scrub. The play and sentence
 /// chevrons sit in the bottom bar, see `BottomTransport`.
 ///
@@ -64,34 +111,12 @@ public struct RailView: View {
     // MARK: - Speed
 
     private var speedStack: some View {
-        VStack(spacing: 0) {
-            IconButton(systemName: "minus", label: "Decrease speed") { stepSpeed(-1) }
-                .accessibilityIdentifier(AccessibilityID.railSpeedMinus)
-
-            Button { stepSpeed(1) } label: {
-                Text(Pace.speedLabel(progress.speed)).font(Theme.chip())
-            }
-            .buttonStyle(.plain)
-            .frame(width: Theme.minTarget, height: Theme.minTarget)
-            .accessibilityLabel("Speed \(String(format: "%g", progress.speed)) times")
-            .accessibilityHint("Tap for next step. Long press for the speed ladder.")
-            .accessibilityIdentifier(AccessibilityID.railSpeed)
-            .onLongPressGesture(minimumDuration: 0.5) { ladderOpen = true }
-            .contextMenu {
-                ForEach(Self.ladder, id: \.self) { value in
-                    Button(Pace.speedLabel(value)) {
-                        onSpeed(value)
-                        ladderOpen = false
-                    }
-                }
-            }
-
-            IconButton(systemName: "plus", label: "Increase speed") { stepSpeed(1) }
-                .accessibilityIdentifier(AccessibilityID.railSpeedPlus)
-        }
-        .background(Theme.surface)
-        .clipShape(RoundedRectangle(cornerRadius: Theme.buttonRadius))
-        .overlay(RoundedRectangle(cornerRadius: Theme.buttonRadius).stroke(Theme.line, lineWidth: 1))
+        SpeedStepper(
+            speed: progress.speed,
+            ladderOpen: $ladderOpen,
+            onStep: { stepSpeed($0) },
+            onSpeed: onSpeed
+        )
     }
 
     private var ladderOverlay: some View {

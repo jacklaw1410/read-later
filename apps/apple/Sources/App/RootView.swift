@@ -519,8 +519,8 @@ struct ReaderScreen: View {
             clockButton
             Spacer(minLength: 0)
             BottomTransport(
-                progress: session.progress,
                 isPlaying: session.isPlaying,
+                isFinished: session.isFinished,
                 onPlayPause: { session.togglePlay() },
                 onStepSentence: { session.stepSentence($0) }
             )
