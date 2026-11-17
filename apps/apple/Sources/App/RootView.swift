@@ -271,6 +271,24 @@ struct RootView: View {
             if let session = model.session {
                 ReaderScreen(session: session, onExit: model.closeDocument)
                     .transition(.opacity)
+                    // Escape closes card/note from any focus inside the
+                    // reader. Hoisted here because RootView.body runs once per
+                    // document while ReaderScreen.body rebuilds per wash tick;
+                    // recreating the handler each tick rewrites the KeyPress
+                    // environment and re-evaluates the rail buttons (M7).
+                    // Same focus scope as before: every path out of the reader
+                    // passes through here. No behavior change.
+                    .onKeyPress(.escape) {
+                        if session.card != nil {
+                            session.closeCard()
+                            return .handled
+                        }
+                        if session.note != nil {
+                            session.closeNote()
+                            return .handled
+                        }
+                        return .ignored
+                    }
             } else {
                 EntryView(
                     onOpen: { model.open($0) },
@@ -437,17 +455,6 @@ struct ReaderScreen: View {
                 bottomBar
             }
         }
-        .onKeyPress(.escape) {
-            if session.card != nil {
-                session.closeCard()
-                return .handled
-            }
-            if session.note != nil {
-                session.closeNote()
-                return .handled
-            }
-            return .ignored
-        }
     }
 
     private var reader: some View {
@@ -506,8 +513,28 @@ struct ReaderScreen: View {
             onScrubbingChanged: { scrubbing in
                 session.isScrubbing = scrubbing
                 if !scrubbing { session.finishScrubbing() }
-            }
+            },
+            arrowHandler: scrubArrowHandler
         )
+    }
+
+    /// Arrow-key handler for the rail scrubber. Captures only the session, so
+    /// its content is identical on every wash tick; passing it straight
+    /// through keeps the KeyPress environment stable (M7 third cut). Reads
+    /// the live wash position at press time, same word as the old handler.
+    private var scrubArrowHandler: (KeyPress) -> KeyPress.Result {
+        { [session] press in
+            switch press.key {
+            case .upArrow:
+                session.seekWords(-1)
+                return .handled
+            case .downArrow:
+                session.seekWords(1)
+                return .handled
+            default:
+                return .ignored
+            }
+        }
     }
 
     /// Bottom bar: clock at the left edge, transport at the right. Tapping the

@@ -238,6 +238,16 @@ final class ReaderSession: ObservableObject {
         isScrubbing = false
     }
 
+    /// Keyboard and VoiceOver step, in words. Reads the live wash position at
+    /// press time, so a key handler holding this never captures per-tick view
+    /// state (M7: the KeyPress environment stays stable across wash ticks).
+    /// Same path as a scrub commit to the same word: one synthesizer restart.
+    func seekWords(_ delta: Int) {
+        guard spoken.totalWords > 0 else { return }
+        let target = min(spoken.totalWords, max(0, (wash.wordIndex ?? 0) + delta))
+        scrub(toFraction: Double(target) / Double(spoken.totalWords))
+    }
+
 
     // MARK: - Background (F19 1.4, decided: clean pause)
 

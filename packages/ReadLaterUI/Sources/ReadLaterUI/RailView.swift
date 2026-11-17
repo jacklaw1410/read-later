@@ -60,6 +60,11 @@ public struct RailView: View {
     private let onScrub: (Double) -> Void
     private let onPreviewScrub: (Double) -> Void
     private let onScrubbingChanged: (Bool) -> Void
+    /// Arrow-key handler for the scrub track. Passed straight into
+    /// `.onKeyPress` with no wrapping closure, so it never captures the
+    /// tick-live `progress` (M7: a fresh capture per tick rewrites the
+    /// KeyPress environment and re-evaluates the rail buttons).
+    private let arrowHandler: (KeyPress) -> KeyPress.Result
 
     /// The 4-value speed ladder. Full 0.1-step range stays on +/-.
     public static let ladder: [Float] = [0.5, 1.0, 1.2, 1.5]
@@ -78,13 +83,15 @@ public struct RailView: View {
         onSpeed: @escaping (Float) -> Void,
         onScrub: @escaping (Double) -> Void,
         onPreviewScrub: @escaping (Double) -> Void = { _ in },
-        onScrubbingChanged: @escaping (Bool) -> Void
+        onScrubbingChanged: @escaping (Bool) -> Void,
+        arrowHandler: @escaping (KeyPress) -> KeyPress.Result = { _ in .ignored }
     ) {
         self.progress = progress
         self.onSpeed = onSpeed
         self.onScrub = onScrub
         self.onPreviewScrub = onPreviewScrub
         self.onScrubbingChanged = onScrubbingChanged
+        self.arrowHandler = arrowHandler
     }
 
     public var body: some View {
@@ -177,18 +184,7 @@ public struct RailView: View {
         .frame(minHeight: Self.scrubMinHeight, maxHeight: .infinity)
         .focusable()
         .focusEffectDisabled()
-        .onKeyPress(phases: .down) { press in
-            switch press.key {
-            case .upArrow:
-                seekStep(-1)
-                return .handled
-            case .downArrow:
-                seekStep(1)
-                return .handled
-            default:
-                return .ignored
-            }
-        }
+        .onKeyPress(phases: .down, action: arrowHandler)
         .accessibilityLabel("Reading progress")
         .accessibilityValue(progress.timeLabel)
         .accessibilityAdjustableAction { direction in
