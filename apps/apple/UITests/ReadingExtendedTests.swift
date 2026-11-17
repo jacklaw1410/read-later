@@ -127,9 +127,9 @@ final class ReadingExtendedTests: XCTestCase {
         // fraction of a second at the fast scripted voice.
         JourneySteps.front(app)
         #if os(macOS)
-        progress.coordinate(withNormalizedOffset: CGVector(dx: 0.98, dy: 0.5)).click()
+        progress.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.98)).click()
         #else
-        progress.coordinate(withNormalizedOffset: CGVector(dx: 0.98, dy: 0.5)).tap()
+        progress.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.98)).tap()
         #endif
         waitForPredicate(
             NSPredicate(format: "value != %@", start),
