@@ -40,6 +40,11 @@ struct StoreTimingTests {
         let position = events.first { $0.fields["op"] == "record.position" }
         #expect(position?.fields["word"] == "3")
         #expect(position?.fields["source"] == "test")
+        // Encode/copy split: copy is the SQLite write (equals ms), encode is
+        // the caller-side plan-to-words prep. Both parse as milliseconds.
+        #expect(position?.fields["copyMs"] == position?.fields["ms"])
+        #expect(Double(position?.fields["encodeMs"] ?? "") != nil)
+        #expect(Double(position?.fields["copyMs"] ?? "") != nil)
     }
 
     @Test("Recorder writes the place and drains on wait")

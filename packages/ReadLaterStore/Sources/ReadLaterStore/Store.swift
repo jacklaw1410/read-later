@@ -94,14 +94,28 @@ public final class Store: Sendable {
     /// Single path for every write. Times the block and logs op, duration
     /// and thread (M8: no main-thread writes). No write may call
     /// `dbQueue.write` direct.
+    ///
+    /// Encode/copy split: `copyMs` is the `dbQueue.write` itself (row bytes
+    /// copied into the pager/WAL and committed) — the whole of the old `ms`,
+    /// which keeps that meaning for backward compat. `encodeMs` is the
+    /// caller-side pre-write preparation, passed in via `fields` (for
+    /// `record.position`: the plan-to-words encode below); callers that
+    /// report none get the row-prep (fields build/format) cost, which is
+    /// ~microseconds. The telemetry dispatch itself (ISO format, JSON
+    /// encode, buffer copy; disk flush stays async) is excluded from both.
     @discardableResult
     func timedWrite<T>(_ op: String, fields: [String: String] = [:], _ work: (Database) throws -> T) throws -> T {
-        let start = CFAbsoluteTimeGetCurrent()
+        let copyStart = CFAbsoluteTimeGetCurrent()
         let value = try dbQueue.write(work)
-        let ms = (CFAbsoluteTimeGetCurrent() - start) * 1000
+        let copyMs = (CFAbsoluteTimeGetCurrent() - copyStart) * 1000
+        let encodeStart = CFAbsoluteTimeGetCurrent()
         var logged = fields
         logged["op"] = op
-        logged["ms"] = String(format: "%.2f", ms)
+        logged["ms"] = String(format: "%.2f", copyMs)
+        logged["copyMs"] = String(format: "%.2f", copyMs)
+        if logged["encodeMs"] == nil {
+            logged["encodeMs"] = String(format: "%.2f", (CFAbsoluteTimeGetCurrent() - encodeStart) * 1000)
+        }
         logged["main"] = Thread.isMainThread ? "1" : "0"
         telemetry.record(TelemetryName.storeWrite, fields: logged)
         return value
@@ -183,11 +197,21 @@ public final class Store: Sendable {
     /// lands on that same word, so the pause path and the finish path agree
     /// with no manual mark.
     public func recordPosition(of document: Document, wordIndex: Int, at date: Date = .now, source: String = "record") throws {
+        // Encode half of the tick cost: turning the plan into positioned
+        // words (index build + clamp + resume key) before the write. Timed
+        // here because it runs on the writer thread per throttled tick but
+        // outside `timedWrite`, so the old single `ms` never covered it.
+        let encodeStart = CFAbsoluteTimeGetCurrent()
         let total = SpokenIndex(plan: document.plan).totalWords
         let clamped = min(max(wordIndex, 0), max(total - 1, 0))
         let finished = total > 0 && clamped >= total - 1
         let hash = Self.resumeKey(for: document)
-        try timedWrite("record.position", fields: ["source": source, "word": String(clamped)]) { db in
+        let encodeMs = (CFAbsoluteTimeGetCurrent() - encodeStart) * 1000
+        try timedWrite("record.position", fields: [
+            "source": source,
+            "word": String(clamped),
+            "encodeMs": String(format: "%.2f", encodeMs),
+        ]) { db in
             try db.execute(sql: """
                 INSERT INTO reading_position(
                     content_hash, document_id, title, word_index, finished, saved, url, total_words, updated_at)
