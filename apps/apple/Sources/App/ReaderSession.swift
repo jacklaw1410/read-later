@@ -194,24 +194,25 @@ final class ReaderSession: ObservableObject {
     func scrub(toFraction fraction: Double) {
         guard spoken.totalWords > 0 else { return }
         let index = wordIndex(for: fraction)
-        // Logged at commit entry, for M4 (release to sound).
-        TelemetryHub.shared.record(TelemetryName.scrubCommit, fields: [
-            "fraction": String(format: "%.4f", fraction),
-            "word": String(index),
-        ])
         isFinished = false
-        wash.wordIndex = index
-        wash.isPlaying = false
-
-        if speech.state == .speaking {
+        let playing = speech.state == .speaking
+        if playing {
+            // Restart before the wash and the mark below, so the engine start
+            // does not wait behind main-thread work (M4).
             speech.restart(fromWord: index)
-            wash.isPlaying = true
         } else {
             // Paused scrub stashes the word and leaves the queue alive.
             // stop() used to destroy the queue restart() needs, and the old
             // code cleared the position before the failed start (F19 1.3).
             latch.stash(index)
         }
+        // Logged after the restart, for M4 (release to sound).
+        TelemetryHub.shared.record(TelemetryName.scrubCommit, fields: [
+            "fraction": String(format: "%.4f", fraction),
+            "word": String(index),
+        ])
+        wash.wordIndex = index
+        wash.isPlaying = playing
 
         checkpoint(source: "scrub")
     }
