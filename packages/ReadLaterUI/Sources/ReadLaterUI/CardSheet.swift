@@ -52,7 +52,7 @@ enum CardCopy {
     static let notNow = "Not now"
     static let close = "Close"
     static let closeAndResume = "Close & resume"
-    static let searchWeb = "Search the web ↗"
+    static let searchWeb = "Web search ↗"
 
     /// Hit card provenance. Built from the result even when the gloss is empty,
     /// so an empty gloss never silences the source line.

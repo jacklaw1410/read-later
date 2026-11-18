@@ -1,4 +1,5 @@
 import Foundation
+import Network
 import ReadLaterCore
 import ReadLaterStore
 import ReadLaterUI
@@ -20,8 +21,15 @@ final class ReaderSession: ObservableObject {
 
 
     private let speech: SpeechController
-    private let lookupProvider: PackLookupProvider
+    private let lookupProvider: any PackLookup
     private let speedStore: SpeedStore
+    private let pathMonitor = NWPathMonitor()
+    /// Whether the voice was live when the current lookup session began. Nil when
+    /// no lookup is open. Set once per session; every tap in the session reuses it.
+    private var lookupWasPlaying: Bool?
+    /// Bumped on each tap and on close. A result whose generation is stale is
+    /// dropped, so a slow earlier word cannot replace a newer card.
+    private var lookupGeneration = 0
 
     /// Where the next `play` starts. Set by a scrub while paused. A latch,
     /// not a plain optional: the stash clears only after a start succeeds,
@@ -39,7 +47,7 @@ final class ReaderSession: ObservableObject {
     init(
         document: ReadLaterCore.Document,
         speech: SpeechController,
-        lookupProvider: PackLookupProvider,
+        lookupProvider: any PackLookup,
         speedStore: SpeedStore = SpeedStore()
     ) {
         self.document = document
@@ -52,6 +60,17 @@ final class ReaderSession: ObservableObject {
         speech.rate = playbackState.speed
         speech.onWord = { [weak self] range in self?.advance(to: range) }
         speech.onStateChange = { [weak self] state in self?.speechStateChanged(state) }
+
+        // Unknown until the first path callback. See `LookupState.isOnline`.
+        pathMonitor.pathUpdateHandler = { [weak self] path in
+            let online = path.status == .satisfied
+            Task { @MainActor in self?.lookupState.isOnline = online }
+        }
+        pathMonitor.start(queue: .main)
+    }
+
+    deinit {
+        pathMonitor.cancel()
     }
 
     convenience init() {
@@ -344,14 +363,25 @@ final class ReaderSession: ObservableObject {
     // MARK: - Lookup
 
     func tapped(blockID: Int, slot: WordSlot?, word: String) {
-        guard lookupState.card == nil, lookupState.note == nil else { return }
+        guard lookupState.note == nil else { return }
+        // A Hit card blocks taps until Close. A Miss card (or a pending lookup)
+        // takes the tap and replaces the card in place (machine 3).
+        if case .some(.hit) = lookupState.card { return }
         let token = TokenShape.trimmed(word)
         guard !token.isEmpty else { return }
 
-        // The lookupState.card pauses in every case. The controller remembers whether the
-        // voice was live so closing can restore exactly that.
-        speech.pauseForLookup()
-        let wasPlaying = speech.wasPlayingBeforeLookup
+        // Pause once per lookup session. A second pause would read the already
+        // paused voice as not speaking and overwrite the snapshot with `false`.
+        let wasPlaying: Bool
+        if let snapshot = lookupWasPlaying {
+            wasPlaying = snapshot
+        } else {
+            speech.pauseForLookup()
+            wasPlaying = speech.wasPlayingBeforeLookup
+            lookupWasPlaying = wasPlaying
+        }
+        lookupGeneration += 1
+        let generation = lookupGeneration
         washState.selectedWordIndex = slot?.index
         playbackState.isPlaying = false
         TelemetryHub.shared.record(TelemetryName.lookup, fields: ["word": token])
@@ -359,7 +389,8 @@ final class ReaderSession: ObservableObject {
         Task { [weak self] in
             guard let self else { return }
             let outcome = await self.lookupProvider.lookup(token)
-            guard !Task.isCancelled else { return }
+            // A newer tap or a close bumps the generation. Only the newest result shows.
+            guard !Task.isCancelled, generation == self.lookupGeneration else { return }
             switch outcome {
             case let .hit(result):
                 // The source and the line count are the proof that a lookupState.card
@@ -393,7 +424,7 @@ final class ReaderSession: ObservableObject {
     /// offline miss says so instead of pretending the word is unknown.
     private func refine(_ kind: MissKind) -> MissKind {
         if kind == .notAWord { return .notAWord }
-        if !lookupState.isOnline && !lookupProvider.hasPack { return .noNetwork }
+        if lookupState.isOnline == false && !lookupProvider.hasPack { return .noNetwork }
         return kind
     }
 
@@ -405,6 +436,8 @@ final class ReaderSession: ObservableObject {
         TelemetryHub.shared.record(TelemetryName.cardClose)
         let wasPlaying = card.wasPlaying
         lookupState.card = nil
+        lookupWasPlaying = nil
+        lookupGeneration += 1
         washState.selectedWordIndex = nil
         // Restores playback iff it was live before the tap. `closeLookup` reads
         // the snapshot the controller took in `pauseForLookup`.
@@ -444,6 +477,8 @@ final class ReaderSession: ObservableObject {
         playbackState.isScrubbing = false
         lookupState.card = nil
         lookupState.note = nil
+        lookupWasPlaying = nil
+        lookupGeneration += 1
         latch.clear()
     }
 
@@ -580,12 +615,19 @@ struct NoteToShow: Identifiable {
     var id: Int { index }
 }
 
+/// The lookup surface `ReaderSession` needs. Tests supply a fake; the app
+/// supplies `PackLookupProvider`.
+@MainActor
+protocol PackLookup: LookupProvider {
+    var hasPack: Bool { get }
+}
+
 /// A lookup that asks the system dictionary and, when installed, the pack.
 ///
 /// Order is the research order: the system dictionary first, the installed pack
 /// second. A token that cannot be a headword never reaches either.
 @MainActor
-final class PackLookupProvider: LookupProvider {
+final class PackLookupProvider: PackLookup {
     private let apple: AppleDictionaryLookup
 
     init(apple: AppleDictionaryLookup = AppleDictionaryLookup()) {

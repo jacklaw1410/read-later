@@ -84,6 +84,31 @@ targets:
           /usr/libexec/PlistBuddy -c "Delete :GitSHA" "$PLIST" >/dev/null 2>&1 || true
           /usr/libexec/PlistBuddy -c "Add :GitSHA string $SHA" "$PLIST" >/dev/null 2>&1 || true
 
+  # Unit tests for app-target logic that no package owns (ReaderSession). Hosted
+  # by the app so the session runs as it does in the app.
+  ReadLaterAppTests:
+    type: bundle.unit-test
+    supportedDestinations: [iOS, macOS]
+    bundleId: app.readlater.reader.apptests
+    sources:
+      - path: AppTests
+    dependencies:
+      - target: ReadLater
+      - package: ReadLaterCore
+      - package: ReadLaterUI
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.readlater.reader.apptests
+        GENERATE_INFOPLIST_FILE: YES
+        # The host app binary sits at a different path per platform.
+        TEST_HOST[sdk=macosx*]: "$(BUILT_PRODUCTS_DIR)/ReadLater.app/Contents/MacOS/ReadLater"
+        TEST_HOST[sdk=iphone*]: "$(BUILT_PRODUCTS_DIR)/ReadLater.app/ReadLater"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+        CODE_SIGNING_ALLOWED[sdk=iphonesimulator*]: NO
+        CODE_SIGNING_ALLOWED[sdk=macosx*]: YES
+        CODE_SIGN_IDENTITY[sdk=macosx*]: "-"
+        CODE_SIGNING_REQUIRED[sdk=macosx*]: NO
+
   # One UI-test bundle for both destinations. The journeys are grouped by
   # user-facing feature; the platform differences live in Support/.
   ReadLaterE2ETests:
@@ -117,3 +142,4 @@ schemes:
       gatherCoverageData: false
       targets:
         - ReadLaterE2ETests
+        - ReadLaterAppTests

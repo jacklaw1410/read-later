@@ -593,7 +593,7 @@ struct ReaderScreen: View {
                         word: word,
                         kind: kind,
                         packInstalled: registry.isInstalled,
-                        isOnline: session.lookupState.isOnline,
+                        isOnline: session.lookupState.isOnline == true,
                         offerDeclined: registry.offerDeclined,
                         isInstalling: registry.isInstalling,
                         wasPlayingBeforeLookup: wasPlaying,

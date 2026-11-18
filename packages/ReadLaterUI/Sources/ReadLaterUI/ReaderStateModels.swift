@@ -98,9 +98,11 @@ public final class PlaybackState {
 public final class LookupState<CardValue, NoteValue> {
     public var card: CardValue?
     public var note: NoteValue?
-    public var isOnline: Bool = true
+    /// Nil until the first path callback. Unknown shows neither the offer nor
+    /// the search, and a miss is not called offline until the path is known.
+    public var isOnline: Bool?
 
-    public init(card: CardValue? = nil, note: NoteValue? = nil, isOnline: Bool = true) {
+    public init(card: CardValue? = nil, note: NoteValue? = nil, isOnline: Bool? = nil) {
         self.card = card
         self.note = note
         self.isOnline = isOnline

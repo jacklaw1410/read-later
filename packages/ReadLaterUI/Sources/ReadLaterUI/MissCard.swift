@@ -50,13 +50,23 @@ public struct MissCard: View {
     /// The offer renders once: pack absent, network up, never declined, and a
     /// state where a pack could help.
     private var showsOffer: Bool {
-        kind != .noNetwork && !packInstalled && isOnline && !offerDeclined
+        Self.showsOffer(kind: kind, packInstalled: packInstalled, isOnline: isOnline, offerDeclined: offerDeclined)
     }
 
     /// The web search is a second, deliberate tap. Never offline, never beside
     /// the offer: one secondary action per card.
     private var showsSearch: Bool {
-        isOnline && kind != .noNetwork && !showsOffer && (packInstalled || offerDeclined)
+        Self.showsSearch(kind: kind, packInstalled: packInstalled, isOnline: isOnline, offerDeclined: offerDeclined)
+    }
+
+    static func showsOffer(kind: MissKind, packInstalled: Bool, isOnline: Bool, offerDeclined: Bool) -> Bool {
+        kind != .noNetwork && !packInstalled && isOnline && !offerDeclined
+    }
+
+    static func showsSearch(kind: MissKind, packInstalled: Bool, isOnline: Bool, offerDeclined: Bool) -> Bool {
+        isOnline && kind != .noNetwork
+            && !showsOffer(kind: kind, packInstalled: packInstalled, isOnline: isOnline, offerDeclined: offerDeclined)
+            && (packInstalled || offerDeclined)
     }
 
     public var body: some View {
@@ -70,6 +80,13 @@ public struct MissCard: View {
                 .foregroundStyle(Theme.inkSecondary)
                 .padding(.top, 2)
                 .padding(.bottom, 12)
+
+            Divider()
+
+            Text(CardCopy.missSourceLine(packInstalled: packInstalled))
+                .font(Theme.caption())
+                .foregroundStyle(Theme.inkSecondary)
+                .padding(.vertical, 8)
 
             Divider()
 
@@ -90,13 +107,6 @@ public struct MissCard: View {
 
                 Divider()
             }
-
-            Text(CardCopy.missSourceLine(packInstalled: packInstalled))
-                .font(.system(size: 11))
-                .foregroundStyle(Theme.inkSecondary)
-                .padding(.vertical, 8)
-
-            Divider()
 
             Text(CardCopy.pauseLine(wasPlayingBeforeLookup: wasPlayingBeforeLookup, wordIndex: wordIndex))
                 .font(Theme.caption())
