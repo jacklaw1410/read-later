@@ -150,7 +150,7 @@ fn cmd_align(args: &[String]) -> Result<(), String> {
         let offset = if wall_only {
             started
                 .and_then(|s| align::wall_offset(&events, &session, s))
-                .ok_or_else(|| format!("session {session}: --wall needs the recording start stamp and the marker stamps"))?
+                .ok_or_else(|| format!("session {session}: --wall needs the recording start stamp and one stamped event"))?
         } else {
             let markers = align::markers_for(&events, &session);
             let spacing = markers.windows(2).map(|w| w[1].0 - w[0].0).collect::<Vec<_>>();
@@ -176,7 +176,7 @@ fn cmd_align(args: &[String]) -> Result<(), String> {
         eprintln!("# session {session}: using offset {offset:.4} s ({})", if wall_only { "wall clock" } else { "clicks" });
 
         for e in events.iter().filter(|e| e.session == session) {
-            if !matches!(e.event.as_str(), "tap.play" | "tap.pause" | "scrub.commit" | "speech.utteranceStart") {
+            if !matches!(e.event.as_str(), "tap.play" | "tap.pause" | "scrub.begin" | "scrub.commit" | "speech.utteranceStart") {
                 continue;
             }
             let rec_t = e.t + offset;
@@ -221,7 +221,7 @@ fn align_by_wall(
     };
     for session in sessions {
         for e in events.iter().filter(|e| e.session == session) {
-            if !matches!(e.event.as_str(), "tap.play" | "tap.pause" | "scrub.commit" | "speech.utteranceStart") {
+            if !matches!(e.event.as_str(), "tap.play" | "tap.pause" | "scrub.begin" | "scrub.commit" | "speech.utteranceStart") {
                 continue;
             }
             let Some(wall) = align::wall_seconds(&e.iso) else {
@@ -299,6 +299,13 @@ fn respond(env: &detect::Envelope, event: &str, rec_t: f64, levels: Levels) -> (
             let level = quiet_level(env, rec_t, levels);
             (
                 detect::resumed_after(env, rec_t, level, SCRUB_QUIET_S, levels.stop_window_s),
+                format!("{level:.6}"),
+            )
+        }
+        "scrub.begin" => {
+            let level = quiet_level(env, rec_t, levels);
+            (
+                detect::silence_after(env, rec_t, level, SCRUB_QUIET_S),
                 format!("{level:.6}"),
             )
         }
