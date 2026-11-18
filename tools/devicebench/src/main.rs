@@ -35,7 +35,7 @@ fn main() -> ExitCode {
 const USAGE: &str = "usage:
   devicebench record --seconds S --out FILE.wav [--device NAME]
   devicebench onsets --wav FILE.wav [--min 0.01]
-  devicebench align --oplog FILE.jsonl --wav FILE.wav [--session ID] [--silence 0.3] [--clock-session ID] [--click-factor 8] [--quiet-factor 1.5]
+  devicebench align --oplog FILE.jsonl --wav FILE.wav [--session ID] [--silence 0.3] [--clock-session ID] [--click-factor 8] [--quiet-factor 1.5] [--wall] [--stop-window 0.5]
   devicebench gen --out FILE.wav --times 1.0,2.0 --seconds S [--rate 48000]";
 
 /// Spacing tolerance for every click after the first. The first click's late
@@ -57,6 +57,11 @@ const SCRUB_QUIET_S: f64 = 0.05;
 /// A later quiet run is a pause in the speech, not the restart.
 const SCRUB_STOP_WINDOW_S: f64 = 0.5;
 
+/// A sentence onset must follow this many seconds of quiet, and fall within
+/// this many seconds after the `speech.utteranceStart` event.
+const UTTERANCE_QUIET_S: f64 = 0.05;
+const UTTERANCE_WINDOW_S: f64 = 0.5;
+
 /// The thresholds one align run uses. The silence level for a pause is the
 /// quiet level of its window times `quiet_factor`, never below `silence`.
 #[derive(Clone, Copy)]
@@ -65,6 +70,7 @@ struct Levels {
     silence: f32,
     silence_s: f64,
     quiet_factor: f32,
+    stop_window_s: f64,
 }
 
 fn flag<'a>(args: &'a [String], name: &str) -> Option<&'a str> {
@@ -88,8 +94,8 @@ fn cmd_record(args: &[String]) -> Result<(), String> {
         return Err(format!("--seconds must be above zero\n{USAGE}"));
     }
     let out = PathBuf::from(required(args, "--out")?);
-    record::record(seconds, &out, flag(args, "--device"))?;
-    println!("recorded {seconds} s to {}", out.display());
+    let started = record::record(seconds, &out, flag(args, "--device"))?;
+    println!("recorded {seconds} s to {} started_unix {started:.3}", out.display());
     Ok(())
 }
 
@@ -118,6 +124,7 @@ fn cmd_align(args: &[String]) -> Result<(), String> {
         silence: detect::silence_level(floor),
         silence_s: number(args, "--silence", 0.3)?,
         quiet_factor: number(args, "--quiet-factor", 1.5)? as f32,
+        stop_window_s: number(args, "--stop-window", SCRUB_STOP_WINDOW_S)?,
     };
     eprintln!(
         "# noise floor {floor:.6}, click threshold {:.6}, silence floor level {:.6}, quiet factor {}",
@@ -137,26 +144,42 @@ fn cmd_align(args: &[String]) -> Result<(), String> {
     }
 
     println!("session,event,phone_t,rec_t,response_ms,silence_level");
+    let started = recording_start(Path::new(required(args, "--wav")?));
+    let wall_only = args.iter().any(|a| a == "--wall");
     for session in sessions {
-        let markers = align::markers_for(&events, &session);
-        let spacing = markers.windows(2).map(|w| w[1].0 - w[0].0).collect::<Vec<_>>();
-        let clicks = align::match_clicks(&markers, &all_onsets, SPACING_TOLERANCE)
-            .ok_or_else(|| format!("session {session}: clicks not found in the recording (spacing {spacing:?})"))?;
-        let fit = align::align(&markers, &clicks)?;
-        eprintln!(
-            "# session {session}: offset {:.4} s (phone to recording), clock error {:.1} ms over clicks 2 to {}, click 1 residual {:+.1} ms",
-            fit.offset,
-            fit.spread * 1000.0,
-            fit.clicks,
-            fit.first_residual * 1000.0
-        );
-        print_residuals(&markers, &clicks, fit.offset, false);
+        let offset = if wall_only {
+            started
+                .and_then(|s| align::wall_offset(&events, &session, s))
+                .ok_or_else(|| format!("session {session}: --wall needs the recording start stamp and the marker stamps"))?
+        } else {
+            let markers = align::markers_for(&events, &session);
+            let spacing = markers.windows(2).map(|w| w[1].0 - w[0].0).collect::<Vec<_>>();
+            let clicks = align::match_clicks(&markers, &all_onsets, SPACING_TOLERANCE)
+                .ok_or_else(|| format!("session {session}: clicks not found in the recording (spacing {spacing:?})"))?;
+            let fit = align::align(&markers, &clicks)?;
+            if let Some(predicted) = started.and_then(|s| align::wall_offset(&events, &session, s)) {
+                eprintln!(
+                    "# session {session}: wall-clock offset {predicted:.4} s, click fit differs by {:+.1} ms",
+                    (fit.offset - predicted) * 1000.0
+                );
+            }
+            eprintln!(
+                "# session {session}: offset {:.4} s (phone to recording), clock error {:.1} ms over clicks 2 to {}, click 1 residual {:+.1} ms",
+                fit.offset,
+                fit.spread * 1000.0,
+                fit.clicks,
+                fit.first_residual * 1000.0
+            );
+            print_residuals(&markers, &clicks, fit.offset, false);
+            fit.offset
+        };
+        eprintln!("# session {session}: using offset {offset:.4} s ({})", if wall_only { "wall clock" } else { "clicks" });
 
         for e in events.iter().filter(|e| e.session == session) {
-            if !matches!(e.event.as_str(), "tap.play" | "tap.pause" | "scrub.commit") {
+            if !matches!(e.event.as_str(), "tap.play" | "tap.pause" | "scrub.commit" | "speech.utteranceStart") {
                 continue;
             }
-            let rec_t = e.t + fit.offset;
+            let rec_t = e.t + offset;
             print_event(&env, &session, e, rec_t, levels);
         }
     }
@@ -198,7 +221,7 @@ fn align_by_wall(
     };
     for session in sessions {
         for e in events.iter().filter(|e| e.session == session) {
-            if !matches!(e.event.as_str(), "tap.play" | "tap.pause" | "scrub.commit") {
+            if !matches!(e.event.as_str(), "tap.play" | "tap.pause" | "scrub.commit" | "speech.utteranceStart") {
                 continue;
             }
             let Some(wall) = align::wall_seconds(&e.iso) else {
@@ -212,6 +235,16 @@ fn align_by_wall(
 }
 
 /// Prints each click's residual to stderr, in milliseconds.
+/// Wall-clock second the recording started, from its JSON sidecar. None when
+/// the sidecar is missing or has no `started_unix`, for example for older recordings.
+fn recording_start(wav: &Path) -> Option<f64> {
+    let text = std::fs::read_to_string(wav.with_extension("json")).ok()?;
+    serde_json::from_str::<serde_json::Value>(&text)
+        .ok()?
+        .get("started_unix")?
+        .as_f64()
+}
+
 fn print_residuals(markers: &[(f64, f64)], clicks: &[f64], offset: f64, wall: bool) {
     for (i, (marker, onset)) in markers.iter().zip(clicks.iter()).enumerate() {
         let (time, latency) = *marker;
@@ -249,7 +282,7 @@ fn explain_scrub(env: &detect::Envelope, rec_t: f64, levels: Levels) {
             }
         }
     };
-    eprintln!("# scrub at {rec_t:.4} s: no restart within {SCRUB_STOP_WINDOW_S} s; {note}");
+    eprintln!("# scrub at {rec_t:.4} s: no restart within {} s; {note}", levels.stop_window_s);
 }
 
 /// The response of one event, and the silence level used for a pause or a scrub
@@ -265,7 +298,14 @@ fn respond(env: &detect::Envelope, event: &str, rec_t: f64, levels: Levels) -> (
         "scrub.commit" => {
             let level = quiet_level(env, rec_t, levels);
             (
-                detect::resumed_after(env, rec_t, level, SCRUB_QUIET_S, SCRUB_STOP_WINDOW_S),
+                detect::resumed_after(env, rec_t, level, SCRUB_QUIET_S, levels.stop_window_s),
+                format!("{level:.6}"),
+            )
+        }
+        "speech.utteranceStart" => {
+            let level = quiet_level(env, rec_t, levels);
+            (
+                detect::onset_after_quiet(env, rec_t, UTTERANCE_WINDOW_S, level, UTTERANCE_QUIET_S),
                 format!("{level:.6}"),
             )
         }
@@ -345,6 +385,7 @@ mod baseline_repro_tests {
             silence: detect::silence_level(floor),
             silence_s: 0.3,
             quiet_factor: 1.5,
+            stop_window_s: SCRUB_STOP_WINDOW_S,
         };
         eprintln!(
             "baseline_repro: {} floor {floor:.6} click {:.6} silence {:.6}",

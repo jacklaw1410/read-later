@@ -179,6 +179,24 @@ fn days_from_civil(year: i64, month: i64, day: i64) -> i64 {
     era * 146_097 + day_of_era - 719_468
 }
 
+/// Recording time offset implied by the Mac's wall clock: the median over one
+/// session's marker requests of `(iso wall time - recording start) - t`. Add it
+/// to a phone time to get a recording time, like `Alignment::offset`. Assumes
+/// the phone and the Mac clocks agree. The difference from the click fit is
+/// the clock disagreement.
+pub fn wall_offset(events: &[OplogEvent], session: &str, recording_started: f64) -> Option<f64> {
+    let mut offsets: Vec<f64> = events
+        .iter()
+        .filter(|e| e.session == session && e.event == "marker.request")
+        .filter_map(|e| Some(wall_seconds(&e.iso)? - recording_started - e.t))
+        .collect();
+    if offsets.is_empty() {
+        return None;
+    }
+    offsets.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    Some(offsets[offsets.len() / 2])
+}
+
 /// Marker requests of one session as (wall-clock seconds, output latency).
 pub fn markers_wall_for(events: &[OplogEvent], session: &str) -> Vec<(f64, f64)> {
     events
@@ -322,6 +340,19 @@ mod tests {
             early - late
         );
         assert_eq!(wall_seconds("not a stamp"), None);
+    }
+
+    #[test]
+    fn wall_offset_is_the_wall_clock_minus_the_phone_time() {
+        // Marker at phone t 2.0 s, stamped 2026-11-17T09:27:44.000Z. The
+        // recording started at 09:27:09.000Z. So the marker is at recording
+        // time 35 s, and the offset (recording time minus phone time) is 33 s.
+        let started = wall_seconds("2026-11-17T09:27:09.000Z").unwrap();
+        let text = r#"{"t":2.0,"iso":"2026-11-17T09:27:44.000Z","session":"a","event":"marker.request","fields":{}}"#;
+        let events = parse_oplog(text);
+        let offset = wall_offset(&events, "a", started).unwrap();
+        assert!((offset - 33.0).abs() < 1e-6, "offset {offset}");
+        assert_eq!(wall_offset(&events, "missing", started), None);
     }
 
     #[test]

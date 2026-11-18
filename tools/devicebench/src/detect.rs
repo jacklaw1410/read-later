@@ -67,18 +67,18 @@ pub fn silence_level(floor: f32) -> f32 {
     (floor * 4.0).max(f32::MIN_POSITIVE)
 }
 
-/// Merges onsets that are at most `gap` seconds after the previous raw onset.
-/// A click rings for a few milliseconds and crosses the threshold several
-/// times, so one click gives a cluster of onsets. The first onset of each
-/// cluster is the click's start.
+/// Merges onsets that fall within `gap` seconds of the first onset of the
+/// current cluster. A click rings for a few milliseconds and crosses the
+/// threshold several times, so one click gives a cluster of onsets. The first
+/// onset of each cluster is the click's start. The cluster start, not the
+/// previous raw onset, sets the window: a dense run of crossings (speech)
+/// would otherwise join into one cluster and swallow the clicks inside it.
 pub fn collapse(onsets: &[f64], gap: f64) -> Vec<f64> {
-    let mut out = Vec::new();
-    let mut previous: Option<f64> = None;
+    let mut out: Vec<f64> = Vec::new();
     for &t in onsets {
-        if previous.is_none_or(|p| t - p > gap) {
+        if out.last().is_none_or(|&start| t - start > gap) {
             out.push(t);
         }
-        previous = Some(t);
     }
     out
 }
@@ -101,6 +101,24 @@ pub fn onsets(env: &Envelope, threshold: f32) -> Vec<f64> {
 pub fn sound_after(env: &Envelope, seconds: f64, threshold: f32) -> Option<f64> {
     (env.index_at(seconds)..env.rms.len())
         .find(|&i| env.rms[i] >= threshold)
+        .map(|i| env.time(i))
+}
+
+/// First window in `[start, start + window]` that is at or above `threshold`
+/// and follows at least `min_quiet` seconds below it. A sentence that starts
+/// from silence gives its onset here. Sound that never stops gives None.
+pub fn onset_after_quiet(
+    env: &Envelope,
+    start: f64,
+    window: f64,
+    threshold: f32,
+    min_quiet: f64,
+) -> Option<f64> {
+    let need = (min_quiet * env.sample_rate / env.hop as f64).ceil() as usize;
+    let from = env.index_at(start);
+    let to = env.index_at(start + window).min(env.rms.len());
+    (from..to)
+        .find(|&i| i >= need && env.rms[i] >= threshold && env.rms[i - need..i].iter().all(|&r| r < threshold))
         .map(|i| env.time(i))
 }
 
@@ -226,6 +244,15 @@ mod tests {
     }
 
     #[test]
+    fn a_dense_run_does_not_swallow_the_clicks_inside_it() {
+        // Crossings 40 ms apart, as speech gives. Each is within 50 ms of the
+        // one before, but the run must not join into one cluster: a cluster
+        // lasts at most `gap` from its first onset.
+        let run = [1.0, 1.04, 1.08, 1.12, 1.16, 1.20, 1.6];
+        assert_eq!(collapse(&run, 0.05), vec![1.0, 1.08, 1.16, 1.6]);
+    }
+
+    #[test]
     fn silence_level_follows_the_noise_floor() {
         assert!((silence_level(0.002) - 0.008).abs() < 1e-7);
         assert!(
@@ -338,6 +365,21 @@ mod tests {
         let env = Envelope::new(&samples, RATE, 1.0);
         assert_eq!(env.index_at(-1.0), 0);
         assert_eq!(env.time(0), 0.0);
+    }
+
+    #[test]
+    fn utterance_onset_follows_silence() {
+        let samples = burst(2.0, 0.52, 300.0);
+        let env = Envelope::new(&samples, RATE, 1.0);
+        let at = onset_after_quiet(&env, 0.5, 0.5, threshold(0.0, 0.01), 0.05).expect("onset");
+        assert!((at - 0.52).abs() < 0.002, "onset {at}");
+    }
+
+    #[test]
+    fn continuous_sound_has_no_utterance_onset() {
+        let samples = burst(2.0, 0.0, 1000.0);
+        let env = Envelope::new(&samples, RATE, 1.0);
+        assert_eq!(onset_after_quiet(&env, 0.5, 0.5, threshold(0.0, 0.01), 0.05), None);
     }
 
     #[test]

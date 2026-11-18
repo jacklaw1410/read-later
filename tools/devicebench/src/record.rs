@@ -3,17 +3,18 @@
 use std::path::Path;
 use std::sync::{Arc, Mutex};
 use std::thread;
-use std::time::Duration;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use cpal::SampleFormat;
 
 /// Records `seconds` from the input device, keeping the first channel only.
-/// Writes a 32-bit float mono WAV and a JSON sidecar next to it.
+/// Writes a 32-bit float mono WAV and a JSON sidecar next to it. Returns the
+/// Mac's wall clock, in seconds since 1970, taken when the stream started.
 ///
-/// The Mac's clock is the sample count from the first sample. Alignment uses
-/// the click markers in the same recording, not the wall clock.
-pub fn record(seconds: f64, out: &Path, device_name: Option<&str>) -> Result<(), String> {
+/// The recording's own clock is the sample count from the first sample. The
+/// wall-clock start anchors that clock to the phone's `iso` stamps.
+pub fn record(seconds: f64, out: &Path, device_name: Option<&str>) -> Result<f64, String> {
     let host = cpal::default_host();
     let device = match device_name {
         Some(wanted) => host
@@ -59,6 +60,10 @@ pub fn record(seconds: f64, out: &Path, device_name: Option<&str>) -> Result<(),
     .map_err(|e| e.to_string())?;
 
     stream.play().map_err(|e| e.to_string())?;
+    let started = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map_err(|e| e.to_string())?
+        .as_secs_f64();
     thread::sleep(Duration::from_secs_f64(seconds));
     drop(stream);
 
@@ -71,9 +76,10 @@ pub fn record(seconds: f64, out: &Path, device_name: Option<&str>) -> Result<(),
         "channels_in_device": channels,
         "frames": mono.len(),
         "seconds": mono.len() as f64 / rate as f64,
+        "started_unix": started,
     });
     std::fs::write(out.with_extension("json"), sidecar.to_string()).map_err(|e| e.to_string())?;
-    Ok(())
+    Ok(started)
 }
 
 /// Appends the first channel of each frame. The callback holds the lock for
