@@ -248,7 +248,10 @@ final class ReaderSession: ObservableObject {
         guard !isScrubbing else { return }
         isScrubbing = true
         resumeAfterScrub = speech.state == .speaking
-        if resumeAfterScrub { speech.pause() }
+        TelemetryHub.shared.record(TelemetryName.scrubBegin, fields: [
+            "state": String(describing: speech.state),
+        ])
+        if resumeAfterScrub { speech.holdForScrub() }
     }
 
     func finishScrubbing() {

@@ -88,6 +88,11 @@ public protocol SpeechController: AnyObject {
     func speak(sentences: [(blockID: Int, sentence: Sentence)], prefetch: Int)
 
     func pause()
+    /// Silences the voice now and keeps the queue at the current word. `resume()`
+    /// plays on from that word. Unlike `pause()`, this does not wait for a word
+    /// boundary, so a release that comes first cannot restart into a voice whose
+    /// pause lands later.
+    func holdForScrub()
     func resume()
     func stop()
 

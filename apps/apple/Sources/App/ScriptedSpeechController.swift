@@ -79,6 +79,10 @@ final class ScriptedSpeechController: SpeechController {
         state = .paused
     }
 
+    func holdForScrub() {
+        pause()
+    }
+
     func resume() {
         guard state == .paused else { return }
         state = .speaking

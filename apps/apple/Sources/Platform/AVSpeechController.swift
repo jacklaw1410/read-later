@@ -78,6 +78,9 @@ public final class AVSpeechController: NSObject, SpeechController {
     private var prefetchWindow = SpeechQueue.prefetch
     private var headTruncation: HeadTruncation?
     private var currentWordIndex = 0
+    /// Word a scrub hold stopped at. `resume()` plays on from it, not from the
+    /// queue position, which is past the cut sentence.
+    private var heldWord: Int?
     private var rateTask: Task<Void, Never>?
     private var rateSettler = RateSettler()
     private var epoch = 0
@@ -160,6 +163,7 @@ public final class AVSpeechController: NSObject, SpeechController {
         retained.removeAll()
         headTruncation = nil
         currentWordIndex = 0
+        heldWord = nil
         prefetchWindow = max(1, prefetch)
         queue = SpeechQueue(sentences: sentences)
         nextToEnqueue = 0
@@ -185,12 +189,31 @@ public final class AVSpeechController: NSObject, SpeechController {
 
     public func pause() {
         guard state == .speaking else { return }
-        synthesizer.pauseSpeaking(at: .word)
+        let accepted = synthesizer.pauseSpeaking(at: .word)
+        TelemetryHub.shared.record(TelemetryName.speechPauseCall, fields: [
+            "accepted": String(accepted),
+            "synthPaused": String(synthesizer.isPaused),
+        ])
+        state = .paused
+    }
+
+    public func holdForScrub() {
+        guard state == .speaking else { return }
+        epoch += 1
+        synthesizer.stopSpeaking(at: .immediate)
+        inFlight.removeAll()
+        retained.removeAll()
+        heldWord = currentWordIndex
         state = .paused
     }
 
     public func resume() {
         guard state == .paused else { return }
+        if let word = heldWord {
+            heldWord = nil
+            restart(fromWord: word)
+            return
+        }
         if inFlight.isEmpty {
             fillWindow()
             guard !inFlight.isEmpty else {
@@ -213,6 +236,7 @@ public final class AVSpeechController: NSObject, SpeechController {
         headTruncation = nil
         nextToEnqueue = 0
         currentWordIndex = 0
+        heldWord = nil
         state = .idle
     }
 
@@ -249,6 +273,7 @@ public final class AVSpeechController: NSObject, SpeechController {
               let position = current.utterances.firstIndex(of: start.utterance)
         else { return false }
         epoch += 1
+        heldWord = nil
         synthesizer.stopSpeaking(at: .immediate)
         inFlight.removeAll()
         retained.removeAll()
@@ -261,7 +286,11 @@ public final class AVSpeechController: NSObject, SpeechController {
         nextToEnqueue = position
         currentWordIndex = clamped
         state = .speaking
-        fillWindow()
+        epochAtFill = epoch
+        DispatchQueue.main.async { [weak self] in
+            guard let self, self.epoch == self.epochAtFill, self.state == .speaking else { return }
+            self.fillWindow()
+        }
         return true
     }
 
@@ -324,6 +353,10 @@ public final class AVSpeechController: NSObject, SpeechController {
         let id = ObjectIdentifier(spoken)
         inFlight[id] = InFlight(epoch: epoch, utteranceIndex: nextToEnqueue)
         retained[id] = spoken
+        TelemetryHub.shared.record(TelemetryName.speechEnqueue, fields: [
+            "utterance": String(nextToEnqueue),
+            "inFlight": String(inFlight.count),
+        ])
         nextToEnqueue += 1
         synthesizer.speak(spoken)
     }
@@ -412,6 +445,12 @@ extension AVSpeechController {
         }
         guard let entry = inFlight.removeValue(forKey: utteranceID), entry.epoch == epoch else { return }
         retained.removeValue(forKey: utteranceID)
+        TelemetryHub.shared.record(TelemetryName.speechDidFinish, fields: [
+            "utterance": String(entry.utteranceIndex),
+            "inFlight": String(inFlight.count),
+            "nextToEnqueue": String(nextToEnqueue),
+            "state": String(describing: state),
+        ])
         guard let current = queue else { return }
         if current.shouldEnqueueNext(afterFinished: entry.utteranceIndex, enqueuedAhead: inFlight.count),
            nextToEnqueue < current.utterances.count
@@ -425,12 +464,22 @@ extension AVSpeechController {
     }
 
     fileprivate func handleDidPause(utteranceID: ObjectIdentifier) {
-        guard inFlight[utteranceID] != nil else { return }
+        let tracked = inFlight[utteranceID] != nil
+        TelemetryHub.shared.record(TelemetryName.speechDidPause, fields: [
+            "tracked": String(tracked),
+            "state": String(describing: state),
+        ])
+        guard tracked else { return }
         if state == .speaking { state = .paused }
     }
 
     fileprivate func handleDidResume(utteranceID: ObjectIdentifier) {
-        guard inFlight[utteranceID] != nil else { return }
+        let tracked = inFlight[utteranceID] != nil
+        TelemetryHub.shared.record(TelemetryName.speechDidResume, fields: [
+            "tracked": String(tracked),
+            "state": String(describing: state),
+        ])
+        guard tracked else { return }
         if state == .paused { state = .speaking }
     }
 

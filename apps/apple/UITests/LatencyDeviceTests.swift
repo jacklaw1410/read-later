@@ -49,6 +49,18 @@ final class LatencyDeviceTests: XCTestCase {
         scrubBatch(app, run: run)
     }
 
+    /// Control: plays the 4,500-word article with no gesture for 90 s. Shows
+    /// whether speech runs dry on its own, without a scrub.
+    func test_control_playNoGestureOnLongArticle() throws {
+        let run = try DeviceRun.read(expectedWords: 4_500, defaultCycles: 1)
+        terminateApp()
+        let app = AppLauncher.launch(extraArguments: run.launchArguments)
+        openSeeded(app, run: run)
+        let play = app.buttons[AccessibilityID.readerPlayPause]
+        XCTAssertTrue(startPlayback(app, play), "the voice did not start")
+        Thread.sleep(forTimeInterval: 90)
+    }
+
     /// M3: play taps from the paused start on the 200-word article.
     func test_m3_playBatchOnShortArticle() throws {
         let run = try DeviceRun.read(expectedWords: 200, defaultCycles: 10)
