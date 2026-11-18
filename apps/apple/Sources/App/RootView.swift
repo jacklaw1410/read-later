@@ -476,8 +476,7 @@ struct ReaderScreen: View {
             onScrub: { session.scrub(toFraction: $0) },
             onPreviewScrub: { session.previewScrub(toFraction: $0) },
             onScrubbingChanged: { scrubbing in
-                session.isScrubbing = scrubbing
-                if !scrubbing { session.finishScrubbing() }
+                if scrubbing { session.beginScrubbing() } else { session.finishScrubbing() }
             },
             arrowHandler: scrubArrowHandler
         )

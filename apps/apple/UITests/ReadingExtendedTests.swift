@@ -23,6 +23,11 @@ import XCTest
 ///   When I scrub near the end and play
 ///   Then the play button offers replay
 ///
+/// Scenario: Scrub pauses and resumes on release
+///   Given the sample article is playing
+///   When I drag the rail and release
+///   Then the voice plays again from the released word
+///
 /// Scenario: Rail controls are present
 ///   Given the sample article is open
 ///   Then the rail, follow dot and clock are visible
@@ -141,6 +146,41 @@ final class ReadingExtendedTests: XCTestCase {
         JourneySteps.tap(app, play)
         waitForLabel("Replay", on: play, timeout: Waits.state, "the finish state did not offer a replay")
         Artefacts.capture(app, name: "ios-replay", in: self)
+    }
+
+    func test_scrubPausesAndResumesOnRelease() throws {
+#if os(macOS)
+        throw XCTSkip("reading progress/wash updates are unreliable under XCUI on macOS; tracked separately")
+#endif
+        let app = AppLauncher.launch()
+        JourneySteps.openSample(app)
+
+        let play = app.buttons[AccessibilityID.readerPlayPause]
+        XCTAssertTrue(play.waitForExistence(timeout: Waits.screen), "the play button is missing")
+        JourneySteps.tap(app, play)
+        waitForLabel("Pause", on: play, timeout: Waits.state, "the play button did not start the voice")
+
+        let progress = app.descendants(matching: .any)[AccessibilityID.readerProgress]
+        XCTAssertTrue(
+            progress.waitForExistence(timeout: Waits.screen),
+            "the reading progress element is missing"
+        )
+        let start = try XCTUnwrap(progress.value as? String, "the progress element has no value")
+
+        // The drag pauses the voice at its start and plays again at release.
+        // XCUI cannot read the paused state mid-hold, so only the release
+        // side is asserted here.
+        JourneySteps.front(app)
+        progress
+            .coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.2))
+            .press(forDuration: 0.1, thenDragTo: progress.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.6)))
+        waitForPredicate(
+            NSPredicate(format: "value != %@", start),
+            on: progress,
+            timeout: Waits.state,
+            "the scrub did not move the wash"
+        )
+        waitForLabel("Pause", on: play, timeout: Waits.state, "the voice did not play again after release")
     }
 
     func test_railControlsPresent() throws {

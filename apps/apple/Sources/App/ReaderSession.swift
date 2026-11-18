@@ -46,6 +46,9 @@ final class ReaderSession: ObservableObject {
     /// not a plain optional: the stash clears only after a start succeeds,
     /// so a failed first press retries the same word (F19 1.3).
     private var latch = ResumeLatch()
+    /// Set when a drag pauses a playing voice. The release plays again from
+    /// the released word.
+    private var resumeAfterScrub = false
     /// Receives the current word index when the place should be recorded.
     /// Throttled during reading; immediate on pause, scrub and finish.
     var onProgress: ((Int, String) -> Void)?
@@ -195,8 +198,12 @@ final class ReaderSession: ObservableObject {
         guard spoken.totalWords > 0 else { return }
         let index = wordIndex(for: fraction)
         isFinished = false
-        let playing = speech.state == .speaking
-        if playing {
+        let resume = resumeAfterScrub
+        resumeAfterScrub = false
+        if resume {
+            // The drag paused the voice. Release plays again from the word.
+            if !startSpeaking(at: index) { latch.stash(index) }
+        } else if speech.state == .speaking {
             // Restart before the wash and the mark below, so the engine start
             // does not wait behind main-thread work (M4).
             speech.restart(fromWord: index)
@@ -212,7 +219,7 @@ final class ReaderSession: ObservableObject {
             "word": String(index),
         ])
         wash.wordIndex = index
-        wash.isPlaying = playing
+        wash.isPlaying = speech.state == .speaking
 
         checkpoint(source: "scrub")
     }
@@ -235,8 +242,18 @@ final class ReaderSession: ObservableObject {
 
     }
 
+    /// A drag began. A playing voice pauses and stays paused until the release.
+    /// A paused voice stays paused, and the release only stashes the word.
+    func beginScrubbing() {
+        guard !isScrubbing else { return }
+        isScrubbing = true
+        resumeAfterScrub = speech.state == .speaking
+        if resumeAfterScrub { speech.pause() }
+    }
+
     func finishScrubbing() {
         isScrubbing = false
+        resumeAfterScrub = false
     }
 
     /// Keyboard and VoiceOver step, in words. Reads the live wash position at
