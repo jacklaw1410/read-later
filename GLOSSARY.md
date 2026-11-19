@@ -65,7 +65,7 @@ The load-time check that every utterance is an exact slice of its block's text. 
 _Avoid_: validator, sanity check
 
 **Drift**:
-The wash pointing at a different word than the voice is speaking. The target is zero. A physical device is the decisive check. Unit tests and desktop harness runs support it, but do not replace a device check. The karaoke invariant does not measure drift: it checks that utterances slice their blocks.
+The wash pointing at a different word than the voice is speaking. The target is zero. A recording of the screen and the audio together, made on a device, is the decisive evidence. Unit tests and desktop harness runs support it, but do not replace that recording. The karaoke invariant does not measure drift: it checks that utterances slice their blocks.
 _Avoid_: lag, desync, offset
 
 ## Text and extraction
