@@ -30,3 +30,6 @@ TestResults/
 
 # Per-session agent configs written by the opencode-kiro provider
 .kiro/agents/opencode-*.json
+
+# Local device/simulator build output
+apps/apple/build-sim/

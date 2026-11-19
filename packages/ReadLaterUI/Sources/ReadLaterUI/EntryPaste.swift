@@ -1,8 +1,10 @@
 import Foundation
+import ReadLaterCore
 #if os(macOS)
 import AppKit
 #elseif canImport(UIKit)
 import UniformTypeIdentifiers
+import UIKit
 #endif
 
 /// The paste rule for the entry screen: a pasted string either names a web
@@ -12,6 +14,21 @@ import UniformTypeIdentifiers
 /// `https` count: a bare host has no fetch target, and `file:` or `mailto:`
 /// must never become a page request.
 public enum EntryPaste {
+    /// First bytes of every RTF document (`{\rtf`). Only data starting
+    /// this way is tried as RTF; anything else decodes as UTF-8.
+    private static let rtfHeader = Data([0x7B, 0x5C, 0x72, 0x74, 0x66])
+
+    /// Strict RTF decode: plain text on success, nil on parse failure or
+    /// empty content. Never the raw markup.
+    private static func rtfText(_ data: Data) -> String? {
+        guard let rich = try? NSAttributedString(
+            data: data,
+            options: [.documentType: NSAttributedString.DocumentType.rtf],
+            documentAttributes: nil
+        ), !rich.string.isEmpty else { return nil }
+        return rich.string
+    }
+
     public static func openableLink(from text: String) -> String? {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty,
@@ -23,14 +40,46 @@ public enum EntryPaste {
         return trimmed
     }
 
+    /// The text of one decoded clipboard item: a string, plain-text or RTF
+    /// data, an attributed string, or a URL. Nil when none of them yield
+    /// text. Pure, so tests decode without a pasteboard.
+    public static func text(fromItem item: Any) -> String? {
+        switch item {
+        case let string as String:
+            return string.isEmpty ? nil : string
+        case let attributed as NSAttributedString:
+            let string = attributed.string
+            return string.isEmpty ? nil : string
+        case let url as URL:
+            return url.absoluteString
+        case let data as Data:
+            // RTF and friends carry styles the link field does not want,
+            // so the rich decode strips them to plain text. Data that is
+            // not RTF decodes as UTF-8. Malformed RTF gives nil, never its
+            // markup.
+            if data.starts(with: rtfHeader) {
+                return rtfText(data)
+            }
+            let plain = String(decoding: data, as: UTF8.self)
+            return plain.isEmpty ? nil : plain
+        default:
+            return nil
+        }
+    }
+
     /// The board text for the macOS paste button: the string flavor first,
-    /// then a URL object without one (bare Copy Link, Universal Clipboard).
-    /// macOS only: no permission prompt there. iOS keeps the system
-    /// PasteButton, where a programmatic read would prompt and return nil.
+    /// then RTF data without one, then a URL object without either (bare
+    /// Copy Link, Universal Clipboard). macOS only: no permission prompt
+    /// there.
     #if os(macOS)
     public static func appKitBoardText() -> String? {
         let board = NSPasteboard.general
         if let text = board.string(forType: .string), !text.isEmpty {
+            return text
+        }
+        if let rtf = board.data(forType: .rtf),
+           let text = text(fromItem: rtf), !text.isEmpty
+        {
             return text
         }
         if let urls = board.readObjects(forClasses: [NSURL.self], options: nil) as? [URL],
@@ -42,39 +91,79 @@ public enum EntryPaste {
     }
     #endif
 
-    /// The board text for the iOS paste button: string flavor first, then a
-    /// bare URL object (Copy Link / Universal Clipboard can hold public.url
-    /// with no plain text — a String-only read silently ignores that tap).
-    /// The provider owns the read, so iOS shows no permission prompt.
+    /// Records one `paste.*` event through `TelemetryHub`.
+    private static func diag(_ name: String, _ fields: [String: String] = [:]) {
+        TelemetryHub.shared.record(name, fields: fields)
+    }
+
     #if !os(macOS)
-    public static func loadFirstText(
-        from providers: [NSItemProvider],
-        deliver: @escaping @Sendable (String) -> Void
+    /// How long a missed read polls while the native paste prompt may be up.
+    /// Reads may return nil until the user answers. An answer after this
+    /// wait may land on the next tap.
+    private static let promptWait: TimeInterval = 6
+
+    /// The iOS paste button reads the board directly: string flavor first,
+    /// then RTF data, then a bare URL object.
+    ///
+    /// A plain Button owns the tap. Hypothesis, not yet confirmed on a
+    /// device: a direct board read shows the native "would like to paste
+    /// from" prompt when the app's paste permission is Ask. The read polls
+    /// for `promptWait` seconds because reads may return nil while the
+    /// prompt is up. `fail` fires when the poll runs out, and the blocked
+    /// note shows. A silent miss would read as a broken button.
+    ///
+    /// Each tap records `paste.tap`. The `paste.*` oplog events record the
+    /// branch taken and the result. They may help diagnose a device denial.
+    public static func pasteFromBoard(
+        deliver: @escaping @Sendable (String) -> Void,
+        fail: @escaping @Sendable () -> Void
     ) {
-        guard let provider = providers.first else { return }
-        if provider.hasItemConformingToTypeIdentifier(UTType.plainText.identifier) {
-            provider.loadObject(ofClass: NSString.self) { obj, _ in
-                if let text = obj as? String, !text.isEmpty {
-                    Task { @MainActor in deliver(text) }
-                } else {
-                    loadURL(from: provider, deliver: deliver)
+        diag("paste.tap", ["source": "button"])
+        readBoardWithPrompt(deliver: deliver, fail: fail)
+    }
+
+    private static func readBoardWithPrompt(
+        deliver: @escaping @Sendable (String) -> Void,
+        fail: @escaping @Sendable () -> Void
+    ) {
+        Task { @MainActor in
+            let deadline = Date().addingTimeInterval(promptWait)
+            while Date() < deadline {
+                if let text = EntryPaste.boardText() {
+                    diag("paste.delivered", [
+                        "branch": "prompt",
+                        "chars": String(text.count),
+                    ])
+                    deliver(text)
+                    return
                 }
+                try? await Task.sleep(nanoseconds: 250_000_000)
             }
-        } else {
-            loadURL(from: provider, deliver: deliver)
+            diag("paste.blocked")
+            // Flush at once: the test runner and a dying app may never
+            // hit a lifecycle hook, and a Deny outcome must survive.
+            TelemetryHub.shared.flush()
+            fail()
         }
     }
 
-    private static func loadURL(
-        from provider: NSItemProvider,
-        deliver: @escaping @Sendable (String) -> Void
-    ) {
-        provider.loadObject(ofClass: NSURL.self) { obj, _ in
-            if let url = obj as? URL {
-                let text = url.absoluteString
-                Task { @MainActor in deliver(text) }
-            }
+    /// One direct board read: the string flavor first, then RTF data,
+    /// then a bare URL object. Nil when the app may not read or the
+    /// board holds neither.
+    private static func boardText() -> String? {
+        let board = UIPasteboard.general
+        if let string = board.string, !string.isEmpty {
+            return string
         }
+        if let rtf = board.data(forPasteboardType: UTType.rtf.identifier),
+           let text = text(fromItem: rtf), !text.isEmpty
+        {
+            return text
+        }
+        if let url = board.url?.absoluteString, !url.isEmpty {
+            return url
+        }
+        return nil
     }
     #endif
 }

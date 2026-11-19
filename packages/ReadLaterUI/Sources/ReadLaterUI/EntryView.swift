@@ -50,9 +50,14 @@ public enum EntryCopy {
     public static let open = "Open"
     public static let opening = "Opening…"
     public static let settings = "Settings"
-    public static let paste = "Paste"
     public static let pasteFromClipboard = "Paste from clipboard"
     public static let pasteHint = "Paste a link and open it"
+    /// A paste tap that lands nothing. iOS can hold the app in an
+    /// explicitly denied paste-permission state, where every read fails
+    /// with "Operation not authorized" and no prompt ever returns; a
+    /// silent no-op reads as a broken button.
+    public static let pasteBlockedNote =
+        "Paste is blocked — allow ReadLater to read the clipboard in Settings (Paste from Other Apps)."
     public static let extracting = "Extracting…"
     public static let emptyRefusal = "Nothing to open — paste a link or some text."
     public static let emptyRefusalNoClipboard =
@@ -141,6 +146,10 @@ public struct EntryView: View {
     @State private var pulseOn = false
     @State private var shimmerX: CGFloat = -80
     @State private var pasteHover = false
+    #if !os(macOS)
+    @State private var pasteBlocked = false
+    @State private var pasting = false
+    #endif
     @FocusState private var fieldFocused: Bool
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -353,21 +362,15 @@ public struct EntryView: View {
                 // transparent overlay twin never fires on AppKit — an
                 // empty label has no hit area — so the label is the
                 // button. macOS reads the board directly (no prompt
-                // there): string flavor first, then a bare URL object
-                // (Copy Link / Universal Clipboard can hold public.url
-                // with no plain text; a String-only PasteButton silently
-                // ignores that tap).
+                // there): string flavor first, then RTF data, then a bare
+                // URL object (Copy Link / Universal Clipboard can hold
+                // public.url with no plain text; a String-only read
+                // silently ignores that tap).
                 //
-                // iOS keeps the system PasteButton (a programmatic read
-                // would prompt and return nil): the visible line is ours
-                // and the button sits invisible in an overlay IN FRONT,
-                // taking the whole row. It takes plain-text and URL
-                // flavors — a bare Copy Link can hold public.url with no
-                // plain text, which a String-only button silently ignores.
-                // Alpha is 0.01, not 0: UIKit hitTest skips a bridged
-                // button below ~0.01, so 0 never fires though AX still
-                // reports it hittable (1% paint drift ≤ 3 LSB,
-                // snapshot-measured).
+                // iOS: a plain Button owns the tap and reads the board
+                // directly, which may show the native paste prompt in the
+                // Ask state. PasteButton is not used: its provider reads
+                // may skip that prompt.
                 if showPaste {
                     #if os(macOS)
                     Button {
@@ -388,33 +391,44 @@ public struct EntryView: View {
                     .disabled(isLoading)
                     .accessibilityIdentifier(AccessibilityID.entryPaste)
                     #else
-                    Text(EntryCopy.pasteFromClipboard)
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(Theme.brand)
-                        .underline(pasteHover)
-                        .padding(.vertical, 10)
-                        // Fixed 44 pt row: a min-only frame is flexible and
-                        // would drink the VStack leftover, stretching the card.
-                        .frame(maxWidth: .infinity, minHeight: 44, maxHeight: 44, alignment: .leading)
-                        .accessibilityIdentifier(AccessibilityID.entryPasteLabel)
-                        .overlay {
-                            PasteButton(
-                                supportedContentTypes: [.plainText, .url]
-                            ) { providers in
-                                EntryPaste.loadFirstText(from: providers) {
-                                    inputText = $0
-                                }
+                    Button {
+                        pasting = true
+                        EntryPaste.pasteFromBoard(
+                            deliver: { text in
+                                pasting = false
+                                pasteBlocked = false
+                                inputText = text
+                            },
+                            fail: {
+                                pasting = false
+                                pasteBlocked = true
                             }
-                            .labelStyle(.iconOnly)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .opacity(0.01)
-                            .onHover { pasteHover = $0 }
-                            .disabled(isLoading)
-                            .accessibilityLabel(EntryCopy.pasteFromClipboard)
-                            .accessibilityIdentifier(AccessibilityID.entryPaste)
-                        }
+                        )
+                    } label: {
+                        Text(EntryCopy.pasteFromClipboard)
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundStyle(Theme.brand)
+                            .underline(pasteHover)
+                            .padding(.vertical, 10)
+                            .frame(maxWidth: .infinity, minHeight: 44, maxHeight: 44, alignment: .leading)
+                            .contentShape(Rectangle())
+                            .accessibilityIdentifier(AccessibilityID.entryPasteLabel)
+                    }
+                    .buttonStyle(.plain)
+                    .onHover { pasteHover = $0 }
+                    .disabled(pasting || isLoading)
+                    .accessibilityLabel(EntryCopy.pasteFromClipboard)
+                    .accessibilityIdentifier(AccessibilityID.entryPaste)
                     #endif
                 }
+                #if !os(macOS)
+                if showPaste && pasteBlocked {
+                    Text(EntryCopy.pasteBlockedNote)
+                        .font(Theme.caption())
+                        .foregroundStyle(Theme.holdInk)
+                        .padding(.top, 6)
+                }
+                #endif
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 14)

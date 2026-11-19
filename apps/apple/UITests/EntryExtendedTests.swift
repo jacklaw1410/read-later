@@ -105,19 +105,20 @@ final class EntryExtendedTests: XCTestCase {
         JourneySteps.tap(app, field)
         cut(field, in: app)
 
-        let line = JourneySteps.texts(app, id: AccessibilityID.entryPasteLabel)
+        let line = app.buttons[AccessibilityID.entryPaste].firstMatch
         XCTAssertTrue(
             line.waitForExistence(timeout: Waits.state),
             "the paste line is missing on the empty field"
         )
         XCTAssertEqual(JourneySteps.displayed(line), EntryCopy.pasteFromClipboard)
 
-        // Tap the system button itself: it owns the board read, so iOS
-        // shows no permission prompt. The button enables asynchronously
-        // as the board change propagates; a tap before that is swallowed.
+        // Tap the button itself: it owns a direct board read, which may
+        // show the native paste prompt in the Ask state. The button is
+        // always enabled outside loading; the wait below only guards the
+        // board propagation before the tap.
         JourneySteps.dismissKeyboardIfPresent(app)
-        let sysPaste = app.buttons["Paste"].firstMatch
-        XCTAssertTrue(sysPaste.waitForExistence(timeout: Waits.state), "no system paste button")
+        let sysPaste = app.buttons[AccessibilityID.entryPaste].firstMatch
+        XCTAssertTrue(sysPaste.waitForExistence(timeout: Waits.state), "no paste button")
         let enabled = XCTNSPredicateExpectation(
             predicate: NSPredicate(format: "enabled == true"), object: sysPaste
         )
@@ -131,7 +132,7 @@ final class EntryExtendedTests: XCTestCase {
             "the tap did not fill the field, got: \(JourneySteps.displayedValue(field))"
         )
         XCTAssertFalse(
-            JourneySteps.texts(app, id: AccessibilityID.entryPasteLabel)
+            app.buttons[AccessibilityID.entryPaste].firstMatch
                 .waitForExistence(timeout: 2),
             "the paste line stayed after the field filled"
         )

@@ -32,7 +32,9 @@ enum JourneySteps {
 
     /// Text by identifier or label. On macOS a heading-trait text surfaces
     /// as AXHeading, which XCUI types as Other and never StaticText, so
-    /// the query must be type-agnostic there. iOS keeps the typed query.
+    /// the query must be type-agnostic there. iOS keeps the typed query:
+    /// every iOS caller names a StaticText, and the paste line is queried
+    /// through its Button (`entryPaste`), never the inner label.
     static func texts(_ app: XCUIApplication, id: String) -> XCUIElement {
         #if os(macOS)
         app.descendants(matching: .any)[id]

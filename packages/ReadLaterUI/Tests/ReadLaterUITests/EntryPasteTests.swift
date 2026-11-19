@@ -1,6 +1,12 @@
 import ReadLaterCore
 import ReadLaterUI
 import XCTest
+#if canImport(AppKit)
+import AppKit
+#endif
+#if canImport(UIKit)
+import UIKit
+#endif
 
 /// The paste rule is pure: a pasted string either names a web link the app can
 /// open, or it does not. The view only moves the result into the field.
@@ -64,5 +70,64 @@ final class EntryPasteTests: XCTestCase {
         // scheme, so a bare host never opens from paste.
         XCTAssertNil(EntryPaste.openableLink(from: "example.com/article"))
         XCTAssertNil(EntryPaste.openableLink(from: "example.com/a b"))
+    }
+}
+
+/// One clipboard item decodes to text. Pure, so no pasteboard is needed.
+final class EntryPasteItemTests: XCTestCase {
+    /// Minimal RTF bytes: font table, one sized run, no markup in the text.
+    private static let rtfBytes = Data(
+        #"{\rtf1\ansi\deff0{\fonttbl{\f0 Helvetica;}}\f0\fs28 https://example.com/article}"#.utf8
+    )
+
+    func testStringIsDelivered() {
+        XCTAssertEqual(EntryPaste.text(fromItem: "A paragraph."), "A paragraph.")
+    }
+
+    func testEmptyStringIsNil() {
+        XCTAssertNil(EntryPaste.text(fromItem: ""))
+    }
+
+    func testPlainDataIsDecoded() {
+        XCTAssertEqual(
+            EntryPaste.text(fromItem: Data("https://example.com".utf8)),
+            "https://example.com"
+        )
+    }
+
+    func testURLIsAbsolute() {
+        XCTAssertEqual(
+            EntryPaste.text(fromItem: URL(string: "https://example.com/a?b=1")!),
+            "https://example.com/a?b=1"
+        )
+    }
+
+    func testRTFStripsToPlainText() {
+        XCTAssertEqual(
+            EntryPaste.text(fromItem: Self.rtfBytes),
+            "https://example.com/article"
+        )
+    }
+
+    func testAttributedStringStripsToPlainText() {
+        #if canImport(AppKit)
+        let color: Any = NSColor.red
+        #else
+        let color: Any = UIColor.red
+        #endif
+        let attributed = NSAttributedString(
+            string: "A paragraph.",
+            attributes: [.foregroundColor: color]
+        )
+        XCTAssertEqual(EntryPaste.text(fromItem: attributed), "A paragraph.")
+    }
+
+    func testJunkYieldsNothing() {
+        XCTAssertNil(EntryPaste.text(fromItem: NSObject()))
+    }
+
+    func testMalformedRTFYieldsNothing() {
+        // A truncated header carries no content: nil, never the markup.
+        XCTAssertNil(EntryPaste.text(fromItem: Data("{\\rtf".utf8)))
     }
 }

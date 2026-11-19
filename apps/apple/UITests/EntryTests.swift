@@ -17,7 +17,7 @@ final class EntryTests: XCTestCase {
         let open = app.buttons[AccessibilityID.entryOpen]
         XCTAssertTrue(open.waitForExistence(timeout: Waits.screen), "entry screen did not appear")
         XCTAssertTrue(
-            app.textFields[AccessibilityID.entryLinkField].exists,
+            app.textViews[AccessibilityID.entryLinkField].exists,
             "the link field is missing"
         )
         JourneySteps.tap(app, open)
