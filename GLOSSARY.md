@@ -126,6 +126,14 @@ _Avoid_: error, failure, unknown word
 
 ## Measurement
 
+**Venue**:
+Where a run happens: the **simulator** (Xcode Simulator on a Mac) or a **physical device** (an iPhone). The venue follows where the app runs, not which tool records it.
+_Avoid_: device (alone), target, platform
+
+**Evidence level**:
+How much a run records. Level 1 is the telemetry alone. Level 2 is pure audio or pure screen plus the telemetry. Level 3 is screen and audio plus the timeline telemetry.
+_Avoid_: tier (the MVP tiers already use it), grade, strength
+
 **Telemetry**:
 The app's timestamped measurement log, one JSON line per event.
 _Avoid_: oplog (that name belongs to the sync log), trace, log
@@ -133,3 +141,11 @@ _Avoid_: oplog (that name belongs to the sync log), trace, log
 **Oplog**:
 The append-only log of sync operations, replayed to bring a store up to date. It records changes, not measurements.
 _Avoid_: telemetry, measurement log
+
+**Timeline telemetry**:
+Telemetry whose timestamps share a clock with a recording, so each event maps to a moment in the recording.
+_Avoid_: synced log, timeline oplog
+
+**Screen recording**, **audio recording**:
+A recording of the picture alone, or of the sound alone. A recording of both is a screen and audio recording.
+_Avoid_: video (unclear whether it has sound)
