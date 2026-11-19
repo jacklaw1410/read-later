@@ -36,13 +36,13 @@ Returning the wash to its position after a lookup, note or link, with playback a
 
 ## Playback
 
-**Spoken index space**:
-The numbering of words that are actually spoken. Progress, time left and scrubbing are computed here. Skipped regions have no index.
+**Spoken word numbering**:
+The numbering of words that are actually spoken. Progress, time left and scrubbing are computed here. Skipped regions have no number.
 _Avoid_: timeline, word count
 
-**Honest denominator**:
-The rule that progress and time left count only spoken words. A page of tables cannot claim time it never speaks.
-_Avoid_: accurate progress
+**Spoken-only progress**:
+Progress and time left count spoken words only. The contrast is skipped content, which adds no words and no seconds. A page of tables cannot claim time it never speaks.
+_Avoid_: accurate progress, honest denominator
 
 **Skip**:
 The wash jumps over a non-prose region without speaking it. The region adds no time to time left.
@@ -82,9 +82,9 @@ _Avoid_: junk, noise
 Page furniture outside the article: navigation, ads, cookie banners and "skip to main content". Extraction removes it. The reader does not skip it. Write *page chrome* where "chrome" could mean the browser.
 _Avoid_: boilerplate, clutter
 
-**Pinned fixture** (a *pin*):
-A frozen copy of a page's HTML, stored so that extraction can be replayed byte for byte.
-_Avoid_: snapshot, capture, sample
+**Stored page**:
+A copy of a page's HTML, stored so that extraction can be replayed byte for byte.
+_Avoid_: fixture, snapshot, capture, sample, pin
 
 ## Lookup and dictionaries
 
