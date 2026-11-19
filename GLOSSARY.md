@@ -65,7 +65,7 @@ The load-time check that every utterance is an exact slice of its block's text. 
 _Avoid_: karaoke invariant, validator, sanity check
 
 **Drift**:
-The wash pointing at a different word than the voice is speaking. The target is zero. A recording of the screen and the audio together, made on a device, is the decisive evidence. Unit tests and desktop harness runs support it, but do not replace that recording. The spoken plan invariant does not measure drift: it checks that utterances slice their blocks.
+The gap between the wash's actual word and the word the Wash lead prescribes for the voice's current word. The target is zero: the wash keeps the prescribed lead. A recording of the screen and the audio together, made on a device, is the decisive evidence. Unit tests and desktop harness runs support it, but do not replace that recording. The spoken plan invariant does not measure drift: it checks that utterances slice their blocks.
 _Avoid_: lag, desync, offset
 
 ## Text and extraction
@@ -82,9 +82,9 @@ _Avoid_: junk, noise
 Page furniture outside the article: navigation, ads, cookie banners and "skip to main content". Extraction removes it. The reader does not skip it. Write *page chrome* where "chrome" could mean the browser.
 _Avoid_: boilerplate, clutter
 
-**Stored page**:
+**Pin**:
 A copy of a page's HTML, stored so that extraction can be replayed byte for byte.
-_Avoid_: fixture, snapshot, capture, sample, pin
+_Avoid_: fixture, snapshot, capture, sample
 
 ## Lookup and dictionaries
 
@@ -127,7 +127,7 @@ _Avoid_: error, failure, unknown word
 ## Measurement
 
 **Venue**:
-Where a run happens: the **simulator** (Xcode Simulator on a Mac) or a **physical device** (an iPhone). The venue follows where the app runs, not which tool records it.
+Where a run happens. On iOS, the **simulator** (Xcode Simulator on a Mac) emulates the app, and a **physical device** (an iPhone) runs it. On macOS, the Mac is the physical device, so no simulator venue applies. The venue follows where the app runs, not which tool records it.
 _Avoid_: device (alone), target, platform
 
 **Evidence level**:
