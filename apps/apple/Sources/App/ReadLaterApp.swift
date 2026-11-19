@@ -9,7 +9,9 @@ struct ReadLaterApp: App {
         DebugProbes.start()
         #endif
         TelemetryHub.shared.configure()
-        TelemetryHub.shared.record(TelemetryName.processStart)
+        TelemetryHub.shared.record(TelemetryName.processStart, fields: [
+            "uptime": String(format: "%.6f", ProcessInfo.processInfo.systemUptime),
+        ])
         TelemetryHub.shared.record(TelemetryName.launchBuild, fields: Self.buildFields)
     }
 

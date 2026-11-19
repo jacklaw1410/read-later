@@ -61,6 +61,37 @@ final class LatencyDeviceTests: XCTestCase {
         Thread.sleep(forTimeInterval: 90)
     }
 
+    /// Control: pauses at 30 s, resumes 20 s later, and runs to about 115 s after the tap.
+    /// A wall-clock trigger stalls about 85 s after the tap. A speaking-time trigger stalls about 105 s after it.
+    func test_control_pauseResumeOnLongArticle() throws {
+        let run = try DeviceRun.read(expectedWords: 4_500, defaultCycles: 1)
+        terminateApp()
+        let app = AppLauncher.launch(extraArguments: run.launchArguments)
+        openSeeded(app, run: run)
+        let play = app.buttons[AccessibilityID.readerPlayPause]
+        XCTAssertTrue(startPlayback(app, play), "the voice did not start")
+        Thread.sleep(forTimeInterval: 30)
+        JourneySteps.tap(app, play)
+        XCTAssertTrue(waitForLabel("Play", on: play), "the pause did not take")
+        Thread.sleep(forTimeInterval: 20)
+        JourneySteps.tap(app, play)
+        XCTAssertTrue(waitForLabel("Pause", on: play), "the resume did not take")
+        Thread.sleep(forTimeInterval: 65)
+    }
+
+    /// Control: waits 40 s after launch, then taps play, and runs 90 s.
+    /// A launch-time trigger stalls about 53 s after the tap. A play-time trigger stalls about 85 s after it.
+    func test_control_lateTapOnLongArticle() throws {
+        let run = try DeviceRun.read(expectedWords: 4_500, defaultCycles: 1)
+        terminateApp()
+        let app = AppLauncher.launch(extraArguments: run.launchArguments)
+        openSeeded(app, run: run)
+        Thread.sleep(forTimeInterval: 40)
+        let play = app.buttons[AccessibilityID.readerPlayPause]
+        XCTAssertTrue(startPlayback(app, play), "the voice did not start")
+        Thread.sleep(forTimeInterval: 90)
+    }
+
     /// M3: play taps from the paused start on the 200-word article.
     func test_m3_playBatchOnShortArticle() throws {
         let run = try DeviceRun.read(expectedWords: 200, defaultCycles: 10)
