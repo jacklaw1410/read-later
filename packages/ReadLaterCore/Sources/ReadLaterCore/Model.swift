@@ -26,7 +26,7 @@ public enum BlockKind: String, Codable, Sendable, CaseIterable {
 }
 
 /// One sentence, addressed as a character range inside its block's `text`.
-/// The karaoke invariant requires `block.text[offset..<offset+length] == text`.
+/// The spoken plan invariant requires `block.text[offset..<offset+length] == text`.
 public struct Sentence: Codable, Sendable, Hashable {
     public var offset: Int
     public var length: Int

@@ -132,7 +132,7 @@ public extension SpeechController {
 //
 // Order: user override, note, cache, Apple dictionary, installed pack.
 // Apple 譯典通 (`zh_TW-en.DrEye`) first on macOS: 0.28 ms median, p95 1.18 ms.
-// On iOS the pack is primary if D7 shows the system dictionary is absent.
+// On iOS the pack is the only source: D7 found no public API that returns dictionary text.
 
 public enum LookupSource: String, Codable, Sendable, CaseIterable {
     case apple = "Apple 譯典通 (built-in)"
