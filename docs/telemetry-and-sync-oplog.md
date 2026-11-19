@@ -181,23 +181,26 @@ compile out of Release and require launch arguments
 
 | Event | Defined | Emitted at | When | Fields |
 |---|---|---|---|---|
-| `speech.didStart` | `TelemetryLog.swift:45` | `AVSpeechController.swift:385-389` | First utterance-start delegate callback in a run; once per `speak`, gated on active run | none |
-| `speech.utteranceStart` | `TelemetryLog.swift:46-50` | `AVSpeechController.swift:382-384` | Every utterance start, ungated so scrub releases have a phone-side mark | `utterance` |
-| `tap.play` | `TelemetryLog.swift:73` | `apps/apple/Sources/App/ReaderSession.swift:115-116` | Play handler entry, when not speaking | `word` (wash index, `-1` if unset) |
-| `tap.pause` | `TelemetryLog.swift:74` | `ReaderSession.swift:115-116` | Play handler entry, when speaking | `word` |
-| `play` | `TelemetryLog.swift:56` | `ReaderSession.swift:126` | Play branch starts audio | none |
-| `pause` | `TelemetryLog.swift:57` | `ReaderSession.swift:123`, `:138` | Pause branch or `.speaking` case in toggle | none |
-| `finished` | `TelemetryLog.swift:58` | `ReaderSession.swift:451` | Speech state becomes `.finished` | none |
-| `speed change` | `TelemetryLog.swift:66` | `ReaderSession.swift:180` | Reader changes pace | `from`, `to` |
-| `scrub.commit` | `TelemetryLog.swift:75` | `ReaderSession.swift:206-209` | After restart on scrub release | `fraction` (4 dp), `word` |
-| `scrub.begin` | `TelemetryLog.swift:76` | `ReaderSession.swift:243-245` | Drag begins | `state` (speech state description) |
-| `hold-start` | `TelemetryLog.swift:67` | `ReaderSession.swift:385`, `:391` | Scroll or menu disables auto-follow | `reason`: `scroll`, `menu` |
-| `hold-end` | `TelemetryLog.swift:68` | `ReaderSession.swift:397` | Reader resumes auto-follow | `outcome=resume` |
-| `speech.pauseCall` | `TelemetryLog.swift:77` | `AVSpeechController.swift:190-193` | `pauseSpeaking(at: .word)` call | `accepted`, `synthPaused` |
-| `speech.enqueue` | `TelemetryLog.swift:80` | `AVSpeechController.swift:334-337` | Each utterance enqueued | `utterance`, `inFlight` |
-| `speech.didFinish` | `TelemetryLog.swift:81` | `AVSpeechController.swift:426-431` | Utterance finish delegate callback | `utterance`, `inFlight`, `nextToEnqueue`, `state` |
-| `speech.didPause` | `TelemetryLog.swift:78` | `AVSpeechController.swift:446-449` | Pause delegate callback, including late ones | `tracked`, `state` |
-| `speech.didResume` | `TelemetryLog.swift:79` | `AVSpeechController.swift:456-459` | Resume delegate callback | `tracked`, `state` |
+| `speech.didStart` | `TelemetryLog.swift:48` | `AVSpeechController.swift:436` | First utterance-start delegate callback in a run; once per `speak`, gated on active run | none |
+| `speech.utteranceStart` | `TelemetryLog.swift:53` | `AVSpeechController.swift:400-402` | Every utterance start, ungated so scrub releases have a phone-side mark | `utterance` |
+| `tap.play` | `TelemetryLog.swift:76` | `apps/apple/Sources/App/ReaderSession.swift:115-116` | Play handler entry, when not speaking | `word` (wash index, `-1` if unset) |
+| `tap.pause` | `TelemetryLog.swift:77` | `ReaderSession.swift:115-116` | Play handler entry, when speaking | `word` |
+| `play` | `TelemetryLog.swift:59` | `ReaderSession.swift:126` | Play branch starts audio | none |
+| `pause` | `TelemetryLog.swift:60` | `ReaderSession.swift:123`, `:138` | Pause branch or `.speaking` case in toggle | none |
+| `audio.interruption` | `TelemetryLog.swift:89` | `StallProbe.swift:57-60` | An audio interruption began or ended, before the hold or resume | `type` (raw value), `state` |
+| `finished` | `TelemetryLog.swift:61` | `ReaderSession.swift:451` | Speech state becomes `.finished` | none |
+| `speed change` | `TelemetryLog.swift:69` | `ReaderSession.swift:180` | Reader changes pace | `from`, `to` |
+| `scrub.commit` | `TelemetryLog.swift:78` | `ReaderSession.swift:206-209` | After restart on scrub release | `fraction` (4 dp), `word` |
+| `scrub.begin` | `TelemetryLog.swift:79` | `ReaderSession.swift:243-245` | Drag begins | `state` (speech state description) |
+| `hold-start` | `TelemetryLog.swift:70` | `ReaderSession.swift:385`, `:391` | Scroll or menu disables auto-follow | `reason`: `scroll`, `menu` |
+| `hold-end` | `TelemetryLog.swift:71` | `ReaderSession.swift:397` | Reader resumes auto-follow | `outcome=resume` |
+| `speech.enqueue` | `TelemetryLog.swift:82` | `AVSpeechController.swift:376-379` | Each utterance enqueued | `utterance`, `inFlight` |
+| `speech.didFinish` | `TelemetryLog.swift:83` | `AVSpeechController.swift:481-486` | Utterance finish delegate callback | `utterance`, `inFlight`, `nextToEnqueue`, `state` |
+| `speech.didPause` | `TelemetryLog.swift:80` | `AVSpeechController.swift:502-505` | Pause delegate callback, including late ones | `tracked`, `state` |
+| `speech.didResume` | `TelemetryLog.swift:81` | `AVSpeechController.swift:512-515` | Resume delegate callback | `tracked`, `state` |
+| `speech.didCancel` | `TelemetryLog.swift:88` | `StallProbe.swift:52-55` | Utterance cancel delegate callback, including the hold's own stop | `tracked`, `state` |
+| `speech.word` | `TelemetryLog.swift:86` | `StallProbe.swift:47-50` | Every word boundary; Debug builds only, so a stall shows its last word | `word`, `utterance` |
+| `speech.heartbeat` | `TelemetryLog.swift:87` | `StallProbe.swift:102` | 1 Hz while the voice runs; Debug builds only, for stall evidence. The probe stops if the sampled state leaves `.speaking` | `state`, `isSpeaking`, `isPaused`, `inFlight`, `word`, `uptime`, `outputVolume` (iOS) |
 
 ### Lookup and card
 

@@ -29,7 +29,9 @@ struct ReadLaterApp: App {
         DebugProbes.start()
         #endif
         telemetry.configure()
-        telemetry.record(TelemetryName.processStart)
+        telemetry.record(TelemetryName.processStart, fields: [
+            "uptime": String(format: "%.6f", ProcessInfo.processInfo.systemUptime),
+        ])
         telemetry.record(TelemetryName.launchBuild, fields: Self.buildFields)
     }
 

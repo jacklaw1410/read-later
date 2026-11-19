@@ -243,7 +243,7 @@ final class ReaderSession {
         telemetry.record(TelemetryName.scrubBegin, fields: [
             "state": String(describing: speech.state),
         ])
-        if resumeAfterScrub { speech.holdForScrub() }
+        if resumeAfterScrub { speech.holdAtWord() }
     }
 
     func finishScrubbing() {
