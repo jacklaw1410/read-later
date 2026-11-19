@@ -107,7 +107,7 @@ final class AppModel: ObservableObject {
               let saved = try? store.latestUnfinishedPosition(),
               let document = try? store.document(id: saved.documentID)
         else { return }
-        let total = SpokenIndex(plan: document.plan).totalWords
+        let total = SpokenWordNumbering(plan: document.plan).totalWords
         open(document, startWord: min(saved.wordIndex, max(total - 1, 0)))
     }
 
@@ -197,7 +197,7 @@ final class AppModel: ObservableObject {
     }
 
     private func openAtPlace(_ document: ReadLaterCore.Document, row: ReadingPosition) {
-        let total = SpokenIndex(plan: document.plan).totalWords
+        let total = SpokenWordNumbering(plan: document.plan).totalWords
         open(document, startWord: min(row.wordIndex, max(total - 1, 0)))
     }
 
@@ -513,7 +513,7 @@ struct ReaderScreen: View {
                 isPlaying: session.isPlaying,
                 isFinished: session.isFinished,
                 onPlayPause: { session.togglePlay() },
-                onStepSentence: { session.stepSentence($0) }
+                onStepUtterance: { session.stepUtterance($0) }
             )
         }
         .padding(.leading, Theme.screenGutter)

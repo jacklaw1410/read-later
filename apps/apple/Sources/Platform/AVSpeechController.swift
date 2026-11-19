@@ -298,7 +298,7 @@ public final class AVSpeechController: NSObject, SpeechController {
     /// scrubber: `init(sentences:)` emits one utterance per sentence in order,
     /// so utterance `index` opens with that sentence's first word.
     @discardableResult
-    public func restart(fromSentence index: Int) -> Bool {
+    public func restart(fromUtterance index: Int) -> Bool {
         guard let current = queue, !current.utterances.isEmpty else { return false }
         let clamped = min(max(index, 0), current.utterances.count - 1)
         return restart(fromWord: current.utterances[clamped].firstWordIndex)

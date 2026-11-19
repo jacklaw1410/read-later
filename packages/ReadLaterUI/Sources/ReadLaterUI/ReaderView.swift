@@ -7,7 +7,7 @@ import SwiftUI
 public struct ReaderView<Player: View, Overlay: View>: View {
     private let document: ReadLaterCore.Document
     private let wash: WashState
-    private let spoken: SpokenIndex
+    private let spoken: SpokenWordNumbering
     private let autoScroll: Bool
     private let isScrubbing: Bool
     /// Bumped by the caller to scroll back to the wash block. The tap on the
@@ -33,7 +33,7 @@ public struct ReaderView<Player: View, Overlay: View>: View {
     public init(
         document: ReadLaterCore.Document,
         wash: WashState,
-        spoken: SpokenIndex,
+        spoken: SpokenWordNumbering,
         autoScroll: Bool,
         isScrubbing: Bool = false,
         returnToken: Int = 0,

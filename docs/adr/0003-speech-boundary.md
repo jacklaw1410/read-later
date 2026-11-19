@@ -6,7 +6,7 @@ Status: accepted · Date: 2026-11-12
 
 The karaoke wash follows `speechSynthesizer(_:willSpeakRangeOfSpeechString:utterance:)`
 and nothing else. The synthesizer queue holds 2 utterances of prefetch.
-At load, the spoken-plan invariant runs: every spoken sentence must be
+At load, the spoken-plan invariant runs: every utterance must be
 an exact slice of its block text, and any failure blocks playback.
 
 ## Context

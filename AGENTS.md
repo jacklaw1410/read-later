@@ -44,5 +44,9 @@ Default canonical labels (`needs-triage`, `needs-info`, `ready-for-agent`, `read
 
 ### Domain docs
 
-Multi-context: root `GLOSSARY-MAP.md` plus per-context `GLOSSARY.md`. See `docs/agents/domain.md`.
+Single-context: one root `GLOSSARY.md`. See `docs/agents/domain.md`.
 
+
+## Known gaps
+
+- The glossary term is **Telemetry**, and "oplog" is not a synonym for it. The code still names the measurement log `TelemetryOplog` (`packages/ReadLaterCore/Sources/ReadLaterCore/TelemetryOplog.swift`). The rename waits for a migration ticket: see the `Rename telemetry oplog` row in the research repo's `STATUS.md`. Use "telemetry" in new names and prose. `Oplog` in `ReadLaterStore` is the sync log, and keeps its name.

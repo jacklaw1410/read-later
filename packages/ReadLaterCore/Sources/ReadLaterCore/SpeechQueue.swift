@@ -1,16 +1,16 @@
 import Foundation
 
-/// One synthesizer utterance: one spoken sentence and its place in the
+/// One synthesizer utterance: one sentence of block text and its place in the
 /// document's spoken order.
 public struct Utterance: Sendable, Hashable {
-    public var sentenceIndex: Int
+    public var utteranceIndex: Int
     public var blockID: Int
     public var text: String
     public var firstWordIndex: Int
     public var wordCount: Int
 
-    public init(sentenceIndex: Int, blockID: Int, text: String, firstWordIndex: Int, wordCount: Int) {
-        self.sentenceIndex = sentenceIndex
+    public init(utteranceIndex: Int, blockID: Int, text: String, firstWordIndex: Int, wordCount: Int) {
+        self.utteranceIndex = utteranceIndex
         self.blockID = blockID
         self.text = text
         self.firstWordIndex = firstWordIndex
@@ -28,7 +28,7 @@ public struct Utterance: Sendable, Hashable {
 /// sentences into blocks first; the controller speaks from sentences alone.
 public struct SpeechQueue: Sendable {
     public let utterances: [Utterance]
-    private let index: SpokenIndex
+    private let index: SpokenWordNumbering
     /// UTF-16 offset of each utterance's sentence start inside its block text.
     private let sentenceBases: [Int]
     /// Word ranges relative to each utterance's own text (`base: 0`).
@@ -39,24 +39,24 @@ public struct SpeechQueue: Sendable {
 
     public var totalWords: Int { utterances.reduce(0) { $0 + $1.wordCount } }
 
-    public init(index: SpokenIndex, blocks: [Block]) {
+    public init(index: SpokenWordNumbering, blocks: [Block]) {
         var utterances: [Utterance] = []
         var bases: [Int] = []
         var ranges: [[NSRange]] = []
-        var sentenceIndex = 0
-        for block in SpokenIndex.flatten(blocks) {
+        var utteranceIndex = 0
+        for block in SpokenWordNumbering.flatten(blocks) {
             guard !block.spoken.isEmpty else { continue }
             for sentence in block.spoken {
-                let base = SpokenIndex.utf16Offset(ofCharacterOffset: sentence.offset, in: block.text)
-                let words = SpokenIndex.wordRanges(in: sentence.text, base: 0)
+                let base = SpokenWordNumbering.utf16Offset(ofCharacterOffset: sentence.offset, in: block.text)
+                let words = SpokenWordNumbering.wordRanges(in: sentence.text, base: 0)
                 let first: Int
-                if sentenceIndex < index.firstWordOfSentence.count {
-                    first = index.firstWordOfSentence[sentenceIndex]
+                if utteranceIndex < index.firstWordOfUtterance.count {
+                    first = index.firstWordOfUtterance[utteranceIndex]
                 } else {
                     first = utterances.last.map { $0.firstWordIndex + $0.wordCount } ?? 0
                 }
                 utterances.append(Utterance(
-                    sentenceIndex: sentenceIndex,
+                    utteranceIndex: utteranceIndex,
                     blockID: block.id,
                     text: sentence.text,
                     firstWordIndex: first,
@@ -64,7 +64,7 @@ public struct SpeechQueue: Sendable {
                 ))
                 bases.append(base)
                 ranges.append(words)
-                sentenceIndex += 1
+                utteranceIndex += 1
             }
         }
         self.utterances = utterances
@@ -77,7 +77,7 @@ public struct SpeechQueue: Sendable {
     /// share that block; blocks appear in first-appearance order.
     public init(sentences: [(blockID: Int, sentence: Sentence)]) {
         let blocks = Self.regroup(sentences: sentences)
-        self.init(index: SpokenIndex(blocks: blocks), blocks: blocks)
+        self.init(index: SpokenWordNumbering(blocks: blocks), blocks: blocks)
     }
 
     /// The utterance that contains a global word index.
@@ -136,7 +136,7 @@ public struct SpeechQueue: Sendable {
         else { return nil }
         return SpokenWordRange(
             range: slot.range,
-            sentenceIndex: utterance.sentenceIndex,
+            utteranceIndex: utterance.utteranceIndex,
             sentenceOffset: sentenceBases[position]
         )
     }

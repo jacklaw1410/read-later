@@ -60,7 +60,7 @@ struct PositionTests {
         defer { removeTemporaryStore(at: dir) }
 
         let document = makeSampleDocument()
-        let total = SpokenIndex(plan: document.plan).totalWords
+        let total = SpokenWordNumbering(plan: document.plan).totalWords
         #expect(total > 1)
         try store.save(document: document)
         try store.recordPosition(of: document, wordIndex: total - 1)
@@ -82,7 +82,7 @@ struct PositionTests {
         var finished = makeSampleDocument()
         finished.plan.sourceSHA256 = "deadbeef"
         try store.save(document: finished)
-        let finishedTotal = SpokenIndex(plan: finished.plan).totalWords
+        let finishedTotal = SpokenWordNumbering(plan: finished.plan).totalWords
         try store.recordPosition(
             of: finished, wordIndex: finishedTotal - 1,
             at: Date(timeIntervalSinceReferenceDate: 200))
@@ -233,7 +233,7 @@ struct PositionOriginTests {
 
         let back = try store.position(contentHash: Store.resumeKey(for: document))
         #expect(back?.url == document.url)
-        #expect(back?.totalWords == SpokenIndex(plan: document.plan).totalWords)
+        #expect(back?.totalWords == SpokenWordNumbering(plan: document.plan).totalWords)
     }
 
     @Test("A row with no URL keeps nil and a zero length")

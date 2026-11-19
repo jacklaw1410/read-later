@@ -1,6 +1,6 @@
 import Foundation
 
-/// Checks the karaoke invariant: every spoken sentence must be an exact
+/// Checks the spoken plan invariant: every utterance must be an exact
 /// character slice of its block's text. Returns every violation, not the
 /// first, so one load reports the full damage.
 enum SpokenPlanCheck {

@@ -20,7 +20,7 @@ public struct FootnoteAttachment: Sendable, Hashable {
 public struct BlockView: View {
     private let block: ReadLaterCore.Block
     private let wash: WashState
-    private let spoken: SpokenIndex
+    private let spoken: SpokenWordNumbering
     private let footnote: FootnoteAttachment?
     private let followsWash: Bool
     private let onTapWord: (Int, WordSlot?, String) -> Void
@@ -29,7 +29,7 @@ public struct BlockView: View {
     public init(
         block: ReadLaterCore.Block,
         wash: WashState,
-        spoken: SpokenIndex,
+        spoken: SpokenWordNumbering,
         footnote: FootnoteAttachment? = nil,
         followsWash: Bool = false,
         onTapWord: @escaping (Int, WordSlot?, String) -> Void,

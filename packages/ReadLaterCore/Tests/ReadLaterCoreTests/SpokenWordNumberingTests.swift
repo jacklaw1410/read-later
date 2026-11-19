@@ -30,7 +30,7 @@ private let twoParagraphs: [(BlockKind, String)] = [
 
 @Test func wordOrderSkipsBlocksWithoutSpokenSentences() {
     let document = makeDocument(twoParagraphs)
-    let index = SpokenIndex(plan: document.plan)
+    let index = SpokenWordNumbering(plan: document.plan)
 
     #expect(index.totalWords == 15)
     #expect(index.byBlock[1] == nil)
@@ -40,7 +40,7 @@ private let twoParagraphs: [(BlockKind, String)] = [
 
 @Test func everySlotRangeIsTheWordItself() {
     let document = makeDocument(twoParagraphs)
-    let index = SpokenIndex(plan: document.plan)
+    let index = SpokenWordNumbering(plan: document.plan)
     let textByBlock = Dictionary(uniqueKeysWithValues: document.readingOrder.map { ($0.id, $0.text) })
 
     for slot in index.words {
@@ -52,28 +52,28 @@ private let twoParagraphs: [(BlockKind, String)] = [
 
 @Test func indicesAreDenseAndAscending() {
     let document = makeDocument(twoParagraphs)
-    let index = SpokenIndex(plan: document.plan)
+    let index = SpokenWordNumbering(plan: document.plan)
 
     #expect(index.words.map(\.index) == Array(0 ..< index.words.count))
 }
 
 @Test func sentenceLookupFindsTheContainingSentence() {
     let document = makeDocument([(.prose, "One. Two two. Three three three.")])
-    let index = SpokenIndex(plan: document.plan)
+    let index = SpokenWordNumbering(plan: document.plan)
 
-    #expect(index.sentenceCount == 3)
-    #expect(index.sentenceIndex(forWord: 0) == 0)
-    #expect(index.sentenceIndex(forWord: 1) == 1)
-    #expect(index.sentenceIndex(forWord: 3) == 2)
-    #expect(index.sentenceIndex(forWord: 5) == 2)
+    #expect(index.utteranceCount == 3)
+    #expect(index.utteranceIndex(forWord: 0) == 0)
+    #expect(index.utteranceIndex(forWord: 1) == 1)
+    #expect(index.utteranceIndex(forWord: 3) == 2)
+    #expect(index.utteranceIndex(forWord: 5) == 2)
     // Past the end clamps to the last sentence rather than trapping.
-    #expect(index.sentenceIndex(forWord: 99) == 2)
-    #expect(index.sentenceIndex(forWord: -4) == 0)
+    #expect(index.utteranceIndex(forWord: 99) == 2)
+    #expect(index.utteranceIndex(forWord: -4) == 0)
 }
 
 @Test func tapInsideAWordFindsItAndTapOnSpaceDoesNot() {
     let document = makeDocument([(.prose, "Attention is a practice.")])
-    let index = SpokenIndex(plan: document.plan)
+    let index = SpokenWordNumbering(plan: document.plan)
     let blockID = 0
 
     let first = index.words[0]
@@ -87,7 +87,7 @@ private let twoParagraphs: [(BlockKind, String)] = [
 
 @Test func tapOnTheLastCharacterOfAWordStillFindsIt() {
     let document = makeDocument([(.prose, "Attention.")])
-    let index = SpokenIndex(plan: document.plan)
+    let index = SpokenWordNumbering(plan: document.plan)
 
     // The token runs to the end of the whitespace-delimited token, so the
     // full stop belongs to it. The lookup layer trims punctuation later.
@@ -100,11 +100,11 @@ private let twoParagraphs: [(BlockKind, String)] = [
     let text = "🎧 Attention is a practice."
     let characterOffset = text.distance(from: text.startIndex, to: text.firstIndex(of: "A")!)
     #expect(characterOffset == 2)
-    #expect(SpokenIndex.utf16Offset(ofCharacterOffset: characterOffset, in: text) == 3)
+    #expect(SpokenWordNumbering.utf16Offset(ofCharacterOffset: characterOffset, in: text) == 3)
 }
 
 @Test func wordRangesTileTheSentenceWithoutGaps() {
-    let ranges = SpokenIndex.wordRanges(in: "One  two\tthree", base: 100)
+    let ranges = SpokenWordNumbering.wordRanges(in: "One  two\tthree", base: 100)
 
     #expect(ranges.count == 3)
     #expect(ranges[0] == NSRange(location: 100, length: 3))
@@ -114,7 +114,7 @@ private let twoParagraphs: [(BlockKind, String)] = [
 
 @Test func skipCrossingDetectsAReducedInkBlockBetweenTwoWords() {
     let document = makeDocument(twoParagraphs)
-    let index = SpokenIndex(plan: document.plan)
+    let index = SpokenWordNumbering(plan: document.plan)
     guard let lastOfFirst = index.byBlock[0]?.last,
           let firstOfSecond = index.byBlock[2]?.first
     else {
@@ -126,11 +126,11 @@ private let twoParagraphs: [(BlockKind, String)] = [
 }
 
 @Test func emptyPlanGivesAnEmptyIndex() {
-    let index = SpokenIndex(blocks: [])
+    let index = SpokenWordNumbering(blocks: [])
     #expect(index.totalWords == 0)
-    #expect(index.sentenceCount == 0)
+    #expect(index.utteranceCount == 0)
     #expect(index.word(at: 0) == nil)
-    #expect(index.sentenceIndex(forWord: 0) == 0)
+    #expect(index.utteranceIndex(forWord: 0) == 0)
 }
 
 // MARK: - Pace

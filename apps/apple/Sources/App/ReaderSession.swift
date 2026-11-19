@@ -12,7 +12,7 @@ import ReadLaterUI
 @MainActor
 final class ReaderSession: ObservableObject {
     let document: ReadLaterCore.Document
-    let spoken: SpokenIndex
+    let spoken: SpokenWordNumbering
 
     @Published private(set) var wash = WashState.idle
     @Published private(set) var isPlaying = false
@@ -62,7 +62,7 @@ final class ReaderSession: ObservableObject {
         speedStore: SpeedStore = SpeedStore()
     ) {
         self.document = document
-        self.spoken = SpokenIndex(plan: document.plan)
+        self.spoken = SpokenWordNumbering(plan: document.plan)
         self.speech = speech
         self.lookupProvider = lookupProvider
         self.speedStore = speedStore
@@ -190,7 +190,7 @@ final class ReaderSession: ObservableObject {
         speedStore.save(value)
         TelemetryHub.shared.record(TelemetryName.speedChange, fields: ["from": String(from), "to": String(value)])
         // The synthesizer cannot change tempo mid-utterance, so the controller
-        // restarts the current sentence and keeps the word.
+        // restarts the current utterance and keeps the word.
         speech.rate = value
     }
 
@@ -301,20 +301,20 @@ final class ReaderSession: ObservableObject {
 
     // MARK: - Unit navigation
 
-    /// Steps the wash one sentence. Playing restarts the queue at the
-    /// sentence; paused moves the wash and arms the latch, like a scrub that
-    /// lands on a sentence start. Tap-a-word stays lookup-only.
-    func stepSentence(_ delta: Int) {
-        let count = min(spoken.sentenceCount, spoken.firstWordOfSentence.count)
+    /// Steps the wash one utterance. Playing restarts the queue at the
+    /// utterance; paused moves the wash and arms the latch, like a scrub that
+    /// lands on an utterance start. Tap-a-word stays lookup-only.
+    func stepUtterance(_ delta: Int) {
+        let count = min(spoken.utteranceCount, spoken.firstWordOfUtterance.count)
         guard count > 0 else { return }
-        let current = spoken.sentenceIndex(forWord: wash.wordIndex ?? 0)
-        guard let target = UnitNavigation.clampedSentence(current: current, delta: delta, count: count) else {
+        let current = spoken.utteranceIndex(forWord: wash.wordIndex ?? 0)
+        guard let target = UnitNavigation.clampedUtterance(current: current, delta: delta, count: count) else {
             return
         }
-        seekToSentence(target)
+        seekToUtterance(target)
     }
 
-    /// Steps the wash one spoken block. Same play/paused split as sentences.
+    /// Steps the wash one spoken block. Same play/paused split as utterances.
     func stepBlock(_ delta: Int) {
         let ids = document.readingOrder.filter { spoken.byBlock[$0.id] != nil }.map(\.id)
         let currentID = wash.wordIndex.flatMap { spoken.word(at: $0)?.blockID }
@@ -324,12 +324,12 @@ final class ReaderSession: ObservableObject {
         seekToWord(first.index)
     }
 
-    private func seekToSentence(_ sentence: Int) {
-        guard sentence < spoken.firstWordOfSentence.count else { return }
+    private func seekToUtterance(_ utterance: Int) {
+        guard utterance < spoken.firstWordOfUtterance.count else { return }
         isFinished = false
-        let word = spoken.firstWordOfSentence[sentence]
+        let word = spoken.firstWordOfUtterance[utterance]
         if speech.state == .speaking {
-            speech.restart(fromSentence: sentence)
+            speech.restart(fromUtterance: utterance)
             wash.wordIndex = word
             wash.isPlaying = true
         } else {
@@ -518,7 +518,7 @@ final class ReaderSession: ObservableObject {
 
     private func advance(to range: SpokenWordRange) {
         guard !isScrubbing, card == nil, note == nil else { return }
-        guard let index = spoken.wordIndex(sentenceIndex: range.sentenceIndex, blockRange: range.range) else {
+        guard let index = spoken.wordIndex(utteranceIndex: range.utteranceIndex, blockRange: range.range) else {
             return
         }
         wash.wordIndex = index

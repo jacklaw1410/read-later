@@ -30,13 +30,13 @@ final class ScriptedSpeechController: SpeechController {
 
     private let millisecondsPerWord: Int
     private var words: [ScriptedWord] = []
-    private var firstWordOfSentence: [Int] = []
+    private var firstWordOfUtterance: [Int] = []
     private var cursor = 0
     private var task: Task<Void, Never>?
 
     private struct ScriptedWord {
         let range: NSRange
-        let sentenceIndex: Int
+        let utteranceIndex: Int
         let sentenceOffset: Int
     }
 
@@ -53,14 +53,14 @@ final class ScriptedSpeechController: SpeechController {
         task?.cancel()
         task = nil
         words = []
-        firstWordOfSentence = []
+        firstWordOfUtterance = []
         cursor = 0
 
         for (index, entry) in sentences.enumerated() {
-            firstWordOfSentence.append(words.count)
+            firstWordOfUtterance.append(words.count)
             let base = entry.sentence.offset
-            for range in SpokenIndex.wordRanges(in: entry.sentence.text, base: base) {
-                words.append(ScriptedWord(range: range, sentenceIndex: index, sentenceOffset: base))
+            for range in SpokenWordNumbering.wordRanges(in: entry.sentence.text, base: base) {
+                words.append(ScriptedWord(range: range, utteranceIndex: index, sentenceOffset: base))
             }
         }
 
@@ -112,10 +112,10 @@ final class ScriptedSpeechController: SpeechController {
     }
 
     @discardableResult
-    func restart(fromSentence index: Int) -> Bool {
-        guard !firstWordOfSentence.isEmpty else { return false }
-        let clamped = min(max(index, 0), firstWordOfSentence.count - 1)
-        return restart(fromWord: firstWordOfSentence[clamped])
+    func restart(fromUtterance index: Int) -> Bool {
+        guard !firstWordOfUtterance.isEmpty else { return false }
+        let clamped = min(max(index, 0), firstWordOfUtterance.count - 1)
+        return restart(fromWord: firstWordOfUtterance[clamped])
     }
 
     var hasLiveUtterances: Bool {
@@ -155,7 +155,7 @@ final class ScriptedSpeechController: SpeechController {
                 self.onWord?(
                     SpokenWordRange(
                         range: word.range,
-                        sentenceIndex: word.sentenceIndex,
+                        utteranceIndex: word.utteranceIndex,
                         sentenceOffset: word.sentenceOffset
                     )
                 )

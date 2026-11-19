@@ -71,7 +71,7 @@ public extension BlockKind {
 }
 
 public extension Block {
-    /// A block is skipped when it has no spoken sentences. That is the same
+    /// A block is skipped when it has no utterances. That is the same
     /// test the voice uses, so the ink and the audio cannot disagree.
     var isSkippedByAudio: Bool {
         spoken.isEmpty && kind != .footnoteMarker && kind != .footnoteBody
@@ -97,7 +97,7 @@ public extension Document {
     /// Word count the voice will speak. Used by the reader subhead.
     var spokenWordCount: Int {
         readingOrder.reduce(0) { total, block in
-            total + block.spoken.reduce(0) { $0 + SpokenIndex.wordRanges(in: $1.text, base: 0).count }
+            total + block.spoken.reduce(0) { $0 + SpokenWordNumbering.wordRanges(in: $1.text, base: 0).count }
         }
     }
 

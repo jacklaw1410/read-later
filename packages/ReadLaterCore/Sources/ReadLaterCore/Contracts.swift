@@ -53,14 +53,14 @@ public final class InMemoryDiagnostics: Diagnostics, @unchecked Sendable {
 public struct SpokenWordRange: Sendable, Hashable {
     /// Character range inside the block's `text`, already offset by the sentence start.
     public var range: NSRange
-    /// Index of the sentence inside the current utterance queue.
-    public var sentenceIndex: Int
+    /// Index of the utterance inside the current utterance queue.
+    public var utteranceIndex: Int
     /// UTF-16 offset of the sentence start inside the block text.
     public var sentenceOffset: Int
 
-    public init(range: NSRange, sentenceIndex: Int, sentenceOffset: Int) {
+    public init(range: NSRange, utteranceIndex: Int, sentenceOffset: Int) {
         self.range = range
-        self.sentenceIndex = sentenceIndex
+        self.utteranceIndex = utteranceIndex
         self.sentenceOffset = sentenceOffset
     }
 }
@@ -105,7 +105,7 @@ public protocol SpeechController: AnyObject {
     @discardableResult
     func restart(fromWord index: Int) -> Bool
     @discardableResult
-    func restart(fromSentence index: Int) -> Bool
+    func restart(fromUtterance index: Int) -> Bool
 
     /// True while the voice still holds live audio. A suspension can kill the
     /// queue while the state still reads `.speaking`; this is the reconcile
@@ -132,7 +132,7 @@ public extension SpeechController {
 //
 // Order: user override, note, cache, Apple dictionary, installed pack.
 // Apple 譯典通 (`zh_TW-en.DrEye`) first on macOS: 0.28 ms median, p95 1.18 ms.
-// On iOS the pack is primary if D7 shows the system dictionary is absent.
+// On iOS the pack is the only source: D7 found no public API that returns dictionary text.
 
 public enum LookupSource: String, Codable, Sendable, CaseIterable {
     case apple = "Apple 譯典通 (built-in)"
@@ -298,7 +298,7 @@ public struct InvariantViolation: Sendable, Hashable, CustomStringConvertible {
 }
 
 public enum SpokenPlanInvariant {
-    /// Every spoken sentence must be an exact slice of its block's text.
+    /// Every utterance must be an exact slice of its block's text.
     /// Runs at load, before the first utterance. Zero failures on 12,240 sentences.
     public static func violations(in blocks: [Block]) -> [InvariantViolation] {
         SpokenPlanCheck.violations(in: blocks)
