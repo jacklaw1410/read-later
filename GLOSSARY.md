@@ -20,7 +20,7 @@ The moving highlight that marks the word being spoken.
 _Avoid_: highlight, marker, cursor, karaoke
 
 **Wash lead**:
-How far the wash runs ahead of the voice. Currently half a word, because the eye runs ahead of the ear in a second language.
+How far, in words, the wash runs ahead of the voice.
 _Avoid_: offset, latency
 
 **Hold**:
@@ -60,12 +60,12 @@ _Avoid_: sentence (reserve that for text), chunk, phrase
 The exact utterances handed to the speech engine for one document, with their offsets. The input to speech, as distinct from the extracted text.
 _Avoid_: utterance plan, script, transcript, segment list
 
-**Karaoke invariant**:
+**Spoken plan invariant**:
 The load-time check that every utterance is an exact slice of its block's text. Zero failures is the pass condition.
-_Avoid_: validator, sanity check
+_Avoid_: karaoke invariant, validator, sanity check
 
 **Drift**:
-The wash pointing at a different word than the voice is speaking. The target is zero. A recording of the screen and the audio together, made on a device, is the decisive evidence. Unit tests and desktop harness runs support it, but do not replace that recording. The karaoke invariant does not measure drift: it checks that utterances slice their blocks.
+The wash pointing at a different word than the voice is speaking. The target is zero. A recording of the screen and the audio together, made on a device, is the decisive evidence. Unit tests and desktop harness runs support it, but do not replace that recording. The spoken plan invariant does not measure drift: it checks that utterances slice their blocks.
 _Avoid_: lag, desync, offset
 
 ## Text and extraction
@@ -97,7 +97,7 @@ The source language and the gloss language, set as one parameter. The MVP pair i
 _Avoid_: locale, direction
 
 **Built-in dictionary**:
-The Apple dictionary for the chosen pair, already installed on the device, where the OS returns its text. In the MVP it is available on macOS only (`zh_TW-en.DrEye`). It costs nothing to ship. Availability varies by device.
+The Apple dictionary for the chosen pair, already installed on the device, where the OS returns its text. In the MVP it is available on macOS only. It costs nothing to ship. Availability varies by device.
 _Avoid_: system dictionary, Apple dictionary
 
 **Capability pack**:
@@ -117,11 +117,11 @@ A gloss that names another word instead of giving a meaning, for example `vi., v
 _Avoid_: cross-reference, stub entry
 
 **Tail**:
-The long tail of rare, unranked headwords. Readers tap them, so the pack keeps every headword.
-_Avoid_: long tail, rare words
+The long tail of rare, unranked headwords. Readers tap them.
+_Avoid_: long tail (say *tail*), rare words
 
-**Miss** (*miss state*):
-A tap whose lookup returns no gloss. The miss state is what the card shows: not in dictionary, no network, or an accent variant was matched. A miss describes the result, not the reader or the word.
+**Miss** / **miss state**:
+A miss is a tap whose lookup returns no gloss. The miss state is what the card shows: not in dictionary, no network, or an accent variant was matched. A miss describes the result, not the reader or the word.
 _Avoid_: error, failure, unknown word
 
 ## Measurement
