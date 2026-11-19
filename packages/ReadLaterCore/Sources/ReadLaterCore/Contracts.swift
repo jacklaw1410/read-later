@@ -298,7 +298,7 @@ public struct InvariantViolation: Sendable, Hashable, CustomStringConvertible {
 }
 
 public enum SpokenPlanInvariant {
-    /// Every spoken sentence must be an exact slice of its block's text.
+    /// Every utterance must be an exact slice of its block's text.
     /// Runs at load, before the first utterance. Zero failures on 12,240 sentences.
     public static func violations(in blocks: [Block]) -> [InvariantViolation] {
         SpokenPlanCheck.violations(in: blocks)

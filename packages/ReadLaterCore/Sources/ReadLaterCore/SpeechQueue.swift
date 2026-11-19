@@ -1,6 +1,6 @@
 import Foundation
 
-/// One synthesizer utterance: one spoken sentence and its place in the
+/// One synthesizer utterance: one sentence of block text and its place in the
 /// document's spoken order.
 public struct Utterance: Sendable, Hashable {
     public var sentenceIndex: Int

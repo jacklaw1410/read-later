@@ -32,7 +32,7 @@ public struct WordSlot: Sendable, Hashable {
 /// invariant runs at load and this type trusts its output.
 public struct SpokenIndex: Sendable {
     public let words: [WordSlot]
-    /// Words for one block, in reading order. A block with no spoken sentences
+    /// Words for one block, in reading order. A block with no utterances
     /// is absent rather than present with an empty array.
     public let byBlock: [Int: [WordSlot]]
     public let sentenceCount: Int

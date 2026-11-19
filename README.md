@@ -284,6 +284,6 @@ The layers, the portability boundary and the steps to add a platform are in
 ## Rules
 
 1. `extract()` returns `[Block]`, never one string.
-2. Every spoken sentence is an exact slice of its block text. The invariant runs at load.
+2. Every utterance is an exact slice of its block text. The invariant runs at load.
 3. Reader-facing copy is owned by the research repo's specs. This repo quotes it.
 4. One commit per unit of work, Conventional Commits.

@@ -71,7 +71,7 @@ public extension BlockKind {
 }
 
 public extension Block {
-    /// A block is skipped when it has no spoken sentences. That is the same
+    /// A block is skipped when it has no utterances. That is the same
     /// test the voice uses, so the ink and the audio cannot disagree.
     var isSkippedByAudio: Bool {
         spoken.isEmpty && kind != .footnoteMarker && kind != .footnoteBody
