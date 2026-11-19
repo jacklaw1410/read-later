@@ -9,14 +9,14 @@ The reader's uninterrupted attention on the text. Product decisions are judged b
 _Avoid_: immersion, engagement, focus
 
 **Flow break**:
-Any moment the reader must leave the text to resolve something: an unknown word, a lost place, a link, or an app switch.
+Any interruption to the act of reading: an unknown word, a lost place, a link, or an app switch.
 
 **MVP**:
 The smallest build that preserves flow. Saving and notes are excluded.
 _Avoid_: v1, first release, phase 1
 
 **Wash**:
-The moving highlight that marks the word being spoken.
+The moving highlight that marks the word being spoken, so the reader can follow the audio and stay in flow.
 _Avoid_: highlight, marker, cursor, karaoke
 
 **Wash lead**:
@@ -45,7 +45,7 @@ The rule that progress and time left count only spoken words. A page of tables c
 _Avoid_: accurate progress
 
 **Skip**:
-The action that passes over a region with no spoken words and no seconds. The class of content it passes over is non-prose.
+The wash jumps over a non-prose region without speaking it. The region adds no time to time left.
 _Avoid_: mute, hide, omit
 
 **Skipped region**:
