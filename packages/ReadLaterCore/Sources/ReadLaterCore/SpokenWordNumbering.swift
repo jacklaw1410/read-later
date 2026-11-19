@@ -10,15 +10,15 @@ public struct WordSlot: Sendable, Hashable {
     /// Position in the document's spoken word order. Starts at 0.
     public var index: Int
     public var blockID: Int
-    public var sentenceIndex: Int
+    public var utteranceIndex: Int
     /// UTF-16 range inside `Block.text`, not inside the sentence.
     public var range: NSRange
     public var text: String
 
-    public init(index: Int, blockID: Int, sentenceIndex: Int, range: NSRange, text: String) {
+    public init(index: Int, blockID: Int, utteranceIndex: Int, range: NSRange, text: String) {
         self.index = index
         self.blockID = blockID
-        self.sentenceIndex = sentenceIndex
+        self.utteranceIndex = utteranceIndex
         self.range = range
         self.text = text
     }
@@ -30,25 +30,25 @@ public struct WordSlot: Sendable, Hashable {
 /// reduced-ink contributes nothing, so the count here is the number of words a
 /// reader will actually hear. `validationFailures` is not re-checked here; the
 /// invariant runs at load and this type trusts its output.
-public struct SpokenIndex: Sendable {
+public struct SpokenWordNumbering: Sendable {
     public let words: [WordSlot]
     /// Words for one block, in reading order. A block with no utterances
     /// is absent rather than present with an empty array.
     public let byBlock: [Int: [WordSlot]]
-    public let sentenceCount: Int
-    /// First word index of each sentence, in order. `firstWordOfSentence[i]`
-    /// is where sentence `i` starts.
-    public let firstWordOfSentence: [Int]
+    public let utteranceCount: Int
+    /// First word index of each utterance, in order. `firstWordOfUtterance[i]`
+    /// is where utterance `i` starts.
+    public let firstWordOfUtterance: [Int]
 
     public var totalWords: Int { words.count }
 
-    public static let empty = SpokenIndex(words: [], byBlock: [:], sentenceCount: 0, firstWordOfSentence: [])
+    public static let empty = SpokenWordNumbering(words: [], byBlock: [:], utteranceCount: 0, firstWordOfUtterance: [])
 
-    private init(words: [WordSlot], byBlock: [Int: [WordSlot]], sentenceCount: Int, firstWordOfSentence: [Int]) {
+    private init(words: [WordSlot], byBlock: [Int: [WordSlot]], utteranceCount: Int, firstWordOfUtterance: [Int]) {
         self.words = words
         self.byBlock = byBlock
-        self.sentenceCount = sentenceCount
-        self.firstWordOfSentence = firstWordOfSentence
+        self.utteranceCount = utteranceCount
+        self.firstWordOfUtterance = firstWordOfUtterance
     }
 
     /// Builds the spoken order from a document's blocks, flattened the same way
@@ -56,8 +56,8 @@ public struct SpokenIndex: Sendable {
     public init(blocks: [Block]) {
         var words: [WordSlot] = []
         var byBlock: [Int: [WordSlot]] = [:]
-        var firstWordOfSentence: [Int] = []
-        var sentenceIndex = 0
+        var firstWordOfUtterance: [Int] = []
+        var utteranceIndex = 0
 
         for block in Self.flatten(blocks) {
             guard !block.spoken.isEmpty else { continue }
@@ -65,7 +65,7 @@ public struct SpokenIndex: Sendable {
             var blockWords: [WordSlot] = []
 
             for sentence in block.spoken {
-                firstWordOfSentence.append(words.count)
+                firstWordOfUtterance.append(words.count)
                 let base = Self.utf16Offset(ofCharacterOffset: sentence.offset, in: block.text)
                 for range in Self.wordRanges(in: sentence.text, base: base) {
                     guard NSMaxRange(range) <= nsText.length else { continue }
@@ -73,14 +73,14 @@ public struct SpokenIndex: Sendable {
                     let slot = WordSlot(
                         index: words.count,
                         blockID: block.id,
-                        sentenceIndex: sentenceIndex,
+                        utteranceIndex: utteranceIndex,
                         range: range,
                         text: text
                     )
                     words.append(slot)
                     blockWords.append(slot)
                 }
-                sentenceIndex += 1
+                utteranceIndex += 1
             }
 
             if !blockWords.isEmpty {
@@ -90,8 +90,8 @@ public struct SpokenIndex: Sendable {
 
         self.words = words
         self.byBlock = byBlock
-        self.sentenceCount = sentenceIndex
-        self.firstWordOfSentence = firstWordOfSentence
+        self.utteranceCount = utteranceIndex
+        self.firstWordOfUtterance = firstWordOfUtterance
     }
 
     public init(plan: BlockPlan) {
@@ -104,16 +104,16 @@ public struct SpokenIndex: Sendable {
         return words[index]
     }
 
-    /// The sentence that contains a global word index. Clamped, because the
-    /// scrubber can land on the final word and the voice still needs a sentence.
-    public func sentenceIndex(forWord index: Int) -> Int {
-        guard !firstWordOfSentence.isEmpty else { return 0 }
+    /// The utterance that contains a global word index. Clamped, because the
+    /// scrubber can land on the final word and the voice still needs an utterance.
+    public func utteranceIndex(forWord index: Int) -> Int {
+        guard !firstWordOfUtterance.isEmpty else { return 0 }
         let clamped = min(max(index, 0), words.count - 1)
         var low = 0
-        var high = firstWordOfSentence.count - 1
+        var high = firstWordOfUtterance.count - 1
         while low < high {
             let mid = (low + high + 1) / 2
-            if firstWordOfSentence[mid] <= clamped {
+            if firstWordOfUtterance[mid] <= clamped {
                 low = mid
             } else {
                 high = mid - 1
@@ -139,10 +139,10 @@ public struct SpokenIndex: Sendable {
     /// The speech callback reports `SpokenWordRange` with a range in block text
     /// and the sentence index, but no block id. Searching within the sentence is
     /// bounded by the sentence length, so this stays cheap at any document size.
-    public func wordIndex(sentenceIndex: Int, blockRange: NSRange) -> Int? {
-        guard sentenceIndex >= 0, sentenceIndex < firstWordOfSentence.count else { return nil }
-        var i = firstWordOfSentence[sentenceIndex]
-        while i < words.count, words[i].sentenceIndex == sentenceIndex {
+    public func wordIndex(utteranceIndex: Int, blockRange: NSRange) -> Int? {
+        guard utteranceIndex >= 0, utteranceIndex < firstWordOfUtterance.count else { return nil }
+        var i = firstWordOfUtterance[utteranceIndex]
+        while i < words.count, words[i].utteranceIndex == utteranceIndex {
             if words[i].range == blockRange { return i }
             i += 1
         }

@@ -53,14 +53,14 @@ public final class InMemoryDiagnostics: Diagnostics, @unchecked Sendable {
 public struct SpokenWordRange: Sendable, Hashable {
     /// Character range inside the block's `text`, already offset by the sentence start.
     public var range: NSRange
-    /// Index of the sentence inside the current utterance queue.
-    public var sentenceIndex: Int
+    /// Index of the utterance inside the current utterance queue.
+    public var utteranceIndex: Int
     /// UTF-16 offset of the sentence start inside the block text.
     public var sentenceOffset: Int
 
-    public init(range: NSRange, sentenceIndex: Int, sentenceOffset: Int) {
+    public init(range: NSRange, utteranceIndex: Int, sentenceOffset: Int) {
         self.range = range
-        self.sentenceIndex = sentenceIndex
+        self.utteranceIndex = utteranceIndex
         self.sentenceOffset = sentenceOffset
     }
 }

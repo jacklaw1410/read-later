@@ -44,13 +44,13 @@ final class ReaderSurfaceTests: XCTestCase {
 
     // MARK: - Counts
 
-    func testSpokenWordCountMatchesSpokenIndex() {
+    func testSpokenWordCountMatchesSpokenWordNumbering() {
         let doc = document(blocks: [
             proseBlock(id: 1, text: "Hello world."),
             skippedBlock(id: 2, kind: .code, text: "let x = 1"),
             proseBlock(id: 3, text: "One more sentence here."),
         ])
-        XCTAssertEqual(doc.spokenWordCount, SpokenIndex(plan: doc.plan).totalWords)
+        XCTAssertEqual(doc.spokenWordCount, SpokenWordNumbering(plan: doc.plan).totalWords)
     }
 
     func testSkippedRegionCountCountsBlocksNotNotes() {
@@ -73,7 +73,7 @@ final class ReaderSurfaceTests: XCTestCase {
             skippedBlock(id: 2, kind: .code, text: "let x = 1"),
             proseBlock(id: 3, text: "goodbye world"),
         ])
-        let index = SpokenIndex(plan: doc.plan)
+        let index = SpokenWordNumbering(plan: doc.plan)
         XCTAssertNil(index.byBlock[2])
         XCTAssertNotNil(index.byBlock[1])
         XCTAssertNotNil(index.byBlock[3])

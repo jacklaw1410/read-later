@@ -63,7 +63,7 @@ func washMarks(slots: [WordSlot], wash: WashState) -> [WashMark] {
     }
 }
 
-/// Finds the tapped slot with the same rule as `SpokenIndex.word(inBlock:)`.
+/// Finds the tapped slot with the same rule as `SpokenWordNumbering.word(inBlock:)`.
 func slotAt(slots: [WordSlot], utf16Index: Int) -> WordSlot? {
     for slot in slots where utf16Index >= slot.range.location && utf16Index < NSMaxRange(slot.range) {
         return slot

@@ -19,9 +19,9 @@ private func makeBlocks() -> [Block] {
     ]
 }
 
-private func makeQueue() -> (blocks: [Block], index: SpokenIndex, queue: SpeechQueue) {
+private func makeQueue() -> (blocks: [Block], index: SpokenWordNumbering, queue: SpeechQueue) {
     let plan = SpokenPlanBuilder.build(blocks: makeBlocks(), source: "test", sourceSHA256: "test")
-    let index = SpokenIndex(plan: plan)
+    let index = SpokenWordNumbering(plan: plan)
     let queue = SpeechQueue(index: index, blocks: plan.blocks)
     return (plan.blocks, index, queue)
 }
@@ -29,7 +29,7 @@ private func makeQueue() -> (blocks: [Block], index: SpokenIndex, queue: SpeechQ
 @Test func utterancesSkipTheCodeBlock() {
     let (_, index, queue) = makeQueue()
     #expect(queue.utterances.count == 4)
-    #expect(queue.utterances.map(\.sentenceIndex) == [0, 1, 2, 3])
+    #expect(queue.utterances.map(\.utteranceIndex) == [0, 1, 2, 3])
     #expect(queue.utterances.map(\.blockID) == [0, 0, 2, 2])
     #expect(queue.utterances.allSatisfy { $0.blockID != 1 })
     #expect(queue.totalWords == index.totalWords)
@@ -45,7 +45,7 @@ private func makeQueue() -> (blocks: [Block], index: SpokenIndex, queue: SpeechQ
 
 @Test func startPositionAtSentenceStartIsZero() {
     let (_, index, queue) = makeQueue()
-    let secondSentenceStart = index.firstWordOfSentence[1]
+    let secondSentenceStart = index.firstWordOfUtterance[1]
     let start = queue.startPosition(forWord: secondSentenceStart)
     #expect(start?.utterance == queue.utterances[1])
     #expect(start?.characterOffset == 0)
@@ -107,10 +107,10 @@ private func makeQueue() -> (blocks: [Block], index: SpokenIndex, queue: SpeechQ
         #expect(queue.wordIndex(reportedRange: ownRange, in: start.utterance) == global)
         let wash = try! #require(queue.spokenWordRange(reportedRange: ownRange, in: start.utterance))
         #expect(wash.range == slot.range)
-        #expect(wash.sentenceIndex == start.utterance.sentenceIndex)
-        #expect(wash.sentenceIndex == slot.sentenceIndex)
+        #expect(wash.utteranceIndex == start.utterance.utteranceIndex)
+        #expect(wash.utteranceIndex == slot.utteranceIndex)
         #expect(wash.sentenceOffset == slot.range.location - start.characterOffset)
-        #expect(queue.utterance(forWord: global)?.sentenceIndex == slot.sentenceIndex)
+        #expect(queue.utterance(forWord: global)?.utteranceIndex == slot.utteranceIndex)
     }
 }
 

@@ -64,7 +64,7 @@ private func longSentence(_ subject: String) -> String {
     let plan = SpokenPlanBuilder.build(blocks: result.blocks, source: "test", sourceSHA256: "abc")
     let spokenItems = plan.blocks.filter { $0.kind == .list && !$0.spoken.isEmpty }
     #expect(spokenItems.count == 9)
-    let index = SpokenIndex(blocks: plan.blocks)
+    let index = SpokenWordNumbering(blocks: plan.blocks)
     for item in spokenItems {
         #expect(index.byBlock[item.id] != nil)
     }

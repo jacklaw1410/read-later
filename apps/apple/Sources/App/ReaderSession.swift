@@ -12,7 +12,7 @@ import ReadLaterUI
 @MainActor
 final class ReaderSession: ObservableObject {
     let document: ReadLaterCore.Document
-    let spoken: SpokenIndex
+    let spoken: SpokenWordNumbering
 
     @Published private(set) var wash = WashState.idle
     @Published private(set) var isPlaying = false
@@ -62,7 +62,7 @@ final class ReaderSession: ObservableObject {
         speedStore: SpeedStore = SpeedStore()
     ) {
         self.document = document
-        self.spoken = SpokenIndex(plan: document.plan)
+        self.spoken = SpokenWordNumbering(plan: document.plan)
         self.speech = speech
         self.lookupProvider = lookupProvider
         self.speedStore = speedStore
@@ -305,9 +305,9 @@ final class ReaderSession: ObservableObject {
     /// sentence; paused moves the wash and arms the latch, like a scrub that
     /// lands on a sentence start. Tap-a-word stays lookup-only.
     func stepSentence(_ delta: Int) {
-        let count = min(spoken.sentenceCount, spoken.firstWordOfSentence.count)
+        let count = min(spoken.utteranceCount, spoken.firstWordOfUtterance.count)
         guard count > 0 else { return }
-        let current = spoken.sentenceIndex(forWord: wash.wordIndex ?? 0)
+        let current = spoken.utteranceIndex(forWord: wash.wordIndex ?? 0)
         guard let target = UnitNavigation.clampedSentence(current: current, delta: delta, count: count) else {
             return
         }
@@ -325,9 +325,9 @@ final class ReaderSession: ObservableObject {
     }
 
     private func seekToSentence(_ sentence: Int) {
-        guard sentence < spoken.firstWordOfSentence.count else { return }
+        guard sentence < spoken.firstWordOfUtterance.count else { return }
         isFinished = false
-        let word = spoken.firstWordOfSentence[sentence]
+        let word = spoken.firstWordOfUtterance[sentence]
         if speech.state == .speaking {
             speech.restart(fromSentence: sentence)
             wash.wordIndex = word
@@ -518,7 +518,7 @@ final class ReaderSession: ObservableObject {
 
     private func advance(to range: SpokenWordRange) {
         guard !isScrubbing, card == nil, note == nil else { return }
-        guard let index = spoken.wordIndex(sentenceIndex: range.sentenceIndex, blockRange: range.range) else {
+        guard let index = spoken.wordIndex(utteranceIndex: range.utteranceIndex, blockRange: range.range) else {
             return
         }
         wash.wordIndex = index

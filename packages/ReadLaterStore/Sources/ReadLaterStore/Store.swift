@@ -202,7 +202,7 @@ public final class Store: Sendable {
         // here because it runs on the writer thread per throttled tick but
         // outside `timedWrite`, so the old single `ms` never covered it.
         let encodeStart = CFAbsoluteTimeGetCurrent()
-        let total = SpokenIndex(plan: document.plan).totalWords
+        let total = SpokenWordNumbering(plan: document.plan).totalWords
         let clamped = min(max(wordIndex, 0), max(total - 1, 0))
         let finished = total > 0 && clamped >= total - 1
         let hash = Self.resumeKey(for: document)

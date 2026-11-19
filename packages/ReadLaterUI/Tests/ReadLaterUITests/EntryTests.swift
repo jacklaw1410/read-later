@@ -53,8 +53,8 @@ import ReadLaterCore
     #expect(SpokenPlanInvariant.violations(in: ArticleLibrary.demo.plan.blocks).isEmpty)
 }
 
-@Test func demoSpokenIndexSkipsCode() {
-    let index = SpokenIndex(plan: ArticleLibrary.demo.plan)
+@Test func demoSpokenWordNumberingSkipsCode() {
+    let index = SpokenWordNumbering(plan: ArticleLibrary.demo.plan)
     #expect(index.totalWords > 0)
     let codeIDs = Set(
         ArticleLibrary.demo.readingOrder.filter { $0.kind == .code }.map(\.id)

@@ -97,7 +97,7 @@ public extension Document {
     /// Word count the voice will speak. Used by the reader subhead.
     var spokenWordCount: Int {
         readingOrder.reduce(0) { total, block in
-            total + block.spoken.reduce(0) { $0 + SpokenIndex.wordRanges(in: $1.text, base: 0).count }
+            total + block.spoken.reduce(0) { $0 + SpokenWordNumbering.wordRanges(in: $1.text, base: 0).count }
         }
     }
 

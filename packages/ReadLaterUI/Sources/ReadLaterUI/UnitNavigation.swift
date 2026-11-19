@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Sentence and block stepping targets. Pure clamps, so tests pin the
 /// edges without a session. Callers resolve the sentence to a word through
-/// `firstWordOfSentence` and the block to a word through `byBlock`.
+/// `firstWordOfUtterance` and the block to a word through `byBlock`.
 public enum UnitNavigation {
     /// Target sentence stepping `delta` from `current`. Clamped to the
     /// spoken range. Nil only when there is nothing spoken.
