@@ -65,7 +65,7 @@ final class ReaderSurfaceTests: XCTestCase {
         XCTAssertEqual(doc.skippedRegionCount, 3)
     }
 
-    // MARK: - Spoken index gaps
+    // MARK: - Spoken word numbering gaps
 
     func testCodeBlockHasNoSpokenEntryAndGapTapReturnsNil() {
         let doc = document(blocks: [
