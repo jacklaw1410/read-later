@@ -44,5 +44,5 @@ Default canonical labels (`needs-triage`, `needs-info`, `ready-for-agent`, `read
 
 ### Domain docs
 
-Multi-context: root `GLOSSARY-MAP.md` plus per-context `GLOSSARY.md`. See `docs/agents/domain.md`.
+Single-context: one root `GLOSSARY.md`. See `docs/agents/domain.md`.
 
