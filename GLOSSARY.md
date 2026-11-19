@@ -123,3 +123,13 @@ _Avoid_: long tail, rare words
 **Miss** (*miss state*):
 A tap whose lookup returns no gloss. The miss state is what the card shows: not in dictionary, no network, or an accent variant was matched. A miss describes the result, not the reader or the word.
 _Avoid_: error, failure, unknown word
+
+## Measurement
+
+**Telemetry**:
+The app's timestamped measurement log, one JSON line per event.
+_Avoid_: oplog (that name belongs to the sync log), trace, log
+
+**Oplog**:
+The append-only log of sync operations, replayed to bring a store up to date. It records changes, not measurements.
+_Avoid_: telemetry, measurement log
