@@ -26,7 +26,7 @@ the schema, and a fixture proves each state.
 ## Consequences
 
 - `extract()` returns `[Block]`, never one string
-  (`spec/adr-0002-extraction-returns-blocks.md`). The reader renders and
+  (`docs/adr/0002-extraction-returns-blocks.md` in `read-later-research`). The reader renders and
   skips by kind; the speech queue consumes only spoken blocks.
 - A second platform reimplements the packages but reuses the contracts
   unchanged (`spec/engineering.md` §1.2). Porting storage or speech is
