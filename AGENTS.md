@@ -31,3 +31,18 @@ boundary: [`docs/design-system.md`](docs/design-system.md).
 
 Write a tool in Rust. Do not add a Python script or a shell script. A one-line
 command in a doc is fine; a program is a crate under `tools/`.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live as GitHub Issues in jacklaw1410/read-later; operations use the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default canonical labels (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Multi-context: root `GLOSSARY-MAP.md` plus per-context `GLOSSARY.md`. See `docs/agents/domain.md`.
+
