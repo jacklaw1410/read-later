@@ -112,7 +112,7 @@ final class ScriptedSpeechController: SpeechController {
     }
 
     @discardableResult
-    func restart(fromSentence index: Int) -> Bool {
+    func restart(fromUtterance index: Int) -> Bool {
         guard !firstWordOfUtterance.isEmpty else { return false }
         let clamped = min(max(index, 0), firstWordOfUtterance.count - 1)
         return restart(fromWord: firstWordOfUtterance[clamped])

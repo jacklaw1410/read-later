@@ -1,12 +1,12 @@
 import SwiftUI
 
-/// Sentence and block stepping targets. Pure clamps, so tests pin the
-/// edges without a session. Callers resolve the sentence to a word through
+/// Utterance and block stepping targets. Pure clamps, so tests pin the
+/// edges without a session. Callers resolve the utterance to a word through
 /// `firstWordOfUtterance` and the block to a word through `byBlock`.
 public enum UnitNavigation {
-    /// Target sentence stepping `delta` from `current`. Clamped to the
+    /// Target utterance stepping `delta` from `current`. Clamped to the
     /// spoken range. Nil only when there is nothing spoken.
-    public static func clampedSentence(current: Int, delta: Int, count: Int) -> Int? {
+    public static func clampedUtterance(current: Int, delta: Int, count: Int) -> Int? {
         guard count > 0 else { return nil }
         return min(max(current + delta, 0), count - 1)
     }
@@ -27,11 +27,11 @@ public enum UnitNavigation {
 /// a horizontal swipe moves one spoken block. Tap-a-word stays
 /// lookup-only: it collides with lookup, so it is not a seek.
 public struct SentenceStepper: View {
-    private let onStepSentence: (Int) -> Void
+    private let onStepUtterance: (Int) -> Void
     private let onStepBlock: (Int) -> Void
 
-    public init(onStepSentence: @escaping (Int) -> Void, onStepBlock: @escaping (Int) -> Void) {
-        self.onStepSentence = onStepSentence
+    public init(onStepUtterance: @escaping (Int) -> Void, onStepBlock: @escaping (Int) -> Void) {
+        self.onStepUtterance = onStepUtterance
         self.onStepBlock = onStepBlock
     }
 
@@ -48,7 +48,7 @@ public struct SentenceStepper: View {
     }
 
     private func stepButton(title: String, short: String, systemImage: String, delta: Int) -> some View {
-        Button { onStepSentence(delta) } label: {
+        Button { onStepUtterance(delta) } label: {
             HStack(spacing: 4) {
                 if delta < 0 {
                     Image(systemName: systemImage)

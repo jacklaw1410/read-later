@@ -105,7 +105,7 @@ public protocol SpeechController: AnyObject {
     @discardableResult
     func restart(fromWord index: Int) -> Bool
     @discardableResult
-    func restart(fromSentence index: Int) -> Bool
+    func restart(fromUtterance index: Int) -> Bool
 
     /// True while the voice still holds live audio. A suspension can kill the
     /// queue while the state still reads `.speaking`; this is the reconcile

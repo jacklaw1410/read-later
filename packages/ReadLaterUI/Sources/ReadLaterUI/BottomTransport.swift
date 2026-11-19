@@ -12,18 +12,18 @@ public struct BottomTransport: View, Equatable {
     private let isPlaying: Bool
     private let isFinished: Bool
     private let onPlayPause: () -> Void
-    private let onStepSentence: (Int) -> Void
+    private let onStepUtterance: (Int) -> Void
 
     public init(
         isPlaying: Bool,
         isFinished: Bool,
         onPlayPause: @escaping () -> Void,
-        onStepSentence: @escaping (Int) -> Void
+        onStepUtterance: @escaping (Int) -> Void
     ) {
         self.isPlaying = isPlaying
         self.isFinished = isFinished
         self.onPlayPause = onPlayPause
-        self.onStepSentence = onStepSentence
+        self.onStepUtterance = onStepUtterance
     }
 
     nonisolated public static func == (lhs: BottomTransport, rhs: BottomTransport) -> Bool {
@@ -32,11 +32,11 @@ public struct BottomTransport: View, Equatable {
 
     public var body: some View {
         HStack(spacing: 0) {
-            IconButton(systemName: "chevron.left", label: "Previous sentence") { onStepSentence(-1) }
+            IconButton(systemName: "chevron.left", label: "Previous sentence") { onStepUtterance(-1) }
                 .accessibilityIdentifier(AccessibilityID.railPrevSentence)
             IconButton(systemName: playGlyph, label: playLabel, variant: .circle, action: onPlayPause)
                 .accessibilityIdentifier(AccessibilityID.railPlayPause)
-            IconButton(systemName: "chevron.right", label: "Next sentence") { onStepSentence(1) }
+            IconButton(systemName: "chevron.right", label: "Next sentence") { onStepUtterance(1) }
                 .accessibilityIdentifier(AccessibilityID.railNextSentence)
         }
     }

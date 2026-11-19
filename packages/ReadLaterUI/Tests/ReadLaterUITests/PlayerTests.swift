@@ -213,13 +213,13 @@ final class PlayerTests: XCTestCase {
     // MARK: - Unit navigation
 
     func testSentenceStepClampsBothEnds() {
-        XCTAssertEqual(UnitNavigation.clampedSentence(current: 1, delta: 1, count: 3), 2)
-        XCTAssertEqual(UnitNavigation.clampedSentence(current: 2, delta: 1, count: 3), 2)
-        XCTAssertEqual(UnitNavigation.clampedSentence(current: 0, delta: -1, count: 3), 0)
+        XCTAssertEqual(UnitNavigation.clampedUtterance(current: 1, delta: 1, count: 3), 2)
+        XCTAssertEqual(UnitNavigation.clampedUtterance(current: 2, delta: 1, count: 3), 2)
+        XCTAssertEqual(UnitNavigation.clampedUtterance(current: 0, delta: -1, count: 3), 0)
     }
 
     func testSentenceStepNeedsSpokenSentences() {
-        XCTAssertNil(UnitNavigation.clampedSentence(current: 0, delta: 1, count: 0))
+        XCTAssertNil(UnitNavigation.clampedUtterance(current: 0, delta: 1, count: 0))
     }
 
     func testBlockStepWalksOrderedIDs() {

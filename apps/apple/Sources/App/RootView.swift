@@ -513,7 +513,7 @@ struct ReaderScreen: View {
                 isPlaying: session.isPlaying,
                 isFinished: session.isFinished,
                 onPlayPause: { session.togglePlay() },
-                onStepSentence: { session.stepSentence($0) }
+                onStepUtterance: { session.stepUtterance($0) }
             )
         }
         .padding(.leading, Theme.screenGutter)
