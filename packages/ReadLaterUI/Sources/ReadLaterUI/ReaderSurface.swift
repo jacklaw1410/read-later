@@ -47,8 +47,6 @@ public struct WashState: Sendable, Equatable {
     }
 }
 
-/// Value snapshot of the wash for the text surface. See `WashStateModel` for
-/// the observable owner.
 public typealias WashSnapshot = WashState
 
 // MARK: - Block presentation

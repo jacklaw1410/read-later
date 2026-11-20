@@ -10,8 +10,6 @@ import Observation
 /// only the views that read its properties. Playback owns `isPlaying`; pass the
 /// playback model when a snapshot is needed for emphasis.
 ///
-/// Transitional: `ReaderSession` still owns copies of these fields until the
-/// wiring ticket removes them.
 @Observable
 @MainActor
 public final class WashStateModel {
