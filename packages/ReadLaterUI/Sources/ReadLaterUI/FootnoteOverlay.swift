@@ -31,7 +31,7 @@ public struct FootnoteOverlay: View {
                 .font(Theme.mono())
                 .foregroundStyle(Theme.inkSecondary)
 
-            WashableText(text: text, slots: [], wash: .idle, style: .note) { _, word in
+            WashableText(text: text, slots: [], wash: WashState(), playback: PlaybackState(), style: .note) { _, word in
                 onTapWord(word)
             }
             .padding(.vertical, 8)

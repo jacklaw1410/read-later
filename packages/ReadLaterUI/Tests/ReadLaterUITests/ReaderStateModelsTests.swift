@@ -3,26 +3,19 @@ import XCTest
 
 @MainActor
 final class ReaderStateModelsTests: XCTestCase {
-    func testWashSnapshotCarriesPlaybackAndSelection() {
+    func testWashEmphasisUsesPlaybackState() {
         let wash = WashState(wordIndex: 5, selectedWordIndex: 5)
-        let playback = PlaybackState(status: .playing, isHeld: true)
+        let playback = PlaybackState(status: .playing)
 
-        let snapshot = wash.snapshot(playback: playback)
-
-        XCTAssertEqual(snapshot.wordIndex, 5)
-        XCTAssertEqual(snapshot.selectedWordIndex, 5)
-        XCTAssertTrue(snapshot.isPlaying)
-        XCTAssertTrue(playback.isHeld)
-        XCTAssertTrue(playback.isScrubbing == false)
-        XCTAssertEqual(snapshot.emphasis(for: 5), .coincide)
+        XCTAssertEqual(wash.emphasis(for: 5, isPlaying: playback.isPlaying), .coincide)
+        XCTAssertTrue(playback.isHeld == false)
     }
 
-    func testWashSnapshotDefaultsToIdleShape() {
-        let snapshot = WashState().snapshot(playback: PlaybackState())
+    func testPlaybackDefaultsToStopped() {
+        let playback = PlaybackState()
 
-        XCTAssertNil(snapshot.wordIndex)
-        XCTAssertNil(snapshot.selectedWordIndex)
-        XCTAssertFalse(snapshot.isPlaying)
-        XCTAssertEqual(snapshot.emphasis(for: 0), .none)
+        XCTAssertFalse(playback.isPlaying)
+        XCTAssertFalse(playback.isFinished)
+        XCTAssertFalse(playback.isScrubbing)
     }
 }

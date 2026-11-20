@@ -6,7 +6,8 @@ import SwiftUI
 /// overlay: the player sits below the scroll view, the overlay layers on top.
 public struct ReaderView<Player: View, Overlay: View>: View {
     private let document: ReadLaterCore.Document
-    private let wash: WashSnapshot
+    private let wash: WashState
+    private let playback: PlaybackState
     private let spoken: SpokenWordNumbering
     private let autoScroll: Bool
     private let isScrubbing: Bool
@@ -32,7 +33,8 @@ public struct ReaderView<Player: View, Overlay: View>: View {
 
     public init(
         document: ReadLaterCore.Document,
-        wash: WashSnapshot,
+        wash: WashState,
+        playback: PlaybackState,
         spoken: SpokenWordNumbering,
         autoScroll: Bool,
         isScrubbing: Bool = false,
@@ -46,6 +48,7 @@ public struct ReaderView<Player: View, Overlay: View>: View {
     ) {
         self.document = document
         self.wash = wash
+        self.playback = playback
         self.spoken = spoken
         self.autoScroll = autoScroll
         self.isScrubbing = isScrubbing
@@ -122,6 +125,7 @@ public struct ReaderView<Player: View, Overlay: View>: View {
                                 BlockView(
                                     block: block,
                                     wash: wash,
+                                    playback: playback,
                                     spoken: spoken,
                                     footnote: footnoteAttachments[block.id],
                                     followsWash: autoScroll && holdsWash(block.id),
@@ -242,7 +246,7 @@ public struct ReaderView<Player: View, Overlay: View>: View {
             Divider()
             ForEach(document.noteBlocks) { note in
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    WashableText(text: note.text, slots: [], wash: .idle, style: .note) { _, word in
+                    WashableText(text: note.text, slots: [], wash: WashState(), playback: PlaybackState(), style: .note) { _, word in
                         onTapWord(note.id, nil, word)
                     }
                 }

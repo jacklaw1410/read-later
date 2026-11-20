@@ -3,6 +3,7 @@ import ReadLaterUI
 import XCTest
 
 /// Pure logic for the reader surface. No view rendering assertions.
+@MainActor
 final class ReaderSurfaceTests: XCTestCase {
     // MARK: - Helpers
 
@@ -23,14 +24,16 @@ final class ReaderSurfaceTests: XCTestCase {
     // MARK: - Wash emphasis
 
     func testEmphasisReturnsAllFiveStates() {
-        XCTAssertEqual(WashSnapshot(wordIndex: 3, isPlaying: true).emphasis(for: 3), .current)
-        XCTAssertEqual(WashSnapshot(wordIndex: 3, isPlaying: false).emphasis(for: 3), .paused)
-        XCTAssertEqual(WashSnapshot(selectedWordIndex: 5).emphasis(for: 5), .selected)
+        let playing = PlaybackState(status: .playing)
+        let paused = PlaybackState()
+        XCTAssertEqual(WashState(wordIndex: 3).emphasis(for: 3, isPlaying: playing.isPlaying), .current)
+        XCTAssertEqual(WashState(wordIndex: 3).emphasis(for: 3, isPlaying: paused.isPlaying), .paused)
+        XCTAssertEqual(WashState(selectedWordIndex: 5).emphasis(for: 5, isPlaying: playing.isPlaying), .selected)
         XCTAssertEqual(
-            WashSnapshot(wordIndex: 5, isPlaying: true, selectedWordIndex: 5).emphasis(for: 5),
+            WashState(wordIndex: 5, selectedWordIndex: 5).emphasis(for: 5, isPlaying: playing.isPlaying),
             .coincide
         )
-        XCTAssertEqual(WashSnapshot(wordIndex: 3, isPlaying: true).emphasis(for: 4), .none)
+        XCTAssertEqual(WashState(wordIndex: 3).emphasis(for: 4, isPlaying: playing.isPlaying), .none)
     }
 
     // MARK: - Reading order
