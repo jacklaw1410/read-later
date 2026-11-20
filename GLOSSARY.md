@@ -158,9 +158,6 @@ _Avoid_: error, failure, unknown word
 The app-level bar of an app state: title, back, and/or action controls as needed. App chrome is the app's top bar; page chrome is page furniture outside the article.
 _Avoid_: page chrome, header, toolbar, top bar
 
-**Library**:
-The sheet listing started articles, with 'saved' as a flag on each row.
-_Avoid_: saved list, history, browse list
 
 **Strip**:
 The panel on the entry app state showing the detected kind. The paste control appears when the field is empty and the clipboard is non-empty.
@@ -185,6 +182,32 @@ _Avoid_: sheet, modal, popup, popover, hit card
 **Miss card**:
 The overlay panel for a lookup with no gloss, showing the miss state and available actions. Never a SwiftUI sheet.
 _Avoid_: sheet, modal, popup, popover, error card, failure card
+
+## Library
+
+**Library**:
+The sheet listing started articles, with 'saved' as a flag on each row.
+_Avoid_: saved list, history, browse list
+
+**Reading position**:
+Where reading stands in an article: its place, saved flag, and finished flag. Seeded into the wash on reopen. The place is the word index.
+_Avoid_: row, record, entry
+
+**Saved**:
+A reader-chosen flag on a reading position, shown as a bookmark.
+_Avoid_: bookmark, starred
+
+**Finished**:
+An article whose wash reached the last spoken word. Aligns with spoken-only progress: skipped regions add no spoken words.
+_Avoid_: completed, done
+
+**Refresh**:
+Dropping the cached plan while keeping the place. Reopening refetches the article only when the plan is missing and a URL is stored.
+_Avoid_: cache bust, reload
+
+**Remove**:
+Dropping the article and its place together.
+_Avoid_: forget, delete
 
 ## Measurement
 
