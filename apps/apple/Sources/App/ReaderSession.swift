@@ -14,11 +14,25 @@ final class ReaderSession: ObservableObject {
     let document: ReadLaterCore.Document
     let spoken: SpokenWordNumbering
 
-    @Published private(set) var wash = WashState.idle
-    @Published private(set) var isPlaying = false
-    @Published private(set) var isFinished = false
+    let washState = WashStateModel()
+    let playbackState = PlaybackStateModel()
+    let lookupState = LookupStateModel<PaperCard, NoteToShow>()
+
+    @Published private(set) var wash = WashState.idle {
+        didSet {
+            washState.wordIndex = wash.wordIndex
+            washState.selectedWordIndex = wash.selectedWordIndex
+        }
+    }
+    @Published private(set) var isPlaying = false {
+        didSet { playbackState.isPlaying = isPlaying }
+    }
+    @Published private(set) var isFinished = false {
+        didSet { playbackState.isFinished = isFinished }
+    }
     @Published var isScrubbing = false {
         didSet {
+            playbackState.isScrubbing = isScrubbing
             #if DEBUG
             if isScrubbing != oldValue {
                 if isScrubbing {
@@ -31,11 +45,21 @@ final class ReaderSession: ObservableObject {
         }
     }
     @Published var autoScroll = true
-    @Published private(set) var isHeld = false
-    @Published private(set) var card: PaperCard?
-    @Published private(set) var note: NoteToShow?
-    @Published private(set) var speed: Float
-    @Published private(set) var isOnline = true
+    @Published private(set) var isHeld = false {
+        didSet { playbackState.isHeld = isHeld }
+    }
+    @Published private(set) var card: PaperCard? {
+        didSet { lookupState.card = card }
+    }
+    @Published private(set) var note: NoteToShow? {
+        didSet { lookupState.note = note }
+    }
+    @Published private(set) var speed: Float {
+        didSet { playbackState.speed = speed }
+    }
+    @Published private(set) var isOnline = true {
+        didSet { lookupState.isOnline = isOnline }
+    }
 
     private let speech: SpeechController
     private let lookupProvider: PackLookupProvider
@@ -66,6 +90,7 @@ final class ReaderSession: ObservableObject {
         self.lookupProvider = lookupProvider
         self.speedStore = speedStore
         self.speed = speedStore.speed
+        self.playbackState.speed = speedStore.speed
 
         speech.rate = speed
         speech.onWord = { [weak self] range in self?.advance(to: range) }
