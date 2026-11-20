@@ -251,11 +251,11 @@ struct RootView: View {
                     // Same focus scope as before: every path out of the reader
                     // passes through here. No behavior change.
                     .onKeyPress(.escape) {
-                        if session.card != nil {
+                        if session.lookupState.card != nil {
                             session.closeCard()
                             return .handled
                         }
-                        if session.note != nil {
+                        if session.lookupState.note != nil {
                             session.closeNote()
                             return .handled
                         }
@@ -352,7 +352,7 @@ struct RootView: View {
             if model.session == nil {
                 model.openLatestSavedPlace()
             }
-            if let session = model.session, !session.isPlaying {
+            if let session = model.session, !session.playbackState.isPlaying {
                 session.togglePlay()
             }
         }
@@ -425,10 +425,10 @@ struct ReaderScreen: View {
     private var reader: some View {
         ReaderView(
             document: session.document,
-            wash: session.wash,
+            wash: session.washState.snapshot(playback: session.playbackState),
             spoken: session.spoken,
-            autoScroll: session.autoScroll && !session.isScrubbing,
-            isScrubbing: session.isScrubbing,
+            autoScroll: session.autoScroll && !session.playbackState.isScrubbing,
+            isScrubbing: session.playbackState.isScrubbing,
             returnToken: returnToken,
             onTapWord: { blockID, slot, word in
                 session.tapped(blockID: blockID, slot: slot, word: word)
@@ -445,8 +445,8 @@ struct ReaderScreen: View {
             player: {
                 VStack(spacing: 0) {
                     HoldBadge(
-                        isHeld: session.isHeld,
-                        isPlaying: session.isPlaying,
+                        isHeld: session.playbackState.isHeld,
+                        isPlaying: session.playbackState.isPlaying,
                         onResume: {
                             lastProgrammaticFollow = Date()
                             session.resumeFollowing()
@@ -454,8 +454,8 @@ struct ReaderScreen: View {
                     )
                     if shouldShowReturnPill(
                         washVisible: washVisible,
-                        isHeld: session.isHeld,
-                        isPlaying: session.isPlaying
+                        isHeld: session.playbackState.isHeld,
+                        isPlaying: session.playbackState.isPlaying
                     ) {
                         ReturnToWashPill {
                             lastProgrammaticFollow = Date()
@@ -510,8 +510,8 @@ struct ReaderScreen: View {
             clockButton
             Spacer(minLength: 0)
             BottomTransport(
-                isPlaying: session.isPlaying,
-                isFinished: session.isFinished,
+                isPlaying: session.playbackState.isPlaying,
+                isFinished: session.playbackState.isFinished,
                 onPlayPause: { session.togglePlay() },
                 onStepUtterance: { session.stepUtterance($0) }
             )
@@ -554,9 +554,9 @@ struct ReaderScreen: View {
         ReaderChrome(
             title: session.document.title,
             autoScroll: session.autoScroll,
-            isHeld: session.isHeld,
+            isHeld: session.playbackState.isHeld,
             offScreen: !washVisible,
-            isFinished: session.isFinished,
+            isFinished: session.playbackState.isFinished,
             onExit: onExit,
             onRestart: {
                 session.scrub(toFraction: 0)
@@ -576,7 +576,7 @@ struct ReaderScreen: View {
 
     @ViewBuilder
     private var overlay: some View {
-        if let card = session.card {
+        if let card = session.lookupState.card {
             CardSheet(onDismiss: { session.closeCard() }) {
                 switch card {
                 case let .hit(result, wordIndex, wasPlaying):
@@ -584,7 +584,7 @@ struct ReaderScreen: View {
                         result: result,
                         wasPlayingBeforeLookup: wasPlaying,
                         wordIndex: wordIndex,
-                        isCurrentWashWord: wordIndex != nil && wordIndex == session.wash.wordIndex,
+                        isCurrentWashWord: wordIndex != nil && wordIndex == session.washState.wordIndex,
                         onClose: { session.closeCard() }
                     )
                 case let .miss(word, kind, wordIndex, wasPlaying):
@@ -592,7 +592,7 @@ struct ReaderScreen: View {
                         word: word,
                         kind: kind,
                         packInstalled: registry.isInstalled,
-                        isOnline: session.isOnline,
+                        isOnline: session.lookupState.isOnline,
                         offerDeclined: registry.offerDeclined,
                         isInstalling: registry.isInstalling,
                         wasPlayingBeforeLookup: wasPlaying,
@@ -610,11 +610,11 @@ struct ReaderScreen: View {
                     )
                 }
             }
-            .animation(reduceMotion ? nil : ThemeMotion.sheet, value: session.card == nil)
+            .animation(reduceMotion ? nil : ThemeMotion.sheet, value: session.lookupState.card == nil)
             .zIndex(2)
         }
 
-        if let note = session.note, session.document.noteBlocks.indices.contains(note.index) {
+        if let note = session.lookupState.note, session.document.noteBlocks.indices.contains(note.index) {
             let block = session.document.noteBlocks[note.index]
             ZStack {
                 Theme.scrim
