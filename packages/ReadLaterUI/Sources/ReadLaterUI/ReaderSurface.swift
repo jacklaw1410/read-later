@@ -47,6 +47,8 @@ public struct WashState: Sendable, Equatable {
     }
 }
 
+public typealias WashSnapshot = WashState
+
 // MARK: - Block presentation
 
 public extension BlockKind {
