@@ -116,6 +116,7 @@ object TypeScale {
     val playerSize = 15.sp
     val lookupWordSize = 22.sp
     val glossSize = 17.sp
+    val offerTitleSize = 15.sp
     val chipSize = 10.sp
     /** Tracking in em: multiply by the size. */
     val chipTracking = 0.088.em
