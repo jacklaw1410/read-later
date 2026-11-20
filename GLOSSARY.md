@@ -34,6 +34,20 @@ _Avoid_: sticky scroll, follow
 **Resume**:
 Returning the wash to its position after a lookup, note or link, with playback and hold restored.
 
+## App states
+
+**App state**:
+A state of the app the reader moves between, such as Entry and Reader.
+_Avoid_: screen, view, page
+
+**Entry**:
+The app state where the reader pastes a link or text to open an article.
+_Avoid_: view, paste screen, screen
+
+**Reader**:
+The app state showing one document: article body, playback controls, and overlays. Capitalized: the app state; lowercase 'reader' is the person.
+_Avoid_: view, reading view, screen
+
 ## Playback
 
 **Spoken word numbering**:
@@ -67,6 +81,20 @@ _Avoid_: karaoke invariant, validator, sanity check
 **Drift**:
 The gap between the wash's actual word and the word the Wash lead prescribes for the voice's current word. The target is zero: the wash keeps the prescribed lead. A recording of the screen and the audio together, made on a device, is the decisive evidence. Unit tests and desktop harness runs support it, but do not replace that recording. The spoken plan invariant does not measure drift: it checks that utterances slice their blocks.
 _Avoid_: lag, desync, offset
+
+## Playback controls
+
+**Scrub**:
+Dragging the progress control to preview a place; the audio seek commits on release.
+_Avoid_: drag
+
+**Step**:
+Moving the wash by one utterance (normally one sentence).
+_Avoid_: word step, sentence step
+
+**Speed**:
+The speech speed, chosen from the fixed steps.
+_Avoid_: tempo, rate, pace
 
 ## Text and extraction
 
@@ -123,6 +151,40 @@ _Avoid_: long tail (say *tail*), rare words
 **Miss** / **miss state**:
 A miss is a tap whose lookup returns no gloss. The miss state is what the card shows: not in dictionary, no network, or an accent variant was matched. A miss describes the result, not the reader or the word.
 _Avoid_: error, failure, unknown word
+
+## Surfaces
+
+**App chrome**:
+The app-level bar of an app state: title, back, and/or action controls as needed. App chrome is the app's top bar; page chrome is page furniture outside the article.
+_Avoid_: page chrome, header, toolbar, top bar
+
+**Library**:
+The sheet listing started articles, with 'saved' as a flag on each row.
+_Avoid_: saved list, history, browse list
+
+**Strip**:
+The panel on the entry app state showing the detected kind. The paste control appears when the field is empty and the clipboard is non-empty.
+_Avoid_: status strip, banner
+
+**Loadline**:
+The progress indicator through Fetch, Clean, and Ready on the entry app state.
+_Avoid_: progress bar, stepper
+
+**Rail**:
+The playback control column beside the reader: speed and scrub.
+_Avoid_: sidebar
+
+**Bottom transport**:
+The bottom playback controls: play, pause, and steps.
+_Avoid_: bottom bar, player bar, transport bar
+
+**Lookup card**:
+The overlay panel for a lookup that resolved to a gloss. Never a SwiftUI sheet.
+_Avoid_: sheet, modal, popup, popover, hit card
+
+**Miss card**:
+The overlay panel for a lookup with no gloss, showing the miss state and available actions. Never a SwiftUI sheet.
+_Avoid_: sheet, modal, popup, popover, error card, failure card
 
 ## Measurement
 
