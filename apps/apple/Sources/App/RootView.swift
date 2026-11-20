@@ -425,7 +425,8 @@ struct ReaderScreen: View {
     private var reader: some View {
         ReaderView(
             document: session.document,
-            wash: session.washState.snapshot(playback: session.playbackState),
+            wash: session.washState,
+            playback: session.playbackState,
             spoken: session.spoken,
             autoScroll: session.autoScroll && !session.playbackState.isScrubbing,
             isScrubbing: session.playbackState.isScrubbing,

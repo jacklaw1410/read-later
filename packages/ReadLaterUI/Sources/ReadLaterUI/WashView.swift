@@ -55,9 +55,10 @@ struct WashMark: Hashable, Sendable {
 /// Returns the marked ranges for one block: every slot whose emphasis is not
 /// `none`. A block normally carries zero to two marks (current/paused word,
 /// selected word).
-func washMarks(slots: [WordSlot], wash: WashSnapshot) -> [WashMark] {
+@MainActor
+func washMarks(slots: [WordSlot], wash: WashState, playback: PlaybackState) -> [WashMark] {
     slots.compactMap { slot in
-        let emphasis = wash.emphasis(for: slot.index)
+        let emphasis = wash.emphasis(for: slot.index, isPlaying: playback.isPlaying)
         guard emphasis.isMarked else { return nil }
         return WashMark(range: slot.range, emphasis: emphasis)
     }
@@ -124,7 +125,8 @@ public func washChipBox(
 public struct WashableText: View {
     private var text: String
     private var slots: [WordSlot]
-    private var wash: WashSnapshot
+    private var wash: WashState
+    private var playback: PlaybackState
     private var style: WashableTextStyle
     private var tone: WashableTextTone
     /// A footnote marker drawn as a superscript at the end of the text. It is
@@ -141,7 +143,8 @@ public struct WashableText: View {
     public init(
         text: String,
         slots: [WordSlot],
-        wash: WashSnapshot,
+        wash: WashState,
+        playback: PlaybackState,
         style: WashableTextStyle = .body,
         tone: WashableTextTone = .ink,
         marker: String? = nil,
@@ -152,6 +155,7 @@ public struct WashableText: View {
         self.text = text
         self.slots = slots
         self.wash = wash
+        self.playback = playback
         self.style = style
         self.tone = tone
         self.marker = marker
@@ -164,7 +168,7 @@ public struct WashableText: View {
         _WashableTextView(
             text: text,
             slots: slots,
-            marks: washMarks(slots: slots, wash: wash),
+            marks: washMarks(slots: slots, wash: wash, playback: playback),
             style: style,
             tone: tone,
             marker: marker,

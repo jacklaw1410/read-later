@@ -19,7 +19,8 @@ public struct FootnoteAttachment: Sendable, Hashable {
 /// but carry no `WordSlot`, so the caller passes nil and the raw word.
 public struct BlockView: View {
     private let block: ReadLaterCore.Block
-    private let wash: WashSnapshot
+    private let wash: WashState
+    private let playback: PlaybackState
     private let spoken: SpokenWordNumbering
     private let footnote: FootnoteAttachment?
     private let followsWash: Bool
@@ -28,7 +29,8 @@ public struct BlockView: View {
 
     public init(
         block: ReadLaterCore.Block,
-        wash: WashSnapshot,
+        wash: WashState,
+        playback: PlaybackState,
         spoken: SpokenWordNumbering,
         footnote: FootnoteAttachment? = nil,
         followsWash: Bool = false,
@@ -37,6 +39,7 @@ public struct BlockView: View {
     ) {
         self.block = block
         self.wash = wash
+        self.playback = playback
         self.spoken = spoken
         self.footnote = footnote
         self.followsWash = followsWash
@@ -99,6 +102,7 @@ public struct BlockView: View {
             text: block.text,
             slots: spokenSlots,
             wash: wash,
+            playback: playback,
             marker: footnote?.marker,
             followsWash: followsWash
         ) { slot, word in
@@ -113,6 +117,7 @@ public struct BlockView: View {
             text: block.text,
             slots: spokenSlots,
             wash: wash,
+            playback: playback,
             style: .heading,
             marker: footnote?.marker,
             followsWash: followsWash
@@ -132,6 +137,7 @@ public struct BlockView: View {
                 text: block.text,
                 slots: spokenSlots,
                 wash: wash,
+                playback: playback,
                 marker: footnote?.marker
             ) { slot, word in
                 tap(slot, word)
@@ -145,7 +151,7 @@ public struct BlockView: View {
     // MARK: - Skip shell bodies
 
     private var skippedProseBody: some View {
-        WashableText(text: block.text, slots: [], wash: .idle, tone: .skip) { _, word in
+        WashableText(text: block.text, slots: [], wash: WashState(), playback: PlaybackState(), tone: .skip) { _, word in
             tap(nil, word)
         }
     }
@@ -167,7 +173,7 @@ public struct BlockView: View {
             ForEach(Array(tableRows().enumerated()), id: \.offset) { rowIndex, row in
                 HStack(spacing: 0) {
                     ForEach(Array(row.enumerated()), id: \.offset) { _, cell in
-                        WashableText(text: cell, slots: [], wash: .idle, style: .small, tone: .skip) { _, word in
+                        WashableText(text: cell, slots: [], wash: WashState(), playback: PlaybackState(), style: .small, tone: .skip) { _, word in
                             tap(nil, word)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -200,7 +206,7 @@ public struct BlockView: View {
             .frame(height: 120)
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .accessibilityLabel(accessibleImageLabel)
-            WashableText(text: block.text, slots: [], wash: .idle, style: .note, tone: .skip) { _, word in
+            WashableText(text: block.text, slots: [], wash: WashState(), playback: PlaybackState(), style: .note, tone: .skip) { _, word in
                 tap(nil, word)
             }
         }

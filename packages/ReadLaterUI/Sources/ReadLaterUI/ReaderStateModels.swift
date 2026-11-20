@@ -15,14 +15,15 @@ public final class WashState {
         self.selectedWordIndex = selectedWordIndex
     }
 
-    /// Snapshot for the existing text-surface helpers.
-    public func snapshot(playback: PlaybackState) -> WashSnapshot {
-        WashSnapshot(
-            wordIndex: wordIndex,
-            isPlaying: playback.isPlaying,
-            selectedWordIndex: selectedWordIndex
-        )
+    public func emphasis(for index: Int, isPlaying: Bool) -> WordEmphasis {
+        let isSpokenWord = wordIndex == index
+        let isSelected = selectedWordIndex == index
+        if isSpokenWord && isSelected { return .coincide }
+        if isSelected { return .selected }
+        if isSpokenWord { return isPlaying ? .current : .paused }
+        return .none
     }
+
 }
 
 // MARK: - Playback state
