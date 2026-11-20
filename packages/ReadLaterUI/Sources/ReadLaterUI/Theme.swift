@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Calm Editorial design tokens.
 ///
-/// The values live in `design/tokens.json`. `tools/tokens/generate.py` turns
+/// The values live in `design/tokens.json`. `readlater-tokens` turns
 /// that file into `Generated/ThemeTokens.swift` for this platform, and into
 /// CSS, Kotlin and XAML for the others. This file holds only the resolver the
 /// generated tokens call, plus the UIKit and AppKit adapters that a text engine

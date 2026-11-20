@@ -408,17 +408,25 @@ struct ReaderScreen: View {
     @State private var lastProgrammaticFollow = Date.distantPast
 
     var body: some View {
-        VStack(spacing: 0) {
-            chrome
-            // The rail stops above the full-width bottom bar, which holds the
-            // clock and the transport.
+        ZStack {
             VStack(spacing: 0) {
-                HStack(spacing: 0) {
-                    reader
-                    rail
+                chrome
+                // The rail stops above the full-width bottom bar, which holds the
+                // clock and the transport.
+                VStack(spacing: 0) {
+                    HStack(spacing: 0) {
+                        reader
+                        rail
+                    }
+                    bottomBar
                 }
-                bottomBar
             }
+            // Screen-level layer above chrome + reader + rail + bottomBar, so
+            // the scrim dims everything and the card stays on top. Previously
+            // this lived inside ReaderView's reader-column ZStack, whose frame
+            // is only the left column: ignoresSafeArea could not escape that
+            // column, leaving chrome/rail/transport white.
+            overlay
         }
     }
 
@@ -466,7 +474,7 @@ struct ReaderScreen: View {
                     }
                 }
             },
-            overlay: { overlay }
+            overlay: { EmptyView() }
         )
     }
 
@@ -579,37 +587,41 @@ struct ReaderScreen: View {
     private var overlay: some View {
         if let card = session.lookupState.card {
             CardSheet(onDismiss: { session.closeCard() }) {
-                switch card {
-                case let .hit(result, wordIndex, wasPlaying):
-                    LookupCard(
-                        result: result,
-                        wasPlayingBeforeLookup: wasPlaying,
-                        wordIndex: wordIndex,
-                        isCurrentWashWord: wordIndex != nil && wordIndex == session.washState.wordIndex,
-                        onClose: { session.closeCard() }
-                    )
-                case let .miss(word, kind, wordIndex, wasPlaying):
-                    MissCard(
-                        word: word,
-                        kind: kind,
-                        packInstalled: registry.isInstalled,
-                        isOnline: session.lookupState.isOnline == true,
-                        offerDeclined: registry.offerDeclined,
-                        isInstalling: registry.isInstalling,
-                        wasPlayingBeforeLookup: wasPlaying,
-                        wordIndex: wordIndex,
-                        onInstall: { Task { await session.installPack() } },
-                        onNotNow: { session.declineOffer() },
-                        onClose: { session.closeCard() },
-                        onSearchWeb: {
-                            let query = word.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? word
-                            if let url = URL(string: "https://duckduckgo.com/?q=\(query)") {
-                                openURL(url)
+                Group {
+                    switch card {
+                    case let .hit(result, _, wasPlaying):
+                        LookupCard(
+                            result: result,
+                            wasPlayingBeforeLookup: wasPlaying,
+                            onPronounce: { session.pronounce(result.word) },
+                            onClose: { session.closeCard() }
+                        )
+                    case let .miss(word, kind, _, _):
+                        MissCard(
+                            word: word,
+                            kind: kind,
+                            packInstalled: registry.isInstalled,
+                            isOnline: session.lookupState.isOnline == true,
+                            offerDeclined: registry.offerDeclined,
+                            isInstalling: registry.isInstalling,
+                            onPronounce: { session.pronounce(word) },
+                            onInstall: { Task { await session.installPack() } },
+                            onNotNow: { session.declineOffer() },
+                            onClose: { session.closeCard() },
+                            onSearchWeb: {
+                                let query = word.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? word
+                                if let url = URL(string: "https://duckduckgo.com/?q=\(query)") {
+                                    openURL(url)
+                                }
+                                session.closeCard()
                             }
-                            session.closeCard()
-                        }
-                    )
+                        )
+                    }
                 }
+                // A new card is a new identity, so its `didLogShown` starts false.
+                // Without this, a card that swaps in the same slot keeps the
+                // previous card's state and never logs `card.shown`.
+                .id(card.id)
             }
             .animation(reduceMotion ? nil : ThemeMotion.sheet, value: session.lookupState.card == nil)
             .zIndex(2)

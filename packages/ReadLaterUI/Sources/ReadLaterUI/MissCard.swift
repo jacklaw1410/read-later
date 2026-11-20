@@ -11,8 +11,7 @@ public struct MissCard: View {
     private let isOnline: Bool
     private let offerDeclined: Bool
     private let isInstalling: Bool
-    private let wasPlayingBeforeLookup: Bool
-    private let wordIndex: Int?
+    private let onPronounce: () -> Void
     private let onInstall: () -> Void
     private let onNotNow: () -> Void
     private let onClose: () -> Void
@@ -26,8 +25,7 @@ public struct MissCard: View {
         isOnline: Bool,
         offerDeclined: Bool,
         isInstalling: Bool,
-        wasPlayingBeforeLookup: Bool,
-        wordIndex: Int?,
+        onPronounce: @escaping () -> Void,
         onInstall: @escaping () -> Void,
         onNotNow: @escaping () -> Void,
         onClose: @escaping () -> Void,
@@ -39,8 +37,7 @@ public struct MissCard: View {
         self.isOnline = isOnline
         self.offerDeclined = offerDeclined
         self.isInstalling = isInstalling
-        self.wasPlayingBeforeLookup = wasPlayingBeforeLookup
-        self.wordIndex = wordIndex
+        self.onPronounce = onPronounce
         self.onInstall = onInstall
         self.onNotNow = onNotNow
         self.onClose = onClose
@@ -71,30 +68,35 @@ public struct MissCard: View {
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(word)
-                .font(Theme.lookupWord())
-                .foregroundStyle(Theme.ink)
-                .accessibilityIdentifier(AccessibilityID.missWord)
+            HStack(spacing: 0) {
+                Text(word)
+                    .font(Theme.lookupWord())
+                    .foregroundStyle(Theme.ink)
+                    .accessibilityIdentifier(AccessibilityID.missWord)
+                IconButton(systemName: "speaker.wave.2", label: "Pronounce \(word)", action: onPronounce)
+                    .accessibilityIdentifier(AccessibilityID.missPronounce)
+                    // The 44 pt box would grow the word row. These margins match the prototype's `.pronounce`.
+                    .padding(.vertical, -10)
+                    .padding(.leading, -2)
+                    .padding(.trailing, -12)
+            }
             Text(LookupOutcome.miss(kind).label)
                 .font(Theme.caption())
                 .foregroundStyle(Theme.inkSecondary)
                 .padding(.top, 2)
-                .padding(.bottom, 12)
-
-            Divider()
-
+            // The source sits directly under the status, so the pack reads as the remedy.
             Text(CardCopy.missSourceLine(packInstalled: packInstalled))
                 .font(Theme.caption())
                 .foregroundStyle(Theme.inkSecondary)
-                .padding(.vertical, 8)
+                .padding(.top, 4)
 
             Divider()
+                .padding(.vertical, 12)
 
             if showsOffer {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(CardCopy.offerTitle)
-                        .font(Theme.gloss())
-                        .fontWeight(.bold)
+                        .font(Theme.offerTitle())
                         .foregroundStyle(Theme.ink)
                     Text(CardCopy.offerMeta)
                         .font(Theme.caption())
@@ -103,15 +105,7 @@ public struct MissCard: View {
                         .font(Theme.caption())
                         .foregroundStyle(Theme.inkSecondary)
                 }
-                .padding(.vertical, 12)
-
-                Divider()
             }
-
-            Text(CardCopy.pauseLine(wasPlayingBeforeLookup: wasPlayingBeforeLookup, wordIndex: wordIndex))
-                .font(Theme.caption())
-                .foregroundStyle(Theme.inkSecondary)
-                .padding(.top, 8)
 
             footer
                 .padding(.top, 8)

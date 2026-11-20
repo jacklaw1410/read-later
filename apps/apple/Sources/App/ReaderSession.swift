@@ -21,6 +21,7 @@ final class ReaderSession: ObservableObject {
 
 
     private let speech: SpeechController
+    private let pronouncer = WordPronouncer()
     private let lookupProvider: any PackLookup
     private let speedStore: SpeedStore
     private let pathMonitor = NWPathMonitor()
@@ -443,6 +444,11 @@ final class ReaderSession: ObservableObject {
         // the snapshot the controller took in `pauseForLookup`.
         speech.closeLookup()
         playbackState.isPlaying = wasPlaying && speech.state == .speaking
+    }
+
+    /// Speaks the card's word. Leaves playback and the card as they are.
+    func pronounce(_ word: String) {
+        pronouncer.speak(word)
     }
 
     func declineOffer() {
