@@ -35,7 +35,7 @@ public struct WashState: Sendable, Equatable {
         self.selectedWordIndex = selectedWordIndex
     }
 
-    public static let idle = WashState()
+    public static let idle = WashSnapshot()
 
     public func emphasis(for index: Int) -> WordEmphasis {
         let isSpokenWord = wordIndex == index

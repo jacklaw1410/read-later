@@ -23,14 +23,14 @@ final class ReaderSurfaceTests: XCTestCase {
     // MARK: - Wash emphasis
 
     func testEmphasisReturnsAllFiveStates() {
-        XCTAssertEqual(WashState(wordIndex: 3, isPlaying: true).emphasis(for: 3), .current)
-        XCTAssertEqual(WashState(wordIndex: 3, isPlaying: false).emphasis(for: 3), .paused)
-        XCTAssertEqual(WashState(selectedWordIndex: 5).emphasis(for: 5), .selected)
+        XCTAssertEqual(WashSnapshot(wordIndex: 3, isPlaying: true).emphasis(for: 3), .current)
+        XCTAssertEqual(WashSnapshot(wordIndex: 3, isPlaying: false).emphasis(for: 3), .paused)
+        XCTAssertEqual(WashSnapshot(selectedWordIndex: 5).emphasis(for: 5), .selected)
         XCTAssertEqual(
-            WashState(wordIndex: 5, isPlaying: true, selectedWordIndex: 5).emphasis(for: 5),
+            WashSnapshot(wordIndex: 5, isPlaying: true, selectedWordIndex: 5).emphasis(for: 5),
             .coincide
         )
-        XCTAssertEqual(WashState(wordIndex: 3, isPlaying: true).emphasis(for: 4), .none)
+        XCTAssertEqual(WashSnapshot(wordIndex: 3, isPlaying: true).emphasis(for: 4), .none)
     }
 
     // MARK: - Reading order

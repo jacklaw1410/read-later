@@ -6,7 +6,7 @@ import SwiftUI
 /// overlay: the player sits below the scroll view, the overlay layers on top.
 public struct ReaderView<Player: View, Overlay: View>: View {
     private let document: ReadLaterCore.Document
-    private let wash: WashState
+    private let wash: WashSnapshot
     private let spoken: SpokenWordNumbering
     private let autoScroll: Bool
     private let isScrubbing: Bool
@@ -32,7 +32,7 @@ public struct ReaderView<Player: View, Overlay: View>: View {
 
     public init(
         document: ReadLaterCore.Document,
-        wash: WashState,
+        wash: WashSnapshot,
         spoken: SpokenWordNumbering,
         autoScroll: Bool,
         isScrubbing: Bool = false,

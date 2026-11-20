@@ -55,7 +55,7 @@ struct WashMark: Hashable, Sendable {
 /// Returns the marked ranges for one block: every slot whose emphasis is not
 /// `none`. A block normally carries zero to two marks (current/paused word,
 /// selected word).
-func washMarks(slots: [WordSlot], wash: WashState) -> [WashMark] {
+func washMarks(slots: [WordSlot], wash: WashSnapshot) -> [WashMark] {
     slots.compactMap { slot in
         let emphasis = wash.emphasis(for: slot.index)
         guard emphasis.isMarked else { return nil }
@@ -124,7 +124,7 @@ public func washChipBox(
 public struct WashableText: View {
     private var text: String
     private var slots: [WordSlot]
-    private var wash: WashState
+    private var wash: WashSnapshot
     private var style: WashableTextStyle
     private var tone: WashableTextTone
     /// A footnote marker drawn as a superscript at the end of the text. It is
@@ -141,7 +141,7 @@ public struct WashableText: View {
     public init(
         text: String,
         slots: [WordSlot],
-        wash: WashState,
+        wash: WashSnapshot,
         style: WashableTextStyle = .body,
         tone: WashableTextTone = .ink,
         marker: String? = nil,
