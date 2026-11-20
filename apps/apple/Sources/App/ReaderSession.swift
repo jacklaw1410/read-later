@@ -5,7 +5,7 @@ import ReadLaterUI
 
 /// Playback and lookup state for one open document.
 ///
-/// One place owns the wash, the card, the hold, and the speech controller. The
+/// One place owns the wash, the lookupState.card, the hold, and the speech controller. The
 /// views read this and send intents back; none of them start or stop audio on
 /// their own, because the pause/restore contract only holds if one object
 /// remembers whether the voice was live before the tap.
@@ -14,52 +14,11 @@ final class ReaderSession: ObservableObject {
     let document: ReadLaterCore.Document
     let spoken: SpokenWordNumbering
 
-    let washState = WashStateModel()
-    let playbackState = PlaybackStateModel()
-    let lookupState = LookupStateModel<PaperCard, NoteToShow>()
+    let washState = WashState()
+    let playbackState = PlaybackState()
+    let lookupState = LookupState<PaperCard, NoteToShow>()
 
-    @Published private(set) var wash = WashSnapshot.idle {
-        didSet {
-            washState.wordIndex = wash.wordIndex
-            washState.selectedWordIndex = wash.selectedWordIndex
-        }
-    }
-    @Published private(set) var isPlaying = false {
-        didSet { playbackState.isPlaying = isPlaying }
-    }
-    @Published private(set) var isFinished = false {
-        didSet { playbackState.isFinished = isFinished }
-    }
-    @Published var isScrubbing = false {
-        didSet {
-            playbackState.isScrubbing = isScrubbing
-            #if DEBUG
-            if isScrubbing != oldValue {
-                if isScrubbing {
-                    DebugFrameMonitor.shared.noteScrubBegan()
-                } else {
-                    DebugFrameMonitor.shared.noteScrubEnded()
-                }
-            }
-            #endif
-        }
-    }
     @Published var autoScroll = true
-    @Published private(set) var isHeld = false {
-        didSet { playbackState.isHeld = isHeld }
-    }
-    @Published private(set) var card: PaperCard? {
-        didSet { lookupState.card = card }
-    }
-    @Published private(set) var note: NoteToShow? {
-        didSet { lookupState.note = note }
-    }
-    @Published private(set) var speed: Float {
-        didSet { playbackState.speed = speed }
-    }
-    @Published private(set) var isOnline = true {
-        didSet { lookupState.isOnline = isOnline }
-    }
 
     private let speech: SpeechController
     private let lookupProvider: PackLookupProvider
@@ -89,10 +48,9 @@ final class ReaderSession: ObservableObject {
         self.speech = speech
         self.lookupProvider = lookupProvider
         self.speedStore = speedStore
-        self.speed = speedStore.speed
         self.playbackState.speed = speedStore.speed
 
-        speech.rate = speed
+        speech.rate = playbackState.speed
         speech.onWord = { [weak self] range in self?.advance(to: range) }
         speech.onStateChange = { [weak self] state in self?.speechStateChanged(state) }
     }
@@ -116,9 +74,9 @@ final class ReaderSession: ObservableObject {
     func begin(at wordIndex: Int) {
         guard spoken.totalWords > 0 else { return }
         let clamped = min(max(wordIndex, 0), spoken.totalWords - 1)
-        wash.wordIndex = clamped
+        washState.wordIndex = clamped
         if clamped > 0 { latch.stash(clamped) } else { latch.clear() }
-        isFinished = false
+        playbackState.isFinished = false
     }
 
     /// Records the place: at most once per throttle interval during reading,
@@ -136,19 +94,19 @@ final class ReaderSession: ObservableObject {
 
     var progress: PlayerProgress {
         PlayerProgress(
-            wordIndex: wash.wordIndex ?? 0,
+            wordIndex: washState.wordIndex ?? 0,
             totalWords: spoken.totalWords,
-            speed: speed,
-            isFinished: isFinished
+            speed: playbackState.speed,
+            isFinished: playbackState.isFinished
         )
     }
 
     func togglePlay() {
-        guard card == nil, note == nil else { return }
+        guard lookupState.card == nil, lookupState.note == nil else { return }
         // Logged at handler entry, before any state change, for M1 and M2.
         // The word is the wash at tap time, for M9.
         TelemetryHub.shared.record(speech.state == .speaking ? TelemetryName.tapPause : TelemetryName.tapPlay,
-                                   fields: ["word": String(wash.wordIndex ?? -1)])
+                                   fields: ["word": String(washState.wordIndex ?? -1)])
         #if DEBUG
         DebugFrameMonitor.shared.noteTap()
         #endif
@@ -185,9 +143,9 @@ final class ReaderSession: ObservableObject {
     /// one instead of losing the place.
     @discardableResult
     private func startSpeaking(at wordIndex: Int) -> Bool {
-        isFinished = false
-        wash.wordIndex = min(max(wordIndex, 0), max(spoken.totalWords - 1, 0))
-        wash.isPlaying = true
+        playbackState.isFinished = false
+        washState.wordIndex = min(max(wordIndex, 0), max(spoken.totalWords - 1, 0))
+        playbackState.isPlaying = true
         if wordIndex > 0, speech.canRestart {
             guard speech.restart(fromWord: wordIndex) else { return false }
             latch.clear()
@@ -209,8 +167,8 @@ final class ReaderSession: ObservableObject {
     }
 
     func setSpeed(_ value: Float) {
-        let from = speed
-        speed = value
+        let from = playbackState.speed
+        playbackState.speed = value
         speedStore.save(value)
         TelemetryHub.shared.record(TelemetryName.speedChange, fields: ["from": String(from), "to": String(value)])
         // The synthesizer cannot change tempo mid-utterance, so the controller
@@ -221,7 +179,7 @@ final class ReaderSession: ObservableObject {
     func scrub(toFraction fraction: Double) {
         guard spoken.totalWords > 0 else { return }
         let index = wordIndex(for: fraction)
-        isFinished = false
+        playbackState.isFinished = false
         let resume = resumeAfterScrub
         resumeAfterScrub = false
         if resume {
@@ -242,8 +200,8 @@ final class ReaderSession: ObservableObject {
             "fraction": String(format: "%.4f", fraction),
             "word": String(index),
         ])
-        wash.wordIndex = index
-        wash.isPlaying = speech.state == .speaking
+        washState.wordIndex = index
+        playbackState.isPlaying = speech.state == .speaking
 
         checkpoint(source: "scrub")
     }
@@ -252,12 +210,12 @@ final class ReaderSession: ObservableObject {
     /// no audio seek, no latch, no checkpoint. The seek commits on release
     /// through `scrub(toFraction:)`, so one drag costs one restart (F19 1.7).
     /// Voice boundaries stay frozen while previewing because `advance(to:)`
-    /// drops ticks while `isScrubbing` holds.
+    /// drops ticks while `playbackState.isScrubbing` holds.
     func previewScrub(toFraction fraction: Double) {
         guard spoken.totalWords > 0 else { return }
         let index = wordIndex(for: fraction)
-        wash.wordIndex = index
-        wash.isPlaying = false
+        washState.wordIndex = index
+        playbackState.isPlaying = false
     }
 
     private func wordIndex(for fraction: Double) -> Int {
@@ -269,8 +227,11 @@ final class ReaderSession: ObservableObject {
     /// A drag began. A playing voice pauses and stays paused until the release.
     /// A paused voice stays paused, and the release only stashes the word.
     func beginScrubbing() {
-        guard !isScrubbing else { return }
-        isScrubbing = true
+        guard !playbackState.isScrubbing else { return }
+        playbackState.isScrubbing = true
+        #if DEBUG
+        DebugFrameMonitor.shared.noteScrubBegan()
+        #endif
         resumeAfterScrub = speech.state == .speaking
         TelemetryHub.shared.record(TelemetryName.scrubBegin, fields: [
             "state": String(describing: speech.state),
@@ -279,7 +240,10 @@ final class ReaderSession: ObservableObject {
     }
 
     func finishScrubbing() {
-        isScrubbing = false
+        playbackState.isScrubbing = false
+        #if DEBUG
+        DebugFrameMonitor.shared.noteScrubEnded()
+        #endif
         resumeAfterScrub = false
     }
 
@@ -289,7 +253,7 @@ final class ReaderSession: ObservableObject {
     /// Same path as a scrub commit to the same word: one synthesizer restart.
     func seekWords(_ delta: Int) {
         guard spoken.totalWords > 0 else { return }
-        let target = min(spoken.totalWords, max(0, (wash.wordIndex ?? 0) + delta))
+        let target = min(spoken.totalWords, max(0, (washState.wordIndex ?? 0) + delta))
         scrub(toFraction: Double(target) / Double(spoken.totalWords))
     }
 
@@ -318,7 +282,7 @@ final class ReaderSession: ObservableObject {
     /// Delegates to the throttled record path, forced: checkpoints fire on
     /// pause, scrub commit and background, never per word.
     private func checkpoint(source: String) {
-        if let word = wash.wordIndex {
+        if let word = washState.wordIndex {
             record(word, force: true, source: source)
         }
     }
@@ -331,7 +295,7 @@ final class ReaderSession: ObservableObject {
     func stepUtterance(_ delta: Int) {
         let count = min(spoken.utteranceCount, spoken.firstWordOfUtterance.count)
         guard count > 0 else { return }
-        let current = spoken.utteranceIndex(forWord: wash.wordIndex ?? 0)
+        let current = spoken.utteranceIndex(forWord: washState.wordIndex ?? 0)
         guard let target = UnitNavigation.clampedUtterance(current: current, delta: delta, count: count) else {
             return
         }
@@ -341,7 +305,7 @@ final class ReaderSession: ObservableObject {
     /// Steps the wash one spoken block. Same play/paused split as utterances.
     func stepBlock(_ delta: Int) {
         let ids = document.readingOrder.filter { spoken.byBlock[$0.id] != nil }.map(\.id)
-        let currentID = wash.wordIndex.flatMap { spoken.word(at: $0)?.blockID }
+        let currentID = washState.wordIndex.flatMap { spoken.word(at: $0)?.blockID }
         guard let target = UnitNavigation.clampedBlock(currentID: currentID, delta: delta, orderedIDs: ids),
               let first = spoken.byBlock[target]?.first
         else { return }
@@ -350,30 +314,30 @@ final class ReaderSession: ObservableObject {
 
     private func seekToUtterance(_ utterance: Int) {
         guard utterance < spoken.firstWordOfUtterance.count else { return }
-        isFinished = false
+        playbackState.isFinished = false
         let word = spoken.firstWordOfUtterance[utterance]
         if speech.state == .speaking {
             speech.restart(fromUtterance: utterance)
-            wash.wordIndex = word
-            wash.isPlaying = true
+            washState.wordIndex = word
+            playbackState.isPlaying = true
         } else {
             latch.stash(word)
-            wash.wordIndex = word
-            wash.isPlaying = false
+            washState.wordIndex = word
+            playbackState.isPlaying = false
         }
         checkpoint(source: "step")
     }
 
     private func seekToWord(_ word: Int) {
-        isFinished = false
+        playbackState.isFinished = false
         if speech.state == .speaking {
             speech.restart(fromWord: word)
-            wash.wordIndex = word
-            wash.isPlaying = true
+            washState.wordIndex = word
+            playbackState.isPlaying = true
         } else {
             latch.stash(word)
-            wash.wordIndex = word
-            wash.isPlaying = false
+            washState.wordIndex = word
+            playbackState.isPlaying = false
         }
         checkpoint(source: "seek")
     }
@@ -381,16 +345,16 @@ final class ReaderSession: ObservableObject {
     // MARK: - Lookup
 
     func tapped(blockID: Int, slot: WordSlot?, word: String) {
-        guard card == nil, note == nil else { return }
+        guard lookupState.card == nil, lookupState.note == nil else { return }
         let token = TokenShape.trimmed(word)
         guard !token.isEmpty else { return }
 
-        // The card pauses in every case. The controller remembers whether the
+        // The lookupState.card pauses in every case. The controller remembers whether the
         // voice was live so closing can restore exactly that.
         speech.pauseForLookup()
         let wasPlaying = speech.wasPlayingBeforeLookup
-        wash.selectedWordIndex = slot?.index
-        wash.isPlaying = false
+        washState.selectedWordIndex = slot?.index
+        playbackState.isPlaying = false
         TelemetryHub.shared.record(TelemetryName.lookup, fields: ["word": token])
 
         Task { [weak self] in
@@ -399,7 +363,7 @@ final class ReaderSession: ObservableObject {
             guard !Task.isCancelled else { return }
             switch outcome {
             case let .hit(result):
-                // The source and the line count are the proof that a card
+                // The source and the line count are the proof that a lookupState.card
                 // carries text: an empty gloss from the wrong source is the
                 // defect this field catches.
                 TelemetryHub.shared.record(
@@ -409,14 +373,14 @@ final class ReaderSession: ObservableObject {
                         "lines": String(result.gloss.split(separator: "\n").count),
                     ]
                 )
-                self.card = .hit(result, wordIndex: slot?.index, wasPlaying: wasPlaying)
+                lookupState.card = .hit(result, wordIndex: slot?.index, wasPlaying: wasPlaying)
             case let .miss(kind):
                 let refined = self.refine(kind)
                 TelemetryHub.shared.record(
                     TelemetryName.lookupMiss,
                     fields: ["kind": String(describing: refined)]
                 )
-                self.card = .miss(
+                lookupState.card = .miss(
                     word: token,
                     kind: refined,
                     wordIndex: slot?.index,
@@ -430,23 +394,23 @@ final class ReaderSession: ObservableObject {
     /// offline miss says so instead of pretending the word is unknown.
     private func refine(_ kind: MissKind) -> MissKind {
         if kind == .notAWord { return .notAWord }
-        if !isOnline && !lookupProvider.hasPack { return .noNetwork }
+        if !lookupState.isOnline && !lookupProvider.hasPack { return .noNetwork }
         return kind
     }
 
     func closeCard() {
-        guard let card else { return }
-        // Close-request mark for M14: with card.shown (paint) and
+        guard let card = lookupState.card else { return }
+        // Close-request mark for M14: with lookupState.card.shown (paint) and
         // state.speaking (resume) this splits close-to-resume into test
         // delivery (tap to here) and teardown-plus-resume (here to speaking).
         TelemetryHub.shared.record(TelemetryName.cardClose)
         let wasPlaying = card.wasPlaying
-        self.card = nil
-        wash.selectedWordIndex = nil
+        lookupState.card = nil
+        washState.selectedWordIndex = nil
         // Restores playback iff it was live before the tap. `closeLookup` reads
         // the snapshot the controller took in `pauseForLookup`.
         speech.closeLookup()
-        wash.isPlaying = wasPlaying && speech.state == .speaking
+        playbackState.isPlaying = wasPlaying && speech.state == .speaking
     }
 
     func declineOffer() {
@@ -457,43 +421,46 @@ final class ReaderSession: ObservableObject {
     // MARK: - Notes
 
     func openNote(_ index: Int) {
-        guard card == nil, note == nil, document.noteBlocks.indices.contains(index) else { return }
+        guard lookupState.card == nil, lookupState.note == nil, document.noteBlocks.indices.contains(index) else { return }
         speech.pauseForLookup()
         let wasPlaying = speech.wasPlayingBeforeLookup
-        note = NoteToShow(index: index, wasPlaying: wasPlaying)
-        wash.isPlaying = false
+        lookupState.note = NoteToShow(index: index, wasPlaying: wasPlaying)
+        playbackState.isPlaying = false
     }
 
     func closeNote() {
-        guard note != nil else { return }
-        note = nil
+        guard lookupState.note != nil else { return }
+        lookupState.note = nil
         speech.closeLookup()
-        wash.isPlaying = speech.state == .speaking
+        playbackState.isPlaying = speech.state == .speaking
     }
 
     func stop() {
         speech.stop()
-        wash = .idle
-        isPlaying = false
-        isFinished = false
-        card = nil
-        note = nil
+        washState.wordIndex = nil
+        washState.selectedWordIndex = nil
+        playbackState.isPlaying = false
+        playbackState.isFinished = false
+        playbackState.isHeld = false
+        playbackState.isScrubbing = false
+        lookupState.card = nil
+        lookupState.note = nil
         latch.clear()
     }
 
     // MARK: - Pack
 
     /// Runs the real install state machine against the bundled demo pack.
-    /// On success the open card resolves again, which is the moment the
-    /// prototype gets right: the card becomes the answer without a second tap.
+    /// On success the open lookupState.card resolves again, which is the moment the
+    /// prototype gets right: the lookupState.card becomes the answer without a second tap.
     func installPack() async {
         await PackRegistry.shared.install()
         guard PackRegistry.shared.isInstalled else { return }
 
-        // The card becomes the answer in place. The reader does not tap again.
-        if case let .miss(word, _, wordIndex, wasPlaying) = card {
+        // The lookupState.card becomes the answer in place. The reader does not tap again.
+        if case let .miss(word, _, wordIndex, wasPlaying) = lookupState.card {
             if case let .hit(result) = await lookupProvider.lookup(word) {
-                card = .hit(result, wordIndex: wordIndex, wasPlaying: wasPlaying)
+                lookupState.card = .hit(result, wordIndex: wordIndex, wasPlaying: wasPlaying)
             }
         }
     }
@@ -503,21 +470,21 @@ final class ReaderSession: ObservableObject {
     /// Called when the reader scrolls the page themselves. Auto-scroll stops
     /// following so the page does not fight the finger. Playback continues.
     func userScrolled() {
-        guard isPlaying, autoScroll else { return }
+        guard playbackState.isPlaying, autoScroll else { return }
         autoScroll = false
-        isHeld = true
+        playbackState.isHeld = true
         TelemetryHub.shared.record(TelemetryName.holdStart, fields: ["reason": "scroll"])
     }
 
     func holdFollowing() {
         autoScroll = false
-        isHeld = isPlaying
+        playbackState.isHeld = playbackState.isPlaying
         TelemetryHub.shared.record(TelemetryName.holdStart, fields: ["reason": "menu"])
     }
 
     func resumeFollowing() {
         autoScroll = true
-        isHeld = false
+        playbackState.isHeld = false
         TelemetryHub.shared.record(TelemetryName.holdEnd, fields: ["outcome": "resume"])
     }
 
@@ -529,24 +496,24 @@ final class ReaderSession: ObservableObject {
     /// every screenshot of playback would show word zero. This drives the same
     /// wash the voice would drive, and nothing else. Release builds do not
     /// contain it.
-    var washWordIndex: Int { wash.wordIndex ?? 0 }
+    var washWordIndex: Int { washState.wordIndex ?? 0 }
 
     func simulateWash(toWord index: Int) {
         guard let slot = spoken.word(at: index) else { return }
-        wash.wordIndex = slot.index
-        wash.isPlaying = true
+        washState.wordIndex = slot.index
+        playbackState.isPlaying = true
     }
     #endif
 
     // MARK: - Speech callbacks
 
     private func advance(to range: SpokenWordRange) {
-        guard !isScrubbing, card == nil, note == nil else { return }
+        guard !playbackState.isScrubbing, lookupState.card == nil, lookupState.note == nil else { return }
         guard let index = spoken.wordIndex(utteranceIndex: range.utteranceIndex, blockRange: range.range) else {
             return
         }
-        wash.wordIndex = index
-        wash.isPlaying = isPlaying
+        washState.wordIndex = index
+        playbackState.isPlaying = playbackState.isPlaying
         record(index, source: "tick")
     }
 
@@ -558,30 +525,30 @@ final class ReaderSession: ObservableObject {
         #endif
         switch state {
         case .speaking:
-            isPlaying = true
-            isFinished = false
+            playbackState.isPlaying = true
+            playbackState.isFinished = false
         case .paused, .warming:
-            isPlaying = false
+            playbackState.isPlaying = false
             if case .paused = state {
-                record(wash.wordIndex ?? 0, force: true, source: "pause")
+                record(washState.wordIndex ?? 0, force: true, source: "pause")
             }
         case .idle:
-            isPlaying = false
+            playbackState.isPlaying = false
         case .finished:
-            isPlaying = false
-            isFinished = true
-            wash.isPlaying = false
+            playbackState.isPlaying = false
+            playbackState.isFinished = true
+            playbackState.isPlaying = false
             record(max(spoken.totalWords - 1, 0), force: true, source: "finish")
             TelemetryHub.shared.record(TelemetryName.finished)
         }
-        wash.isPlaying = isPlaying
+        playbackState.isPlaying = playbackState.isPlaying
     }
 }
 
 // MARK: - Card payloads
 
-/// One rendered card. The word index and the pre-tap playback state travel with
-/// it, because the card prints both and the close path needs the second.
+/// One rendered lookupState.card. The word index and the pre-tap playback state travel with
+/// it, because the lookupState.card prints both and the close path needs the second.
 enum PaperCard: Identifiable {
     case hit(LookupResult, wordIndex: Int?, wasPlaying: Bool)
     case miss(word: String, kind: MissKind, wordIndex: Int?, wasPlaying: Bool)
@@ -628,7 +595,7 @@ final class PackLookupProvider: LookupProvider {
 
     /// Asked of the registry at the moment of the lookup, never cached.
     /// A cached copy goes stale the first time the pack is installed or
-    /// removed, and the miss card would then offer a dictionary that is
+    /// removed, and the miss lookupState.card would then offer a dictionary that is
     /// already there.
     var hasPack: Bool { PackRegistry.shared.isInstalled }
 

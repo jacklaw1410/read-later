@@ -12,7 +12,7 @@ import Observation
 ///
 @Observable
 @MainActor
-public final class WashStateModel {
+public final class WashState {
     public var wordIndex: Int?
     public var selectedWordIndex: Int?
 
@@ -22,7 +22,7 @@ public final class WashStateModel {
     }
 
     /// Snapshot for the existing text-surface helpers.
-    public func snapshot(playback: PlaybackStateModel) -> WashSnapshot {
+    public func snapshot(playback: PlaybackState) -> WashSnapshot {
         WashSnapshot(
             wordIndex: wordIndex,
             isPlaying: playback.isPlaying,
@@ -35,7 +35,7 @@ public final class WashStateModel {
 
 @Observable
 @MainActor
-public final class PlaybackStateModel {
+public final class PlaybackState {
     public var isPlaying: Bool = false
     public var isFinished: Bool = false
     public var speed: Float = 1
@@ -61,7 +61,7 @@ public final class PlaybackStateModel {
 
 @Observable
 @MainActor
-public final class LookupStateModel<CardValue, NoteValue> {
+public final class LookupState<CardValue, NoteValue> {
     public var card: CardValue?
     public var note: NoteValue?
     public var offerDeclined: Bool = false
