@@ -35,7 +35,6 @@ final class ReaderSession: ObservableObject {
     @Published private(set) var card: PaperCard?
     @Published private(set) var note: NoteToShow?
     @Published private(set) var speed: Float
-    @Published private(set) var offerDeclined = false
     @Published private(set) var isOnline = true
 
     private let speech: SpeechController
@@ -426,7 +425,7 @@ final class ReaderSession: ObservableObject {
     }
 
     func declineOffer() {
-        offerDeclined = true
+        PackRegistry.shared.declineOffer()
         closeCard()
     }
 
