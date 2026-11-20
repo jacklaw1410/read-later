@@ -19,6 +19,7 @@ final class PackRegistry: ObservableObject {
 
     @Published private(set) var installedVersion: String?
     @Published private(set) var isInstalling = false
+    @Published private(set) var offerDeclined = false
     @Published private(set) var isPaused = false
     @Published private(set) var failure: String?
     @Published private(set) var downloadedBytes = 0
@@ -30,6 +31,7 @@ final class PackRegistry: ObservableObject {
     private var demo: DemoPack?
     private let defaults: UserDefaults
     private let installedKey = "rl-pack-installed-version"
+    private let declinedKey = "rl-pack-offer-declined"
     private var installTask: Task<Void, Never>?
     private var installer: PackInstaller?
     private var installerVersion: String?
@@ -44,6 +46,7 @@ final class PackRegistry: ObservableObject {
             self.store = PackIndexStore(sqliteURL: sqliteURL)
             self.installedVersion = version
         }
+        self.offerDeclined = defaults.bool(forKey: declinedKey)
     }
 
     var isInstalled: Bool { store != nil }
@@ -220,6 +223,13 @@ final class PackRegistry: ObservableObject {
                 try? FileManager.default.removeItem(at: directory.appendingPathComponent(name))
             }
         }
+    }
+
+    /// Records the reader's permanent choice not to install. Persisted, so
+    /// the offer does not return on relaunch.
+    func declineOffer() {
+        offerDeclined = true
+        defaults.set(true, forKey: declinedKey)
     }
 
     /// Discards a paused download's partial file. The offer returns; a later

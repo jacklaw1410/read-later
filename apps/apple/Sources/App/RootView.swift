@@ -593,7 +593,7 @@ struct ReaderScreen: View {
                         kind: kind,
                         packInstalled: registry.isInstalled,
                         isOnline: session.isOnline,
-                        offerDeclined: session.offerDeclined,
+                        offerDeclined: registry.offerDeclined,
                         isInstalling: registry.isInstalling,
                         wasPlayingBeforeLookup: wasPlaying,
                         wordIndex: wordIndex,

@@ -152,6 +152,24 @@ _Avoid_: long tail (say *tail*), rare words
 A miss is a tap whose lookup returns no gloss. The miss state is what the card shows: not in dictionary, no network, or an accent variant was matched. A miss describes the result, not the reader or the word.
 _Avoid_: error, failure, unknown word
 
+## Packs
+
+**Decline**:
+The reader's permanent choice not to install on this device. After a decline, the offer is not shown again; the pack can still be installed later.
+_Avoid_: dismiss, reject
+
+**Installed**:
+A pack present locally and used for lookups.
+_Avoid_: enabled, active
+
+**Update**:
+A newer pack available for an already installed one. Checked when pack management opens, not at launch.
+_Avoid_: upgrade, new version, update available, updateVersion, isUpdateAvailable
+
+**Pack management**:
+The place where packs are installed, updated, or removed.
+_Avoid_: dictionaries, add-ons, plugins
+
 ## Surfaces
 
 **App chrome**:
