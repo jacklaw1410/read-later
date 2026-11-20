@@ -18,7 +18,7 @@ final class ReaderSession: ObservableObject {
     let playbackState = PlaybackStateModel()
     let lookupState = LookupStateModel<PaperCard, NoteToShow>()
 
-    @Published private(set) var wash = WashState.idle {
+    @Published private(set) var wash = WashSnapshot.idle {
         didSet {
             washState.wordIndex = wash.wordIndex
             washState.selectedWordIndex = wash.selectedWordIndex

@@ -19,7 +19,7 @@ public struct FootnoteAttachment: Sendable, Hashable {
 /// but carry no `WordSlot`, so the caller passes nil and the raw word.
 public struct BlockView: View {
     private let block: ReadLaterCore.Block
-    private let wash: WashState
+    private let wash: WashSnapshot
     private let spoken: SpokenWordNumbering
     private let footnote: FootnoteAttachment?
     private let followsWash: Bool
@@ -28,7 +28,7 @@ public struct BlockView: View {
 
     public init(
         block: ReadLaterCore.Block,
-        wash: WashState,
+        wash: WashSnapshot,
         spoken: SpokenWordNumbering,
         footnote: FootnoteAttachment? = nil,
         followsWash: Bool = false,
