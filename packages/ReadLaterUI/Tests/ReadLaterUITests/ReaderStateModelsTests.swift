@@ -5,7 +5,7 @@ import XCTest
 final class ReaderStateModelsTests: XCTestCase {
     func testWashSnapshotCarriesPlaybackAndSelection() {
         let wash = WashState(wordIndex: 5, selectedWordIndex: 5)
-        let playback = PlaybackState(isPlaying: true, isHeld: true, isScrubbing: true)
+        let playback = PlaybackState(status: .playing, isHeld: true)
 
         let snapshot = wash.snapshot(playback: playback)
 
@@ -13,7 +13,7 @@ final class ReaderStateModelsTests: XCTestCase {
         XCTAssertEqual(snapshot.selectedWordIndex, 5)
         XCTAssertTrue(snapshot.isPlaying)
         XCTAssertTrue(playback.isHeld)
-        XCTAssertTrue(playback.isScrubbing)
+        XCTAssertTrue(playback.isScrubbing == false)
         XCTAssertEqual(snapshot.emphasis(for: 5), .coincide)
     }
 

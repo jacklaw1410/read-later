@@ -4,12 +4,6 @@ import Observation
 // MARK: - Wash state
 
 /// Observable wash state for one open document.
-///
-/// `WashSnapshot` remains the value type used by `washMarks` and the text
-/// surface. This model owns the mutable wash state and lets SwiftUI invalidate
-/// only the views that read its properties. Playback owns `isPlaying`; pass the
-/// playback model when a snapshot is needed for emphasis.
-///
 @Observable
 @MainActor
 public final class WashState {
@@ -33,27 +27,64 @@ public final class WashState {
 
 // MARK: - Playback state
 
+/// Playback status for one open document. `stopped(atEnd:)` covers idle,
+/// paused, and end-of-article; `finished` is the `atEnd` case.
 @Observable
 @MainActor
 public final class PlaybackState {
-    public var isPlaying: Bool = false
-    public var isFinished: Bool = false
+    public enum Status: Sendable, Equatable {
+        case stopped(atEnd: Bool)
+        case playing
+        case scrubbing(previewWordIndex: Int?)
+    }
+
+    public var status: Status = .stopped(atEnd: false)
     public var speed: Float = 1
     public var isHeld: Bool = false
-    public var isScrubbing: Bool = false
 
-    public init(
-        isPlaying: Bool = false,
-        isFinished: Bool = false,
-        speed: Float = 1,
-        isHeld: Bool = false,
-        isScrubbing: Bool = false
-    ) {
-        self.isPlaying = isPlaying
-        self.isFinished = isFinished
+    public init(status: Status = .stopped(atEnd: false), speed: Float = 1, isHeld: Bool = false) {
+        self.status = status
         self.speed = speed
         self.isHeld = isHeld
-        self.isScrubbing = isScrubbing
+    }
+
+    public var isPlaying: Bool {
+        get { if case .playing = status { return true } else { return false } }
+        set {
+            if newValue {
+                if case .playing = status { return }
+                status = .playing
+            } else {
+                if case .playing = status {
+                    status = .stopped(atEnd: false)
+                }
+            }
+        }
+    }
+
+    public var isFinished: Bool {
+        get { if case .stopped(let atEnd) = status { return atEnd } else { return false } }
+        set {
+            if newValue {
+                status = .stopped(atEnd: true)
+            } else if case .stopped = status {
+                status = .stopped(atEnd: false)
+            }
+        }
+    }
+
+    public var isScrubbing: Bool {
+        get { if case .scrubbing = status { return true } else { return false } }
+        set {
+            if newValue {
+                if case .scrubbing = status { return }
+                status = .scrubbing(previewWordIndex: nil)
+            } else {
+                if case .scrubbing = status {
+                    status = .stopped(atEnd: false)
+                }
+            }
+        }
     }
 }
 
@@ -67,12 +98,7 @@ public final class LookupState<CardValue, NoteValue> {
     public var offerDeclined: Bool = false
     public var isOnline: Bool = true
 
-    public init(
-        card: CardValue? = nil,
-        note: NoteValue? = nil,
-        offerDeclined: Bool = false,
-        isOnline: Bool = true
-    ) {
+    public init(card: CardValue? = nil, note: NoteValue? = nil, offerDeclined: Bool = false, isOnline: Bool = true) {
         self.card = card
         self.note = note
         self.offerDeclined = offerDeclined
