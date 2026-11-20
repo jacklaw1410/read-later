@@ -4,8 +4,8 @@ import XCTest
 @MainActor
 final class ReaderStateModelsTests: XCTestCase {
     func testWashSnapshotCarriesPlaybackAndSelection() {
-        let wash = WashStateModel(wordIndex: 5, selectedWordIndex: 5)
-        let playback = PlaybackStateModel(isPlaying: true, isHeld: true, isScrubbing: true)
+        let wash = WashState(wordIndex: 5, selectedWordIndex: 5)
+        let playback = PlaybackState(isPlaying: true, isHeld: true, isScrubbing: true)
 
         let snapshot = wash.snapshot(playback: playback)
 
@@ -18,7 +18,7 @@ final class ReaderStateModelsTests: XCTestCase {
     }
 
     func testWashSnapshotDefaultsToIdleShape() {
-        let snapshot = WashStateModel().snapshot(playback: PlaybackStateModel())
+        let snapshot = WashState().snapshot(playback: PlaybackState())
 
         XCTAssertNil(snapshot.wordIndex)
         XCTAssertNil(snapshot.selectedWordIndex)

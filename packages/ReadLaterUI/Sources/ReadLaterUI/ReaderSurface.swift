@@ -22,7 +22,7 @@ public enum WordEmphasis: Sendable, Hashable {
 ///
 /// One value, one comparison, no per-word view state. The wash moves by
 /// changing this, and the text view redraws attributes rather than content.
-public struct WashState: Sendable, Equatable {
+public struct WashSnapshot: Sendable, Equatable {
     /// The word the voice last reported, or nil before the first word.
     public var wordIndex: Int?
     public var isPlaying: Bool
@@ -47,7 +47,7 @@ public struct WashState: Sendable, Equatable {
     }
 }
 
-public typealias WashSnapshot = WashState
+
 
 // MARK: - Block presentation
 
