@@ -18,7 +18,6 @@ final class ReaderSession: ObservableObject {
     let playbackState = PlaybackState()
     let lookupState = LookupState<PaperCard, NoteToShow>()
 
-    @Published var autoScroll = true
 
     private let speech: SpeechController
     private let lookupProvider: PackLookupProvider
@@ -470,20 +469,20 @@ final class ReaderSession: ObservableObject {
     /// Called when the reader scrolls the page themselves. Auto-scroll stops
     /// following so the page does not fight the finger. Playback continues.
     func userScrolled() {
-        guard playbackState.isPlaying, autoScroll else { return }
-        autoScroll = false
+        guard playbackState.isPlaying, playbackState.autoScroll else { return }
+        playbackState.autoScroll = false
         playbackState.isHeld = true
         TelemetryHub.shared.record(TelemetryName.holdStart, fields: ["reason": "scroll"])
     }
 
     func holdFollowing() {
-        autoScroll = false
+        playbackState.autoScroll = false
         playbackState.isHeld = playbackState.isPlaying
         TelemetryHub.shared.record(TelemetryName.holdStart, fields: ["reason": "menu"])
     }
 
     func resumeFollowing() {
-        autoScroll = true
+        playbackState.autoScroll = true
         playbackState.isHeld = false
         TelemetryHub.shared.record(TelemetryName.holdEnd, fields: ["outcome": "resume"])
     }

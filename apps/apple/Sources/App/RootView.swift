@@ -428,7 +428,7 @@ struct ReaderScreen: View {
             wash: session.washState,
             playback: session.playbackState,
             spoken: session.spoken,
-            autoScroll: session.autoScroll && !session.playbackState.isScrubbing,
+            autoScroll: session.playbackState.autoScroll && !session.playbackState.isScrubbing,
             isScrubbing: session.playbackState.isScrubbing,
             returnToken: returnToken,
             onTapWord: { blockID, slot, word in
@@ -554,7 +554,7 @@ struct ReaderScreen: View {
     private var chrome: some View {
         ReaderChrome(
             title: session.document.title,
-            autoScroll: session.autoScroll,
+            autoScroll: session.playbackState.autoScroll,
             isHeld: session.playbackState.isHeld,
             offScreen: !washVisible,
             isFinished: session.playbackState.isFinished,
@@ -564,7 +564,7 @@ struct ReaderScreen: View {
                 session.resumeFollowing()
             },
             onToggleFollow: {
-                if session.autoScroll {
+                if session.playbackState.autoScroll {
                     session.holdFollowing()
                 } else {
                     lastProgrammaticFollow = Date()

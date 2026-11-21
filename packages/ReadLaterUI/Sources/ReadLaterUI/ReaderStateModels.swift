@@ -42,11 +42,13 @@ public final class PlaybackState {
     public var status: Status = .stopped(atEnd: false)
     public var speed: Float = 1
     public var isHeld: Bool = false
+    public var autoScroll: Bool = true
 
-    public init(status: Status = .stopped(atEnd: false), speed: Float = 1, isHeld: Bool = false) {
+    public init(status: Status = .stopped(atEnd: false), speed: Float = 1, isHeld: Bool = false, autoScroll: Bool = true) {
         self.status = status
         self.speed = speed
         self.isHeld = isHeld
+        self.autoScroll = autoScroll
     }
 
     public var isPlaying: Bool {
