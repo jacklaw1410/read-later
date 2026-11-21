@@ -162,7 +162,7 @@ jobs:
       matrix:
         include:
           - platform: ios
-            destination: "platform=iOS Simulator,name=iPhone 16"
+            destination: "platform=iOS Simulator,OS=latest"
     env:
       SUITE: core
       MIN_TESTS: "3"
@@ -178,11 +178,6 @@ jobs:
           fi
       - name: install xcodegen
         run: brew install xcodegen
-      - name: launch iOS simulator
-        uses: futureware-tech/simulator-action@v5
-        with:
-          model: 'iPhone 16'
-          os_version: '>=18.0'
       - name: generate project
         working-directory: apps/apple
         run: xcodegen generate
