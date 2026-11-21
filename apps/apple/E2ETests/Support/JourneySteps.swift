@@ -67,7 +67,14 @@ enum JourneySteps {
         #if os(macOS)
         element.click()
         #else
-        element.tap()
+        if element.isHittable {
+            element.tap()
+        } else {
+            // CI simulators can report an element as not hittable when it
+            // sits just off the visible edge; tap its centre coordinate
+            // instead of asking XCUI to scroll it into view.
+            element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        }
         #endif
     }
 
