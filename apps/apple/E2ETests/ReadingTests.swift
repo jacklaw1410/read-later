@@ -23,6 +23,9 @@ final class ReadingTests: XCTestCase {
         let open = app.buttons[AccessibilityID.entryOpen]
         XCTAssertTrue(open.waitForExistence(timeout: Waits.screen), "entry screen did not appear")
         JourneySteps.tap(app, open)
+        if open.waitForExistence(timeout: 3) {
+            JourneySteps.tap(app, open)
+        }
 
         XCTAssertTrue(
             JourneySteps.texts(app, id: AccessibilityID.readerTitle).waitForExistence(timeout: Waits.screen),

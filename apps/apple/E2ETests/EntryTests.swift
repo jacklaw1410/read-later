@@ -21,11 +21,9 @@ final class EntryTests: XCTestCase {
             "the link field is missing"
         )
         JourneySteps.tap(app, open)
-        #if os(macOS)
         if open.waitForExistence(timeout: 3) {
             JourneySteps.tap(app, open)
         }
-        #endif
 
         let title = JourneySteps.texts(app, id: AccessibilityID.readerTitle)
         XCTAssertTrue(title.waitForExistence(timeout: Waits.screen), "the article did not open")
