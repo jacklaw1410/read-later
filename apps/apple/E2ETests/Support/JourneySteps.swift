@@ -65,14 +65,24 @@ enum JourneySteps {
     static func tap(_ app: XCUIApplication, _ element: XCUIElement) {
         front(app)
         #if os(macOS)
-        element.click()
+        // Wait for the element to become hittable after activation. A
+        // click sent while the window is still activating is lost.
+        let deadline = Date().addingTimeInterval(Waits.state)
+        while Date() < deadline && !element.isHittable {
+            Thread.sleep(forTimeInterval: 0.25)
+        }
+        if element.isHittable {
+            element.click()
+        } else {
+            // Fall back to the centre coordinate only when the element
+            // stays non-hittable. Pin the window size in the app launch
+            // so this coordinate stays stable.
+            element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        }
         #else
         if element.isHittable {
             element.tap()
         } else {
-            // CI simulators can report an element as not hittable when it
-            // sits just off the visible edge; tap its centre coordinate
-            // instead of asking XCUI to scroll it into view.
             element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
         }
         #endif

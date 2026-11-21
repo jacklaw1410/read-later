@@ -20,9 +20,6 @@ final class LookupTests: XCTestCase {
         let open = app.buttons[AccessibilityID.entryOpen]
         XCTAssertTrue(open.waitForExistence(timeout: Waits.screen), "entry screen did not appear")
         JourneySteps.tap(app, open)
-        if open.waitForExistence(timeout: 3) {
-            JourneySteps.tap(app, open)
-        }
 
         let wash = app.scrollViews[AccessibilityID.readerWash]
         XCTAssertTrue(wash.waitForExistence(timeout: Waits.screen), "the reader body did not appear")
