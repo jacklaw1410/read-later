@@ -434,7 +434,7 @@ jobs:
         working-directory: apps/apple
         run: |
           xcodebuild -project ReadLater.xcodeproj -scheme ReadLater \
-            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -destination 'generic/platform=iOS Simulator' \
             -configuration Release -derivedDataPath build/release \
             build CODE_SIGNING_ALLOWED=NO
       - name: the debug flag prefix is absent
