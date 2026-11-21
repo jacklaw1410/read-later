@@ -23,16 +23,20 @@ _Avoid_: highlight, marker, cursor, karaoke
 How far, in words, the wash runs ahead of the voice.
 _Avoid_: offset, latency
 
+**Following**:
+The state in which auto-scroll keeps the wash in view. Turning following off enters Hold.
+_Avoid_: follow button, follow toggle
+
 **Hold**:
-The state where the reader has scrolled away from the wash, so auto-scroll stops following. The hold badge offers resume.
-_Avoid_: pause (that is audio), lock, detach
+The state where the page no longer follows the wash, so auto-scroll stops. Hold applies whether or not playback runs. The reader enters Hold by scrolling away from the wash or by turning following off. Resume leaves Hold.
+_Avoid_: pause (that is audio), lock, detach, hold badge
 
 **No-yank**:
 The rule that auto-scroll never overrides the reader's own scroll.
 _Avoid_: sticky scroll, follow
 
 **Resume**:
-Returning the wash to its position after a lookup, note or link, with playback and hold restored.
+Returning the wash to its position after a lookup, note or link, with playback and hold restored. From Hold, Resume ends the hold and the page follows the wash again; playback is unchanged.
 
 ## App states
 
