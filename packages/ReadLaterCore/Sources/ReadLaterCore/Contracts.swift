@@ -195,6 +195,34 @@ public protocol LookupProvider: Sendable {
     func lookup(_ word: String) async -> LookupOutcome
 }
 
+// MARK: - Capability packs
+//
+// The state and actions of the installed dictionary pack, as Settings and the
+// reader use them. The app target implements it; `ReadLaterUI` shows it.
+
+@MainActor
+public protocol CapabilityPacks: AnyObject {
+    var isInstalled: Bool { get }
+    var installedVersion: String? { get }
+    var isInstalling: Bool { get }
+    var isPaused: Bool { get }
+    var failure: String? { get }
+    var downloadedBytes: Int { get }
+    var totalBytes: Int { get }
+    var updateVersion: String? { get }
+    var updateSizeBytes: Int? { get }
+    var offerDeclined: Bool { get }
+
+    func startInstall()
+    func cancelInstall()
+    func install() async
+    func remove()
+    func removePartial()
+    func declineOffer()
+    func checkForUpdate() async
+    func lookup(_ word: String) -> LookupResult?
+}
+
 /// Classifies the tapped token. A URL, a path or a code identifier is not a word.
 public enum WordShape: String, Sendable {
     case word

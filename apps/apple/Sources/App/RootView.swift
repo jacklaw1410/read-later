@@ -21,10 +21,13 @@ final class AppModel: ObservableObject {
     @Published var isSettingsPresented = false
 
     private let speech: SpeechController
-    private let lookup = PackLookupProvider()
+    private let packs: any CapabilityPacks
+    private let lookup: PackLookupProvider
     private let store: ReadLaterStore.Store?
     private let recorder: ReadLaterStore.PositionRecorder?
-    init() {
+    init(packs: any CapabilityPacks) {
+        self.packs = packs
+        self.lookup = PackLookupProvider(packs: packs)
         self.speech = Self.makeSpeech()
         self.store = Self.openStore()
         Self.seedIfRequested(store: self.store)
@@ -79,7 +82,7 @@ final class AppModel: ObservableObject {
         flushPosition()
         session?.stop()
         try? store?.save(document: document)
-        let next = ReaderSession(document: document, speech: speech, lookupProvider: lookup)
+        let next = ReaderSession(document: document, speech: speech, lookupProvider: lookup, packs: packs)
         next.onProgress = { [weak self] index, source in self?.recordPosition(index: index, source: source) }
         if let startWord { next.begin(at: startWord) }
         session = next
@@ -231,17 +234,22 @@ final class AppModel: ObservableObject {
 }
 
 struct RootView: View {
-    @StateObject private var model = AppModel()
-    @ObservedObject private var registry = PackRegistry.shared
+    @StateObject private var model: AppModel
+    let registry: PackRegistry
     @AppStorage(Appearance.storageKey) private var appearance = Appearance.system.rawValue
     @AppStorage("rl-seen-demo") private var seenDemo = false
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
+    init(registry: PackRegistry) {
+        self.registry = registry
+        _model = StateObject(wrappedValue: AppModel(packs: registry))
+    }
+
     var body: some View {
         Group {
             if let session = model.session {
-                ReaderScreen(session: session, onExit: model.closeDocument)
+                ReaderScreen(session: session, registry: registry, onExit: model.closeDocument)
                     .transition(.opacity)
                     // Escape closes card/note from any focus inside the
                     // reader. Hoisted here because RootView.body runs once per
@@ -360,7 +368,7 @@ struct RootView: View {
         #if os(macOS)
         .task {
             if SnapshotHarness.isEnabled {
-                await SnapshotHarness.run(app: model)
+                await SnapshotHarness.run(app: model, registry: registry)
             }
         }
         #endif
@@ -397,9 +405,9 @@ struct RootView: View {
 /// The reader: chrome, blocks, transport, and the one overlay layer.
 struct ReaderScreen: View {
     @ObservedObject var session: ReaderSession
+    let registry: any CapabilityPacks
     let onExit: () -> Void
 
-    @ObservedObject private var registry = PackRegistry.shared
     @Environment(\.openURL) private var openURL
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var washVisible = true
