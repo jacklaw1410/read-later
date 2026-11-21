@@ -1,20 +1,24 @@
-import ReadLaterStore
-import ReadLaterUI
+import ReadLaterCore
 import SwiftUI
 
 /// The browse list: every started article, newest first. A tap opens the
 /// stored copy; Save keeps the row, Refresh drops the cached plan, Remove
 /// drops the article and its place.
-struct LibraryView: View {
-    @ObservedObject var model: AppModel
-    let onClose: () -> Void
+public struct LibraryView: View {
+    private let provider: any LibraryProvider
+    private let onClose: () -> Void
 
-    @State private var pendingRemoval: ReadingPosition?
+    @State private var pendingRemoval: LibraryRow?
 
-    var body: some View {
+    public init(provider: any LibraryProvider, onClose: @escaping () -> Void) {
+        self.provider = provider
+        self.onClose = onClose
+    }
+
+    public var body: some View {
         VStack(spacing: 0) {
             header
-            if let message = model.libraryMessage {
+            if let message = provider.message {
                 Text(message)
                     .font(Theme.caption())
                     .foregroundStyle(Theme.inkSecondary)
@@ -22,7 +26,7 @@ struct LibraryView: View {
                     .padding(.horizontal, Theme.screenGutter)
                     .padding(.vertical, 8)
             }
-            if model.library.isEmpty {
+            if provider.rows.isEmpty {
                 emptyState
             } else {
                 list
@@ -30,11 +34,6 @@ struct LibraryView: View {
         }
         .frame(minWidth: 340, minHeight: 420)
         .background(Theme.paper)
-        // A successful open raises the reader. The sheet steps aside, and a
-        // failed open keeps it up so the reason stays visible.
-        .onChange(of: model.session != nil) { _, opened in
-            if opened { onClose() }
-        }
         .alert(
             LibraryCopy.removeTitle,
             isPresented: Binding(
@@ -44,7 +43,7 @@ struct LibraryView: View {
             presenting: pendingRemoval
         ) { row in
             Button(LibraryCopy.remove, role: .destructive) {
-                model.forget(row)
+                provider.forget(row)
                 pendingRemoval = nil
             }
             Button(LibraryCopy.cancel, role: .cancel) { pendingRemoval = nil }
@@ -89,7 +88,7 @@ struct LibraryView: View {
 
     private var list: some View {
         List {
-            ForEach(model.library, id: \.contentHash) { row in
+            ForEach(provider.rows) { row in
                 rowView(row)
             }
         }
@@ -97,10 +96,11 @@ struct LibraryView: View {
         .scrollContentBackground(.hidden)
     }
 
-    private func rowView(_ row: ReadingPosition) -> some View {
+    private func rowView(_ row: LibraryRow) -> some View {
         HStack(spacing: Theme.controlGap) {
             Button {
-                model.openFromLibrary(row)
+                let opener = LibraryOpener(provider: provider, onOpened: onClose)
+                Task { await opener.open(row) }
             } label: {
                 rowText(row)
             }
@@ -108,11 +108,11 @@ struct LibraryView: View {
 
             Menu {
                 Button(row.saved ? LibraryCopy.unsave : LibraryCopy.save) {
-                    model.setSaved(row, saved: !row.saved)
+                    provider.setSaved(row, saved: !row.saved)
                 }
                 .accessibilityIdentifier(row.saved ? AccessibilityID.libraryUnsave : AccessibilityID.librarySave)
                 Button(LibraryCopy.refresh) {
-                    model.cacheBust(row)
+                    provider.refresh(row)
                 }
                 .accessibilityIdentifier(AccessibilityID.libraryRefresh)
                 Divider()
@@ -131,7 +131,7 @@ struct LibraryView: View {
         .padding(.vertical, 4)
     }
 
-    private func rowText(_ row: ReadingPosition) -> some View {
+    private func rowText(_ row: LibraryRow) -> some View {
         HStack(spacing: Theme.controlGap) {
             VStack(alignment: .leading, spacing: 2) {
                 Text(row.title)
