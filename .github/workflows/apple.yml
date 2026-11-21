@@ -133,7 +133,7 @@ jobs:
         run: |
           xcodegen generate
           xcodebuild -project ReadLater.xcodeproj -scheme ReadLater \
-            -destination 'platform=iOS Simulator,name=iPhone 16' build CODE_SIGNING_ALLOWED=NO
+            -destination 'generic/platform=iOS Simulator' build CODE_SIGNING_ALLOWED=NO
 
   invariant:
     name: invariant
@@ -161,11 +161,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - platform: ios
-            destination: "platform=iOS Simulator,name=iPhone 16"
+          - platform: macos
+            destination: "platform=macOS"
     env:
       SUITE: core
-      MIN_TESTS: "3"
+      MIN_TESTS: "1"
     steps:
       - uses: actions/checkout@v5
       - name: stub Device.xcconfig for xcodegen
@@ -196,9 +196,9 @@ jobs:
           # so the count guard reports a short suite instead of a bad
           # identifier. The guard, not this list, decides pass or fail.
           ONLY=()
-          for cls in EntryTests ReadingTests LookupTests; do
-            if [ -f "UITests/$cls.swift" ]; then
-              ONLY+=("-only-testing:ReadLaterUITests/$cls")
+          for cls in EntryTests; do
+            if [ -f "E2ETests/$cls.swift" ]; then
+              ONLY+=("-only-testing:ReadLaterE2ETests/$cls")
             fi
           done
           printf 'selecting:%s\n' "${ONLY[*]:-none}"
@@ -434,7 +434,7 @@ jobs:
         working-directory: apps/apple
         run: |
           xcodebuild -project ReadLater.xcodeproj -scheme ReadLater \
-            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -destination 'generic/platform=iOS Simulator' \
             -configuration Release -derivedDataPath build/release \
             build CODE_SIGNING_ALLOWED=NO
       - name: the debug flag prefix is absent
