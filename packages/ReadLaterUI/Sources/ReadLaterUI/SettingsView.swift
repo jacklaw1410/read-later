@@ -1,5 +1,4 @@
 import ReadLaterCore
-import ReadLaterUI
 import SwiftUI
 
 #if canImport(UIKit)
@@ -12,12 +11,18 @@ import AppKit
 
 /// Settings content on both platforms: the macOS Settings scene shows it,
 /// and the reader screen sheet shows it on iOS.
-struct SettingsView: View {
-    let registry: PackRegistry
+public struct SettingsView: View {
+    private let packs: any CapabilityPacks
+    private let diagnostics: any DiagnosticsExporting
     @AppStorage(Appearance.storageKey) private var appearance = Appearance.system.rawValue
     @AppStorage(HandednessStore.storageKey) private var playOnTrailing = true
 
-    var body: some View {
+    public init(packs: any CapabilityPacks, diagnostics: any DiagnosticsExporting) {
+        self.packs = packs
+        self.diagnostics = diagnostics
+    }
+
+    public var body: some View {
         NavigationStack {
             List {
                 Section("Appearance") {
@@ -40,11 +45,11 @@ struct SettingsView: View {
                     .accessibilityIdentifier(AccessibilityID.settingsHandedness)
                 }
                 NavigationLink("Dictionaries") {
-                    DictionariesSettings(packs: registry)
+                    DictionariesSettings(packs: packs)
                 }
-                if DiagnosticsExport.isEnabled {
+                if diagnostics.isEnabled {
                     NavigationLink("Diagnostics") {
-                        DiagnosticsView()
+                        DiagnosticsView(diagnostics: diagnostics)
                     }
                 }
             }
@@ -58,32 +63,32 @@ struct SettingsView: View {
 
 /// The Diagnostics row: where the files came from, what is staged, and the
 /// one export action. Also the no-UI pull command, for the analyst.
-struct DiagnosticsView: View {
+public struct DiagnosticsView: View {
+    private let diagnostics: any DiagnosticsExporting
     @State private var staged: URL?
     @State private var errorMessage: String?
     @State private var showingShare = false
     @State private var savedPath: String?
 
-    private var hub: TelemetryHub { .shared }
-    private var sourcePath: String {
-        hub.oplog.configuredDirectory?.path ?? "memory only (directory not configured)"
+    public init(diagnostics: any DiagnosticsExporting) {
+        self.diagnostics = diagnostics
     }
 
-    var body: some View {
+    public var body: some View {
         List {
             Section("Files") {
                 Text("Files come from:")
                     .font(Theme.caption())
                     .foregroundStyle(Theme.inkSecondary)
-                Text(sourcePath)
+                Text(diagnostics.sourcePath)
                     .font(.system(size: 12, design: .monospaced))
                     .textSelection(.enabled)
-                Text("\(hub.oplog.logFiles().count) file(s) on disk · \(hub.oplog.pendingCount) event(s) waiting")
+                Text("\(diagnostics.fileCount) file(s) on disk · \(diagnostics.pendingCount) event(s) waiting")
                     .font(Theme.caption())
                     .foregroundStyle(Theme.inkSecondary)
-                let tail = hub.oplog.tail(5).map(\.event)
-                if !tail.isEmpty {
-                    Text("Latest: \(tail.joined(separator: ", "))")
+                let latest = diagnostics.latestEvents
+                if !latest.isEmpty {
+                    Text("Latest: \(latest.joined(separator: ", "))")
                         .font(Theme.caption())
                         .foregroundStyle(Theme.inkSecondary)
                 }
@@ -113,12 +118,10 @@ struct DiagnosticsView: View {
                 Text("Pull the same folder off the device:")
                     .font(Theme.caption())
                     .foregroundStyle(Theme.inkSecondary)
-                Text(DiagnosticsExport.pullCommand(
-                    bundleID: Bundle.main.bundleIdentifier ?? "app.readlater.reader"
-                ))
-                .font(.system(size: 12, design: .monospaced))
-                .textSelection(.enabled)
-                Button("Copy command") { copyToClipboard(command()) }
+                Text(diagnostics.pullCommand)
+                    .font(.system(size: 12, design: .monospaced))
+                    .textSelection(.enabled)
+                Button("Copy command") { copyToClipboard(diagnostics.pullCommand) }
                     .frame(minHeight: 44)
             }
         }
@@ -130,12 +133,6 @@ struct DiagnosticsView: View {
             }
         }
         #endif
-    }
-
-    private func command() -> String {
-        DiagnosticsExport.pullCommand(
-            bundleID: Bundle.main.bundleIdentifier ?? "app.readlater.reader"
-        )
     }
 
     private func copyToClipboard(_ text: String) {
@@ -150,14 +147,9 @@ struct DiagnosticsView: View {
     private func export() {
         errorMessage = nil
         savedPath = nil
-        let registry = PackRegistry.shared
-        let pace = String(SpeedStore().speed)
         let stagedFolder: URL
         do {
-            stagedFolder = try DiagnosticsExport.stage(
-                dictionaryVersion: registry.installedVersion ?? "not-installed",
-                pace: pace
-            )
+            stagedFolder = try diagnostics.stage()
         } catch {
             errorMessage = "Export failed: \(error.localizedDescription)"
             return
