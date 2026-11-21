@@ -453,11 +453,7 @@ public struct EntryView: View {
         // would drink the VStack leftover, stretching the card. The strip
         // hugs its content; the Spacer below takes the rest.
         .fixedSize(horizontal: false, vertical: true)
-        #if os(macOS)
         .accessibilityElement(children: .contain)
-        #else
-        .accessibilityElement(children: .combine)
-        #endif
         .accessibilityLabel(stripAccessibilityLabel(wordCount: words.count))
         .accessibilityAddTraits(.updatesFrequently)
         .accessibilityIdentifier(AccessibilityID.entryStrip)
