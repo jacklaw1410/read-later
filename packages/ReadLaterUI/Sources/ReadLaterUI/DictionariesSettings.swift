@@ -4,6 +4,7 @@ import SwiftUI
 
 /// The words Settings › Dictionaries shows for a pack's state. Reads only the
 /// `CapabilityPacks` seam, so a test can drive it with a fake pack.
+@MainActor
 public struct DictionaryStatusText {
     private let packs: any CapabilityPacks
 
