@@ -4,6 +4,7 @@ import SwiftUI
 /// The hit state: the tapped word resolved to a gloss. The card owns no
 /// playback; the caller supplies the flag and the word index.
 public struct LookupCard: View {
+    private let telemetry: TelemetryHub
     private let result: LookupResult
     private let wasPlayingBeforeLookup: Bool
     private let wordIndex: Int?
@@ -12,12 +13,14 @@ public struct LookupCard: View {
     @State private var didLogShown = false
 
     public init(
+        telemetry: TelemetryHub,
         result: LookupResult,
         wasPlayingBeforeLookup: Bool,
         wordIndex: Int?,
         isCurrentWashWord: Bool,
         onClose: @escaping () -> Void
     ) {
+        self.telemetry = telemetry
         self.result = result
         self.wasPlayingBeforeLookup = wasPlayingBeforeLookup
         self.wordIndex = wordIndex
@@ -95,7 +98,7 @@ public struct LookupCard: View {
             DispatchQueue.main.async {
                 guard !didLogShown else { return }
                 didLogShown = true
-                TelemetryHub.shared.record(
+                telemetry.record(
                     TelemetryName.cardShown,
                     fields: ["word": result.word, "kind": "hit"]
                 )

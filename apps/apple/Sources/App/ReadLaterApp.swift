@@ -8,19 +8,22 @@ struct ReadLaterApp: App {
     /// macOS Settings scene receive these same instances.
     private let registry: PackRegistry
     private let diagnostics: DiagnosticsAdapter
+    private let telemetry: TelemetryHub
 
     init() {
         let registry = PackRegistry()
+        let telemetry = TelemetryHub.shared
         self.registry = registry
+        self.telemetry = telemetry
         self.diagnostics = DiagnosticsAdapter(
-            packs: registry, speedStore: SpeedStore(), hub: TelemetryHub.shared)
+            packs: registry, speedStore: SpeedStore(), hub: telemetry)
         #if DEBUG
         DebugLaunch.prepare()
         DebugProbes.start()
         #endif
-        TelemetryHub.shared.configure()
-        TelemetryHub.shared.record(TelemetryName.processStart)
-        TelemetryHub.shared.record(TelemetryName.launchBuild, fields: Self.buildFields)
+        telemetry.configure()
+        telemetry.record(TelemetryName.processStart)
+        telemetry.record(TelemetryName.launchBuild, fields: Self.buildFields)
     }
 
     /// Ties every run to a build: the git SHA stamped by the post-build phase,
@@ -49,7 +52,7 @@ struct ReadLaterApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView(registry: registry, diagnostics: diagnostics)
+            RootView(registry: registry, diagnostics: diagnostics, telemetry: telemetry)
         }
         .defaultSize(width: 430, height: 760)
         #if os(macOS)

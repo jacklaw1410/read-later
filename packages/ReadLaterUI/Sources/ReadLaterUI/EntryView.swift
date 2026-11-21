@@ -131,6 +131,7 @@ struct EntryRequest: Sendable, Equatable {
 /// The first screen: one field, a status strip, one Open button, and a
 /// loadline that appears below the button on the first open.
 public struct EntryView: View {
+    private let telemetry: TelemetryHub
     private let onOpen: (ReadLaterCore.Document) -> Void
     private let onSettings: (() -> Void)?
     private let onLibrary: (() -> Void)?
@@ -154,12 +155,14 @@ public struct EntryView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     public init(
+        telemetry: TelemetryHub,
         onOpen: @escaping (ReadLaterCore.Document) -> Void,
         onSettings: (() -> Void)? = nil,
         onLibrary: (() -> Void)? = nil,
         prefillLink: String = EntryCopy.sampleLink,
         clipboardEmpty: Bool = false
     ) {
+        self.telemetry = telemetry
         self.onOpen = onOpen
         self.onSettings = onSettings
         self.onLibrary = onLibrary
@@ -268,7 +271,7 @@ public struct EntryView: View {
                 Button("Done") { fieldFocused = false }
             }
         }
-        .onAppear { TelemetryHub.shared.markEntryReady() }
+        .onAppear { telemetry.markEntryReady() }
     }
 
     private var isLoading: Bool {
@@ -394,6 +397,7 @@ public struct EntryView: View {
                     Button {
                         pasting = true
                         EntryPaste.pasteFromBoard(
+                            telemetry: telemetry,
                             deliver: { text in
                                 MainActor.assumeIsolated {
                                     pasting = false
@@ -625,7 +629,7 @@ public struct EntryView: View {
         // The keyboard has done its job once the request leaves. Dismiss it
         // here so the loadline is visible on small screens.
         fieldFocused = false
-        TelemetryHub.shared.record(TelemetryName.tap)
+        telemetry.record(TelemetryName.tap)
         let request: EntryRequest
         if kind == .text {
             request = EntryRequest(mode: .text, linkText: "", rawText: trimmedInput)
@@ -648,9 +652,9 @@ public struct EntryView: View {
         case .text:
             setLoading(.stripping)
             await reveal(.ready)
-            switch ArticleIngress.pasted(request.raw) {
+            switch ArticleIngress.pasted(request.raw, telemetry: telemetry) {
             case .success(let document):
-                TelemetryHub.shared.record(TelemetryName.readerOpen, fields: ["source": "pasted"])
+                telemetry.record(TelemetryName.readerOpen, fields: ["source": "pasted"])
                 onOpen(document)
             case .failure(let error):
                 state = .refused(error.message)
@@ -663,18 +667,18 @@ public struct EntryView: View {
             setLoading(.fetching)
             await reveal(.stripping)
             await reveal(.ready)
-            TelemetryHub.shared.record(TelemetryName.fetchSkipped, fields: ["reason": "sample-link"])
-            TelemetryHub.shared.record(TelemetryName.planReady, fields: [
+            telemetry.record(TelemetryName.fetchSkipped, fields: ["reason": "sample-link"])
+            telemetry.record(TelemetryName.planReady, fields: [
                 "source": "sample",
                 "words": String(ArticleLibrary.demo.plan.spokenWords),
             ])
-            TelemetryHub.shared.record(TelemetryName.readerOpen, fields: ["source": "sample"])
+            telemetry.record(TelemetryName.readerOpen, fields: ["source": "sample"])
             onOpen(ArticleLibrary.demo)
             return
         }
 
         setLoading(.fetching)
-        let fetched = await ArticleIngress.fetch(request.link)
+        let fetched = await ArticleIngress.fetch(request.link, telemetry: telemetry)
         guard case .success(let page) = fetched else {
             if case .failure(let error) = fetched {
                 state = .refused(error.message)
@@ -682,10 +686,10 @@ public struct EntryView: View {
             return
         }
         setLoading(.stripping)
-        switch ArticleIngress.read(page) {
+        switch ArticleIngress.read(page, telemetry: telemetry) {
         case .success(let document):
             await reveal(.ready)
-            TelemetryHub.shared.record(TelemetryName.readerOpen, fields: ["source": "link"])
+            telemetry.record(TelemetryName.readerOpen, fields: ["source": "link"])
             onOpen(document)
         case .failure(let error):
             state = .refused(error.message)

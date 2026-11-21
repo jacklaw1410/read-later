@@ -17,7 +17,7 @@ enum SnapshotHarness {
         ProcessInfo.processInfo.arguments.contains("--snapshot")
     }
 
-    static func run(app: AppModel, registry: PackRegistry) async {
+    static func run(app: AppModel, registry: PackRegistry, telemetry: TelemetryHub) async {
         let directory = outputDirectory()
         try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
 
@@ -107,7 +107,7 @@ enum SnapshotHarness {
         capture("12-hit", into: directory)
 
         print("[snapshot] wrote \(directory.path)")
-        TelemetryHub.shared.flush()
+        telemetry.flush()
         NSApp.terminate(nil)
     }
 

@@ -50,21 +50,22 @@ public enum ArticleIngress {
     /// The whole path, for a caller that does not show progress.
     public static func document(
         from input: IngressInput,
-        fetcher: PageFetching = URLSessionPageFetcher(),
+        telemetry: TelemetryHub,
+        fetcher: PageFetching? = nil,
         extractor: Extractor = SwiftSoupExtractor()
     ) async -> Result<Document, IngressError> {
         switch input {
         case .text(let text):
-            return pasted(text)
+            return pasted(text, telemetry: telemetry)
         case .link(let raw):
             guard let url = linkURL(from: raw) else {
                 return .failure(raw.isEmpty ? .empty : .badLink)
             }
-            switch await fetch(url.absoluteString, fetcher: fetcher) {
+            switch await fetch(url.absoluteString, telemetry: telemetry, fetcher: fetcher) {
             case .failure(let error):
                 return .failure(error)
             case .success(let page):
-                return read(page, extractor: extractor)
+                return read(page, telemetry: telemetry, extractor: extractor)
             }
         }
     }
@@ -87,7 +88,8 @@ public enum ArticleIngress {
     /// Security blocks it, and a clear refusal costs less than a silent stall.
     public static func fetch(
         _ raw: String,
-        fetcher: PageFetching = URLSessionPageFetcher()
+        telemetry: TelemetryHub,
+        fetcher: PageFetching? = nil
     ) async -> Result<FetchedPage, IngressError> {
         guard let url = linkURL(from: raw) else {
             return .failure(raw.isEmpty ? .empty : .badLink)
@@ -95,6 +97,7 @@ public enum ArticleIngress {
         guard url.scheme?.lowercased() == "https" else {
             return .failure(.notHTTPS)
         }
+        let fetcher = fetcher ?? URLSessionPageFetcher(telemetry: telemetry)
         do {
             return .success(try await fetcher.fetch(url))
         } catch let error as PageFetchError {
@@ -102,17 +105,17 @@ public enum ArticleIngress {
             case .notHTTP:
                 return .failure(.notHTTPS)
             case .tooLarge(let bytes):
-                TelemetryHub.shared.record(TelemetryName.fetchFailed, fields: ["kind": "tooLarge", "bytes": String(bytes)])
+                telemetry.record(TelemetryName.fetchFailed, fields: ["kind": "tooLarge", "bytes": String(bytes)])
                 return .failure(.failed)
             case .notText:
-                TelemetryHub.shared.record(TelemetryName.fetchFailed, fields: ["kind": "notText"])
+                telemetry.record(TelemetryName.fetchFailed, fields: ["kind": "notText"])
                 return .failure(.failed)
             case .offline:
-                TelemetryHub.shared.record(TelemetryName.fetchFailed, fields: ["kind": "offline"])
+                telemetry.record(TelemetryName.fetchFailed, fields: ["kind": "offline"])
                 return .failure(.offline(""))
             }
         } catch {
-            TelemetryHub.shared.record(TelemetryName.fetchFailed, fields: ["kind": "offline"])
+            telemetry.record(TelemetryName.fetchFailed, fields: ["kind": "offline"])
             return .failure(.offline(""))
         }
     }
@@ -121,19 +124,20 @@ public enum ArticleIngress {
     /// redirect to a canonical address is recorded, not the link that was typed.
     public static func read(
         _ page: FetchedPage,
+        telemetry: TelemetryHub,
         extractor: Extractor = SwiftSoupExtractor()
     ) -> Result<Document, IngressError> {
-        TelemetryHub.shared.record(TelemetryName.extractStart, fields: ["bytes": String(page.html.count)])
+        telemetry.record(TelemetryName.extractStart, fields: ["bytes": String(page.html.count)])
         do {
             let result = try extractor.extract(html: page.html, source: page.url.absoluteString, httpStatus: page.status)
-            TelemetryHub.shared.record(TelemetryName.parsed, fields: ["blocks": String(result.blocks.count)])
+            telemetry.record(TelemetryName.parsed, fields: ["blocks": String(result.blocks.count)])
             let plan = SpokenPlanBuilder.build(
                 blocks: result.blocks,
                 source: page.url.host ?? page.url.absoluteString,
                 sourceSHA256: sha256(page.html)
             )
             guard !plan.blocks.isEmpty else { return .failure(.failed) }
-            TelemetryHub.shared.record(TelemetryName.planReady, fields: [
+            telemetry.record(TelemetryName.planReady, fields: [
                 "sentences": String(plan.sentenceCount),
                 "words": String(plan.spokenWords),
             ])
@@ -145,30 +149,30 @@ public enum ArticleIngress {
         } catch let error as ExtractionError {
             switch error {
             case .walled:
-                TelemetryHub.shared.record(TelemetryName.extractFailed, fields: ["kind": "walled"])
+                telemetry.record(TelemetryName.extractFailed, fields: ["kind": "walled"])
                 return .failure(.walled)
             case .unrendered:
-                TelemetryHub.shared.record(TelemetryName.extractFailed, fields: ["kind": "unrendered"])
+                telemetry.record(TelemetryName.extractFailed, fields: ["kind": "unrendered"])
                 return .failure(.unrendered)
             case .notAnArticle:
-                TelemetryHub.shared.record(TelemetryName.extractFailed, fields: ["kind": "notAnArticle"])
+                telemetry.record(TelemetryName.extractFailed, fields: ["kind": "notAnArticle"])
                 return .failure(.notAnArticle)
             case .emptyDocument, .badURL:
-                TelemetryHub.shared.record(TelemetryName.extractFailed, fields: ["kind": "failed"])
+                telemetry.record(TelemetryName.extractFailed, fields: ["kind": "failed"])
                 return .failure(.failed)
             }
         } catch {
-            TelemetryHub.shared.record(TelemetryName.extractFailed, fields: ["kind": "failed"])
+            telemetry.record(TelemetryName.extractFailed, fields: ["kind": "failed"])
             return .failure(.failed)
         }
     }
 
     /// Pasted text needs no page and no plan call beyond the paragraph split.
-    public static func pasted(_ text: String) -> Result<Document, IngressError> {
+    public static func pasted(_ text: String, telemetry: TelemetryHub) -> Result<Document, IngressError> {
         guard let document = PasteLoader.document(from: text, title: nil) else {
             return .failure(.empty)
         }
-        TelemetryHub.shared.record(TelemetryName.planReady, fields: [
+        telemetry.record(TelemetryName.planReady, fields: [
             "source": "pasted",
             "words": String(document.plan.spokenWords),
         ])

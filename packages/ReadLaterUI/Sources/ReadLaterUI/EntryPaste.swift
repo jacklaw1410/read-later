@@ -92,8 +92,8 @@ public enum EntryPaste {
     #endif
 
     /// Records one `paste.*` event through `TelemetryHub`.
-    private static func diag(_ name: String, _ fields: [String: String] = [:]) {
-        TelemetryHub.shared.record(name, fields: fields)
+    private static func diag(_ telemetry: TelemetryHub, _ name: String, _ fields: [String: String] = [:]) {
+        telemetry.record(name, fields: fields)
     }
 
     #if !os(macOS)
@@ -115,14 +115,16 @@ public enum EntryPaste {
     /// Each tap records `paste.tap`. The `paste.*` oplog events record the
     /// branch taken and the result. They may help diagnose a device denial.
     public static func pasteFromBoard(
+        telemetry: TelemetryHub,
         deliver: @escaping @Sendable (String) -> Void,
         fail: @escaping @Sendable () -> Void
     ) {
-        diag("paste.tap", ["source": "button"])
-        readBoardWithPrompt(deliver: deliver, fail: fail)
+        diag(telemetry, "paste.tap", ["source": "button"])
+        readBoardWithPrompt(telemetry: telemetry, deliver: deliver, fail: fail)
     }
 
     private static func readBoardWithPrompt(
+        telemetry: TelemetryHub,
         deliver: @escaping @Sendable (String) -> Void,
         fail: @escaping @Sendable () -> Void
     ) {
@@ -130,7 +132,7 @@ public enum EntryPaste {
             let deadline = Date().addingTimeInterval(promptWait)
             while Date() < deadline {
                 if let text = EntryPaste.boardText() {
-                    diag("paste.delivered", [
+                    diag(telemetry, "paste.delivered", [
                         "branch": "prompt",
                         "chars": String(text.count),
                     ])
@@ -139,10 +141,10 @@ public enum EntryPaste {
                 }
                 try? await Task.sleep(nanoseconds: 250_000_000)
             }
-            diag("paste.blocked")
+            diag(telemetry, "paste.blocked")
             // Flush at once: the test runner and a dying app may never
             // hit a lifecycle hook, and a Deny outcome must survive.
-            TelemetryHub.shared.flush()
+            telemetry.flush()
             fail()
         }
     }
