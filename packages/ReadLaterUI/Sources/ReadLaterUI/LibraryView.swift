@@ -99,8 +99,10 @@ public struct LibraryView: View {
     private func rowView(_ row: LibraryRow) -> some View {
         HStack(spacing: Theme.controlGap) {
             Button {
-                let opener = LibraryOpener(provider: provider, onOpened: onClose)
-                Task { await opener.open(row) }
+                Task {
+                    // A failed open keeps the sheet up so the provider's message stays visible.
+                    if await provider.open(row) { onClose() }
+                }
             } label: {
                 rowText(row)
             }
