@@ -395,13 +395,17 @@ public struct EntryView: View {
                         pasting = true
                         EntryPaste.pasteFromBoard(
                             deliver: { text in
-                                pasting = false
-                                pasteBlocked = false
-                                inputText = text
+                                MainActor.assumeIsolated {
+                                    pasting = false
+                                    pasteBlocked = false
+                                    inputText = text
+                                }
                             },
                             fail: {
-                                pasting = false
-                                pasteBlocked = true
+                                MainActor.assumeIsolated {
+                                    pasting = false
+                                    pasteBlocked = true
+                                }
                             }
                         )
                     } label: {

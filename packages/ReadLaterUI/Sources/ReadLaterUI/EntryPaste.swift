@@ -115,16 +115,16 @@ public enum EntryPaste {
     /// Each tap records `paste.tap`. The `paste.*` oplog events record the
     /// branch taken and the result. They may help diagnose a device denial.
     public static func pasteFromBoard(
-        deliver: @escaping (String) -> Void,
-        fail: @escaping () -> Void
+        deliver: @escaping @Sendable (String) -> Void,
+        fail: @escaping @Sendable () -> Void
     ) {
         diag("paste.tap", ["source": "button"])
         readBoardWithPrompt(deliver: deliver, fail: fail)
     }
 
     private static func readBoardWithPrompt(
-        deliver: @escaping (String) -> Void,
-        fail: @escaping () -> Void
+        deliver: @escaping @Sendable (String) -> Void,
+        fail: @escaping @Sendable () -> Void
     ) {
         Task { @MainActor in
             let deadline = Date().addingTimeInterval(promptWait)
