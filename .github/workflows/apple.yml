@@ -197,8 +197,8 @@ jobs:
           # identifier. The guard, not this list, decides pass or fail.
           ONLY=()
           for cls in EntryTests ReadingTests LookupTests; do
-            if [ -f "UITests/$cls.swift" ]; then
-              ONLY+=("-only-testing:ReadLaterUITests/$cls")
+            if [ -f "E2ETests/$cls.swift" ]; then
+              ONLY+=("-only-testing:ReadLaterE2ETests/$cls")
             fi
           done
           printf 'selecting:%s\n' "${ONLY[*]:-none}"

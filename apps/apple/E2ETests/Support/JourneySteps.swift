@@ -96,12 +96,17 @@ enum JourneySteps {
     }
 
     /// Opens a library row by its title. The row button wraps the row text,
-    /// so the query finds buttons containing the titled static text.
+    /// so the query finds buttons containing the titled text. On macOS the
+    /// title surfaces as a heading (Other), not a StaticText.
     static func openLibraryRow(_ app: XCUIApplication, title: String) {
         let library = app.buttons[AccessibilityID.entryLibrary]
         XCTAssertTrue(library.waitForExistence(timeout: Waits.screen), "the library button is missing")
         tap(app, library)
+        #if os(macOS)
+        let row = app.buttons.containing(.any, identifier: title).firstMatch
+        #else
         let row = app.buttons.containing(.staticText, identifier: title).firstMatch
+        #endif
         XCTAssertTrue(row.waitForExistence(timeout: Waits.screen), "no library row for \(title)")
         tap(app, row)
         XCTAssertTrue(

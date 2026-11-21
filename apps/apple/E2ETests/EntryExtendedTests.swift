@@ -73,7 +73,11 @@ final class EntryExtendedTests: XCTestCase {
         JourneySteps.tap(app, field)
         clearField(field, in: app)
         // Six words: the derived title is the text itself, no ellipsis.
-        field.typeText("Slow readers keep the whole field")
+        // Typing the capitalised first letter in one `typeText` call
+        // triggers macOS press-and-hold on `s`, which hides the window;
+        // split it off so the rest types as plain lowercase.
+        field.typeText("S")
+        field.typeText("low readers keep the whole field")
 
         // The keyboard Done dismisses the editor; the open tap must land on
         // the button, not the keyboard.
