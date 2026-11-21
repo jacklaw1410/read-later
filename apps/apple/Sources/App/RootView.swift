@@ -415,7 +415,7 @@ struct RootView: View {
 
 /// The reader: chrome, blocks, transport, and the one overlay layer.
 struct ReaderScreen: View {
-    @ObservedObject var session: ReaderSession
+    let session: ReaderSession
     let registry: any CapabilityPacks
     let onExit: () -> Void
 
@@ -490,16 +490,27 @@ struct ReaderScreen: View {
     }
 
     private var rail: some View {
-        RailView(
-            progress: session.progress,
-            onSpeed: { session.setSpeed($0) },
-            onScrub: { session.scrub(toFraction: $0) },
-            onPreviewScrub: { session.previewScrub(toFraction: $0) },
-            onScrubbingChanged: { scrubbing in
-                if scrubbing { session.beginScrubbing() } else { session.finishScrubbing() }
-            },
-            arrowHandler: scrubArrowHandler
-        )
+        ReaderRail(session: session, arrowHandler: scrubArrowHandler)
+    }
+
+    /// Reads `session.progress` in its own body. A wash tick rebuilds this
+    /// rail and nothing in `ReaderScreen`.
+    private struct ReaderRail: View {
+        let session: ReaderSession
+        let arrowHandler: (KeyPress) -> KeyPress.Result
+
+        var body: some View {
+            RailView(
+                progress: session.progress,
+                onSpeed: { session.setSpeed($0) },
+                onScrub: { session.scrub(toFraction: $0) },
+                onPreviewScrub: { session.previewScrub(toFraction: $0) },
+                onScrubbingChanged: { scrubbing in
+                    if scrubbing { session.beginScrubbing() } else { session.finishScrubbing() }
+                },
+                arrowHandler: arrowHandler
+            )
+        }
     }
 
     /// Arrow-key handler for the rail scrubber. Captures only the session, so
@@ -548,25 +559,35 @@ struct ReaderScreen: View {
     }
 
     private var clockButton: some View {
-        Button {
-            clockMode = (clockMode + 1) % 3
-        } label: {
-            Text(session.progress.clockText(mode: clockMode))
-                .font(Theme.mono())
-                .foregroundStyle(Theme.inkSecondary)
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel("Clock \(clockModeLabel), tap to change format")
-        .accessibilityValue(session.progress.clockText(mode: clockMode))
-        .accessibilityAddTraits(.updatesFrequently)
-        .accessibilityIdentifier(AccessibilityID.clock)
+        ReaderClock(session: session, mode: $clockMode)
     }
 
-    private var clockModeLabel: String {
-        switch clockMode {
-        case 1: return "count"
-        case 2: return "percent"
-        default: return "time and count"
+    /// Reads `session.progress` in its own body, like `ReaderRail`.
+    private struct ReaderClock: View {
+        let session: ReaderSession
+        @Binding var mode: Int
+
+        var body: some View {
+            Button {
+                mode = (mode + 1) % 3
+            } label: {
+                Text(session.progress.clockText(mode: mode))
+                    .font(Theme.mono())
+                    .foregroundStyle(Theme.inkSecondary)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Clock \(modeLabel), tap to change format")
+            .accessibilityValue(session.progress.clockText(mode: mode))
+            .accessibilityAddTraits(.updatesFrequently)
+            .accessibilityIdentifier(AccessibilityID.clock)
+        }
+
+        private var modeLabel: String {
+            switch mode {
+            case 1: return "count"
+            case 2: return "percent"
+            default: return "time and count"
+            }
         }
     }
 
