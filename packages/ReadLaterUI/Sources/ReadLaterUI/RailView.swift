@@ -67,7 +67,7 @@ public struct RailView: View {
     private let arrowHandler: (KeyPress) -> KeyPress.Result
 
     /// The 4-value speed ladder. Full 0.1-step range stays on +/-.
-    public static let ladder: [Float] = [0.5, 1.0, 1.2, 1.5]
+    public nonisolated static let ladder: [Float] = [0.5, 1.0, 1.2, 1.5]
 
     /// Right margin. Keeps the play button off the window border.
     public static let trailingGutter: CGFloat = Theme.stackGap

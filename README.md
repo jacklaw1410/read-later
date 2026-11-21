@@ -156,11 +156,11 @@ cd ../ReadLaterUI && swift test
 `ReadLaterTestKit` is a fixture library, not a test bundle. It has no
 `Package.swift` and no tests of its own.
 The package suites above are unit tests. They do not launch the app. The
-end-to-end journeys live in `apps/apple/UITests`; see below.
+end-to-end journeys live in `apps/apple/E2ETests`; see below.
 
 ### UI journeys
 
-`apps/apple/UITests` holds the end-to-end journeys, grouped by feature. One
+`apps/apple/E2ETests` holds the end-to-end journeys, grouped by feature. One
 bundle serves both destinations. To run them:
 
 ```bash
@@ -171,7 +171,8 @@ xcodebuild test -project ReadLater.xcodeproj -scheme ReadLater \
   CODE_SIGNING_ALLOWED=NO
 ```
 
-For macOS, replace the destination with `-destination 'platform=macOS'`.
+For macOS, replace the destination with `-destination 'platform=macOS'` and add the signing flags:
+`CODE_SIGN_IDENTITY="-" CODE_SIGNING_ALLOWED=YES CODE_SIGNING_REQUIRED=NO`.
 
 A journey launches the built app, taps real views and uses the scripted voice.
 It asserts wiring, not voice timing. Voice timing belongs to the unit tests.

@@ -395,13 +395,17 @@ public struct EntryView: View {
                         pasting = true
                         EntryPaste.pasteFromBoard(
                             deliver: { text in
-                                pasting = false
-                                pasteBlocked = false
-                                inputText = text
+                                MainActor.assumeIsolated {
+                                    pasting = false
+                                    pasteBlocked = false
+                                    inputText = text
+                                }
                             },
                             fail: {
-                                pasting = false
-                                pasteBlocked = true
+                                MainActor.assumeIsolated {
+                                    pasting = false
+                                    pasteBlocked = true
+                                }
                             }
                         )
                     } label: {
@@ -449,7 +453,7 @@ public struct EntryView: View {
         // would drink the VStack leftover, stretching the card. The strip
         // hugs its content; the Spacer below takes the rest.
         .fixedSize(horizontal: false, vertical: true)
-        .accessibilityElement(children: .combine)
+        .accessibilityElement(children: .contain)
         .accessibilityLabel(stripAccessibilityLabel(wordCount: words.count))
         .accessibilityAddTraits(.updatesFrequently)
         .accessibilityIdentifier(AccessibilityID.entryStrip)

@@ -65,9 +65,26 @@ enum JourneySteps {
     static func tap(_ app: XCUIApplication, _ element: XCUIElement) {
         front(app)
         #if os(macOS)
-        element.click()
+        // Wait for the element to become hittable after activation. A
+        // click sent while the window is still activating is lost.
+        let deadline = Date().addingTimeInterval(Waits.state)
+        while Date() < deadline && !element.isHittable {
+            Thread.sleep(forTimeInterval: 0.25)
+        }
+        if element.isHittable {
+            element.click()
+        } else {
+            // Fall back to the centre coordinate only when the element
+            // stays non-hittable. Pin the window size in the app launch
+            // so this coordinate stays stable.
+            element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).click()
+        }
         #else
-        element.tap()
+        if element.isHittable {
+            element.tap()
+        } else {
+            element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        }
         #endif
     }
 
@@ -96,12 +113,17 @@ enum JourneySteps {
     }
 
     /// Opens a library row by its title. The row button wraps the row text,
-    /// so the query finds buttons containing the titled static text.
+    /// so the query finds buttons containing the titled text. On macOS the
+    /// title surfaces as a heading (Other), not a StaticText.
     static func openLibraryRow(_ app: XCUIApplication, title: String) {
         let library = app.buttons[AccessibilityID.entryLibrary]
         XCTAssertTrue(library.waitForExistence(timeout: Waits.screen), "the library button is missing")
         tap(app, library)
+        #if os(macOS)
+        let row = app.buttons.containing(.any, identifier: title).firstMatch
+        #else
         let row = app.buttons.containing(.staticText, identifier: title).firstMatch
+        #endif
         XCTAssertTrue(row.waitForExistence(timeout: Waits.screen), "no library row for \(title)")
         tap(app, row)
         XCTAssertTrue(

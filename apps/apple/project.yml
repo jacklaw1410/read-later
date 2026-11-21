@@ -86,18 +86,18 @@ targets:
 
   # One UI-test bundle for both destinations. The journeys are grouped by
   # user-facing feature; the platform differences live in Support/.
-  ReadLaterUITests:
+  ReadLaterE2ETests:
     type: bundle.ui-testing
     supportedDestinations: [iOS, macOS]
-    bundleId: app.readlater.reader.uitests
+    bundleId: app.readlater.reader.e2etests
     sources:
-      - path: UITests
+      - path: E2ETests
     dependencies:
       - target: ReadLater
       - package: ReadLaterUI
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: app.readlater.reader.uitests
+        PRODUCT_BUNDLE_IDENTIFIER: app.readlater.reader.e2etests
         GENERATE_INFOPLIST_FILE: YES
         TEST_TARGET_NAME: ReadLater
         CODE_SIGNING_ALLOWED[sdk=iphonesimulator*]: NO
@@ -116,4 +116,4 @@ schemes:
       config: Debug
       gatherCoverageData: false
       targets:
-        - ReadLaterUITests
+        - ReadLaterE2ETests
