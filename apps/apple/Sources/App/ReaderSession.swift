@@ -1,4 +1,5 @@
 import Foundation
+import Observation
 import ReadLaterCore
 import ReadLaterStore
 import ReadLaterUI
@@ -8,9 +9,11 @@ import ReadLaterUI
 /// One place owns the wash, the lookupState.card, the hold, and the speech controller. The
 /// views read this and send intents back; none of them start or stop audio on
 /// their own, because the pause/restore contract only holds if one object
-/// remembers whether the voice was live before the tap.
+/// remembers whether the voice was live before the tap. Mutable state that no
+/// view reads is `@ObservationIgnored`, so its writes do not invalidate the reader.
 @MainActor
-final class ReaderSession: ObservableObject {
+@Observable
+final class ReaderSession {
     let document: ReadLaterCore.Document
     let spoken: SpokenWordNumbering
 
@@ -27,14 +30,14 @@ final class ReaderSession: ObservableObject {
     /// Where the next `play` starts. Set by a scrub while paused. A latch,
     /// not a plain optional: the stash clears only after a start succeeds,
     /// so a failed first press retries the same word (F19 1.3).
-    private var latch = ResumeLatch()
+    @ObservationIgnored private var latch = ResumeLatch()
     /// Set when a drag pauses a playing voice. The release plays again from
     /// the released word.
-    private var resumeAfterScrub = false
+    @ObservationIgnored private var resumeAfterScrub = false
     /// Receives the current word index when the place should be recorded.
     /// Throttled during reading; immediate on pause, scrub and finish.
-    var onProgress: ((Int, String) -> Void)?
-    private var progressThrottle = PositionWriteThrottle()
+    @ObservationIgnored var onProgress: ((Int, String) -> Void)?
+    @ObservationIgnored private var progressThrottle = PositionWriteThrottle()
 
 
     init(
