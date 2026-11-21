@@ -1,16 +1,25 @@
 # ADR-0001 — Module boundaries and the contracts seam
 
-Status: accepted · Date: 2026-11-12
+Status: accepted · Date: 2026-11-12 · Amended: 2026-11-21
 
 ## Decision
 
 Five packages, one seam. `ReadLaterCore` (block model, extraction,
-spoken plan, invariant, lookup protocol), `ReadLaterPacks` (manifest,
-verify, install state machine), `ReadLaterStore` (GRDB schema,
-migrations, FTS5, oplog), `ReadLaterUI` (Calm Editorial tokens and
-shared views), `ReadLaterTestKit` (fixture loading, invariant harness,
-assertions). The packages touch each other only through versioned JSON
-contracts in `contracts/`: the block plan and the pack manifest.
+spoken plan, invariant, in-process protocols), `ReadLaterPacks`
+(manifest, verify, install state machine), `ReadLaterStore` (GRDB
+schema, migrations, FTS5, oplog), `ReadLaterUI` (Calm Editorial tokens
+and shared views), `ReadLaterTestKit` (fixture loading, invariant
+harness, assertions). The packages touch each other only through
+versioned JSON contracts in `contracts/`: the block plan and the pack
+manifest.
+
+`ReadLaterCore` may also hold in-process protocols and the value types
+they use, provided they import only Foundation and SwiftSoup. Examples:
+`Diagnostics`, `SpeechController`, `LookupProvider` and `Extractor`.
+A view in `ReadLaterUI` reads app-only state, such as pack installs or
+library rows, through a protocol defined in Core. The app target
+implements the protocol. Data that crosses a package boundary still
+travels as a versioned JSON contract.
 
 ## Context
 
