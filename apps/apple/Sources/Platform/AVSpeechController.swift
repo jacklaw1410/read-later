@@ -65,7 +65,6 @@ public final class AVSpeechController: NSObject, SpeechController {
         var position: Int
         var text: String
         var shift: Int
-        var firstWord: Int
     }
 
     private let synthesizer = AVSpeechSynthesizer()
@@ -83,7 +82,6 @@ public final class AVSpeechController: NSObject, SpeechController {
     /// queue position, which is past the cut sentence.
     private var heldWord: Int?
     private var rateTask: Task<Void, Never>?
-    private var heartbeat: Task<Void, Never>?
     private var rateSettler = RateSettler()
     private var epoch = 0
     private var warmedUp = false
@@ -190,7 +188,13 @@ public final class AVSpeechController: NSObject, SpeechController {
     }
 
     public func pause() {
-        holdForScrub()
+        guard state == .speaking else { return }
+        let accepted = synthesizer.pauseSpeaking(at: .word)
+        TelemetryHub.shared.record(TelemetryName.speechPauseCall, fields: [
+            "accepted": String(accepted),
+            "synthPaused": String(synthesizer.isPaused),
+        ])
+        state = .paused
     }
 
     public func holdForScrub() {
@@ -224,7 +228,6 @@ public final class AVSpeechController: NSObject, SpeechController {
     }
 
     public func stop() {
-        stopHeartbeat()
         epoch += 1
         synthesizer.stopSpeaking(at: .immediate)
         inFlight.removeAll()
@@ -278,8 +281,7 @@ public final class AVSpeechController: NSObject, SpeechController {
         headTruncation = remainder.isEmpty ? nil : HeadTruncation(
             position: position,
             text: remainder,
-            shift: start.characterOffset,
-            firstWord: clamped
+            shift: start.characterOffset
         )
         nextToEnqueue = position
         currentWordIndex = clamped
@@ -313,37 +315,6 @@ public final class AVSpeechController: NSObject, SpeechController {
     /// a `.speaking` controller with nothing live is lying (F19 1.4).
     public var hasLiveUtterances: Bool {
         !inFlight.isEmpty
-    }
-
-    private func startHeartbeat() {
-        guard heartbeat == nil else { return }
-        heartbeat = Task { @MainActor [weak self] in
-            while !Task.isCancelled {
-                try? await Task.sleep(nanoseconds: 1_000_000_000)
-                guard let self, !Task.isCancelled else { return }
-                self.logHeartbeat()
-            }
-        }
-    }
-
-    private func stopHeartbeat() {
-        heartbeat?.cancel()
-        heartbeat = nil
-    }
-
-    private func logHeartbeat() {
-        var fields: [String: String] = [
-            "state": String(describing: state),
-            "isSpeaking": String(synthesizer.isSpeaking),
-            "isPaused": String(synthesizer.isPaused),
-            "inFlight": String(inFlight.count),
-            "word": String(currentWordIndex),
-            "uptime": String(format: "%.6f", ProcessInfo.processInfo.systemUptime),
-        ]
-        #if os(iOS)
-            fields["outputVolume"] = String(format: "%.3f", AVAudioSession.sharedInstance().outputVolume)
-        #endif
-        TelemetryHub.shared.record(TelemetryName.speechHeartbeat, fields: fields)
     }
 
     // MARK: - Queue
@@ -397,22 +368,20 @@ public final class AVSpeechController: NSObject, SpeechController {
             guard let raw = note.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt,
                   let type = AVAudioSession.InterruptionType(rawValue: raw)
             else { return }
-            TelemetryHub.shared.record(TelemetryName.audioInterruption, fields: [
-                "type": String(raw),
-                "state": String(describing: state),
-            ])
             switch type {
             case .began:
                 if state == .speaking {
                     pausedByInterruption = true
-                    holdForScrub()
+                    synthesizer.pauseSpeaking(at: .word)
+                    state = .paused
                 }
             case .ended:
                 let options = (note.userInfo?[AVAudioSessionInterruptionOptionKey] as? UInt)
                     .map(AVAudioSession.InterruptionOptions.init(rawValue:)) ?? []
                 defer { pausedByInterruption = false }
                 guard pausedByInterruption, options.contains(.shouldResume), state == .paused else { return }
-                resume()
+                synthesizer.continueSpeaking()
+                state = .speaking
             @unknown default:
                 break
             }
@@ -431,13 +400,9 @@ extension AVSpeechController {
         // transport then swallows the reader's first press.
         guard let entry = inFlight[utteranceID], !warmupIDs.contains(utteranceID) else { return }
         state = .speaking
-        startHeartbeat()
         // M4 phone-side mark: every utterance start, ungated (see TelemetryName).
-        let head = headTruncation.flatMap { $0.position == entry.utteranceIndex ? $0 : nil }
-        let firstWord = head?.firstWord ?? queue?.utterances.dropFirst(entry.utteranceIndex).first?.firstWordIndex ?? -1
         TelemetryHub.shared.record(TelemetryName.utteranceStart, fields: [
             "utterance": String(entry.utteranceIndex),
-            "firstWord": String(firstWord),
         ])
         if !ttfwVoiceStarted {
             ttfwVoiceStarted = true
@@ -463,10 +428,6 @@ extension AVSpeechController {
               let global = current.wordIndex(reportedRange: adjusted, in: utterance)
         else { return }
         currentWordIndex = global
-        TelemetryHub.shared.record(TelemetryName.speechWord, fields: [
-            "word": String(global),
-            "utterance": String(entry.utteranceIndex),
-        ])
         if !ttfwWordDelivered {
             ttfwWordDelivered = true
             if TelemetryHub.shared.hasActiveRun {
@@ -498,7 +459,6 @@ extension AVSpeechController {
             return
         }
         if inFlight.isEmpty, nextToEnqueue >= current.utterances.count {
-            stopHeartbeat()
             state = .finished
         }
     }
@@ -524,10 +484,6 @@ extension AVSpeechController {
     }
 
     fileprivate func handleDidCancel(utteranceID: ObjectIdentifier) {
-        TelemetryHub.shared.record(TelemetryName.speechDidCancel, fields: [
-            "tracked": String(inFlight[utteranceID] != nil),
-            "state": String(describing: state),
-        ])
         if warmupIDs.remove(utteranceID) != nil {
             retained.removeValue(forKey: utteranceID)
             if state == .warming { state = .idle }
