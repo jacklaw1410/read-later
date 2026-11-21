@@ -96,13 +96,11 @@ public final class PlaybackState {
 public final class LookupState<CardValue, NoteValue> {
     public var card: CardValue?
     public var note: NoteValue?
-    public var offerDeclined: Bool = false
     public var isOnline: Bool = true
 
-    public init(card: CardValue? = nil, note: NoteValue? = nil, offerDeclined: Bool = false, isOnline: Bool = true) {
+    public init(card: CardValue? = nil, note: NoteValue? = nil, isOnline: Bool = true) {
         self.card = card
         self.note = note
-        self.offerDeclined = offerDeclined
         self.isOnline = isOnline
     }
 }
