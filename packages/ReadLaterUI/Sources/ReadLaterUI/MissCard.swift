@@ -56,11 +56,11 @@ public struct MissCard: View {
         Self.showsSearch(kind: kind, packInstalled: packInstalled, isOnline: isOnline, offerDeclined: offerDeclined)
     }
 
-    static func showsOffer(kind: MissKind, packInstalled: Bool, isOnline: Bool, offerDeclined: Bool) -> Bool {
+    nonisolated static func showsOffer(kind: MissKind, packInstalled: Bool, isOnline: Bool, offerDeclined: Bool) -> Bool {
         kind != .noNetwork && !packInstalled && isOnline && !offerDeclined
     }
 
-    static func showsSearch(kind: MissKind, packInstalled: Bool, isOnline: Bool, offerDeclined: Bool) -> Bool {
+    nonisolated static func showsSearch(kind: MissKind, packInstalled: Bool, isOnline: Bool, offerDeclined: Bool) -> Bool {
         isOnline && kind != .noNetwork
             && !showsOffer(kind: kind, packInstalled: packInstalled, isOnline: isOnline, offerDeclined: offerDeclined)
             && (packInstalled || offerDeclined)
