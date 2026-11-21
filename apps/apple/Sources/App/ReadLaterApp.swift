@@ -3,11 +3,16 @@ import SwiftUI
 
 @main
 struct ReadLaterApp: App {
-    /// The one pack registry. Both the reader window and the macOS Settings
-    /// scene receive this instance.
-    private let registry = PackRegistry.shared
+    /// One pack registry and one diagnostics adapter. The reader window and the
+    /// macOS Settings scene receive these same instances.
+    private let registry: PackRegistry
+    private let diagnostics: DiagnosticsAdapter
 
     init() {
+        let registry = PackRegistry()
+        self.registry = registry
+        self.diagnostics = DiagnosticsAdapter(
+            packs: registry, speedStore: SpeedStore(), hub: TelemetryHub.shared)
         #if DEBUG
         DebugLaunch.prepare()
         DebugProbes.start()
@@ -43,12 +48,12 @@ struct ReadLaterApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView(registry: registry)
+            RootView(registry: registry, diagnostics: diagnostics)
         }
         .defaultSize(width: 430, height: 760)
         #if os(macOS)
         Settings {
-            SettingsView(registry: registry)
+            SettingsView(packs: registry, diagnostics: diagnostics)
         }
         #endif
     }

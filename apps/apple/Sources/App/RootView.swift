@@ -241,13 +241,15 @@ final class AppModel {
 struct RootView: View {
     @State private var model: AppModel
     let registry: PackRegistry
+    let diagnostics: any DiagnosticsExporting
     @AppStorage(Appearance.storageKey) private var appearance = Appearance.system.rawValue
     @AppStorage("rl-seen-demo") private var seenDemo = false
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    init(registry: PackRegistry) {
+    init(registry: PackRegistry, diagnostics: any DiagnosticsExporting) {
         self.registry = registry
+        self.diagnostics = diagnostics
         _model = State(initialValue: AppModel(packs: registry))
     }
 
@@ -322,7 +324,7 @@ struct RootView: View {
             if debugDisablesMotion { transaction.disablesAnimations = true }
         }
         .sheet(isPresented: $bound.isSettingsPresented) {
-            SettingsView(registry: registry)
+            SettingsView(packs: registry, diagnostics: diagnostics)
         }
         .sheet(isPresented: $bound.isLibraryPresented) {
             LibraryView(

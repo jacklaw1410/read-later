@@ -15,8 +15,6 @@ import ReadLaterPacks
 @MainActor
 @Observable
 final class PackRegistry: CapabilityPacks {
-    static let shared = PackRegistry()
-
     private(set) var installedVersion: String?
     private(set) var isInstalling = false
     private(set) var offerDeclined = false
