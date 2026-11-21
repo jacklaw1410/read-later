@@ -15,14 +15,15 @@ public final class WashState {
         self.selectedWordIndex = selectedWordIndex
     }
 
-    /// Snapshot for the existing text-surface helpers.
-    public func snapshot(playback: PlaybackState) -> WashSnapshot {
-        WashSnapshot(
-            wordIndex: wordIndex,
-            isPlaying: playback.isPlaying,
-            selectedWordIndex: selectedWordIndex
-        )
+    public func emphasis(for index: Int, isPlaying: Bool) -> WordEmphasis {
+        let isSpokenWord = wordIndex == index
+        let isSelected = selectedWordIndex == index
+        if isSpokenWord && isSelected { return .coincide }
+        if isSelected { return .selected }
+        if isSpokenWord { return isPlaying ? .current : .paused }
+        return .none
     }
+
 }
 
 // MARK: - Playback state
@@ -41,11 +42,13 @@ public final class PlaybackState {
     public var status: Status = .stopped(atEnd: false)
     public var speed: Float = 1
     public var isHeld: Bool = false
+    public var autoScroll: Bool = true
 
-    public init(status: Status = .stopped(atEnd: false), speed: Float = 1, isHeld: Bool = false) {
+    public init(status: Status = .stopped(atEnd: false), speed: Float = 1, isHeld: Bool = false, autoScroll: Bool = true) {
         self.status = status
         self.speed = speed
         self.isHeld = isHeld
+        self.autoScroll = autoScroll
     }
 
     public var isPlaying: Bool {
@@ -95,13 +98,11 @@ public final class PlaybackState {
 public final class LookupState<CardValue, NoteValue> {
     public var card: CardValue?
     public var note: NoteValue?
-    public var offerDeclined: Bool = false
     public var isOnline: Bool = true
 
-    public init(card: CardValue? = nil, note: NoteValue? = nil, offerDeclined: Bool = false, isOnline: Bool = true) {
+    public init(card: CardValue? = nil, note: NoteValue? = nil, isOnline: Bool = true) {
         self.card = card
         self.note = note
-        self.offerDeclined = offerDeclined
         self.isOnline = isOnline
     }
 }

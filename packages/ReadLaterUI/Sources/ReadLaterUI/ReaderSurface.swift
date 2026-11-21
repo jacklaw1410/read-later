@@ -18,34 +18,6 @@ public enum WordEmphasis: Sendable, Hashable {
     public var isMarked: Bool { self != .none }
 }
 
-/// Everything the reader surface needs to draw a wash.
-///
-/// One value, one comparison, no per-word view state. The wash moves by
-/// changing this, and the text view redraws attributes rather than content.
-public struct WashSnapshot: Sendable, Equatable {
-    /// The word the voice last reported, or nil before the first word.
-    public var wordIndex: Int?
-    public var isPlaying: Bool
-    /// The word under an open lookup card, or nil when no card is open.
-    public var selectedWordIndex: Int?
-
-    public init(wordIndex: Int? = nil, isPlaying: Bool = false, selectedWordIndex: Int? = nil) {
-        self.wordIndex = wordIndex
-        self.isPlaying = isPlaying
-        self.selectedWordIndex = selectedWordIndex
-    }
-
-    public static let idle = WashSnapshot()
-
-    public func emphasis(for index: Int) -> WordEmphasis {
-        let isSpokenWord = wordIndex == index
-        let isSelected = selectedWordIndex == index
-        if isSpokenWord && isSelected { return .coincide }
-        if isSelected { return .selected }
-        if isSpokenWord { return isPlaying ? .current : .paused }
-        return .none
-    }
-}
 
 
 

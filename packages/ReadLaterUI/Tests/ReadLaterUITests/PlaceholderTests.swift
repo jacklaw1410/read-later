@@ -2,6 +2,7 @@ import Testing
 import ReadLaterCore
 import ReadLaterUI
 
+@MainActor
 @Test func packageLinks() {
-    #expect(WashSnapshot.idle.wordIndex == nil)
+    #expect(WashState().wordIndex == nil)
 }
