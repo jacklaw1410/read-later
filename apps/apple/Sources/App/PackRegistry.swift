@@ -1,8 +1,7 @@
 import Foundation
+import Observation
 import ReadLaterCore
 import ReadLaterPacks
-import ReadLaterUI
-import SwiftUI
 
 /// The installed dictionary, shared by the reader and the Settings pane.
 ///
@@ -14,18 +13,19 @@ import SwiftUI
 /// and the bundled demo pack while nothing is installed. The reading path
 /// never touches the network either way.
 @MainActor
-final class PackRegistry: ObservableObject {
+@Observable
+final class PackRegistry: CapabilityPacks {
     static let shared = PackRegistry()
 
-    @Published private(set) var installedVersion: String?
-    @Published private(set) var isInstalling = false
-    @Published private(set) var offerDeclined = false
-    @Published private(set) var isPaused = false
-    @Published private(set) var failure: String?
-    @Published private(set) var downloadedBytes = 0
-    @Published private(set) var totalBytes = 0
-    @Published private(set) var updateVersion: String?
-    @Published private(set) var updateSizeBytes: Int?
+    private(set) var installedVersion: String?
+    private(set) var isInstalling = false
+    private(set) var offerDeclined = false
+    private(set) var isPaused = false
+    private(set) var failure: String?
+    private(set) var downloadedBytes = 0
+    private(set) var totalBytes = 0
+    private(set) var updateVersion: String?
+    private(set) var updateSizeBytes: Int?
 
     private var store: PackIndexStore?
     private var demo: DemoPack?
@@ -286,122 +286,4 @@ private extension InstallState {
 /// owning the run, not the other way round.
 private struct ProgressBox: @unchecked Sendable {
     weak var registry: PackRegistry?
-}
-
-/// Settings › Dictionaries. Names the pack, its size, its state, and the one
-/// action that matches that state. No control here is decorative.
-struct DictionariesSettings: View {
-    @ObservedObject var registry: PackRegistry = .shared
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("Dictionaries")
-                .font(.system(size: 17, weight: .semibold))
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text("English–Chinese dictionary (Traditional)")
-                    .font(Theme.gloss())
-                Text("14.47 MiB · downloads once · works offline")
-                    .font(Theme.caption())
-                    .foregroundStyle(Theme.inkSecondary)
-                Text(stateLine)
-                    .font(Theme.caption())
-                    .foregroundStyle(stateIsProblem ? Theme.holdInk : Theme.inkSecondary)
-                    .padding(.top, 2)
-                if registry.isInstalling { progressSection }
-                if let update = updateLine {
-                    Text(update)
-                        .font(Theme.caption())
-                        .foregroundStyle(Theme.inkSecondary)
-                        .padding(.top, 2)
-                }
-            }
-
-            HStack(spacing: 8) {
-                if registry.isInstalled {
-                    if registry.updateVersion != nil {
-                        Button(updateButtonTitle) { registry.startInstall() }
-                            .frame(minHeight: 44)
-                    }
-                    Button("Remove", role: .destructive) { registry.remove() }
-                        .frame(minHeight: 44)
-                } else if registry.isPaused {
-                    Button("Resume") { registry.startInstall() }
-                        .frame(minHeight: 44)
-                    Button("Cancel", role: .cancel) { registry.removePartial() }
-                        .frame(minHeight: 44)
-                } else {
-                    Button(registry.isInstalling ? "Installing…" : "Install") {
-                        registry.startInstall()
-                    }
-                    .disabled(registry.isInstalling)
-                    .frame(minHeight: 44)
-                    if registry.isInstalling {
-                        Button("Cancel", role: .cancel) { registry.cancelInstall() }
-                            .frame(minHeight: 44)
-                    }
-                }
-                Spacer()
-                Button("Done") { dismiss() }
-                    .keyboardShortcut(.defaultAction)
-                    .frame(minHeight: 44)
-            }
-
-            Spacer(minLength: 0)
-        }
-        .padding(Theme.screenGutter)
-        .frame(minWidth: 320, minHeight: 200, alignment: .topLeading)
-        .background(Theme.paper)
-        .task { await registry.checkForUpdate() }
-    }
-
-    private var progressSection: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            if registry.totalBytes > 0 {
-                ProgressView(value: Double(registry.downloadedBytes), total: Double(registry.totalBytes))
-                Text("\(formatMiB(registry.downloadedBytes)) of \(formatMiB(registry.totalBytes)) · \(percent)%")
-                    .font(Theme.caption())
-                    .foregroundStyle(Theme.inkSecondary)
-            } else {
-                ProgressView()
-                Text("Starting download…")
-                    .font(Theme.caption())
-                    .foregroundStyle(Theme.inkSecondary)
-            }
-        }
-        .padding(.top, 4)
-    }
-
-    private var percent: Int {
-        guard registry.totalBytes > 0 else { return 0 }
-        return Int((Double(registry.downloadedBytes) / Double(registry.totalBytes) * 100).rounded())
-    }
-
-    private var updateLine: String? {
-        guard let version = registry.updateVersion else { return nil }
-        if let size = registry.updateSizeBytes {
-            return "Update available · \(version) · \(formatMiB(size))"
-        }
-        return "Update available · \(version)"
-    }
-
-    private var updateButtonTitle: String {
-        if let version = registry.updateVersion { return "Update to \(version)" }
-        return "Update"
-    }
-
-    private var stateLine: String {
-        if let failure = registry.failure { return failure }
-        if registry.isInstalling { return "Downloading…" }
-        if registry.isPaused { return "Paused · \(formatMiB(registry.downloadedBytes)) kept" }
-        if let version = registry.installedVersion { return "Installed · \(version)" }
-        return "Not installed."
-    }
-
-    private var stateIsProblem: Bool { registry.failure != nil }
-
-    private func formatMiB(_ bytes: Int) -> String {
-        String(format: "%.2f MiB", Double(bytes) / 1_048_576)
-    }
 }

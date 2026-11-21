@@ -17,13 +17,13 @@ enum SnapshotHarness {
         ProcessInfo.processInfo.arguments.contains("--snapshot")
     }
 
-    static func run(app: AppModel) async {
+    static func run(app: AppModel, registry: PackRegistry) async {
         let directory = outputDirectory()
         try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
 
         // Start from no pack, so the offer is exercised and then resolved by
         // the real installer rather than by whatever a past run left behind.
-        PackRegistry.shared.remove()
+        registry.remove()
 
         // Pin the window size. A restored frame from a past run changes the
         // capture size, and a pixel comparison then fails for a reason that has
