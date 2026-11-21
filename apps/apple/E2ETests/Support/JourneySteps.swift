@@ -77,7 +77,7 @@ enum JourneySteps {
             // Fall back to the centre coordinate only when the element
             // stays non-hittable. Pin the window size in the app launch
             // so this coordinate stays stable.
-            element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+            element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).click()
         }
         #else
         if element.isHittable {
