@@ -133,7 +133,7 @@ jobs:
         run: |
           xcodegen generate
           xcodebuild -project ReadLater.xcodeproj -scheme ReadLater \
-            -destination 'platform=iOS Simulator,name=iPhone 16' build CODE_SIGNING_ALLOWED=NO
+            -destination 'generic/platform=iOS Simulator' build CODE_SIGNING_ALLOWED=NO
 
   invariant:
     name: invariant
