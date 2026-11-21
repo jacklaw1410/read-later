@@ -13,7 +13,7 @@ import AppKit
 /// Settings content on both platforms: the macOS Settings scene shows it,
 /// and the reader screen sheet shows it on iOS.
 struct SettingsView: View {
-    @ObservedObject var registry: PackRegistry = .shared
+    let registry: PackRegistry
     @AppStorage(Appearance.storageKey) private var appearance = Appearance.system.rawValue
     @AppStorage(HandednessStore.storageKey) private var playOnTrailing = true
 
@@ -40,7 +40,7 @@ struct SettingsView: View {
                     .accessibilityIdentifier(AccessibilityID.settingsHandedness)
                 }
                 NavigationLink("Dictionaries") {
-                    DictionariesSettings(registry: registry)
+                    DictionariesSettings(packs: registry)
                 }
                 if DiagnosticsExport.isEnabled {
                     NavigationLink("Diagnostics") {

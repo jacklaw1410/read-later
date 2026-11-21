@@ -3,6 +3,10 @@ import SwiftUI
 
 @main
 struct ReadLaterApp: App {
+    /// The one pack registry. Both the reader window and the macOS Settings
+    /// scene receive this instance.
+    private let registry = PackRegistry.shared
+
     init() {
         #if DEBUG
         DebugLaunch.prepare()
@@ -39,12 +43,12 @@ struct ReadLaterApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView()
+            RootView(registry: registry)
         }
         .defaultSize(width: 430, height: 760)
         #if os(macOS)
         Settings {
-            SettingsView()
+            SettingsView(registry: registry)
         }
         #endif
     }

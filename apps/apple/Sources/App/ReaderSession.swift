@@ -22,7 +22,8 @@ final class ReaderSession: ObservableObject {
 
     private let speech: SpeechController
     private let pronouncer = WordPronouncer()
-    private let lookupProvider: any PackLookup
+    private let lookupProvider: any LookupProvider
+    private let packs: any CapabilityPacks
     private let speedStore: SpeedStore
     private let pathMonitor = NWPathMonitor()
     /// Whether the voice was live when the current lookup session began. Nil when
@@ -48,13 +49,15 @@ final class ReaderSession: ObservableObject {
     init(
         document: ReadLaterCore.Document,
         speech: SpeechController,
-        lookupProvider: any PackLookup,
+        lookupProvider: any LookupProvider,
+        packs: any CapabilityPacks,
         speedStore: SpeedStore = SpeedStore()
     ) {
         self.document = document
         self.spoken = SpokenWordNumbering(plan: document.plan)
         self.speech = speech
         self.lookupProvider = lookupProvider
+        self.packs = packs
         self.speedStore = speedStore
         self.playbackState.speed = speedStore.speed
 
@@ -72,14 +75,6 @@ final class ReaderSession: ObservableObject {
 
     deinit {
         pathMonitor.cancel()
-    }
-
-    convenience init() {
-        self.init(
-            document: ArticleLibrary.demo,
-            speech: AVSpeechController(),
-            lookupProvider: PackLookupProvider()
-        )
     }
 
     func warmUp() {
@@ -425,7 +420,7 @@ final class ReaderSession: ObservableObject {
     /// offline miss says so instead of pretending the word is unknown.
     private func refine(_ kind: MissKind) -> MissKind {
         if kind == .notAWord { return .notAWord }
-        if lookupState.isOnline == false && !lookupProvider.hasPack { return .noNetwork }
+        if lookupState.isOnline == false && !packs.isInstalled { return .noNetwork }
         return kind
     }
 
@@ -452,7 +447,7 @@ final class ReaderSession: ObservableObject {
     }
 
     func declineOffer() {
-        PackRegistry.shared.declineOffer()
+        packs.declineOffer()
         closeCard()
     }
 
@@ -494,8 +489,8 @@ final class ReaderSession: ObservableObject {
     /// On success the open lookupState.card resolves again, which is the moment the
     /// prototype gets right: the lookupState.card becomes the answer without a second tap.
     func installPack() async {
-        await PackRegistry.shared.install()
-        guard PackRegistry.shared.isInstalled else { return }
+        await packs.install()
+        guard packs.isInstalled else { return }
 
         // The lookupState.card becomes the answer in place. The reader does not tap again.
         if case let .miss(word, _, wordIndex, wasPlaying) = lookupState.card {
@@ -621,39 +616,3 @@ struct NoteToShow: Identifiable {
     var id: Int { index }
 }
 
-/// The lookup surface `ReaderSession` needs. Tests supply a fake; the app
-/// supplies `PackLookupProvider`.
-@MainActor
-protocol PackLookup: LookupProvider {
-    var hasPack: Bool { get }
-}
-
-/// A lookup that asks the system dictionary and, when installed, the pack.
-///
-/// Order is the research order: the system dictionary first, the installed pack
-/// second. A token that cannot be a headword never reaches either.
-@MainActor
-final class PackLookupProvider: PackLookup {
-    private let apple: AppleDictionaryLookup
-
-    init(apple: AppleDictionaryLookup = AppleDictionaryLookup()) {
-        self.apple = apple
-    }
-
-    /// Asked of the registry at the moment of the lookup, never cached.
-    /// A cached copy goes stale the first time the pack is installed or
-    /// removed, and the miss lookupState.card would then offer a dictionary that is
-    /// already there.
-    var hasPack: Bool { PackRegistry.shared.isInstalled }
-
-    func lookup(_ word: String) async -> LookupOutcome {
-        guard TokenShape.shape(of: word) == .word else { return .miss(.notAWord) }
-        if case let .hit(result) = await apple.lookup(word) {
-            return .hit(result)
-        }
-        if let entry = PackRegistry.shared.lookup(word) {
-            return .hit(entry)
-        }
-        return .miss(.notInDictionary)
-    }
-}

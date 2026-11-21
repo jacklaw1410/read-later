@@ -1,3 +1,4 @@
+import Observation
 import ReadLaterCore
 import ReadLaterStore
 import ReadLaterUI
@@ -9,22 +10,26 @@ import AppKit
 /// Holds the open document. One speech controller for the process, so a second
 /// document does not pay the cold start again.
 @MainActor
-final class AppModel: ObservableObject {
-    @Published private(set) var session: ReaderSession?
+@Observable
+final class AppModel {
+    private(set) var session: ReaderSession?
     /// The browse list: every started article, newest first.
-    @Published private(set) var library: [ReadingPosition] = []
+    private(set) var library: [ReadingPosition] = []
     /// One line the library view shows when an action fails.
-    @Published private(set) var libraryMessage: String?
+    private(set) var libraryMessage: String?
     /// The root's two sheets. The model owns them so the open paths and the
     /// snapshot harness raise the same screens the buttons raise.
-    @Published var isLibraryPresented = false
-    @Published var isSettingsPresented = false
+    var isLibraryPresented = false
+    var isSettingsPresented = false
 
     private let speech: SpeechController
-    private let lookup = PackLookupProvider()
+    private let packs: any CapabilityPacks
+    private let lookup: PackLookupProvider
     private let store: ReadLaterStore.Store?
     private let recorder: ReadLaterStore.PositionRecorder?
-    init() {
+    init(packs: any CapabilityPacks) {
+        self.packs = packs
+        self.lookup = PackLookupProvider(packs: packs)
         self.speech = Self.makeSpeech()
         self.store = Self.openStore()
         Self.seedIfRequested(store: self.store)
@@ -79,7 +84,7 @@ final class AppModel: ObservableObject {
         flushPosition()
         session?.stop()
         try? store?.save(document: document)
-        let next = ReaderSession(document: document, speech: speech, lookupProvider: lookup)
+        let next = ReaderSession(document: document, speech: speech, lookupProvider: lookup, packs: packs)
         next.onProgress = { [weak self] index, source in self?.recordPosition(index: index, source: source) }
         if let startWord { next.begin(at: startWord) }
         session = next
@@ -131,27 +136,27 @@ final class AppModel: ObservableObject {
     /// Opens a library row. The stored plan is the normal path. After a cache
     /// bust the plan is gone, so the page is fetched and read again from its
     /// last known URL, then opened at the same place.
-    func openFromLibrary(_ row: ReadingPosition) {
+    func openFromLibrary(_ row: ReadingPosition) async -> Bool {
         guard let store else {
             libraryMessage = LibraryCopy.noStore
-            return
+            return false
         }
         libraryMessage = nil
         do {
             if let document = try store.document(id: row.documentID) {
                 openAtPlace(document, row: row)
-                return
+                return true
             }
         } catch {
             libraryMessage = LibraryCopy.openFailed
-            return
+            return false
         }
         // The row outlives a cache bust, so its URL is the way back.
         guard let url = row.url else {
             libraryMessage = LibraryCopy.needsLink
-            return
+            return false
         }
-        Task { await refetchAndOpen(row, url: url) }
+        return await refetchAndOpen(row, url: url)
     }
 
     func setSaved(_ row: ReadingPosition, saved: Bool) {
@@ -201,17 +206,20 @@ final class AppModel: ObservableObject {
         open(document, startWord: min(row.wordIndex, max(total - 1, 0)))
     }
 
-    private func refetchAndOpen(_ row: ReadingPosition, url: URL) async {
+    private func refetchAndOpen(_ row: ReadingPosition, url: URL) async -> Bool {
         switch await ArticleIngress.fetch(url.absoluteString) {
         case .failure(let error):
             libraryMessage = error.message
+            return false
         case .success(let page):
             switch ArticleIngress.read(page) {
             case .failure(let error):
                 libraryMessage = error.message
+                return false
             case .success(let document):
                 try? store?.save(document: document)
                 openAtPlace(document, row: row)
+                return true
             }
         }
     }
@@ -231,17 +239,23 @@ final class AppModel: ObservableObject {
 }
 
 struct RootView: View {
-    @StateObject private var model = AppModel()
-    @ObservedObject private var registry = PackRegistry.shared
+    @State private var model: AppModel
+    let registry: PackRegistry
     @AppStorage(Appearance.storageKey) private var appearance = Appearance.system.rawValue
     @AppStorage("rl-seen-demo") private var seenDemo = false
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
+    init(registry: PackRegistry) {
+        self.registry = registry
+        _model = State(initialValue: AppModel(packs: registry))
+    }
+
     var body: some View {
+        @Bindable var bound = model
         Group {
             if let session = model.session {
-                ReaderScreen(session: session, onExit: model.closeDocument)
+                ReaderScreen(session: session, registry: registry, onExit: model.closeDocument)
                     .transition(.opacity)
                     // Escape closes card/note from any focus inside the
                     // reader. Hoisted here because RootView.body runs once per
@@ -307,11 +321,14 @@ struct RootView: View {
         .transaction { transaction in
             if debugDisablesMotion { transaction.disablesAnimations = true }
         }
-        .sheet(isPresented: $model.isSettingsPresented) {
+        .sheet(isPresented: $bound.isSettingsPresented) {
             SettingsView(registry: registry)
         }
-        .sheet(isPresented: $model.isLibraryPresented) {
-            LibraryView(model: model, onClose: { model.isLibraryPresented = false })
+        .sheet(isPresented: $bound.isLibraryPresented) {
+            LibraryView(
+                provider: LibraryAdapter(model: model),
+                onClose: { model.isLibraryPresented = false }
+            )
         }
         .animation((debugDisablesMotion || reduceMotion) ? nil : ThemeMotion.screen, value: model.session == nil)
         // One demo open sets the first-run flag, whichever path opened it:
@@ -360,7 +377,7 @@ struct RootView: View {
         #if os(macOS)
         .task {
             if SnapshotHarness.isEnabled {
-                await SnapshotHarness.run(app: model)
+                await SnapshotHarness.run(app: model, registry: registry)
             }
         }
         #endif
@@ -397,9 +414,9 @@ struct RootView: View {
 /// The reader: chrome, blocks, transport, and the one overlay layer.
 struct ReaderScreen: View {
     @ObservedObject var session: ReaderSession
+    let registry: any CapabilityPacks
     let onExit: () -> Void
 
-    @ObservedObject private var registry = PackRegistry.shared
     @Environment(\.openURL) private var openURL
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var washVisible = true

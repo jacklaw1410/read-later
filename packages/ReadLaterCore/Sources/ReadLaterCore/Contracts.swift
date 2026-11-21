@@ -195,6 +195,74 @@ public protocol LookupProvider: Sendable {
     func lookup(_ word: String) async -> LookupOutcome
 }
 
+// MARK: - Capability packs
+//
+// The state and actions of the installed dictionary pack, as Settings and the
+// reader use them. The app target implements it; `ReadLaterUI` shows it.
+
+@MainActor
+public protocol CapabilityPacks: AnyObject {
+    var isInstalled: Bool { get }
+    var installedVersion: String? { get }
+    var isInstalling: Bool { get }
+    var isPaused: Bool { get }
+    var failure: String? { get }
+    var downloadedBytes: Int { get }
+    var totalBytes: Int { get }
+    var updateVersion: String? { get }
+    var updateSizeBytes: Int? { get }
+    var offerDeclined: Bool { get }
+
+    func startInstall()
+    func cancelInstall()
+    func install() async
+    func remove()
+    func removePartial()
+    func declineOffer()
+    func checkForUpdate() async
+    func lookup(_ word: String) -> LookupResult?
+}
+
+// MARK: - Library
+//
+// The browse list of started articles. The app target implements the provider
+// over its store; `ReadLaterUI` shows the rows and sends actions back.
+
+public struct LibraryRow: Sendable, Hashable, Identifiable {
+    public var contentHash: String
+    public var title: String
+    public var wordIndex: Int
+    public var totalWords: Int
+    public var finished: Bool
+    public var saved: Bool
+
+    public var id: String { contentHash }
+
+    public init(
+        contentHash: String, title: String, wordIndex: Int, totalWords: Int,
+        finished: Bool, saved: Bool
+    ) {
+        self.contentHash = contentHash
+        self.title = title
+        self.wordIndex = wordIndex
+        self.totalWords = totalWords
+        self.finished = finished
+        self.saved = saved
+    }
+}
+
+@MainActor
+public protocol LibraryProvider: AnyObject {
+    var rows: [LibraryRow] { get }
+    var message: String? { get }
+
+    /// Returns true when the article opened. A false return keeps the list up.
+    func open(_ row: LibraryRow) async -> Bool
+    func setSaved(_ row: LibraryRow, saved: Bool)
+    func refresh(_ row: LibraryRow)
+    func forget(_ row: LibraryRow)
+}
+
 /// Classifies the tapped token. A URL, a path or a code identifier is not a word.
 public enum WordShape: String, Sendable {
     case word

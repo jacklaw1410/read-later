@@ -101,6 +101,7 @@ final class ReaderSessionLookupTests: XCTestCase {
             document: ArticleLibrary.demo,
             speech: speech,
             lookupProvider: lookup,
+            packs: PackRegistry(defaults: defaults),
             speedStore: SpeedStore(defaults: defaults)
         )
     }
@@ -116,8 +117,7 @@ final class ReaderSessionLookupTests: XCTestCase {
 
 /// Answers from a table. A word listed in `delays` waits before it answers.
 @MainActor
-private final class FakeLookup: PackLookup {
-    var hasPack = false
+private final class FakeLookup: LookupProvider {
     var outcomes: [String: LookupOutcome] = [:]
     var delays: [String: Duration] = [:]
 
