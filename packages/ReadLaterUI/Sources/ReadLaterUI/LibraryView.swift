@@ -114,7 +114,7 @@ public struct LibraryView: View {
                 }
                 .accessibilityIdentifier(row.saved ? AccessibilityID.libraryUnsave : AccessibilityID.librarySave)
                 Button(LibraryCopy.refresh) {
-                    provider.refresh(row)
+                    provider.releaseCopy(row)
                 }
                 .accessibilityIdentifier(AccessibilityID.libraryRefresh)
                 Divider()
@@ -149,6 +149,9 @@ public struct LibraryView: View {
                             .font(Theme.caption())
                             .foregroundStyle(Theme.inkSecondary)
                     }
+                    // Derived completion, not the mechanical flag: the adapter
+                    // sets `finished` from `reachedEnd || markedDone`, so
+                    // scrubbing back from the end still reads done (spec §6).
                     if row.finished {
                         Image(systemName: "checkmark")
                             .font(.system(size: 11, weight: .semibold))

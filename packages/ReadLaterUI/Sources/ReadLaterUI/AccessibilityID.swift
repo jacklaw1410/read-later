@@ -24,6 +24,9 @@ public enum AccessibilityID {
     public static let readerBack = "reader.back"
     public static let readerWash = "reader.wash"
     public static let readerFootnote = "reader.footnote"
+    /// Session notice (rewrite gate, lost library row). Persists for the
+    /// session by design: it explains the starting place, not a moment.
+    public static let readerNotice = "reader.notice"
 
     // C1 revised rail controls (canonical IDs)
     public static let readerRail = "reader.rail"

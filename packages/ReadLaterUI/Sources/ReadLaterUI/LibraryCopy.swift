@@ -23,17 +23,20 @@ public enum LibraryCopy {
     public static let readFailed = "could not read the library"
     public static let noStore = "no library on this device"
     public static let openFailed = "could not open this article — open the link again"
+    public static let libraryRowLost = "opened, but the library could not keep this article"
     public static let needsLink = "no stored copy — open the link again"
     public static let saveFailed = "could not change the save"
-    public static let bustFailed = "could not refresh this article"
+    public static let refreshFailed = "could not refresh this article"
     public static let forgetFailed = "could not remove this article"
+    public static let articleUpdated = "article updated since your last read — starting at the top"
 
     /// "word 12 of 300". The place in one glance, clamped to the article
-    /// length. Empty when the length is unknown, so the row shows the
-    /// title only.
+    /// length on both ends: a corrupt negative index reads as word 1, never
+    /// "word -4 of 50". Empty when the length is unknown, so the row shows
+    /// the title only.
     public static func placeLine(wordIndex: Int, totalWords: Int) -> String {
         guard totalWords > 0 else { return "" }
-        return "word \(min(wordIndex + 1, totalWords)) of \(totalWords)"
+        return "word \(max(min(wordIndex + 1, totalWords), 1)) of \(totalWords)"
     }
 
     /// The link the entry screen starts with: the sample once, then empty, so

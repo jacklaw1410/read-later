@@ -21,6 +21,11 @@ final class AppModel {
     private(set) var readerSource: EntrySource = .library
     /// Changes on every open, so SwiftUI builds fresh Reader state per open.
     private(set) var openToken = 0
+    /// One line the reader shows after an open that reset the place: the
+    /// rewrite gate or a lost library row. Separate from `libraryMessage`
+    /// because the library sheet closes the moment the reader opens, so a
+    /// library line would never be seen (and would go stale there).
+    private(set) var readerNotice: String?
     /// The root's two sheets. The model owns them so the open paths and the
     /// snapshot harness raise the same screens the buttons raise.
     var isLibraryPresented = false
@@ -93,12 +98,51 @@ final class AppModel {
         #endif
     }
 
-    func open(_ document: ReadLaterCore.Document, startWord: Int? = nil, source: EntrySource) {
+    func open(
+        _ document: ReadLaterCore.Document,
+        startWord: Int? = nil,
+        source: EntrySource,
+        page: FetchedPage? = nil
+    ) {
         readerSource = source
         openToken += 1
         flushPosition()
         session?.stop()
-        try? store?.save(document: document)
+        readerNotice = nil
+        // A successful open re-lists, so a stale sheet message from an
+        // earlier action clears here; failures below set their own.
+        // (openFromLibrary already clears; Entry opens land here.)
+        // Cross-attempt trade-off, documented: a background task that named
+        // its failure just before this open loses it to the clear, and this
+        // open's own failures set fresh after. Within one attempt
+        // first-failure-wins still holds; across attempts the latest action
+        // wins, since its list is what the sheet will show.
+        libraryMessage = nil
+        // The save runs on main (dbQueue.write blocks the caller): accepted
+        // under the same M8 exception as the deletes — one user-initiated
+        // write per open, and the session needs the row to exist now.
+        if store == nil {
+            // No library on this device: the reader still opens, but no
+            // place is kept. Told in the reader, where it is seen.
+            readerNotice = LibraryCopy.noStore
+        } else {
+            do {
+                try store?.save(document: document)
+            } catch {
+                // The reader still opens: the failure is the library row, not
+                // the article. Told in the reader, where it is seen; the
+                // library sheet is already closing.
+                readerNotice = LibraryCopy.libraryRowLost
+            }
+        }
+        // The bytes this plan was read from, for a future re-plan on a
+        // parser change. Best-effort on the recorder's background queue:
+        // a zlib pass plus a write never blocks the open path (M8).
+        if let page {
+            recorder?.persistRawPage(
+                RawPage(html: page.html, status: page.status, finalURL: page.url),
+                for: document)
+        }
         let seed = ReaderSeed(document: document, savedWordIndex: startWord)
         let next = ReaderSession(
             seed: seed, speech: speech, lookupProvider: lookup, packs: packs,
@@ -117,25 +161,61 @@ final class AppModel {
         flushPosition()
         session?.stop()
         session = nil
+        readerNotice = nil
+        // Fresh list on exit: a stale message clears, a failed refresh sets.
+        libraryMessage = nil
         refreshLibrary()
         telemetry.endRunIfActive(outcome: "closed")
     }
 
     /// Opens the newest saved place, if any. The resume offer is gone, so
     /// the debug autoplay and any future caller re-enter through the same
-    /// door the library uses: latest row, saved word.
+    /// door the library uses: latest row, resolved start. Routes through
+    /// `store.resolve` like `openAtPlace`, so a parser re-split surfaces
+    /// the "article updated" note instead of a blind clamp. A corrupt place
+    /// row names `readFailed`; a missing document (released by design)
+    /// skips silently, while a corrupt plan or disk failure names
+    /// `readFailed` like the row fetch above.
     func openLatestSavedPlace() {
-        guard let store,
-              let saved = try? store.latestUnfinishedPosition(),
-              let document = try? store.document(id: saved.documentID)
-        else { return }
-        open(document, startWord: saved.wordIndex, source: .library)
+        guard let store else { return }
+        let saved: ReadingPosition
+        do {
+            guard let row = try store.latestUnfinishedPosition() else { return }
+            saved = row
+        } catch {
+            libraryMessage = LibraryCopy.readFailed
+            return
+        }
+        let document: ReadLaterCore.Document?
+        do {
+            document = try store.document(id: saved.documentID)
+        } catch {
+            libraryMessage = LibraryCopy.readFailed
+            return
+        }
+        guard let document else {
+            // Released rows survive by design; the library path opens (and
+            // names failures for) anything still present. Silent skip: the
+            // next launch re-reads.
+            return
+        }
+        let resolved = store.resolve(row: saved, newPlan: document.plan)
+        open(document, startWord: resolved.start, source: .library)
+        // Set after open: open() clears the notice, and the note is
+        // informational, so a pre-existing failure would outrank it — but
+        // this entry point names no failures, hence the plain nil guard.
+        if resolved.rewrote, readerNotice == nil {
+            readerNotice = LibraryCopy.articleUpdated
+        }
     }
 
     // MARK: - Library
 
     /// Reads the browse list again. Called on launch, open, close and after
-    /// every library action, so the list never shows a stale row.
+    /// every library action, so the list never shows a stale row. Runs on
+    /// main (dbQueue.read blocks the caller): accepted under the same M8
+    /// exception as the deletes — a rare, user-initiated read whose result
+    /// the sheet needs synchronously.
     func refreshLibrary() {
         guard let store else {
             library = []
@@ -145,15 +225,24 @@ final class AppModel {
             library = try store.recentPositions()
         } catch {
             library = []
-            libraryMessage = LibraryCopy.readFailed
+            // First failure wins: callers (save/release/forget/refetch)
+            // name their own failure first, then refresh to list what is
+            // there — the refresh must not overwrite it.
+            if libraryMessage == nil {
+                libraryMessage = LibraryCopy.readFailed
+            }
         }
     }
 
-    /// Opens a library row. The stored plan is the normal path. After a cache
-    /// bust the plan is gone, so the page is fetched and read again from its
-    /// last known URL, then opened at the same place.
+    /// Opens a library row. The stored plan is the normal path. After a
+    /// release the plan is gone, so the page is fetched and read again from
+    /// its last known URL, then opened at the same place. Returns true when
+    /// the article opened, which the library sheet uses to close itself.
     func openFromLibrary(_ row: ReadingPosition) async -> Bool {
         guard let store else {
+            // Unconditional: nothing in-attempt yet (the nil below runs only
+            // on the happy path). Mid-attempt sites use if-nil instead, so a
+            // sibling-loop failure stands; see the refetch supersede guard.
             libraryMessage = LibraryCopy.noStore
             return false
         }
@@ -167,8 +256,10 @@ final class AppModel {
             libraryMessage = LibraryCopy.openFailed
             return false
         }
-        // The row outlives a cache bust, so its URL is the way back.
-        guard let url = row.url else {
+        // The row outlives a release, so its URL is the way back. The pasted
+        // link goes first: the canonical URL may have stripped a key the
+        // site needs.
+        guard let url = row.originalURL ?? row.url else {
             libraryMessage = LibraryCopy.needsLink
             return false
         }
@@ -189,16 +280,22 @@ final class AppModel {
         refreshLibrary()
     }
 
-    func cacheBust(_ row: ReadingPosition) {
+    func releaseCopy(_ row: ReadingPosition) {
         libraryMessage = nil
         guard let store else {
             libraryMessage = LibraryCopy.noStore
             return
         }
+        // Drain the recorder queue first: a tick enqueued just before this
+        // call must land before the delete, or it resurrects the row after.
+        // A main-thread drain plus a main-thread delete, against the M8
+        // no-block rule: accepted because deletes are rare, user-initiated,
+        // and correctness (no resurrect) outranks the stall.
+        recorder?.wait()
         do {
-            try store.cacheBust(documentID: row.documentID)
+            try store.releaseCopy(documentID: row.documentID)
         } catch {
-            libraryMessage = LibraryCopy.bustFailed
+            libraryMessage = LibraryCopy.refreshFailed
         }
         refreshLibrary()
     }
@@ -209,6 +306,11 @@ final class AppModel {
             libraryMessage = LibraryCopy.noStore
             return
         }
+        // Same drain as releaseCopy: no enqueued tick may land after this.
+        // Same M8 exception: rare user action, correctness first.
+        // The delete itself also runs on main (dbQueue.write blocks the
+        // caller); same exception, same reason.
+        recorder?.wait()
         do {
             try store.forget(contentHash: row.contentHash, documentID: row.documentID)
         } catch {
@@ -217,23 +319,193 @@ final class AppModel {
         refreshLibrary()
     }
 
-    private func openAtPlace(_ document: ReadLaterCore.Document, row: ReadingPosition) {
-        open(document, startWord: row.wordIndex, source: .library)
+    @discardableResult
+    private func openAtPlace(_ document: ReadLaterCore.Document, row: ReadingPosition, page: FetchedPage? = nil) -> Int {
+        let resolved = store?.resolve(row: row, newPlan: document.plan)
+        // Total only for the no-store fallback: resolve already computed it
+        // for the normal path, so a second plan walk here would be the third
+        // of the open (resolve builds one field, not two, since round-50).
+        let start: Int
+        if let resolved {
+            start = resolved.start
+        } else {
+            let total = SpokenWordNumbering(plan: document.plan).totalWords
+            start = min(max(row.wordIndex, 0), max(total - 1, 0))
+        }
+        open(document, startWord: start, source: .library, page: page)
+        // Set after open: open() clears the notice, and a failed save
+        // (row loss) outranks the rewrite note.
+        if resolved?.rewrote == true, readerNotice == nil {
+            readerNotice = LibraryCopy.articleUpdated
+        }
+        // A retire that threw leaves a missing-document sibling behind; the
+        // next tick seeds a second row and the library shows two until
+        // something retires the stale one. Absorb it now: same URL, bytes
+        // gone, so its only value is the saved flag it carries. Present
+        // siblings are live entries the user can still open — never touched.
+        // One small read per open plus rare writes, under the same M8
+        // exception as the save above. Libraries with released pre-v5 rows
+        // pay a COUNT plus the widened scan, still gated to those rows.
+        if let urlString = document.url?.absoluteString, let store {
+            let key = ReadLaterStore.Store.resumeKey(for: document)
+            // A corrupt position row (bad UUID, undecodable) throws out of
+            // the sibling lookup itself: name it like a corrupt document
+            // below instead of skipping in silence.
+            let siblings: [ReadingPosition]
+            do {
+                siblings = try store.siblingRows(url: urlString, excluding: key)
+            } catch {
+                // The reader is open (open() already ran): the sheet line
+                // is invisible until it closes, so name it on both surfaces
+                // like the refetch supersede failure below. Failures outrank
+                // the informational rewrite note but the first one wins.
+                if libraryMessage == nil {
+                    libraryMessage = LibraryCopy.readFailed
+                }
+                if readerNotice == nil || readerNotice == LibraryCopy.articleUpdated {
+                    readerNotice = LibraryCopy.readFailed
+                }
+                return start
+            }
+            var absorbed = false
+            for sibling in siblings {
+                // The refetch supersede below retires `row` itself: absorbing
+                // it here too would seed the new row twice (converges via the
+                // merge, but costs a second write). The only other caller of
+                // `openAtPlace` passes a row whose hash already equals the new
+                // key, so it is never a sibling and the skip never fires
+                // there.
+                guard sibling.contentHash != row.contentHash else { continue }
+                // A corrupt plan decodes to a throw, not a nil: never
+                // absorb it (its history is not known-gone), and name
+                // the failure instead of healing past it.
+                let siblingDoc: ReadLaterCore.Document?
+                do {
+                    siblingDoc = try store.document(id: sibling.documentID)
+                } catch {
+                    if libraryMessage == nil {
+                        libraryMessage = LibraryCopy.readFailed
+                    }
+                    if readerNotice == nil || readerNotice == LibraryCopy.articleUpdated {
+                        readerNotice = LibraryCopy.readFailed
+                    }
+                    continue
+                }
+                guard siblingDoc == nil else { continue }
+                do {
+                    try store.supersedeOnRefetch(oldRow: sibling, newDocument: document, startWord: start)
+                    absorbed = true
+                } catch {
+                    // A real write failure (not a missing row): the stale
+                    // duplicate stays until the next open heals it. Name it
+                    // on both surfaces; other siblings may still absorb.
+                    if libraryMessage == nil {
+                        libraryMessage = LibraryCopy.refreshFailed
+                    }
+                    if readerNotice == nil || readerNotice == LibraryCopy.articleUpdated {
+                        readerNotice = LibraryCopy.refreshFailed
+                    }
+                    continue
+                }
+            }
+            if absorbed {
+                refreshLibrary()
+            }
+        }
+        return start
     }
 
     private func refetchAndOpen(_ row: ReadingPosition, url: URL) async -> Bool {
         switch await ArticleIngress.fetch(url.absoluteString, telemetry: telemetry) {
         case .failure(let error):
-            libraryMessage = error.message
+            // An expired short link fails while the canonical URL still
+            // works. One retry on the canonical URL, then the message.
+            // Normalized like the rescue below: a case/port/fragment
+            // variant of the canonical URL is the same resource, not a
+            // reason to fetch twice.
+            if let canonical = row.url,
+               ArticleIngress.originalForRefetch(request: url, canonical: canonical) != nil {
+                return await refetchAndOpen(row, url: canonical)
+            }
+            // First failure wins, like every other sheet message.
+            if libraryMessage == nil {
+                libraryMessage = error.message
+            }
             return false
         case .success(let page):
-            switch ArticleIngress.read(page, telemetry: telemetry) {
+            switch ArticleIngress.read(page, telemetry: telemetry, original: ArticleIngress.originalForRefetch(request: url, canonical: row.url)) {
             case .failure(let error):
-                libraryMessage = error.message
+                if libraryMessage == nil {
+                    libraryMessage = error.message
+                }
                 return false
             case .success(let document):
-                try? store?.save(document: document)
-                openAtPlace(document, row: row)
+                let start = openAtPlace(document, row: row, page: page)
+                // Changed bytes mint a new id and hash: retire the old row
+                // so the library keeps one row per article. Runs on main
+                // (dbQueue.write blocks the caller): accepted under the same
+                // M8 exception as the deletes — one rare user-initiated
+                // write per refetch, and the rows must retire together.
+                // The seeded row carries the old link; a rescue still in
+                // flight retargets to the new row below. Refresh after: the
+                // seed replaced the row `open()` already listed.
+                var clearHash = row.contentHash
+                var clearDoc = row.documentID
+                if ReadLaterStore.Store.resumeKey(for: document) != row.contentHash {
+                    do {
+                        guard let store else {
+                            // First failure wins, like every other sheet message.
+                            if libraryMessage == nil {
+                                libraryMessage = LibraryCopy.noStore
+                            }
+                            return true
+                        }
+                        try store.supersedeOnRefetch(oldRow: row, newDocument: document, startWord: start)
+                    } catch {
+                        // The session already holds the new bytes, but the
+                        // transaction rolled back: no row seeded, old row
+                        // intact with its bytes already gone (that is why
+                        // this refetched). The next tick seeds the new row;
+                        // the next open heals either way: the new row
+                        // absorbs its document-less sibling, the old row
+                        // refetches and retires again (see `openAtPlace`).
+                        // Name it where it is seen — the reader is open —
+                        // and list what is there. A failure outranks the
+                        // informational rewrite note; the first one wins, so
+                        // an earlier sibling-loop failure stands on both.
+                        if libraryMessage == nil {
+                            libraryMessage = LibraryCopy.refreshFailed
+                        }
+                        if readerNotice == nil || readerNotice == LibraryCopy.articleUpdated {
+                            readerNotice = LibraryCopy.refreshFailed
+                        }
+                        refreshLibrary()
+                        return true
+                    }
+                    clearHash = ReadLaterStore.Store.resumeKey(for: document)
+                    clearDoc = document.id
+                    refreshLibrary()
+                }
+                // The canonical fallback rescued a dead pasted link: drop it
+                // from both rows so later opens fetch once, from the
+                // canonical URL. After `openAtPlace`: `open()` flushes the
+                // old session (a tick carrying the dead link) and re-saves
+                // the document (nil original keeps the old link via
+                // COALESCE) — clears enqueued before either would lose to
+                // them. Enqueued behind everything on the same serial queue,
+                // so no drain blocks this path; new-session ticks carry nil
+                // and keep the cleared NULL. A failed clear only costs a
+                // double fetch: the next fallback retries. The request is
+                // compared normalized, so case/port/fragment variants of
+                // the pasted link still read as the link itself.
+                if let original = row.originalURL,
+                   ArticleIngress.originalForRefetch(request: url, canonical: original) != nil {
+                    // One block clears both rows: split enqueues could leave
+                    // the document row holding the dead link, and the next
+                    // open would tick it back into the position row.
+                    // Retargeted above when a supersede seeded a new row.
+                    recorder?.clearRescuedLink(contentHash: clearHash, documentID: clearDoc)
+                }
                 return true
             }
         }
@@ -241,6 +513,9 @@ final class AppModel {
 
     /// Writes the current place now. Called on pause-adjacent transitions the
     /// throttle might miss: close, background, and anywhere the app can die.
+    /// The drain blocks the caller (main on close/background): accepted,
+    /// because losing the place outranks the stall, and the queue holds at
+    /// most a few lightweight writes.
     func flushPosition() {
         guard let session, let recorder, session.progress.totalWords > 0 else { return }
         recorder.record(document: session.document, wordIndex: session.progress.wordIndex, source: "flush")
@@ -288,7 +563,7 @@ struct RootView: View {
                 ReaderScreen(
                     session: session, registry: registry, connectivity: connectivity, telemetry: telemetry,
                     source: model.readerSource,
-                    onExit: model.closeDocument)
+                    onExit: model.closeDocument, notice: model.readerNotice)
                     .id(model.openToken)
                     .transition(.opacity)
                     // Escape closes card/note from any focus inside the
@@ -312,7 +587,9 @@ struct RootView: View {
             } else {
                 EntryView(
                     telemetry: telemetry,
-                    onOpen: { document, source in model.open(document, source: source) },
+                    onOpen: { document, source, page in
+                        model.open(document, source: source, page: page)
+                    },
                     onSettings: { model.isSettingsPresented = true },
                     onLibrary: { model.isLibraryPresented = true },
                     prefillLink: LibraryCopy.prefillLink(seenDemo: seenDemo)
@@ -454,6 +731,9 @@ struct ReaderScreen: View {
     let telemetry: TelemetryHub
     let source: EntrySource
     let onExit: () -> Void
+    /// Set when the open reset the place (rewrite gate) or lost the
+    /// library row. Shown under the chrome; cleared on close.
+    var notice: String? = nil
 
     @Environment(\.openURL) private var openURL
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -466,6 +746,15 @@ struct ReaderScreen: View {
         ZStack {
             VStack(spacing: 0) {
                 chrome
+                if let notice {
+                    Text(notice)
+                        .font(Theme.caption())
+                        .foregroundStyle(Theme.inkSecondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, Theme.screenGutter)
+                        .padding(.vertical, 6)
+                        .accessibilityIdentifier(AccessibilityID.readerNotice)
+                }
                 // The rail stops above the full-width bottom bar, which holds the
                 // clock and the transport.
                 VStack(spacing: 0) {

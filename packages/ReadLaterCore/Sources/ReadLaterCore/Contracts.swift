@@ -210,7 +210,7 @@ public protocol LibraryProvider: AnyObject {
     /// Returns true when the article opened. A false return keeps the list up.
     func open(_ row: LibraryRow) async -> Bool
     func setSaved(_ row: LibraryRow, saved: Bool)
-    func refresh(_ row: LibraryRow)
+    func releaseCopy(_ row: LibraryRow)
     func forget(_ row: LibraryRow)
 }
 

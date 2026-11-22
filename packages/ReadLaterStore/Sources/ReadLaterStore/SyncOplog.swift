@@ -19,7 +19,12 @@ public final class SyncOplog: Sendable {
         self.telemetry = telemetry
     }
 
-    /// Appends one entry in its own transaction.
+    /// Appends one entry in its own transaction. Logs `store.write` with its
+    /// own shape (no `copyMs`/`encodeMs` split: the whole body is the one
+    /// write, and `Oplog` owns no `timedWrite`). The M8 net covers the op
+    /// name alongside every `timedWrite` site plus `store.migrate` — the
+    /// timing test asserts the full set, so a new write without an event
+    /// fails there.
     public func append(op: String, payload: String, at date: Date = .now) throws {
         let start = CFAbsoluteTimeGetCurrent()
         try dbQueue.write { db in

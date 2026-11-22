@@ -137,14 +137,14 @@ which is gitignored. Only `Config/Device.xcconfig.example` is committed.
 ## 6. Tests
 
 Work in each package directory. `swift test` covers every package.
-Counts below were observed on 2026-11-13 with Swift 6.4.2.
+Counts below were observed on 2026-11-19 with Swift 6.4.2.
 
 | Package | Command | Observed |
 |---|---|---|
-| `ReadLaterCore` | `swift test` in `packages/ReadLaterCore` | 79 swift-testing tests pass |
+| `ReadLaterCore` | `swift test` in `packages/ReadLaterCore` | 118 swift-testing tests pass |
 | `ReadLaterPacks` | `swift test` in `packages/ReadLaterPacks` | 52 swift-testing tests pass |
-| `ReadLaterStore` | `swift test` in `packages/ReadLaterStore` | 26 swift-testing tests pass |
-| `ReadLaterUI` | `swift test` in `packages/ReadLaterUI` | 60 XCTest and 45 swift-testing tests pass |
+| `ReadLaterStore` | `swift test` in `packages/ReadLaterStore` | 102 swift-testing tests pass |
+| `ReadLaterUI` | `swift test` in `packages/ReadLaterUI` | 52 swift-testing tests pass |
 
 ```bash
 cd packages/ReadLaterCore && swift test

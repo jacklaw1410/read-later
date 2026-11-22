@@ -141,7 +141,7 @@ struct PositionTests {
     }
 }
 
-@Suite("Library: visits, saves, cache bust")
+@Suite("Library: visits, saves, release")
 struct LibraryTests {
     @Test("Recent positions list newest first and cap at the limit")
     func recentPositionsOrderAndLimit() throws {
@@ -188,8 +188,8 @@ struct LibraryTests {
         #expect(try store.savedPositions().isEmpty)
     }
 
-    @Test("Cache bust drops the plan and keeps the place")
-    func cacheBustKeepsPosition() throws {
+    @Test("Release drops the plan and keeps the place")
+    func releaseKeepsPosition() throws {
         let (store, dir) = try makeTemporaryStore()
         defer { removeTemporaryStore(at: dir) }
 
@@ -197,7 +197,7 @@ struct LibraryTests {
         try store.save(document: document)
         try store.recordPosition(of: document, wordIndex: 3)
 
-        try store.cacheBust(documentID: document.id)
+        try store.releaseCopy(documentID: document.id)
 
         #expect(try store.document(id: document.id) == nil)
         #expect(try store.position(contentHash: Store.resumeKey(for: document))?.wordIndex == 3)
@@ -250,8 +250,8 @@ struct PositionOriginTests {
         #expect(back?.url == nil)
     }
 
-    @Test("A cache bust keeps the origin the list needs")
-    func bustKeepsOrigin() throws {
+    @Test("A release keeps the origin the list needs")
+    func releaseKeepsOrigin() throws {
         let (store, dir) = try makeTemporaryStore()
         defer { removeTemporaryStore(at: dir) }
 
@@ -259,7 +259,7 @@ struct PositionOriginTests {
         try store.save(document: document)
         try store.recordPosition(of: document, wordIndex: 1)
 
-        try store.cacheBust(documentID: document.id)
+        try store.releaseCopy(documentID: document.id)
 
         let rows = try store.recentPositions()
         #expect(rows.count == 1)

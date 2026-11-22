@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://readlater.app/contracts/block-plan.v1.json",
   "title": "Block plan v1",
-  "description": "Extraction contract. Produced by extract() in ReadLaterCore, read by the app, the research gate and every future platform. Mirrors ReadLaterCore.BlockPlan exactly: a rename here is a schema version bump, not a refactor. Source of truth: read-later-research/spec/non-prose-classification.md.",
+  "description": "Extraction contract. Produced by extract() in ReadLaterCore, read by the app, the research gate and every future platform. Mirrors ReadLaterCore.BlockPlan exactly: a rename here is a schema version bump, not a refactor. Source of truth: read-later-research/spec/non-prose-classification.md. v1.1 additive keys: schema_version (alias of version) and extractor_version are optional, so v1.0 files still validate. New writers emit all three keys, so only validators updated to this file accept new output; a validator pinned to v1.0 rejects it.",
   "type": "object",
   "required": [
     "version",
@@ -19,6 +19,15 @@
     "version": {
       "description": "Schema version, not the app version.",
       "const": 1
+    },
+    "schema_version": {
+      "description": "Alias of version, the name new writers emit. Optional so v1.0 files validate.",
+      "const": 1
+    },
+    "extractor_version": {
+      "description": "Parser build that produced the plan. Optional so v1.0 files validate; missing means 0.",
+      "type": "integer",
+      "minimum": 0
     },
     "source": {
       "description": "File name of the HTML the plan was built from.",

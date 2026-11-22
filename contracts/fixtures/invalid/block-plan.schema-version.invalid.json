@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "schema_version": 2,
+  "source": "004-averages.html",
+  "source_sha256": "00dd5e1386b5306a43221dc044132b37ff826c09e96f653b086f7b60fa2e7743",
+  "sentence_count": 0,
+  "spoken_words": 0,
+  "validation_failures": 0,
+  "blocks": [],
+  "skipped": []
+}
