@@ -26,7 +26,8 @@ cargo run --release -- --svg-dir /tmp/entryprobe/svg /tmp/entryprobe/oplog.jsonl
 ```
 
 Without `ENTRY_PROBE_OUT` the test skips. The pin and fixture variables are
-optional. Synthetic articles always run.
+optional. Synthetic articles always run. `ENTRY_PROBE_ONLY=082-nyt-cooking,046-atlantic`
+limits the run to the listed labels, for a focused run or a Time Profiler trace.
 
 ## What is measured
 
@@ -36,11 +37,16 @@ optional. Synthetic articles always run.
 - `sha256`: the page hash that the shipped code computes before the plan build.
 - `save`: `Store.save(document:)` into a temporary database.
 - `seed`: `ReaderSeed` init, which builds `BlockRoles` and `SpokenWordNumbering`.
+- `library`: the library open path without the view. It reads the stored document
+  with `Store.document(id:)`, saves it again as `AppModel.open` does, then runs
+  `ReaderSeed`. It does not include `ReaderSession` init or `warmUp`.
 - `read`: the whole `ArticleIngress.read` path. It is a check, not a part of the total.
-- `total`: extract + plan + sha256 + save + seed.
+- `total`: extract + plan + sha256 + save + seed. `library` is not in the total.
 
-Each article gets one window per arm, at least 20 ms long, after one untimed
-warm-up. Telemetry stages come from five real `ArticleIngress.read` calls per
+Each article gets one timed call per repeat, at least 5 repeats, enough to fill
+20 ms. The record holds the median (`ms`), minimum (`ms_min`), maximum (`ms_max`)
+and repeat count (`reps`). Each `probe.sample` also records `nodes`: the count of
+opening tags in the page, which approximates the DOM node count. Telemetry stages come from five real `ArticleIngress.read` calls per
 article, each preceded by a `probe.call` marker. The fitter pairs
 `extract.start`, `T4.parsed` and `T5.planReady` inside each marker. The
 telemetry `plan` stage includes the hash, because the shipped code computes it
@@ -53,6 +59,12 @@ in that span.
 - Two-term fit on synthetic articles: `ms = a + b·words + c·blocks·wpb²`, with
   the t-value of `c`.
 - Real pages: log-log exponent and the regression line `ms = a + b·words`.
+- Real pages: extract on bytes and nodes together, `ms = a + b·bytes + c·nodes`,
+  with the t-value of `c`.
+- Library open against entry total on real pages (medians).
+- Spread (median, min, max, repeats) for 082, 046 and 092 when present.
+- 1 kB pages (sweep T): measured extract against the bytes-only fit's prediction
+  and its intercept.
 - Telemetry cross-check: median ratio of telemetry stages to probe stages.
   A value near 1.0 means the two agree.
 - Verdicts for H1, H2 and H3.

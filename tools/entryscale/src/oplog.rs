@@ -11,6 +11,10 @@ pub struct Sample {
     pub wpb: f64,
     pub bytes: f64,
     pub ms: f64,
+    pub ms_min: Option<f64>,
+    pub ms_max: Option<f64>,
+    pub reps: Option<f64>,
+    pub nodes: Option<f64>,
 }
 
 /// One telemetry-recorded `ArticleIngress.read` call. `extract_ms` runs from
@@ -39,6 +43,10 @@ fn number(fields: &Value, name: &str) -> Result<f64, String> {
     text(fields, name)
         .parse::<f64>()
         .map_err(|_| format!("field `{name}` is not a number: {}", fields[name]))
+}
+
+fn optional(fields: &Value, name: &str) -> Option<f64> {
+    text(fields, name).parse::<f64>().ok()
 }
 
 /// Reads one oplog file into `log`. Events are read in file order, so each
@@ -97,6 +105,10 @@ pub fn parse(source: &str, log: &mut Log) -> Result<(), String> {
                 wpb: number(fields, "wpb")?,
                 bytes: number(fields, "bytes")?,
                 ms: number(fields, "ms")?,
+                ms_min: optional(fields, "ms_min"),
+                ms_max: optional(fields, "ms_max"),
+                reps: optional(fields, "reps"),
+                nodes: optional(fields, "nodes"),
             }),
             _ => {}
         }
@@ -117,6 +129,19 @@ mod tests {
         assert_eq!(log.samples.len(), 1);
         assert_eq!(log.samples[0].blocks, 25.0);
         assert_eq!(log.samples[0].ms, 0.5);
+        assert_eq!(log.samples[0].nodes, None);
+    }
+
+    #[test]
+    fn reads_spread_and_node_fields_when_present() {
+        let line = r#"{"t":1.0,"event":"probe.sample","fields":{"sweep":"real","source":"file","article":"082-nyt-cooking","arm":"extract","blocks":"2","words":"6","wpb":"3.0","bytes":"300000","ms":"200.0","ms_min":"190.0","ms_max":"260.0","reps":"5","nodes":"4100","checksum":"1"}}"#;
+        let mut log = Log::default();
+        parse(line, &mut log).unwrap();
+        let s = &log.samples[0];
+        assert_eq!(s.ms_min, Some(190.0));
+        assert_eq!(s.ms_max, Some(260.0));
+        assert_eq!(s.reps, Some(5.0));
+        assert_eq!(s.nodes, Some(4100.0));
     }
 
     #[test]

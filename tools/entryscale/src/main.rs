@@ -8,9 +8,11 @@ use std::path::PathBuf;
 use std::process::ExitCode;
 
 use fit::{Row, Slope};
-use oplog::{Log, Sample};
+use oplog::Log;
 
-const ARMS: [&str; 7] = ["read", "extract", "plan", "invariant", "sha256", "save", "seed"];
+const ARMS: [&str; 8] = ["read", "extract", "plan", "invariant", "sha256", "save", "library", "seed"];
+/// Real pages repeated for spread: the three named in the entry-wait ticket.
+const SPREAD_PAGES: [&str; 3] = ["082-nyt-cooking", "046-atlantic", "092-ft"];
 /// Parts of the entry wait that run after the fetch. `plan` excludes the hash,
 /// so the hash is added here as its own part. `read` is the whole path, kept as a check.
 const TOTAL_PARTS: [&str; 5] = ["extract", "plan", "sha256", "save", "seed"];
@@ -23,8 +25,10 @@ struct Article {
     blocks: f64,
     words: f64,
     bytes: f64,
+    nodes: f64,
     wpb: f64,
     arms: BTreeMap<String, f64>,
+    spread: BTreeMap<String, (f64, f64, f64)>,
 }
 
 struct Args {
@@ -60,16 +64,20 @@ fn median(mut values: Vec<f64>) -> Option<f64> {
 
 fn group(log: &Log) -> BTreeMap<String, Article> {
     let mut articles: BTreeMap<String, Article> = BTreeMap::new();
-    for Sample { sweep, source, article, arm, blocks, words, bytes, wpb, ms, .. } in &log.samples {
-        let entry = articles.entry(article.clone()).or_default();
-        entry.label = article.clone();
-        entry.sweep = sweep.clone();
-        entry.source = source.clone();
-        entry.blocks = *blocks;
-        entry.words = *words;
-        entry.wpb = *wpb;
-        entry.bytes = *bytes;
-        entry.arms.insert(arm.clone(), *ms);
+    for s in &log.samples {
+        let entry = articles.entry(s.article.clone()).or_default();
+        entry.label = s.article.clone();
+        entry.sweep = s.sweep.clone();
+        entry.source = s.source.clone();
+        entry.blocks = s.blocks;
+        entry.words = s.words;
+        entry.wpb = s.wpb;
+        entry.bytes = s.bytes;
+        entry.nodes = s.nodes.unwrap_or(f64::NAN);
+        entry.arms.insert(s.arm.clone(), s.ms);
+        if let (Some(lo), Some(hi)) = (s.ms_min, s.ms_max) {
+            entry.spread.insert(s.arm.clone(), (lo, hi, s.reps.unwrap_or(f64::NAN)));
+        }
     }
     for article in articles.values_mut() {
         if TOTAL_PARTS.iter().all(|p| article.arms.contains_key(*p)) {
@@ -216,6 +224,64 @@ fn run(args: Args) -> Result<(), String> {
     println!("Telemetry cross-check (median of ratios, 1.0 agrees):");
     println!("  extract: telemetry / probe = {:.3} (n={})", median(ratios_extract.clone()).unwrap_or(f64::NAN), ratios_extract.len());
     println!("  plan:    telemetry / (probe plan + sha256) = {:.3} (n={})", median(ratios_plan.clone()).unwrap_or(f64::NAN), ratios_plan.len());
+    println!();
+
+    let real: Vec<&Article> = articles.values().filter(|a| a.source == "file").collect();
+
+    println!("Real pages: extract ms = a + b·HTML bytes + c·nodes");
+    let node_rows: Vec<&Article> = real.iter().copied().filter(|a| a.arms.contains_key("extract") && a.nodes.is_finite()).collect();
+    let ones = vec![1.0; node_rows.len()];
+    let bytes_col: Vec<f64> = node_rows.iter().map(|a| a.bytes).collect();
+    let nodes_col: Vec<f64> = node_rows.iter().map(|a| a.nodes).collect();
+    let extract_col: Vec<f64> = node_rows.iter().map(|a| a.arms["extract"]).collect();
+    match fit::ols(&[ones, bytes_col, nodes_col], &extract_col) {
+        Some(f) => println!(
+            "  a = {:.3} ms, b = {:.4e} ms/byte, c = {:.4e} ms/node, t(c) = {:.2}, R² = {:.4}, n = {}",
+            f.coef[0], f.coef[1], f.coef[2], f.coef[2] / f.se[2], f.r2, node_rows.len()
+        ),
+        None => println!("  not enough points"),
+    }
+    println!();
+
+    println!("Library open, real pages (ms, medians):");
+    let lib_rows: Vec<&Article> = real.iter().copied().filter(|a| a.arms.contains_key("library") && a.arms.contains_key("total")).collect();
+    let library: Vec<f64> = lib_rows.iter().map(|a| a.arms["library"]).collect();
+    let total: Vec<f64> = lib_rows.iter().map(|a| a.arms["total"]).collect();
+    let share: Vec<f64> = lib_rows.iter().map(|a| a.arms["library"] / a.arms["total"]).collect();
+    println!(
+        "  library {:.3}, entry total {:.3}, library / total {:.4}, n = {}",
+        median(library).unwrap_or(f64::NAN),
+        median(total).unwrap_or(f64::NAN),
+        median(share).unwrap_or(f64::NAN),
+        lib_rows.len()
+    );
+    println!();
+
+    println!("Spread on repeated pages: median [min, max] reps");
+    for label in SPREAD_PAGES {
+        let Some(a) = articles.values().find(|a| a.label == label) else {
+            println!("  {label}: not in this oplog");
+            continue;
+        };
+        for arm in ["extract", "total"] {
+            if let (Some(m), Some((lo, hi, reps))) = (a.arms.get(arm), a.spread.get(arm)) {
+                println!("  {:<16} {:<8} {:>10.3} [{:.3}, {:.3}] reps={}", label, arm, m, lo, hi, reps);
+            }
+        }
+    }
+    println!();
+
+    let tiny: Vec<&Article> = articles.values().filter(|a| a.sweep == "T").collect();
+    let tiny_extract: Vec<f64> = tiny.iter().filter_map(|a| a.arms.get("extract").copied()).collect();
+    let tiny_bytes: f64 = median(tiny.iter().map(|a| a.bytes).collect()).unwrap_or(f64::NAN);
+    println!("1 kB pages (sweep T, n = {}):", tiny.len());
+    match (median(tiny_extract), linear(&points(&articles, |a| a.source == "file", |a| a.bytes, "extract"))) {
+        (Some(m), Some(f)) => println!(
+            "  measured extract median {:.3} ms at {:.0} bytes; bytes-only fit predicts {:.3} ms (intercept {:.3} ms)",
+            m, tiny_bytes, f.coef[0] + f.coef[1] * tiny_bytes, f.coef[0]
+        ),
+        _ => println!("  not enough points"),
+    }
     println!();
 
     let h1 = fit::loglog(&points(&articles, |a| a.sweep == "A", |a| a.blocks, "total")).map(|s| fit::verdict(&s)).unwrap_or("not enough points");

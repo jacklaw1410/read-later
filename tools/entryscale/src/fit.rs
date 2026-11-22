@@ -211,4 +211,16 @@ mod tests {
         assert!((fit.coef[1] - 0.02).abs() < 1e-6);
         assert!((fit.coef[2] - 0.3).abs() < 1e-6);
     }
+
+    #[test]
+    fn three_columns_recover_bytes_and_node_coefficients() {
+        let bytes: Vec<f64> = (1..=12).map(|i| (i * 1000) as f64).collect();
+        let nodes: Vec<f64> = (1..=12).map(|i| (((i * i) % 17 + i) * 10) as f64).collect();
+        let y: Vec<f64> = bytes.iter().zip(&nodes).map(|(b, n)| 5.0 + 0.002 * b + 0.04 * n).collect();
+        let f = ols(&[vec![1.0; 12], bytes, nodes], &y).unwrap();
+        assert!((f.coef[0] - 5.0).abs() < 1e-6);
+        assert!((f.coef[1] - 0.002).abs() < 1e-9);
+        assert!((f.coef[2] - 0.04).abs() < 1e-9);
+        assert!((f.r2 - 1.0).abs() < 1e-9);
+    }
 }
