@@ -5,6 +5,7 @@ import SwiftUI
 /// design/miss-state.md and quoted exactly; `MissKind` labels come from
 /// `LookupOutcome` and are never reworded here.
 public struct MissCard: View {
+    private let telemetry: TelemetryHub
     private let word: String
     private let kind: MissKind
     private let packInstalled: Bool
@@ -20,6 +21,7 @@ public struct MissCard: View {
     @State private var didLogShown = false
 
     public init(
+        telemetry: TelemetryHub,
         word: String,
         kind: MissKind,
         packInstalled: Bool,
@@ -33,6 +35,7 @@ public struct MissCard: View {
         onClose: @escaping () -> Void,
         onSearchWeb: @escaping () -> Void
     ) {
+        self.telemetry = telemetry
         self.word = word
         self.kind = kind
         self.packInstalled = packInstalled
@@ -119,7 +122,7 @@ public struct MissCard: View {
             DispatchQueue.main.async {
                 guard !didLogShown else { return }
                 didLogShown = true
-                TelemetryHub.shared.record(
+                telemetry.record(
                     TelemetryName.cardShown,
                     fields: ["word": word, "kind": "miss"]
                 )

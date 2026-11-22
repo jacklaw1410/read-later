@@ -94,10 +94,12 @@ public final class AVSpeechController: NSObject, SpeechController {
     private var ttfwVoiceStarted = false
     private var ttfwWordDelivered = false
     private var pausedByInterruption = false
+    private let telemetry: TelemetryHub
     private var voice: AVSpeechSynthesisVoice?
     private nonisolated(unsafe) var interruptionToken: NSObjectProtocol?
 
-    public override init() {
+    public init(telemetry: TelemetryHub) {
+        self.telemetry = telemetry
         voice = Self.defaultVoice()
         super.init()
         // This init is the one place that owns the audio-session config. The
@@ -173,8 +175,8 @@ public final class AVSpeechController: NSObject, SpeechController {
             return
         }
         state = .speaking
-        if TelemetryHub.shared.hasActiveRun {
-            TelemetryHub.shared.record(TelemetryName.speakEnqueued, fields: [
+        if telemetry.hasActiveRun {
+            telemetry.record(TelemetryName.speakEnqueued, fields: [
                 "sentences": String(sentences.count),
             ])
         }
@@ -190,7 +192,7 @@ public final class AVSpeechController: NSObject, SpeechController {
     public func pause() {
         guard state == .speaking else { return }
         let accepted = synthesizer.pauseSpeaking(at: .word)
-        TelemetryHub.shared.record(TelemetryName.speechPauseCall, fields: [
+        telemetry.record(TelemetryName.speechPauseCall, fields: [
             "accepted": String(accepted),
             "synthPaused": String(synthesizer.isPaused),
         ])
@@ -353,7 +355,7 @@ public final class AVSpeechController: NSObject, SpeechController {
         let id = ObjectIdentifier(spoken)
         inFlight[id] = InFlight(epoch: epoch, utteranceIndex: nextToEnqueue)
         retained[id] = spoken
-        TelemetryHub.shared.record(TelemetryName.speechEnqueue, fields: [
+        telemetry.record(TelemetryName.speechEnqueue, fields: [
             "utterance": String(nextToEnqueue),
             "inFlight": String(inFlight.count),
         ])
@@ -401,13 +403,13 @@ extension AVSpeechController {
         guard let entry = inFlight[utteranceID], !warmupIDs.contains(utteranceID) else { return }
         state = .speaking
         // M4 phone-side mark: every utterance start, ungated (see TelemetryName).
-        TelemetryHub.shared.record(TelemetryName.utteranceStart, fields: [
+        telemetry.record(TelemetryName.utteranceStart, fields: [
             "utterance": String(entry.utteranceIndex),
         ])
         if !ttfwVoiceStarted {
             ttfwVoiceStarted = true
-            if TelemetryHub.shared.hasActiveRun {
-                TelemetryHub.shared.record(TelemetryName.speechDidStart)
+            if telemetry.hasActiveRun {
+                telemetry.record(TelemetryName.speechDidStart)
             }
         }
     }
@@ -430,8 +432,8 @@ extension AVSpeechController {
         currentWordIndex = global
         if !ttfwWordDelivered {
             ttfwWordDelivered = true
-            if TelemetryHub.shared.hasActiveRun {
-                TelemetryHub.shared.record(TelemetryName.firstWord)
+            if telemetry.hasActiveRun {
+                telemetry.record(TelemetryName.firstWord)
             }
         }
         onWord?(word)
@@ -445,7 +447,7 @@ extension AVSpeechController {
         }
         guard let entry = inFlight.removeValue(forKey: utteranceID), entry.epoch == epoch else { return }
         retained.removeValue(forKey: utteranceID)
-        TelemetryHub.shared.record(TelemetryName.speechDidFinish, fields: [
+        telemetry.record(TelemetryName.speechDidFinish, fields: [
             "utterance": String(entry.utteranceIndex),
             "inFlight": String(inFlight.count),
             "nextToEnqueue": String(nextToEnqueue),
@@ -465,7 +467,7 @@ extension AVSpeechController {
 
     fileprivate func handleDidPause(utteranceID: ObjectIdentifier) {
         let tracked = inFlight[utteranceID] != nil
-        TelemetryHub.shared.record(TelemetryName.speechDidPause, fields: [
+        telemetry.record(TelemetryName.speechDidPause, fields: [
             "tracked": String(tracked),
             "state": String(describing: state),
         ])
@@ -475,7 +477,7 @@ extension AVSpeechController {
 
     fileprivate func handleDidResume(utteranceID: ObjectIdentifier) {
         let tracked = inFlight[utteranceID] != nil
-        TelemetryHub.shared.record(TelemetryName.speechDidResume, fields: [
+        telemetry.record(TelemetryName.speechDidResume, fields: [
             "tracked": String(tracked),
             "state": String(describing: state),
         ])

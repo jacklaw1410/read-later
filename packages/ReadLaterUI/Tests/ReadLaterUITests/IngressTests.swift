@@ -26,7 +26,7 @@ private func prose(_ subject: String) -> String {
 
 @Test func pastedTextBecomesADocument() throws {
     let text = "First paragraph.\n\nSecond paragraph."
-    let result = ArticleIngress.pasted(text)
+    let result = ArticleIngress.pasted(text, telemetry: TelemetryHub())
     let document = try result.get()
     #expect(document.plan.blocks.count == 2)
     #expect(document.title == "First paragraph. Second paragraph.")
@@ -34,25 +34,25 @@ private func prose(_ subject: String) -> String {
 }
 
 @Test func emptyTextIsRefusedWithThePromptToPaste() {
-    let result = ArticleIngress.pasted("   \n\n  ")
+    let result = ArticleIngress.pasted("   \n\n  ", telemetry: TelemetryHub())
     #expect(result == .failure(.empty))
     #expect(IngressError.empty.message == "nothing to open — paste a link or text")
 }
 
 @Test func aFieldThatIsNotALinkIsRefused() async {
-    let result = await ArticleIngress.document(from: .link("just some words"))
+    let result = await ArticleIngress.document(from: .link("just some words"), telemetry: TelemetryHub())
     #expect(result == .failure(.badLink))
 }
 
 @Test func httpIsRefusedBeforeTheRequest() async {
-    let result = await ArticleIngress.document(from: .link("http://example.com/x"))
+    let result = await ArticleIngress.document(from: .link("http://example.com/x"), telemetry: TelemetryHub())
     #expect(result == .failure(.notHTTPS))
     #expect(IngressError.notHTTPS.message == "https links only")
 }
 
 @Test func aWallIsNamedAsAWall() async {
     let fetcher = StubFetcher(result: .success(page("<p>Subscribe to continue</p>", status: 403)))
-    let result = await ArticleIngress.document(from: .link("https://example.com/a"), fetcher: fetcher)
+    let result = await ArticleIngress.document(from: .link("https://example.com/a"), telemetry: TelemetryHub(), fetcher: fetcher)
     #expect(result == .failure(.walled))
     #expect(IngressError.walled.message == "login wall — paste text instead")
 }
@@ -60,21 +60,21 @@ private func prose(_ subject: String) -> String {
 @Test func aJavaScriptShellIsNamed() async {
     let body = "<div id=\"root\"></div><script src=\"/app.js\"></script>"
     let fetcher = StubFetcher(result: .success(page(body)))
-    let result = await ArticleIngress.document(from: .link("https://example.com/a"), fetcher: fetcher)
+    let result = await ArticleIngress.document(from: .link("https://example.com/a"), telemetry: TelemetryHub(), fetcher: fetcher)
     #expect(result == .failure(.unrendered))
 }
 
 @Test func anIndexIsNamed() async {
     let links = (1...20).map { "<a href=\"/p/\($0)\">Post number \($0) is here</a>" }.joined()
     let fetcher = StubFetcher(result: .success(page("<div>\(links)</div>")))
-    let result = await ArticleIngress.document(from: .link("https://example.com/a"), fetcher: fetcher)
+    let result = await ArticleIngress.document(from: .link("https://example.com/a"), telemetry: TelemetryHub(), fetcher: fetcher)
     #expect(result == .failure(.notAnArticle))
 }
 
 @Test func aUsablePageKeepsItsTitleAndURL() async throws {
     let body = prose("Alpha") + prose("Beta") + prose("Gamma")
     let fetcher = StubFetcher(result: .success(page(body, title: "The Real Title")))
-    let result = await ArticleIngress.document(from: .link("https://example.com/a"), fetcher: fetcher)
+    let result = await ArticleIngress.document(from: .link("https://example.com/a"), telemetry: TelemetryHub(), fetcher: fetcher)
     let document = try result.get()
     #expect(document.title == "The Real Title")
     #expect(document.url?.absoluteString == "https://example.com/article")
@@ -85,19 +85,19 @@ private func prose(_ subject: String) -> String {
     let body = prose("Alpha") + prose("Beta") + prose("Gamma")
     let html = "<html><head></head><body>\(body)</body></html>"
     let fetched = FetchedPage(html: html, status: 200, url: URL(string: "https://example.com/a")!)
-    let result = ArticleIngress.read(fetched)
+    let result = ArticleIngress.read(fetched, telemetry: TelemetryHub())
     let document = try result.get()
     #expect(document.title == "example.com")
 }
 
 @Test func aTransportFailureIsNamedAsOffline() async {
     let fetcher = StubFetcher(result: .failure(.offline("The Internet connection appears to be offline.")))
-    let result = await ArticleIngress.document(from: .link("https://example.com/a"), fetcher: fetcher)
+    let result = await ArticleIngress.document(from: .link("https://example.com/a"), telemetry: TelemetryHub(), fetcher: fetcher)
     #expect(result == .failure(.offline("")))
 }
 
 @Test func theFetcherRefusesAFileURL() async {
-    let fetcher = URLSessionPageFetcher()
+    let fetcher = URLSessionPageFetcher(telemetry: TelemetryHub())
     await #expect(throws: PageFetchError.notHTTP) {
         try await fetcher.fetch(URL(fileURLWithPath: "/tmp/x.html"))
     }
@@ -115,7 +115,8 @@ private func prose(_ subject: String) -> String {
 @Test(.enabled(if: ProcessInfo.processInfo.environment["RLIVE"] != nil))
 func liveFetchOfOneArticle() async throws {
     let result = await ArticleIngress.document(
-        from: .link("https://en.wikipedia.org/wiki/Bayes%27_theorem")
+        from: .link("https://en.wikipedia.org/wiki/Bayes%27_theorem"),
+        telemetry: TelemetryHub()
     )
     let document = try result.get()
     #expect(document.url?.host == "en.wikipedia.org")

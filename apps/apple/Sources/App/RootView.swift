@@ -24,15 +24,17 @@ final class AppModel {
 
     private let speech: SpeechController
     private let packs: any CapabilityPacks
+    private let telemetry: TelemetryHub
     private let lookup: PackLookupProvider
     private let store: ReadLaterStore.Store?
     private let recorder: ReadLaterStore.PositionRecorder?
-    init(packs: any CapabilityPacks) {
+    init(packs: any CapabilityPacks, telemetry: TelemetryHub) {
         self.packs = packs
+        self.telemetry = telemetry
         self.lookup = PackLookupProvider(packs: packs)
-        self.speech = Self.makeSpeech()
+        self.speech = Self.makeSpeech(telemetry: telemetry)
         self.store = Self.openStore()
-        Self.seedIfRequested(store: self.store)
+        Self.seedIfRequested(store: self.store, telemetry: telemetry)
         self.recorder = self.store.map { ReadLaterStore.PositionRecorder(store: $0) }
         refreshLibrary()
     }
@@ -40,11 +42,11 @@ final class AppModel {
     /// The one place the voice is chosen. Production always gets the system
     /// synthesizer; a debug launch can substitute the scripted voice.
     @MainActor
-    private static func makeSpeech() -> SpeechController {
+    private static func makeSpeech(telemetry: TelemetryHub) -> SpeechController {
         #if DEBUG
-        return DebugLaunch.makeSpeech()
+        return DebugLaunch.makeSpeech(telemetry: telemetry)
         #else
-        return AVSpeechController()
+        return AVSpeechController(telemetry: telemetry)
         #endif
     }
 
@@ -69,12 +71,12 @@ final class AppModel {
     /// store with its place at word zero, so the test opens the newest
     /// library row instead of typing the raw text. Runs before the library
     /// refresh, so the row is there on launch. Debug builds only.
-    private static func seedIfRequested(store: ReadLaterStore.Store?) {
+    private static func seedIfRequested(store: ReadLaterStore.Store?, telemetry: TelemetryHub) {
         #if DEBUG
         guard let store, let b64 = DebugLaunch.options.seedTextB64,
               let data = Data(base64Encoded: b64),
               let text = String(data: data, encoding: .utf8),
-              case .success(let document) = ArticleIngress.pasted(text) else { return }
+              case .success(let document) = ArticleIngress.pasted(text, telemetry: telemetry) else { return }
         try? store.save(document: document)
         try? store.recordPosition(of: document, wordIndex: 0, source: "seed")
         #endif
@@ -84,13 +86,14 @@ final class AppModel {
         flushPosition()
         session?.stop()
         try? store?.save(document: document)
-        let next = ReaderSession(document: document, speech: speech, lookupProvider: lookup, packs: packs)
+        let next = ReaderSession(
+            document: document, speech: speech, lookupProvider: lookup, packs: packs, telemetry: telemetry)
         next.onProgress = { [weak self] index, source in self?.recordPosition(index: index, source: source) }
         if let startWord { next.begin(at: startWord) }
         session = next
         next.warmUp()
         refreshLibrary()
-        TelemetryHub.shared.record(TelemetryName.articleReady, fields: [
+        telemetry.record(TelemetryName.articleReady, fields: [
             "title": document.title,
             "words": String(document.plan.spokenWords),
         ])
@@ -101,7 +104,7 @@ final class AppModel {
         session?.stop()
         session = nil
         refreshLibrary()
-        TelemetryHub.shared.endRunIfActive(outcome: "closed")
+        telemetry.endRunIfActive(outcome: "closed")
     }
 
     /// Opens the newest saved place, if any. The resume offer is gone, so
@@ -207,12 +210,12 @@ final class AppModel {
     }
 
     private func refetchAndOpen(_ row: ReadingPosition, url: URL) async -> Bool {
-        switch await ArticleIngress.fetch(url.absoluteString) {
+        switch await ArticleIngress.fetch(url.absoluteString, telemetry: telemetry) {
         case .failure(let error):
             libraryMessage = error.message
             return false
         case .success(let page):
-            switch ArticleIngress.read(page) {
+            switch ArticleIngress.read(page, telemetry: telemetry) {
             case .failure(let error):
                 libraryMessage = error.message
                 return false
@@ -242,22 +245,26 @@ struct RootView: View {
     @State private var model: AppModel
     let registry: PackRegistry
     let diagnostics: any DiagnosticsExporting
+    let telemetry: TelemetryHub
     @AppStorage(Appearance.storageKey) private var appearance = Appearance.system.rawValue
     @AppStorage("rl-seen-demo") private var seenDemo = false
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    init(registry: PackRegistry, diagnostics: any DiagnosticsExporting) {
+    init(registry: PackRegistry, diagnostics: any DiagnosticsExporting, telemetry: TelemetryHub) {
         self.registry = registry
         self.diagnostics = diagnostics
-        _model = State(initialValue: AppModel(packs: registry))
+        self.telemetry = telemetry
+        _model = State(initialValue: AppModel(packs: registry, telemetry: telemetry))
     }
 
     var body: some View {
         @Bindable var bound = model
         Group {
             if let session = model.session {
-                ReaderScreen(session: session, registry: registry, onExit: model.closeDocument)
+                ReaderScreen(
+                    session: session, registry: registry, telemetry: telemetry,
+                    onExit: model.closeDocument)
                     .transition(.opacity)
                     // Escape closes card/note from any focus inside the
                     // reader. Hoisted here because RootView.body runs once per
@@ -279,6 +286,7 @@ struct RootView: View {
                     }
             } else {
                 EntryView(
+                    telemetry: telemetry,
                     onOpen: { model.open($0) },
                     onSettings: { model.isSettingsPresented = true },
                     onLibrary: { model.isLibraryPresented = true },
@@ -342,10 +350,10 @@ struct RootView: View {
             switch phase {
             case .background:
                 model.session?.pauseForBackground()
-                TelemetryHub.shared.record(TelemetryName.appHide)
+                telemetry.record(TelemetryName.appHide)
                 model.flushPosition()
             case .active:
-                TelemetryHub.shared.record(TelemetryName.appReturn)
+                telemetry.record(TelemetryName.appReturn)
                 model.session?.reconcileOnReturn()
             case .inactive:
                 // Lock and overlays pass through here before background; a
@@ -367,7 +375,7 @@ struct RootView: View {
             }
             // Same path as the entry tap and the play button. The tap starts
             // the telemetry run, so T7.firstWord lands in the trace.
-            TelemetryHub.shared.record(TelemetryName.tap)
+            telemetry.record(TelemetryName.tap)
             if model.session == nil {
                 model.openLatestSavedPlace()
             }
@@ -379,7 +387,7 @@ struct RootView: View {
         #if os(macOS)
         .task {
             if SnapshotHarness.isEnabled {
-                await SnapshotHarness.run(app: model, registry: registry)
+                await SnapshotHarness.run(app: model, registry: registry, telemetry: telemetry)
             }
         }
         #endif
@@ -417,6 +425,7 @@ struct RootView: View {
 struct ReaderScreen: View {
     let session: ReaderSession
     let registry: any CapabilityPacks
+    let telemetry: TelemetryHub
     let onExit: () -> Void
 
     @Environment(\.openURL) private var openURL
@@ -622,6 +631,7 @@ struct ReaderScreen: View {
                 switch card {
                 case let .hit(result, wordIndex, wasPlaying):
                     LookupCard(
+                        telemetry: telemetry,
                         result: result,
                         wasPlayingBeforeLookup: wasPlaying,
                         wordIndex: wordIndex,
@@ -630,6 +640,7 @@ struct ReaderScreen: View {
                     )
                 case let .miss(word, kind, wordIndex, wasPlaying):
                     MissCard(
+                        telemetry: telemetry,
                         word: word,
                         kind: kind,
                         packInstalled: registry.isInstalled,
