@@ -208,7 +208,7 @@ The sheet listing started articles, with 'saved' as a flag on each row.
 _Avoid_: saved list, history, browse list
 
 **Reading position**:
-Where reading stands in an article: its place, saved flag, and finished flag. Seeded into the wash on reopen. The place is the spoken word index. An article is keyed by canonical URL, and each content hash is a version under it.
+Where reading stands in an article: its place, saved flag, and finished flag. Seeded into the wash on reopen. The place is the spoken word index. The current build keys an article by content hash. The target keys it by canonical URL, with each content hash as a version under it (SCOPE §5 2026-11-16).
 _Avoid_: row, record, entry
 
 **Saved**:
@@ -216,7 +216,7 @@ A reader-chosen flag on a reading position, shown as the filled icon on the libr
 _Avoid_: bookmark, starred
 
 **Finished**:
-An article whose wash reached the furthest spoken word, the last one. Skipped regions add no spoken words.
+An article whose furthest reached spoken word is the last one (`reachedEnd`, SCOPE §5 2026-11-16). Skipped regions add no spoken words. It is not the human done signal, `markedDone`.
 _Avoid_: completed, done
 
 **Refresh**:
@@ -224,7 +224,7 @@ Dropping the cached plan while keeping the reading position. Reopening refetches
 _Avoid_: cache bust, reload
 
 **Remove**:
-Dropping the article and its place together.
+Dropping the article and its reading position together.
 _Avoid_: forget, delete
 
 ## Measurement
