@@ -208,19 +208,19 @@ The sheet listing started articles, with 'saved' as a flag on each row.
 _Avoid_: saved list, history, browse list
 
 **Reading position**:
-Where reading stands in an article: its place, saved flag, and finished flag. Seeded into the wash on reopen. The place is the word index.
+Where reading stands in an article: its place, saved flag, and finished flag. Seeded into the wash on reopen. The place is the spoken word index. An article is keyed by canonical URL, and each content hash is a version under it.
 _Avoid_: row, record, entry
 
 **Saved**:
-A reader-chosen flag on a reading position, shown as a bookmark.
+A reader-chosen flag on a reading position, shown as the filled icon on the library row.
 _Avoid_: bookmark, starred
 
 **Finished**:
-An article whose wash reached the last spoken word. Aligns with spoken-only progress: skipped regions add no spoken words.
+An article whose wash reached the furthest spoken word, the last one. Skipped regions add no spoken words.
 _Avoid_: completed, done
 
 **Refresh**:
-Dropping the cached plan while keeping the place. Reopening refetches the article only when the plan is missing and a URL is stored.
+Dropping the cached plan while keeping the reading position. Reopening refetches the article only when the plan is missing and a URL is stored.
 _Avoid_: cache bust, reload
 
 **Remove**:
@@ -234,7 +234,7 @@ Where a run happens. On iOS, the **simulator** (Xcode Simulator on a Mac) emulat
 _Avoid_: device (alone), target, platform
 
 **Evidence level**:
-How much a run records. Level 1 is the telemetry alone. Level 2 is pure audio or pure screen plus the telemetry. Level 3 is screen and audio plus the timeline telemetry.
+How much a run records. Level 1 is the telemetry alone. Level 2 is pure audio or pure screen plus the telemetry. Level 3 is screen and audio plus the timeline telemetry. The MVP tiers: 1A is the MVP build, 1B is the proofs required before an MVP claim, 2 is very important but not MVP, 3 is later.
 _Avoid_: tier (the MVP tiers already use it), grade, strength
 
 **Telemetry**:
