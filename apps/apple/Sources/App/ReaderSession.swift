@@ -47,7 +47,7 @@ final class ReaderSession {
         lookupProvider: any LookupProvider,
         packs: any CapabilityPacks,
         telemetry: TelemetryHub,
-        speedStore: SpeedStore = SpeedStore()
+        speedStore: SpeedStore
     ) {
         self.document = document
         self.spoken = SpokenWordNumbering(plan: document.plan)
