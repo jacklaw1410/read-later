@@ -16,6 +16,8 @@ import ReadLaterUI
 final class ReaderSession {
     let document: ReadLaterCore.Document
     let spoken: SpokenWordNumbering
+    /// Article-wide values the reader draws each render. Built once here, with `spoken`.
+    let derived: ReaderDerived
 
     let washState = WashState()
     let playbackState = PlaybackState()
@@ -51,6 +53,7 @@ final class ReaderSession {
     ) {
         self.document = document
         self.spoken = SpokenWordNumbering(plan: document.plan)
+        self.derived = ReaderDerived(document: document)
         self.speech = speech
         self.lookupProvider = lookupProvider
         self.packs = packs

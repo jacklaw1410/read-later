@@ -465,6 +465,7 @@ struct ReaderScreen: View {
     private var reader: some View {
         ReaderView(
             document: session.document,
+            derived: session.derived,
             wash: session.washState,
             playback: session.playbackState,
             spoken: session.spoken,

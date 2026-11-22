@@ -81,6 +81,47 @@ public extension Document {
     }
 }
 
+// MARK: - Reader-derived values
+
+/// Values the reader draws from one document, computed once when the document
+/// opens. The owner of the document builds it and passes it to `ReaderView`,
+/// so a view body re-run (a wash tick, a scroll) reads these instead of
+/// recomputing them. Add a field here for any article-wide value a view needs
+/// per render, rather than computing it in the view body.
+public struct ReaderDerived: Sendable {
+    /// Body blocks the reader lays out, without footnote markers.
+    public let readableBlocks: [Block]
+    /// Note bodies, in reading order. Paired with markers by order.
+    public let noteBlocks: [Block]
+    /// Body block ID to the marker attached to it. A block with no marker is absent.
+    public let footnotes: [Int: FootnoteAttachment]
+    public let spokenWordCount: Int
+    public let skippedRegionCount: Int
+
+    public init(document: Document) {
+        let body = document.bodyBlocks
+        let notes = document.noteBlocks
+        var attachments: [Int: FootnoteAttachment] = [:]
+        var markerIndex = 0
+        for position in body.indices {
+            guard body[position].kind == .footnoteMarker else { continue }
+            defer { markerIndex += 1 }
+            guard markerIndex < notes.count, position > 0 else { continue }
+            let preceding = body[position - 1]
+            guard preceding.kind != .footnoteMarker else { continue }
+            attachments[preceding.id] = FootnoteAttachment(
+                marker: body[position].text,
+                noteIndex: markerIndex
+            )
+        }
+        self.readableBlocks = body.filter { $0.kind != .footnoteMarker }
+        self.noteBlocks = notes
+        self.footnotes = attachments
+        self.spokenWordCount = document.spokenWordCount
+        self.skippedRegionCount = document.skippedRegionCount
+    }
+}
+
 // MARK: - Reader metrics
 
 /// The reader's line and type measurements, taken from the prototype so the

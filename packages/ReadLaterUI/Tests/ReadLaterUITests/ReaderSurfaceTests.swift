@@ -68,6 +68,53 @@ final class ReaderSurfaceTests: XCTestCase {
         XCTAssertEqual(doc.skippedRegionCount, 3)
     }
 
+    // MARK: - Reader-derived values
+
+    func testDerivedPairsMarkerWithPrecedingBlockAndNoteByOrder() {
+        let note = Block(id: 3, kind: .footnoteBody, confidence: 0.9, reason: "test", text: "First note.", spoken: [])
+        let doc = document(blocks: [
+            proseBlock(id: 1, text: "Hello world."),
+            skippedBlock(id: 2, kind: .footnoteMarker, text: "¹"),
+            proseBlock(id: 4, text: "Goodbye world."),
+            note,
+        ])
+        let derived = ReaderDerived(document: doc)
+        XCTAssertEqual(derived.footnotes, [1: FootnoteAttachment(marker: "¹", noteIndex: 0)])
+        XCTAssertEqual(derived.readableBlocks.map(\.id), [1, 4])
+        XCTAssertEqual(derived.noteBlocks.map(\.id), [3])
+    }
+
+    func testDerivedGivesNoAttachmentToMarkerWithoutNote() {
+        let doc = document(blocks: [
+            proseBlock(id: 1, text: "Hello world."),
+            skippedBlock(id: 2, kind: .footnoteMarker, text: "¹"),
+        ])
+        XCTAssertTrue(ReaderDerived(document: doc).footnotes.isEmpty)
+    }
+
+    func testDerivedGivesNoAttachmentToMarkerDirectlyAfterMarker() {
+        let first = Block(id: 4, kind: .footnoteBody, confidence: 0.9, reason: "test", text: "First note.", spoken: [])
+        let second = Block(id: 5, kind: .footnoteBody, confidence: 0.9, reason: "test", text: "Second note.", spoken: [])
+        let doc = document(blocks: [
+            proseBlock(id: 1, text: "Hello world."),
+            skippedBlock(id: 2, kind: .footnoteMarker, text: "¹"),
+            skippedBlock(id: 3, kind: .footnoteMarker, text: "²"),
+            first,
+            second,
+        ])
+        XCTAssertEqual(ReaderDerived(document: doc).footnotes, [1: FootnoteAttachment(marker: "¹", noteIndex: 0)])
+    }
+
+    func testDerivedCountsMatchDocument() {
+        let doc = document(blocks: [
+            proseBlock(id: 1, text: "Hello world."),
+            skippedBlock(id: 2, kind: .code, text: "let x = 1"),
+        ])
+        let derived = ReaderDerived(document: doc)
+        XCTAssertEqual(derived.spokenWordCount, doc.spokenWordCount)
+        XCTAssertEqual(derived.skippedRegionCount, doc.skippedRegionCount)
+    }
+
     // MARK: - Spoken word numbering gaps
 
     func testCodeBlockHasNoSpokenEntryAndGapTapReturnsNil() {

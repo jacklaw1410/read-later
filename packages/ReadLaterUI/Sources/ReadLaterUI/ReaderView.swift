@@ -6,6 +6,8 @@ import SwiftUI
 /// overlay: the player sits below the scroll view, the overlay layers on top.
 public struct ReaderView<Player: View, Overlay: View>: View {
     private let document: ReadLaterCore.Document
+    /// Built once when the document opens. Read here, never recomputed in `body`.
+    private let derived: ReaderDerived
     private let wash: WashState
     private let playback: PlaybackState
     private let spoken: SpokenWordNumbering
@@ -33,6 +35,7 @@ public struct ReaderView<Player: View, Overlay: View>: View {
 
     public init(
         document: ReadLaterCore.Document,
+        derived: ReaderDerived,
         wash: WashState,
         playback: PlaybackState,
         spoken: SpokenWordNumbering,
@@ -47,6 +50,7 @@ public struct ReaderView<Player: View, Overlay: View>: View {
         @ViewBuilder overlay: @escaping () -> Overlay
     ) {
         self.document = document
+        self.derived = derived
         self.wash = wash
         self.playback = playback
         self.spoken = spoken
@@ -67,37 +71,12 @@ public struct ReaderView<Player: View, Overlay: View>: View {
         return spoken.byBlock[blockID]?.contains { $0.index == index } ?? false
     }
 
-    /// Marker blocks attached to the preceding body block, paired with note
-    /// bodies by order. Maps body block ID to its attachment.
-    private var footnoteAttachments: [Int: FootnoteAttachment] {
-        let notes = document.noteBlocks
-        let body = document.bodyBlocks
-        var attachments: [Int: FootnoteAttachment] = [:]
-        var markerIndex = 0
-        for position in body.indices {
-            guard body[position].kind == .footnoteMarker else { continue }
-            defer { markerIndex += 1 }
-            guard markerIndex < notes.count, position > 0 else { continue }
-            let preceding = body[position - 1]
-            guard preceding.kind != .footnoteMarker else { continue }
-            attachments[preceding.id] = FootnoteAttachment(
-                marker: body[position].text,
-                noteIndex: markerIndex
-            )
-        }
-        return attachments
-    }
-
-    private var readableBlocks: [ReadLaterCore.Block] {
-        document.bodyBlocks.filter { $0.kind != .footnoteMarker }
-    }
-
     private var metaLine: String {
         let host = document.url?.host() ?? "pasted text"
         // Short enough for one line at the narrowest window. The counts are
         // the voice's own numbers, so the subhead cannot claim a word the
         // reader will not hear.
-        return "\(host) · \(document.spokenWordCount) words · \(document.skippedRegionCount) skipped"
+        return "\(host) · \(derived.spokenWordCount) words · \(derived.skippedRegionCount) skipped"
     }
 
     /// The block holding the wash word, for the return scroll. Per-block
@@ -108,7 +87,6 @@ public struct ReaderView<Player: View, Overlay: View>: View {
     }
 
     public var body: some View {
-        let footnotes = footnoteAttachments
         ZStack {
             VStack(spacing: 0) {
                 ScrollViewReader { proxy in
@@ -122,13 +100,13 @@ public struct ReaderView<Player: View, Overlay: View>: View {
                                 .font(Theme.caption())
                                 .foregroundStyle(Theme.inkSecondary)
                                 .padding(.bottom, 12)
-                            ForEach(readableBlocks) { block in
+                            ForEach(derived.readableBlocks) { block in
                                 BlockView(
                                     block: block,
                                     wash: wash,
                                     playback: playback,
                                     spoken: spoken,
-                                    footnote: footnotes[block.id],
+                                    footnote: derived.footnotes[block.id],
                                     followsWash: autoScroll && holdsWash(block.id),
                                     onTapWord: onTapWord,
                                     onTapNote: onTapNote
@@ -148,7 +126,7 @@ public struct ReaderView<Player: View, Overlay: View>: View {
                                     }
                                 }
                             }
-                            if !document.noteBlocks.isEmpty {
+                            if !derived.noteBlocks.isEmpty {
                                 notesSection
                             }
                         }
@@ -245,7 +223,7 @@ public struct ReaderView<Player: View, Overlay: View>: View {
                 .font(Theme.mono())
                 .foregroundStyle(Theme.inkSecondary)
             Divider()
-            ForEach(document.noteBlocks) { note in
+            ForEach(derived.noteBlocks) { note in
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
                     WashableText(text: note.text, slots: [], wash: WashState(), playback: PlaybackState(), style: .note) { _, word in
                         onTapWord(note.id, nil, word)
