@@ -1,0 +1,12 @@
+[package]
+name = "entryscale"
+version = "0.1.0"
+edition = "2024"
+publish = false
+description = "Fit the entry wait probe: exponents against block count and words per block, two-term fit, and the real-page regression."
+
+[dependencies]
+serde_json = "1"
+
+[profile.release]
+strip = true
