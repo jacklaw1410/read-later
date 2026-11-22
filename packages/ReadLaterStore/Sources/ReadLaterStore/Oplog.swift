@@ -12,7 +12,7 @@ public final class Oplog: Sendable {
     public let device: String
     let telemetry: TelemetryHub
 
-    init(dbQueue: DatabaseQueue, device: String, telemetry: TelemetryHub = .shared) {
+    init(dbQueue: DatabaseQueue, device: String, telemetry: TelemetryHub) {
         self.dbQueue = dbQueue
         self.device = device
         self.telemetry = telemetry

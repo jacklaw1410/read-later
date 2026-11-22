@@ -81,6 +81,72 @@ public extension Document {
     }
 }
 
+// MARK: - Block roles
+
+/// What each block does while reading, and the counts the reader shows, for one
+/// document. Computed once when the document opens. The owner of the document
+/// builds it and passes it to `ReaderView`, so a view body re-run (a wash tick,
+/// a scroll) reads these instead of recomputing them.
+public struct BlockRoles: Sendable {
+    /// Body blocks the reader lays out, without footnote markers.
+    public let readableBlocks: [Block]
+    /// Note bodies, in reading order. Paired with markers by order.
+    public let noteBlocks: [Block]
+    /// Body block ID to the marker attached to it. A block with no marker is absent.
+    public let footnotes: [Int: FootnoteAttachment]
+    public let spokenWordCount: Int
+    public let skippedRegionCount: Int
+
+    public init(document: Document) {
+        let body = document.bodyBlocks
+        let notes = document.noteBlocks
+        var attachments: [Int: FootnoteAttachment] = [:]
+        var markerIndex = 0
+        for position in body.indices {
+            guard body[position].kind == .footnoteMarker else { continue }
+            defer { markerIndex += 1 }
+            guard markerIndex < notes.count, position > 0 else { continue }
+            let preceding = body[position - 1]
+            guard preceding.kind != .footnoteMarker else { continue }
+            attachments[preceding.id] = FootnoteAttachment(
+                marker: body[position].text,
+                noteIndex: markerIndex
+            )
+        }
+        self.readableBlocks = body.filter { $0.kind != .footnoteMarker }
+        self.noteBlocks = notes
+        self.footnotes = attachments
+        self.spokenWordCount = document.spokenWordCount
+        self.skippedRegionCount = document.skippedRegionCount
+    }
+}
+
+// MARK: - Reader seed
+
+/// What a reader session starts from for one document: the spoken word order,
+/// the block roles, and the word to start at. Built once per open, from the
+/// stored plan and the saved word index.
+public struct ReaderSeed: Sendable {
+    public let document: Document
+    public let spoken: SpokenWordNumbering
+    public let blockRoles: BlockRoles
+    /// Word to start at, clamped to the spoken words. Nil when there is no
+    /// saved place or no spoken word, so the wash stays empty.
+    public let startWord: Int?
+
+    public init(document: Document, savedWordIndex: Int?) {
+        let spoken = SpokenWordNumbering(plan: document.plan)
+        self.document = document
+        self.spoken = spoken
+        self.blockRoles = BlockRoles(document: document)
+        if let saved = savedWordIndex, spoken.totalWords > 0 {
+            self.startWord = min(max(saved, 0), spoken.totalWords - 1)
+        } else {
+            self.startWord = nil
+        }
+    }
+}
+
 // MARK: - Reader metrics
 
 /// The reader's line and type measurements, taken from the prototype so the

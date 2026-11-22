@@ -118,7 +118,7 @@ final class ReaderSessionLookupTests: XCTestCase {
         connectivity: Connectivity? = nil
     ) -> ReaderSession {
         ReaderSession(
-            document: ArticleLibrary.demo,
+            seed: ReaderSeed(document: ArticleLibrary.demo, savedWordIndex: nil),
             speech: speech,
             lookupProvider: lookup,
             packs: PackRegistry(defaults: defaults),

@@ -26,16 +26,18 @@ final class AppModel {
     private let packs: any CapabilityPacks
     private let connectivity: Connectivity
     private let telemetry: TelemetryHub
+    private let speedStore: SpeedStore
     private let lookup: PackLookupProvider
     private let store: ReadLaterStore.Store?
     private let recorder: ReadLaterStore.PositionRecorder?
-    init(packs: any CapabilityPacks, connectivity: Connectivity, telemetry: TelemetryHub) {
+    init(packs: any CapabilityPacks, connectivity: Connectivity, telemetry: TelemetryHub, speedStore: SpeedStore) {
         self.packs = packs
         self.connectivity = connectivity
         self.telemetry = telemetry
-        self.lookup = PackLookupProvider(packs: packs)
+        self.speedStore = speedStore
+        self.lookup = PackLookupProvider(packs: packs, apple: AppleDictionaryLookup())
         self.speech = Self.makeSpeech(telemetry: telemetry)
-        self.store = Self.openStore()
+        self.store = Self.openStore(telemetry: telemetry)
         Self.seedIfRequested(store: self.store, telemetry: telemetry)
         self.recorder = self.store.map { ReadLaterStore.PositionRecorder(store: $0) }
         refreshLibrary()
@@ -61,11 +63,14 @@ final class AppModel {
 
     /// The resume store is best-effort: reading works without it, only the
     /// launch offer disappears.
-    private static func openStore() -> ReadLaterStore.Store? {
+    private static func openStore(telemetry: TelemetryHub) -> ReadLaterStore.Store? {
         guard let dir = storeDirectory else { return nil }
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         return try? ReadLaterStore.Store(
-            databaseURL: dir.appendingPathComponent("store.sqlite"), device: "apple-app")
+            databaseURL: dir.appendingPathComponent("store.sqlite"),
+            device: "apple-app",
+            telemetry: telemetry
+        )
     }
 
     /// Debug-only seeding for device latency runs (M2/M4 treatment). The
@@ -88,16 +93,11 @@ final class AppModel {
         flushPosition()
         session?.stop()
         try? store?.save(document: document)
+        let seed = ReaderSeed(document: document, savedWordIndex: startWord)
         let next = ReaderSession(
-            document: document,
-            speech: speech,
-            lookupProvider: lookup,
-            packs: packs,
-            connectivity: connectivity,
-            telemetry: telemetry
-        )
+            seed: seed, speech: speech, lookupProvider: lookup, packs: packs,
+            connectivity: connectivity, telemetry: telemetry, speedStore: speedStore)
         next.onProgress = { [weak self] index, source in self?.recordPosition(index: index, source: source) }
-        if let startWord { next.begin(at: startWord) }
         session = next
         next.warmUp()
         refreshLibrary()
@@ -123,8 +123,7 @@ final class AppModel {
               let saved = try? store.latestUnfinishedPosition(),
               let document = try? store.document(id: saved.documentID)
         else { return }
-        let total = SpokenWordNumbering(plan: document.plan).totalWords
-        open(document, startWord: min(saved.wordIndex, max(total - 1, 0)))
+        open(document, startWord: saved.wordIndex)
     }
 
     // MARK: - Library
@@ -213,8 +212,7 @@ final class AppModel {
     }
 
     private func openAtPlace(_ document: ReadLaterCore.Document, row: ReadingPosition) {
-        let total = SpokenWordNumbering(plan: document.plan).totalWords
-        open(document, startWord: min(row.wordIndex, max(total - 1, 0)))
+        open(document, startWord: row.wordIndex)
     }
 
     private func refetchAndOpen(_ row: ReadingPosition, url: URL) async -> Bool {
@@ -253,6 +251,7 @@ struct RootView: View {
     @State private var model: AppModel
     let registry: PackRegistry
     let connectivity: Connectivity
+    let speedStore: SpeedStore
     let diagnostics: any DiagnosticsExporting
     let telemetry: TelemetryHub
     @AppStorage(Appearance.storageKey) private var appearance = Appearance.system.rawValue
@@ -263,14 +262,17 @@ struct RootView: View {
     init(
         registry: PackRegistry,
         connectivity: Connectivity,
+        speedStore: SpeedStore,
         diagnostics: any DiagnosticsExporting,
         telemetry: TelemetryHub
     ) {
         self.registry = registry
         self.connectivity = connectivity
+        self.speedStore = speedStore
         self.diagnostics = diagnostics
         self.telemetry = telemetry
-        _model = State(initialValue: AppModel(packs: registry, connectivity: connectivity, telemetry: telemetry))
+        _model = State(initialValue: AppModel(
+            packs: registry, connectivity: connectivity, telemetry: telemetry, speedStore: speedStore))
     }
 
     var body: some View {
@@ -477,6 +479,7 @@ struct ReaderScreen: View {
     private var reader: some View {
         ReaderView(
             document: session.document,
+            blockRoles: session.blockRoles,
             wash: session.washState,
             playback: session.playbackState,
             selectedWordIndex: session.lookup.selectedWordIndex,

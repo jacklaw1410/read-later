@@ -66,7 +66,7 @@ struct StoreTests {
         try store.recordOccurrence(phraseID: phrase.id, documentID: document.id, blockID: 0, charOffset: 0)
 
         let url = dir.appendingPathComponent("store.sqlite")
-        let reopened = try Store(databaseURL: url, device: "test-device")
+        let reopened = try Store(databaseURL: url, device: "test-device", telemetry: TelemetryHub())
         #expect(try reopened.document(id: document.id) == document)
         #expect(try reopened.phrases().map(\.id).contains(phrase.id))
         #expect(try reopened.occurrences(forPhrase: phrase.id).count == 1)

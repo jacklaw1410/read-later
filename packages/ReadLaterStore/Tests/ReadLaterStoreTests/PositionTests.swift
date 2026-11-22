@@ -118,7 +118,7 @@ struct PositionTests {
         try store.recordPosition(of: document, wordIndex: 6)
 
         let url = dir.appendingPathComponent("store.sqlite")
-        let reopened = try Store(databaseURL: url, device: "test-device")
+        let reopened = try Store(databaseURL: url, device: "test-device", telemetry: TelemetryHub())
         #expect(try reopened.position(contentHash: Store.resumeKey(for: document))?.wordIndex == 6)
         #expect(try reopened.oplog.entries().count == 1)
     }

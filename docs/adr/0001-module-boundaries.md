@@ -15,7 +15,8 @@ manifest.
 
 `ReadLaterCore` may also hold in-process protocols and the value types
 they use, provided they import only Foundation and SwiftSoup. Examples:
-`Diagnostics`, `SpeechController`, `LookupProvider` and `Extractor`.
+`Diagnostics`, `SpeechController`, `LookupProvider`, `Extractor`,
+`CapabilityPacks`, `LibraryProvider`, `LibraryRow` and `DiagnosticsExporting`.
 A view in `ReadLaterUI` reads app-only state, such as pack installs or
 library rows, through a protocol defined in Core. The app target
 implements the protocol. Data that crosses a package boundary still
