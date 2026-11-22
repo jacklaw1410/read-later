@@ -102,7 +102,7 @@ public enum CardAction: String, Sendable, CaseIterable {
     case install = "Install"
     case notNow = "Not now"
     case close = "Close"
-    case searchWeb = "Search the web ↗"
+    case searchWeb = "Web search ↗"
     case closeAndResume = "Close & resume"
 }
 

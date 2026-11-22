@@ -76,7 +76,7 @@ enum SnapshotHarness {
         app.session?.openNote(0)
         await pause(0.8)
         capture("07-footnote", into: directory)
-        app.session?.closeNote()
+        app.session?.lookup.closeNote()
         await pause(0.25)
         capture("07b-after-note", into: directory)
 
@@ -92,17 +92,17 @@ enum SnapshotHarness {
 
         app.session?.scrub(toFraction: 0.05)
         await pause(0.5)
-        app.session?.tapped(blockID: 2, slot: nil, word: "out-argues")
+        app.session?.lookup.tap(slot: nil, word: "out-argues")
         await pause(0.9)
         capture("10-miss-offer", into: directory)
 
-        await app.session?.installPack()
+        await app.session?.lookup.installPack()
         await pause(1.6)
         capture("11-miss-resolved", into: directory)
 
-        app.session?.closeCard()
+        app.session?.lookup.closeCard()
         await pause(0.3)
-        app.session?.tapped(blockID: 2, slot: nil, word: "susurrus")
+        app.session?.lookup.tap(slot: nil, word: "susurrus")
         await pause(0.9)
         capture("12-hit", into: directory)
 

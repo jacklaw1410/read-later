@@ -14,6 +14,7 @@ public struct MissCard: View {
     private let isInstalling: Bool
     private let wasPlayingBeforeLookup: Bool
     private let wordIndex: Int?
+    private let onPronounce: () -> Void
     private let onInstall: () -> Void
     private let onNotNow: () -> Void
     private let onClose: () -> Void
@@ -30,6 +31,7 @@ public struct MissCard: View {
         isInstalling: Bool,
         wasPlayingBeforeLookup: Bool,
         wordIndex: Int?,
+        onPronounce: @escaping () -> Void,
         onInstall: @escaping () -> Void,
         onNotNow: @escaping () -> Void,
         onClose: @escaping () -> Void,
@@ -44,6 +46,7 @@ public struct MissCard: View {
         self.isInstalling = isInstalling
         self.wasPlayingBeforeLookup = wasPlayingBeforeLookup
         self.wordIndex = wordIndex
+        self.onPronounce = onPronounce
         self.onInstall = onInstall
         self.onNotNow = onNotNow
         self.onClose = onClose
@@ -53,21 +56,39 @@ public struct MissCard: View {
     /// The offer renders once: pack absent, network up, never declined, and a
     /// state where a pack could help.
     private var showsOffer: Bool {
-        kind != .noNetwork && !packInstalled && isOnline && !offerDeclined
+        Self.showsOffer(kind: kind, packInstalled: packInstalled, isOnline: isOnline, offerDeclined: offerDeclined)
     }
 
     /// The web search is a second, deliberate tap. Never offline, never beside
     /// the offer: one secondary action per card.
     private var showsSearch: Bool {
-        isOnline && kind != .noNetwork && !showsOffer && (packInstalled || offerDeclined)
+        Self.showsSearch(kind: kind, packInstalled: packInstalled, isOnline: isOnline, offerDeclined: offerDeclined)
+    }
+
+    nonisolated static func showsOffer(kind: MissKind, packInstalled: Bool, isOnline: Bool, offerDeclined: Bool) -> Bool {
+        kind != .noNetwork && !packInstalled && isOnline && !offerDeclined
+    }
+
+    nonisolated static func showsSearch(kind: MissKind, packInstalled: Bool, isOnline: Bool, offerDeclined: Bool) -> Bool {
+        isOnline && kind != .noNetwork
+            && !showsOffer(kind: kind, packInstalled: packInstalled, isOnline: isOnline, offerDeclined: offerDeclined)
+            && (packInstalled || offerDeclined)
     }
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(word)
-                .font(Theme.lookupWord())
-                .foregroundStyle(Theme.ink)
-                .accessibilityIdentifier(AccessibilityID.missWord)
+            HStack(spacing: 0) {
+                Text(word)
+                    .font(Theme.lookupWord())
+                    .foregroundStyle(Theme.ink)
+                    .accessibilityIdentifier(AccessibilityID.missWord)
+                IconButton(systemName: "speaker.wave.2", label: "Pronounce \(word)", action: onPronounce)
+                    .accessibilityIdentifier(AccessibilityID.missPronounce)
+                    // The 44 pt box would grow the word row. These margins match the prototype's `.pronounce`.
+                    .padding(.vertical, -10)
+                    .padding(.leading, -2)
+                    .padding(.trailing, -12)
+            }
             Text(LookupOutcome.miss(kind).label)
                 .font(Theme.caption())
                 .foregroundStyle(Theme.inkSecondary)
@@ -79,8 +100,7 @@ public struct MissCard: View {
             if showsOffer {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(CardCopy.offerTitle)
-                        .font(Theme.gloss())
-                        .fontWeight(.bold)
+                        .font(Theme.player().weight(.semibold))
                         .foregroundStyle(Theme.ink)
                     Text(CardCopy.offerMeta)
                         .font(Theme.caption())
@@ -95,7 +115,7 @@ public struct MissCard: View {
             }
 
             Text(CardCopy.missSourceLine(packInstalled: packInstalled))
-                .font(.system(size: 11))
+                .font(Theme.caption())
                 .foregroundStyle(Theme.inkSecondary)
                 .padding(.vertical, 8)
 

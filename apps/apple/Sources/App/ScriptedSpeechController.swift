@@ -122,20 +122,6 @@ final class ScriptedSpeechController: SpeechController {
         state == .speaking || state == .paused
     }
 
-    private(set) var wasPlayingBeforeLookup = false
-
-    func pauseForLookup() {
-        wasPlayingBeforeLookup = state == .speaking
-        guard wasPlayingBeforeLookup else { return }
-        pause()
-    }
-
-    func closeLookup() {
-        defer { wasPlayingBeforeLookup = false }
-        guard wasPlayingBeforeLookup else { return }
-        resume()
-    }
-
     // MARK: - Clock
 
     private func startTask() {

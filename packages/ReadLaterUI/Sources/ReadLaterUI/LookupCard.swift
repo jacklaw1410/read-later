@@ -9,6 +9,7 @@ public struct LookupCard: View {
     private let wasPlayingBeforeLookup: Bool
     private let wordIndex: Int?
     private let isCurrentWashWord: Bool
+    private let onPronounce: () -> Void
     private let onClose: () -> Void
     @State private var didLogShown = false
 
@@ -18,6 +19,7 @@ public struct LookupCard: View {
         wasPlayingBeforeLookup: Bool,
         wordIndex: Int?,
         isCurrentWashWord: Bool,
+        onPronounce: @escaping () -> Void,
         onClose: @escaping () -> Void
     ) {
         self.telemetry = telemetry
@@ -25,15 +27,24 @@ public struct LookupCard: View {
         self.wasPlayingBeforeLookup = wasPlayingBeforeLookup
         self.wordIndex = wordIndex
         self.isCurrentWashWord = isCurrentWashWord
+        self.onPronounce = onPronounce
         self.onClose = onClose
     }
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(result.word)
-                .font(Theme.lookupWord())
-                .foregroundStyle(Theme.ink)
-                .accessibilityIdentifier(AccessibilityID.lookupWord)
+            HStack(spacing: 0) {
+                Text(result.word)
+                    .font(Theme.lookupWord())
+                    .foregroundStyle(Theme.ink)
+                    .accessibilityIdentifier(AccessibilityID.lookupWord)
+                IconButton(systemName: "speaker.wave.2", label: "Pronounce \(result.word)", action: onPronounce)
+                    .accessibilityIdentifier(AccessibilityID.lookupPronounce)
+                    // The 44 pt box would grow the word row. These margins match the prototype's `.pronounce`.
+                    .padding(.vertical, -10)
+                    .padding(.leading, -2)
+                    .padding(.trailing, -12)
+            }
             metaLine
             if let accentVariant = result.accentVariant {
                 Text(accentVariant)

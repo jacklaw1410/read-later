@@ -13,9 +13,9 @@ import ReadLaterCore
 /// 2. Two-utterance prefetch: `speak` fills the window and `didFinish`
 ///    enqueues one more while `SpeechQueue.shouldEnqueueNext` holds.
 ///    Nothing speaks one-at-a-time.
-/// 3. `closeLookup` restores playback below: `continueSpeaking` runs only
-///    when the lookup paused live speech, so the card never leaves a dead
-///    queue and never starts audio that was already paused.
+/// 3. The lookup owner decides when to pause and resume. `resume()` continues
+///    the queue only from `.paused`, so a card never starts audio that was
+///    already paused.
 /// 4. The tick gate (`!scrubbing`, auto-scroll hold) lives in the session,
 ///    not here: `ReaderSession.handleWord` in RootView.swift drops
 ///    boundaries while scrubbing and ReaderView gates auto-scroll. This
@@ -51,10 +51,6 @@ public final class AVSpeechController: NSObject, SpeechController {
             if state != oldValue { onStateChange?(state) }
         }
     }
-
-    /// Snapshot taken when a lookup pauses playback. `closeLookup()` restores
-    /// the loop from this flag, so a lookup never leaves a dead queue.
-    public private(set) var wasPlayingBeforeLookup = false
 
     private struct InFlight {
         var epoch: Int
@@ -169,7 +165,6 @@ public final class AVSpeechController: NSObject, SpeechController {
         prefetchWindow = max(1, prefetch)
         queue = SpeechQueue(sentences: sentences)
         nextToEnqueue = 0
-        wasPlayingBeforeLookup = false
         guard !(queue?.utterances.isEmpty ?? true) else {
             state = .finished
             return
@@ -240,25 +235,6 @@ public final class AVSpeechController: NSObject, SpeechController {
         currentWordIndex = 0
         heldWord = nil
         state = .idle
-    }
-
-    // MARK: - Lookup pause contract
-
-    public func pauseForLookup() {
-        wasPlayingBeforeLookup = (state == .speaking)
-        if wasPlayingBeforeLookup {
-            synthesizer.pauseSpeaking(at: .word)
-            state = .paused
-        }
-    }
-
-    /// Restores the loop when the card closes: resumes only if playback was
-    /// live when the lookup paused, then clears the snapshot.
-    public func closeLookup() {
-        defer { wasPlayingBeforeLookup = false }
-        guard wasPlayingBeforeLookup else { return }
-        synthesizer.continueSpeaking()
-        state = .speaking
     }
 
     /// Restarts speech at a global word index without restarting the

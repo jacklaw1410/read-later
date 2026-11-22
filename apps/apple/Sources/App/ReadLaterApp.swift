@@ -7,15 +7,19 @@ struct ReadLaterApp: App {
     /// One pack registry and one diagnostics adapter. The reader window and the
     /// macOS Settings scene receive these same instances.
     private let registry: PackRegistry
+    private let connectivity: Connectivity
     private let speedStore: SpeedStore
     private let diagnostics: DiagnosticsAdapter
     private let telemetry: TelemetryHub
 
     init() {
         let registry = PackRegistry()
+        let connectivity = Connectivity()
+        connectivity.start()
         let telemetry = TelemetryHub.shared
         let speedStore = SpeedStore()
         self.registry = registry
+        self.connectivity = connectivity
         self.speedStore = speedStore
         self.telemetry = telemetry
         self.diagnostics = DiagnosticsAdapter(
@@ -57,6 +61,7 @@ struct ReadLaterApp: App {
         WindowGroup {
             RootView(
                 registry: registry,
+                connectivity: connectivity,
                 speedStore: speedStore,
                 diagnostics: diagnostics,
                 telemetry: telemetry

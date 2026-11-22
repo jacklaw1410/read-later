@@ -9,15 +9,33 @@ public struct PrimaryActionButtonStyle: ButtonStyle {
     public init() {}
 
     public func makeBody(configuration: Configuration) -> some View {
+        PrimaryActionBody(configuration: configuration)
+    }
+}
+
+/// Reads `isEnabled` from the environment, which a `ButtonStyle` cannot do
+/// directly. Disabled is the `btn-disabled` look in the settled prototype:
+/// surface fill, secondary ink, hairline border.
+private struct PrimaryActionBody: View {
+    let configuration: ButtonStyle.Configuration
+    @Environment(\.isEnabled) private var isEnabled
+
+    var body: some View {
         configuration.label
             .font(.system(size: 15, weight: .semibold))
-            .foregroundStyle(Theme.actionInk)
+            .foregroundStyle(isEnabled ? Theme.actionInk : Theme.inkSecondary)
             .frame(maxWidth: .infinity, minHeight: 44)
             .background(
                 RoundedRectangle(cornerRadius: 10)
-                    .fill(Theme.actionFill)
+                    .fill(isEnabled ? Theme.actionFill : Theme.surface)
                     .opacity(configuration.isPressed ? 0.82 : 1)
             )
+            .overlay {
+                if !isEnabled {
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(Theme.line, lineWidth: 1)
+                }
+            }
             .contentShape(RoundedRectangle(cornerRadius: 10))
     }
 }

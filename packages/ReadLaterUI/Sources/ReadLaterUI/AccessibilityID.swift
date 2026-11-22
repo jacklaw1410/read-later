@@ -50,6 +50,7 @@ public enum AccessibilityID {
     public static let lookupCard = "lookup.card"
     public static let lookupWord = "lookup.word"
     public static let lookupGloss = "lookup.gloss"
+    public static let lookupPronounce = "lookup.pronounce"
 
     public static let libraryActions = "library.actions"
     public static let librarySave = "library.save"
@@ -62,6 +63,7 @@ public enum AccessibilityID {
 
     public static let missCard = "miss.card"
     public static let missWord = "miss.word"
+    public static let missPronounce = "miss.pronounce"
     public static let missNotNow = "miss.notNow"
     public static let missClose = "miss.close"
     public static let missInstall = "miss.install"

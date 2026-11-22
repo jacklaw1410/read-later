@@ -88,6 +88,10 @@ final class LookupTests: XCTestCase {
             JourneySteps.displayed(gloss).range(of: "\\p{Han}", options: .regularExpression),
             "the gloss has no Chinese character: \(JourneySteps.displayed(gloss))"
         )
+        let pronounce = app.buttons[AccessibilityID.lookupPronounce]
+        XCTAssertTrue(pronounce.exists, "the hit card has no pronounce control")
+        JourneySteps.tap(app, pronounce)
+        XCTAssertTrue(card.exists, "pronounce closed the card; it must leave the card open")
         Artefacts.capture(app, name: "ios-gloss", in: self)
     }
 }

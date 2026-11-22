@@ -67,6 +67,10 @@ final class LookupExtendedTests: XCTestCase {
 
         let notNow = app.buttons[AccessibilityID.missNotNow]
         XCTAssertTrue(notNow.exists, "the Not now button is missing")
+        let pronounce = app.buttons[AccessibilityID.missPronounce]
+        XCTAssertTrue(pronounce.exists, "the miss card has no pronounce control")
+        JourneySteps.tap(app, pronounce)
+        XCTAssertTrue(miss.exists, "pronounce closed the miss card; it must leave the card open")
         JourneySteps.tap(app, notNow)
 
         XCTAssertTrue(

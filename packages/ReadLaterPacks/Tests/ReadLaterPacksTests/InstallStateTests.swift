@@ -111,7 +111,7 @@ struct CardCopyTests {
         #expect(CardAction.install.rawValue == "Install")
         #expect(CardAction.notNow.rawValue == "Not now")
         #expect(CardAction.close.rawValue == "Close")
-        #expect(CardAction.searchWeb.rawValue == "Search the web ↗")
+        #expect(CardAction.searchWeb.rawValue == "Web search ↗")
     }
 
     @Test("failure messages match spec/dictionary-packs.md §3")

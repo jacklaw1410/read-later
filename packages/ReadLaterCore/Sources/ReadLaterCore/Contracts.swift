@@ -112,12 +112,6 @@ public protocol SpeechController: AnyObject {
     /// signal that turns that lie into a clean pause.
     var hasLiveUtterances: Bool { get }
 
-    /// Pauses for a lookup card and remembers whether the voice was live, so
-    /// closing the card restores exactly that state.
-    func pauseForLookup()
-    func closeLookup()
-    var wasPlayingBeforeLookup: Bool { get }
-
     /// 1.0 is the reference pace, about 140 words per minute.
     var rate: Float { get set }
 }
@@ -312,7 +306,7 @@ public enum TokenShape {
         if trimmed.contains("_") || trimmed.contains("{") || trimmed.contains("}") { return .notAWord }
         if trimmed.contains("(") || trimmed.contains(")") { return .notAWord }
         let letters = trimmed.unicodeScalars.filter { CharacterSet.letters.contains($0) }
-        guard letters.count >= 2 else { return .notAWord }
+        guard letters.count >= 1 else { return .notAWord }
         let alphanumerics = trimmed.unicodeScalars.filter {
             CharacterSet.alphanumerics.contains($0) || $0 == "'" || $0 == "-"
         }

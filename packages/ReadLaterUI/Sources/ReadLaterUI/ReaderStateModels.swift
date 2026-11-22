@@ -8,14 +8,12 @@ import Observation
 @MainActor
 public final class WashState {
     public var wordIndex: Int?
-    public var selectedWordIndex: Int?
 
-    public init(wordIndex: Int? = nil, selectedWordIndex: Int? = nil) {
+    public init(wordIndex: Int? = nil) {
         self.wordIndex = wordIndex
-        self.selectedWordIndex = selectedWordIndex
     }
 
-    public func emphasis(for index: Int, isPlaying: Bool) -> WordEmphasis {
+    public func emphasis(for index: Int, isPlaying: Bool, selectedWordIndex: Int?) -> WordEmphasis {
         let isSpokenWord = wordIndex == index
         let isSelected = selectedWordIndex == index
         if isSpokenWord && isSelected { return .coincide }
@@ -98,11 +96,9 @@ public final class PlaybackState {
 public final class LookupState<CardValue, NoteValue> {
     public var card: CardValue?
     public var note: NoteValue?
-    public var isOnline: Bool = true
 
-    public init(card: CardValue? = nil, note: NoteValue? = nil, isOnline: Bool = true) {
+    public init(card: CardValue? = nil, note: NoteValue? = nil) {
         self.card = card
         self.note = note
-        self.isOnline = isOnline
     }
 }
