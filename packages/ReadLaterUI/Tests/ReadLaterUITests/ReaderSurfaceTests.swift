@@ -68,6 +68,80 @@ final class ReaderSurfaceTests: XCTestCase {
         XCTAssertEqual(doc.skippedRegionCount, 3)
     }
 
+    // MARK: - Block roles
+
+    func testBlockRolesPairsMarkerWithPrecedingBlockAndNoteByOrder() {
+        let note = Block(id: 3, kind: .footnoteBody, confidence: 0.9, reason: "test", text: "First note.", spoken: [])
+        let doc = document(blocks: [
+            proseBlock(id: 1, text: "Hello world."),
+            skippedBlock(id: 2, kind: .footnoteMarker, text: "¹"),
+            proseBlock(id: 4, text: "Goodbye world."),
+            note,
+        ])
+        let blockRoles = BlockRoles(document: doc)
+        XCTAssertEqual(blockRoles.footnotes, [1: FootnoteAttachment(marker: "¹", noteIndex: 0)])
+        XCTAssertEqual(blockRoles.readableBlocks.map(\.id), [1, 4])
+        XCTAssertEqual(blockRoles.noteBlocks.map(\.id), [3])
+    }
+
+    func testBlockRolesGivesNoAttachmentToMarkerWithoutNote() {
+        let doc = document(blocks: [
+            proseBlock(id: 1, text: "Hello world."),
+            skippedBlock(id: 2, kind: .footnoteMarker, text: "¹"),
+        ])
+        XCTAssertTrue(BlockRoles(document: doc).footnotes.isEmpty)
+    }
+
+    func testBlockRolesGivesNoAttachmentToMarkerDirectlyAfterMarker() {
+        let first = Block(id: 4, kind: .footnoteBody, confidence: 0.9, reason: "test", text: "First note.", spoken: [])
+        let second = Block(id: 5, kind: .footnoteBody, confidence: 0.9, reason: "test", text: "Second note.", spoken: [])
+        let doc = document(blocks: [
+            proseBlock(id: 1, text: "Hello world."),
+            skippedBlock(id: 2, kind: .footnoteMarker, text: "¹"),
+            skippedBlock(id: 3, kind: .footnoteMarker, text: "²"),
+            first,
+            second,
+        ])
+        XCTAssertEqual(BlockRoles(document: doc).footnotes, [1: FootnoteAttachment(marker: "¹", noteIndex: 0)])
+    }
+
+    func testBlockRolesCountsMatchDocument() {
+        let doc = document(blocks: [
+            proseBlock(id: 1, text: "Hello world."),
+            skippedBlock(id: 2, kind: .code, text: "let x = 1"),
+        ])
+        let blockRoles = BlockRoles(document: doc)
+        XCTAssertEqual(blockRoles.spokenWordCount, doc.spokenWordCount)
+        XCTAssertEqual(blockRoles.skippedRegionCount, doc.skippedRegionCount)
+    }
+
+    // MARK: - Reader seed
+
+    func testSeedWithoutSavedPlaceHasNoStartWord() {
+        let doc = document(blocks: [proseBlock(id: 1, text: "Hello world.")])
+        XCTAssertNil(ReaderSeed(document: doc, savedWordIndex: nil).startWord)
+    }
+
+    func testSeedKeepsSavedWordInRange() {
+        let doc = document(blocks: [proseBlock(id: 1, text: "One two three.")])
+        XCTAssertEqual(ReaderSeed(document: doc, savedWordIndex: 1).startWord, 1)
+    }
+
+    func testSeedClampsSavedWordToLastSpokenWord() {
+        let doc = document(blocks: [proseBlock(id: 1, text: "One two three.")])
+        XCTAssertEqual(ReaderSeed(document: doc, savedWordIndex: 99).startWord, 2)
+    }
+
+    func testSeedClampsNegativeSavedWordToZero() {
+        let doc = document(blocks: [proseBlock(id: 1, text: "One two three.")])
+        XCTAssertEqual(ReaderSeed(document: doc, savedWordIndex: -4).startWord, 0)
+    }
+
+    func testSeedWithoutSpokenWordsHasNoStartWord() {
+        let doc = document(blocks: [skippedBlock(id: 1, kind: .code, text: "let x = 1")])
+        XCTAssertNil(ReaderSeed(document: doc, savedWordIndex: 3).startWord)
+    }
+
     // MARK: - Spoken word numbering gaps
 
     func testCodeBlockHasNoSpokenEntryAndGapTapReturnsNil() {

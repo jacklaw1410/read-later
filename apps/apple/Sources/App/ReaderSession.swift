@@ -16,6 +16,8 @@ import ReadLaterUI
 final class ReaderSession {
     let document: ReadLaterCore.Document
     let spoken: SpokenWordNumbering
+    /// Block roles and counts the reader draws each render. Built once per open by `ReaderSeed`.
+    let blockRoles: BlockRoles
 
     let washState = WashState()
     let playbackState = PlaybackState()
@@ -42,15 +44,16 @@ final class ReaderSession {
 
 
     init(
-        document: ReadLaterCore.Document,
+        seed: ReaderSeed,
         speech: SpeechController,
         lookupProvider: any LookupProvider,
         packs: any CapabilityPacks,
         telemetry: TelemetryHub,
         speedStore: SpeedStore
     ) {
-        self.document = document
-        self.spoken = SpokenWordNumbering(plan: document.plan)
+        self.document = seed.document
+        self.spoken = seed.spoken
+        self.blockRoles = seed.blockRoles
         self.speech = speech
         self.lookupProvider = lookupProvider
         self.packs = packs
@@ -61,6 +64,7 @@ final class ReaderSession {
         speech.rate = playbackState.speed
         speech.onWord = { [weak self] range in self?.advance(to: range) }
         speech.onStateChange = { [weak self] state in self?.speechStateChanged(state) }
+        if let startWord = seed.startWord { begin(at: startWord) }
     }
 
     func warmUp() {
