@@ -81,14 +81,13 @@ public extension Document {
     }
 }
 
-// MARK: - Reader-derived values
+// MARK: - Block roles
 
-/// Values the reader draws from one document, computed once when the document
-/// opens. The owner of the document builds it and passes it to `ReaderView`,
-/// so a view body re-run (a wash tick, a scroll) reads these instead of
-/// recomputing them. Add a field here for any article-wide value a view needs
-/// per render, rather than computing it in the view body.
-public struct ReaderDerived: Sendable {
+/// What each block does while reading, and the counts the reader shows, for one
+/// document. Computed once when the document opens. The owner of the document
+/// builds it and passes it to `ReaderView`, so a view body re-run (a wash tick,
+/// a scroll) reads these instead of recomputing them.
+public struct BlockRoles: Sendable {
     /// Body blocks the reader lays out, without footnote markers.
     public let readableBlocks: [Block]
     /// Note bodies, in reading order. Paired with markers by order.

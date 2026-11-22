@@ -68,9 +68,9 @@ final class ReaderSurfaceTests: XCTestCase {
         XCTAssertEqual(doc.skippedRegionCount, 3)
     }
 
-    // MARK: - Reader-derived values
+    // MARK: - Block roles
 
-    func testDerivedPairsMarkerWithPrecedingBlockAndNoteByOrder() {
+    func testBlockRolesPairsMarkerWithPrecedingBlockAndNoteByOrder() {
         let note = Block(id: 3, kind: .footnoteBody, confidence: 0.9, reason: "test", text: "First note.", spoken: [])
         let doc = document(blocks: [
             proseBlock(id: 1, text: "Hello world."),
@@ -78,21 +78,21 @@ final class ReaderSurfaceTests: XCTestCase {
             proseBlock(id: 4, text: "Goodbye world."),
             note,
         ])
-        let derived = ReaderDerived(document: doc)
-        XCTAssertEqual(derived.footnotes, [1: FootnoteAttachment(marker: "¹", noteIndex: 0)])
-        XCTAssertEqual(derived.readableBlocks.map(\.id), [1, 4])
-        XCTAssertEqual(derived.noteBlocks.map(\.id), [3])
+        let blockRoles = BlockRoles(document: doc)
+        XCTAssertEqual(blockRoles.footnotes, [1: FootnoteAttachment(marker: "¹", noteIndex: 0)])
+        XCTAssertEqual(blockRoles.readableBlocks.map(\.id), [1, 4])
+        XCTAssertEqual(blockRoles.noteBlocks.map(\.id), [3])
     }
 
-    func testDerivedGivesNoAttachmentToMarkerWithoutNote() {
+    func testBlockRolesGivesNoAttachmentToMarkerWithoutNote() {
         let doc = document(blocks: [
             proseBlock(id: 1, text: "Hello world."),
             skippedBlock(id: 2, kind: .footnoteMarker, text: "¹"),
         ])
-        XCTAssertTrue(ReaderDerived(document: doc).footnotes.isEmpty)
+        XCTAssertTrue(BlockRoles(document: doc).footnotes.isEmpty)
     }
 
-    func testDerivedGivesNoAttachmentToMarkerDirectlyAfterMarker() {
+    func testBlockRolesGivesNoAttachmentToMarkerDirectlyAfterMarker() {
         let first = Block(id: 4, kind: .footnoteBody, confidence: 0.9, reason: "test", text: "First note.", spoken: [])
         let second = Block(id: 5, kind: .footnoteBody, confidence: 0.9, reason: "test", text: "Second note.", spoken: [])
         let doc = document(blocks: [
@@ -102,17 +102,17 @@ final class ReaderSurfaceTests: XCTestCase {
             first,
             second,
         ])
-        XCTAssertEqual(ReaderDerived(document: doc).footnotes, [1: FootnoteAttachment(marker: "¹", noteIndex: 0)])
+        XCTAssertEqual(BlockRoles(document: doc).footnotes, [1: FootnoteAttachment(marker: "¹", noteIndex: 0)])
     }
 
-    func testDerivedCountsMatchDocument() {
+    func testBlockRolesCountsMatchDocument() {
         let doc = document(blocks: [
             proseBlock(id: 1, text: "Hello world."),
             skippedBlock(id: 2, kind: .code, text: "let x = 1"),
         ])
-        let derived = ReaderDerived(document: doc)
-        XCTAssertEqual(derived.spokenWordCount, doc.spokenWordCount)
-        XCTAssertEqual(derived.skippedRegionCount, doc.skippedRegionCount)
+        let blockRoles = BlockRoles(document: doc)
+        XCTAssertEqual(blockRoles.spokenWordCount, doc.spokenWordCount)
+        XCTAssertEqual(blockRoles.skippedRegionCount, doc.skippedRegionCount)
     }
 
     // MARK: - Spoken word numbering gaps

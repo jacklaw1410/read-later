@@ -7,7 +7,7 @@ import SwiftUI
 public struct ReaderView<Player: View, Overlay: View>: View {
     private let document: ReadLaterCore.Document
     /// Built once when the document opens. Read here, never recomputed in `body`.
-    private let derived: ReaderDerived
+    private let blockRoles: BlockRoles
     private let wash: WashState
     private let playback: PlaybackState
     private let spoken: SpokenWordNumbering
@@ -35,7 +35,7 @@ public struct ReaderView<Player: View, Overlay: View>: View {
 
     public init(
         document: ReadLaterCore.Document,
-        derived: ReaderDerived,
+        blockRoles: BlockRoles,
         wash: WashState,
         playback: PlaybackState,
         spoken: SpokenWordNumbering,
@@ -50,7 +50,7 @@ public struct ReaderView<Player: View, Overlay: View>: View {
         @ViewBuilder overlay: @escaping () -> Overlay
     ) {
         self.document = document
-        self.derived = derived
+        self.blockRoles = blockRoles
         self.wash = wash
         self.playback = playback
         self.spoken = spoken
@@ -76,7 +76,7 @@ public struct ReaderView<Player: View, Overlay: View>: View {
         // Short enough for one line at the narrowest window. The counts are
         // the voice's own numbers, so the subhead cannot claim a word the
         // reader will not hear.
-        return "\(host) · \(derived.spokenWordCount) words · \(derived.skippedRegionCount) skipped"
+        return "\(host) · \(blockRoles.spokenWordCount) words · \(blockRoles.skippedRegionCount) skipped"
     }
 
     /// The block holding the wash word, for the return scroll. Per-block
@@ -100,13 +100,13 @@ public struct ReaderView<Player: View, Overlay: View>: View {
                                 .font(Theme.caption())
                                 .foregroundStyle(Theme.inkSecondary)
                                 .padding(.bottom, 12)
-                            ForEach(derived.readableBlocks) { block in
+                            ForEach(blockRoles.readableBlocks) { block in
                                 BlockView(
                                     block: block,
                                     wash: wash,
                                     playback: playback,
                                     spoken: spoken,
-                                    footnote: derived.footnotes[block.id],
+                                    footnote: blockRoles.footnotes[block.id],
                                     followsWash: autoScroll && holdsWash(block.id),
                                     onTapWord: onTapWord,
                                     onTapNote: onTapNote
@@ -126,7 +126,7 @@ public struct ReaderView<Player: View, Overlay: View>: View {
                                     }
                                 }
                             }
-                            if !derived.noteBlocks.isEmpty {
+                            if !blockRoles.noteBlocks.isEmpty {
                                 notesSection
                             }
                         }
@@ -223,7 +223,7 @@ public struct ReaderView<Player: View, Overlay: View>: View {
                 .font(Theme.mono())
                 .foregroundStyle(Theme.inkSecondary)
             Divider()
-            ForEach(derived.noteBlocks) { note in
+            ForEach(blockRoles.noteBlocks) { note in
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
                     WashableText(text: note.text, slots: [], wash: WashState(), playback: PlaybackState(), style: .note) { _, word in
                         onTapWord(note.id, nil, word)
