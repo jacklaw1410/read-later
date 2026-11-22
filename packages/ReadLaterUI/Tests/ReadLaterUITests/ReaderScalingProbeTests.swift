@@ -4,18 +4,22 @@ import ReadLaterCore
 import ReadLaterUI
 import XCTest
 
-/// Exploratory probe: how the Reader's per-render work grows with article size.
+/// Exploratory probe: how one Reader render's work grows with article length.
 ///
-/// Runs only when `READER_PROBE_OUT` names a directory. Each measurement is a
-/// `probe.sample` event in `<dir>/oplog.jsonl`, and `tools/readerscale` fits
-/// those events. `READER_PROBE_FIXTURES` optionally names a directory of
-/// `*.blockplan.json` files to add real articles.
+/// Runs only when `READER_PROBE_OUT` names a directory. Each article gives one
+/// `probe.sample` event per arm in `<dir>/oplog.jsonl`, and `tools/readerscale`
+/// fits those events. `READER_PROBE_FIXTURES` optionally names a directory of
+/// `*.blockplan.json` files, added as real articles.
 ///
-/// The render arms mirror `ReaderView.body`. `footnoteAttachments` is private
-/// there, so the copy below must stay in step with it. The probe times the copy.
+/// The arms mirror `ReaderView.body`. `footnoteAttachments` is private there,
+/// so the copy below must stay in step with it.
 @MainActor
 final class ReaderScalingProbeTests: XCTestCase {
-    private static let reps = 5
+    /// Each article and arm gets one timed window. Short articles run the arm
+    /// many times inside that window, so the reported time keeps resolution.
+    private static let windowSeconds = 0.02
+    private static let maxIterations = 100_000
+    private static let arms = ["footnote.rowwise", "footnote.once", "meta.count", "wash.scan", "body.total"]
 
     func testScalingProbe() throws {
         guard let out = ProcessInfo.processInfo.environment["READER_PROBE_OUT"] else {
@@ -32,24 +36,9 @@ final class ReaderScalingProbeTests: XCTestCase {
             "os": ProcessInfo.processInfo.operatingSystemVersionString,
         ])
 
-        var articles: [Entry] = []
-        for blocks in [50, 100, 200, 400, 800, 1600, 3200] {
-            articles.append(Entry(corpus: "blocks", label: "b\(blocks)",
-                document: Self.synthetic(blocks: blocks, wordsPerBlock: 12, seed: UInt64(blocks))))
-        }
-        for words in [10, 20, 40, 80, 160, 320] {
-            articles.append(Entry(corpus: "words", label: "w\(words)",
-                document: Self.synthetic(blocks: 100, wordsPerBlock: words, seed: UInt64(1000 + words))))
-        }
-        var mix = Lcg(seed: 7)
-        for index in 0 ..< 24 {
-            let blocks = 10 + mix.next(below: 3000)
-            let words = 5 + mix.next(below: 150)
-            articles.append(Entry(corpus: "mixed", label: "m\(index)",
-                document: Self.synthetic(blocks: blocks, wordsPerBlock: words, seed: UInt64(5000 + index))))
-        }
+        var articles = syntheticArticles()
         if let dir = ProcessInfo.processInfo.environment["READER_PROBE_FIXTURES"] {
-            articles += try Self.fixtures(in: URL(fileURLWithPath: dir, isDirectory: true), oplog: oplog)
+            articles += try fixtures(in: URL(fileURLWithPath: dir, isDirectory: true), oplog: oplog)
         }
 
         for entry in articles {
@@ -57,8 +46,8 @@ final class ReaderScalingProbeTests: XCTestCase {
             let spoken = SpokenWordNumbering(plan: document.plan)
             let rows = document.bodyBlocks.filter { $0.kind != .footnoteMarker }.count
             var checks: [String: Int] = [:]
-            for name in ["footnote.rowwise", "footnote.once", "meta.count", "wash.scan", "body.total"] {
-                let timing = Self.medianMs { Self.run(name, document, spoken) }
+            for name in Self.arms {
+                let timing = Self.timed { Self.run(name, document, spoken) }
                 checks[name] = timing.check
                 oplog.record("probe.sample", fields: [
                     "corpus": entry.corpus,
@@ -68,9 +57,8 @@ final class ReaderScalingProbeTests: XCTestCase {
                     "rows": String(rows),
                     "words": String(spoken.totalWords),
                     "notes": String(document.noteBlocks.count),
-                    "ms": String(format: "%.4f", timing.median),
-                    "ms_min": String(format: "%.4f", timing.min),
-                    "reps": String(Self.reps),
+                    "ms": String(format: "%.6f", timing.ms),
+                    "iters": String(timing.iterations),
                     "checksum": String(timing.check),
                 ])
             }
@@ -80,7 +68,7 @@ final class ReaderScalingProbeTests: XCTestCase {
 
         let micro = TelemetryOplog(directory: nil)
         var perCall: [Double] = []
-        for _ in 0 ..< Self.reps {
+        for _ in 0 ..< 5 {
             let start = DispatchTime.now().uptimeNanoseconds
             for index in 0 ..< 2000 {
                 micro.record("tick", fields: ["word": String(index)])
@@ -98,8 +86,7 @@ final class ReaderScalingProbeTests: XCTestCase {
             "words": "0",
             "notes": "0",
             "ms": String(format: "%.6f", perCall[perCall.count / 2]),
-            "ms_min": String(format: "%.6f", perCall[0]),
-            "reps": String(Self.reps),
+            "iters": "2000",
             "checksum": "0",
         ])
         oplog.flushNow()
@@ -113,13 +100,41 @@ final class ReaderScalingProbeTests: XCTestCase {
         let document: ReadLaterCore.Document
     }
 
+    private struct Timing {
+        let ms: Double
+        let iterations: Int
+        let check: Int
+    }
+
+    /// One result per article and arm. The first call is an untimed warm-up
+    /// and sizes the window. The window then runs the arm enough times to last
+    /// `windowSeconds`. `sink` keeps the optimizer from dropping the calls.
+    private static func timed(_ body: () -> Int) -> Timing {
+        var check = body()
+        let one = seconds { check = body() }
+        let iterations = min(maxIterations, max(1, Int((windowSeconds / max(one, 1e-9)).rounded(.up))))
+        var sink = 0
+        let total = seconds {
+            for _ in 0 ..< iterations { sink &+= body() }
+        }
+        _ = sink
+        return Timing(ms: total * 1000 / Double(iterations), iterations: iterations, check: check)
+    }
+
+    private static func seconds(_ work: () -> Void) -> Double {
+        let start = DispatchTime.now().uptimeNanoseconds
+        work()
+        return Double(DispatchTime.now().uptimeNanoseconds - start) / 1_000_000_000
+    }
+
     private static func run(_ name: String, _ document: ReadLaterCore.Document, _ spoken: SpokenWordNumbering) -> Int {
         switch name {
         case "footnote.rowwise": return footnoteRowwise(document)
         case "footnote.once": return footnoteOnce(document)
         case "meta.count": return metaCount(document)
         case "wash.scan": return washScan(document, spoken)
-        default: return renderAsShipped(document, spoken)
+        case "body.total": return renderAsShipped(document, spoken)
+        default: preconditionFailure("unknown arm \(name)")
         }
     }
 
@@ -181,49 +196,66 @@ final class ReaderScalingProbeTests: XCTestCase {
         metaCount(document) &+ footnoteRowwise(document) &+ washScan(document, spoken)
     }
 
-    // MARK: - Timing
-
-    private static func medianMs(_ body: () -> Int) -> (median: Double, min: Double, check: Int) {
-        var times: [Double] = []
-        var check = 0
-        for _ in 0 ..< reps {
-            let start = DispatchTime.now().uptimeNanoseconds
-            check = body()
-            let end = DispatchTime.now().uptimeNanoseconds
-            times.append(Double(end - start) / 1_000_000)
-        }
-        times.sort()
-        return (times[times.count / 2], times[0], check)
-    }
-
     // MARK: - Articles
 
-    /// Synthetic article: prose blocks, a footnote marker and note every
-    /// tenth block, a code block every twentieth. Every seed gives new text.
-    private static func synthetic(blocks: Int, wordsPerBlock: Int, seed: UInt64) -> ReadLaterCore.Document {
+    /// Four groups, 62 articles in all. Rows and words per block vary on
+    /// separate axes, so the two-term fit in `readerscale` has leverage.
+    private static func syntheticArticles() -> [Entry] {
+        var entries: [Entry] = []
+        for rows in [50, 100, 200, 400, 800, 1600, 3200] {
+            entries.append(Entry(corpus: "rows", label: "r\(rows)",
+                                 document: makeDocument(rows: rows, wordsPerBlock: 12, seed: UInt64(rows))))
+        }
+        for rows in [100, 400, 1600] {
+            for wordsPerBlock in [5, 40] {
+                entries.append(Entry(corpus: "grid", label: "r\(rows)w\(wordsPerBlock)",
+                                     document: makeDocument(rows: rows, wordsPerBlock: wordsPerBlock,
+                                                            seed: UInt64(rows * 100 + wordsPerBlock))))
+            }
+        }
+        for wordsPerBlock in [1, 2, 3, 5, 8, 20, 50, 100] {
+            entries.append(Entry(corpus: "sweep", label: "w\(wordsPerBlock)",
+                                 document: makeDocument(rows: 400, wordsPerBlock: wordsPerBlock,
+                                                        seed: UInt64(90_000 + wordsPerBlock))))
+        }
+        var mix = Lcg(seed: 7)
+        for index in 0 ..< 30 {
+            let rows = 20 + mix.next(below: 1000)
+            let wordsPerBlock = 5 + mix.next(below: 60)
+            entries.append(Entry(corpus: "mixed", label: "m\(index)",
+                                 document: makeDocument(rows: rows, wordsPerBlock: wordsPerBlock,
+                                                        seed: UInt64(5000 + index))))
+        }
+        return entries
+    }
+
+    /// Synthetic article: `rows` prose blocks of `wordsPerBlock` words. A
+    /// footnote marker and note follow every tenth block, and every twentieth
+    /// block is code. Every seed gives new text.
+    private static func makeDocument(rows: Int, wordsPerBlock: Int, seed: UInt64) -> ReadLaterCore.Document {
         var random = Lcg(seed: seed)
         var body: [ReadLaterCore.Block] = []
         var notes: [ReadLaterCore.Block] = []
         var id = 0
-        for index in 0 ..< blocks {
+        for index in 0 ..< rows {
             let words = (0 ..< wordsPerBlock).map { _ in vocabulary[random.next(below: vocabulary.count)] }
             let text = words.joined(separator: " ") + "."
             let isCode = index % 20 == 19
-            let spoken: [Sentence] = isCode ? [] : [Sentence(offset: 0, length: text.count, text: text)]
-            body.append(Block(id: id, kind: isCode ? .code : .prose, confidence: 0.95,
-                              reason: "probe", text: text, spoken: spoken))
+            let spoken: [ReadLaterCore.Sentence] = isCode ? [] : [ReadLaterCore.Sentence(offset: 0, length: text.count, text: text)]
+            body.append(ReadLaterCore.Block(id: id, kind: isCode ? .code : .prose, confidence: 0.95,
+                                            reason: "probe", text: text, spoken: spoken))
             id += 1
             if index % 10 == 5 {
-                body.append(Block(id: id, kind: .footnoteMarker, confidence: 0.95,
-                                  reason: "probe", text: String(notes.count + 1)))
+                body.append(ReadLaterCore.Block(id: id, kind: .footnoteMarker, confidence: 0.95,
+                                                reason: "probe", text: String(notes.count + 1)))
                 id += 1
-                notes.append(Block(id: id, kind: .footnoteBody, confidence: 0.95,
-                                   reason: "probe", text: "Note \(notes.count + 1) \(text)"))
+                notes.append(ReadLaterCore.Block(id: id, kind: .footnoteBody, confidence: 0.95,
+                                                 reason: "probe", text: "Note \(notes.count + 1) \(text)"))
                 id += 1
             }
         }
-        let plan = BlockPlan(source: "probe", sourceSHA256: "probe", blocks: body + notes)
-        return ReadLaterCore.Document(url: nil, title: "probe \(blocks)x\(wordsPerBlock)", plan: plan)
+        let plan = ReadLaterCore.BlockPlan(source: "probe", sourceSHA256: "probe", blocks: body + notes)
+        return ReadLaterCore.Document(url: nil, title: "probe \(rows)x\(wordsPerBlock)", plan: plan)
     }
 
     private static func fixtures(in directory: URL, oplog: TelemetryOplog) throws -> [Entry] {
@@ -235,7 +267,7 @@ final class ReaderScalingProbeTests: XCTestCase {
             do {
                 let plan = try JSONDecoder().decode(BlockPlan.self, from: Data(contentsOf: file))
                 let label = file.lastPathComponent.replacingOccurrences(of: ".blockplan.json", with: "")
-                entries.append(Entry(corpus: "fixture", label: label,
+                entries.append(Entry(corpus: "real", label: label,
                                      document: ReadLaterCore.Document(url: nil, title: label, plan: plan)))
             } catch {
                 oplog.record("probe.error", fields: ["file": file.lastPathComponent, "error": String(describing: error)])
