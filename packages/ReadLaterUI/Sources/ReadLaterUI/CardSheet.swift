@@ -43,6 +43,7 @@ public struct CardSheet<Content: View>: View {
 /// than inspecting views. State lines stay with `LookupOutcome` and are never
 /// duplicated here. Copy is owned by design/miss-state.md.
 enum CardCopy {
+    static let coincidenceNote = "Selected word is also the current highlight"
     static let offerTitle = "English–Chinese dictionary (Traditional)"
     static let offerMeta = "14.47 MiB · downloads once · works offline"
     static let offerWayBack = "You can add it later in Settings › Dictionaries."
@@ -69,5 +70,15 @@ enum CardCopy {
 
     static func closeLabel(wasPlayingBeforeLookup: Bool) -> String {
         wasPlayingBeforeLookup ? closeAndResume : close
+    }
+
+    static func pauseLine(wasPlayingBeforeLookup: Bool, wordIndex: Int?) -> String {
+        guard wasPlayingBeforeLookup else {
+            return "Audio was already paused · stays paused"
+        }
+        if let wordIndex {
+            return "Audio paused · resumes at #\(wordIndex) on close"
+        }
+        return "Audio paused · resumes on close"
     }
 }

@@ -40,11 +40,11 @@ enum DebugLaunch {
     /// The voice the reader runs on. The production default is the system
     /// synthesizer; the scripted voice exists for tests only.
     @MainActor
-    static func makeSpeech() -> SpeechController {
+    static func makeSpeech(telemetry: TelemetryHub) -> SpeechController {
         if case let .scripted(millisecondsPerWord) = options.voice {
             return ScriptedSpeechController(millisecondsPerWord: millisecondsPerWord)
         }
-        return AVSpeechController()
+        return AVSpeechController(telemetry: telemetry)
     }
 
     private static func resetStore() {

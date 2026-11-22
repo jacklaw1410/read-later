@@ -46,7 +46,7 @@ enum DiagnosticsExport {
     static func stage(
         dictionaryVersion: String,
         pace: String,
-        hub: TelemetryHub = .shared
+        hub: TelemetryHub
     ) throws -> URL {
         hub.flush()
         let stamp = ISO8601DateFormatter().string(from: Date())
@@ -91,7 +91,7 @@ enum DiagnosticsExport {
         dictionaryVersion: String,
         pace: String,
         oplogFiles: [String] = [],
-        hub: TelemetryHub = .shared
+        hub: TelemetryHub
     ) -> Summary {
         let info = Bundle.main.infoDictionary
         let formatter = ISO8601DateFormatter()

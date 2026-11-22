@@ -35,8 +35,15 @@ public struct URLSessionPageFetcher: PageFetching {
     public var maximumBytes: Int
     public var timeout: TimeInterval
     private let session: URLSession
+    private let telemetry: TelemetryHub
 
-    public init(maximumBytes: Int = 8 << 20, timeout: TimeInterval = 20, session: URLSession = .shared) {
+    public init(
+        telemetry: TelemetryHub,
+        maximumBytes: Int = 8 << 20,
+        timeout: TimeInterval = 20,
+        session: URLSession = .shared
+    ) {
+        self.telemetry = telemetry
         self.maximumBytes = maximumBytes
         self.timeout = timeout
         self.session = session
@@ -57,7 +64,7 @@ public struct URLSessionPageFetcher: PageFetching {
         request.setValue("text/html,application/xhtml+xml;q=0.9,text/plain;q=0.8,*/*;q=0.1", forHTTPHeaderField: "Accept")
         request.setValue("en,zh-HK;q=0.8", forHTTPHeaderField: "Accept-Language")
 
-        TelemetryHub.shared.record(TelemetryName.fetchStart, fields: ["host": url.host ?? url.absoluteString])
+        telemetry.record(TelemetryName.fetchStart, fields: ["host": url.host ?? url.absoluteString])
         let (data, http): (Data, HTTPURLResponse)
         do {
             (data, http) = try await perform(request, url: url)
@@ -66,7 +73,7 @@ public struct URLSessionPageFetcher: PageFetching {
         } catch {
             throw PageFetchError.offline((error as NSError).localizedDescription)
         }
-        TelemetryHub.shared.record(TelemetryName.bodyDone, fields: [
+        telemetry.record(TelemetryName.bodyDone, fields: [
             "status": String(http.statusCode),
             "bytes": String(data.count),
         ])
@@ -91,7 +98,7 @@ public struct URLSessionPageFetcher: PageFetching {
     /// custom configuration still applies; the delegate cannot live on a
     /// shared session.
     private func perform(_ request: URLRequest, url: URL) async throws -> (Data, HTTPURLResponse) {
-        let delegate = FetchTimingDelegate(maximumBytes: maximumBytes, url: url)
+        let delegate = FetchTimingDelegate(maximumBytes: maximumBytes, url: url, telemetry: telemetry)
         let configuration = session.configuration
         configuration.timeoutIntervalForRequest = timeout
         configuration.timeoutIntervalForResource = timeout
@@ -110,15 +117,17 @@ private final class FetchTimingDelegate: NSObject, URLSessionDataDelegate, @unch
     private let lock = NSLock()
     private let maximumBytes: Int
     private let url: URL
+    private let telemetry: TelemetryHub
     private var received = Data()
     private var response: HTTPURLResponse?
     private var continuation: CheckedContinuation<(Data, HTTPURLResponse), Error>?
     private var task: URLSessionDataTask?
     private var done = false
 
-    init(maximumBytes: Int, url: URL) {
+    init(maximumBytes: Int, url: URL, telemetry: TelemetryHub) {
         self.maximumBytes = maximumBytes
         self.url = url
+        self.telemetry = telemetry
     }
 
     func begin(
@@ -155,7 +164,7 @@ private final class FetchTimingDelegate: NSObject, URLSessionDataDelegate, @unch
             finish(.failure(PageFetchError.offline("no HTTP response")))
             return
         }
-        TelemetryHub.shared.record(TelemetryName.headers, fields: [
+        telemetry.record(TelemetryName.headers, fields: [
             "status": String(http.statusCode),
             "host": url.host ?? url.absoluteString,
         ])

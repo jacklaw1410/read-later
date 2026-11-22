@@ -263,6 +263,24 @@ public protocol LibraryProvider: AnyObject {
     func forget(_ row: LibraryRow)
 }
 
+// MARK: - Diagnostics export
+//
+// The diagnostics screen reads the telemetry log's status and asks for a staged
+// folder. The app target implements it over `TelemetryHub` and the staging code.
+
+@MainActor
+public protocol DiagnosticsExporting: AnyObject {
+    var isEnabled: Bool { get }
+    var sourcePath: String { get }
+    var fileCount: Int { get }
+    var pendingCount: Int { get }
+    var latestEvents: [String] { get }
+    var pullCommand: String { get }
+
+    /// Writes the log files and a summary to a fresh folder and returns it.
+    func stage() throws -> URL
+}
+
 /// Classifies the tapped token. A URL, a path or a code identifier is not a word.
 public enum WordShape: String, Sendable {
     case word

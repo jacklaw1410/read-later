@@ -2,22 +2,31 @@ import ReadLaterCore
 import SwiftUI
 
 /// The hit state: the tapped word resolved to a gloss. The card owns no
-/// playback; the caller supplies the flag.
+/// playback; the caller supplies the flag and the word index.
 public struct LookupCard: View {
+    private let telemetry: TelemetryHub
     private let result: LookupResult
     private let wasPlayingBeforeLookup: Bool
+    private let wordIndex: Int?
+    private let isCurrentWashWord: Bool
     private let onPronounce: () -> Void
     private let onClose: () -> Void
     @State private var didLogShown = false
 
     public init(
+        telemetry: TelemetryHub,
         result: LookupResult,
         wasPlayingBeforeLookup: Bool,
+        wordIndex: Int?,
+        isCurrentWashWord: Bool,
         onPronounce: @escaping () -> Void,
         onClose: @escaping () -> Void
     ) {
+        self.telemetry = telemetry
         self.result = result
         self.wasPlayingBeforeLookup = wasPlayingBeforeLookup
+        self.wordIndex = wordIndex
+        self.isCurrentWashWord = isCurrentWashWord
         self.onPronounce = onPronounce
         self.onClose = onClose
     }
@@ -35,13 +44,6 @@ public struct LookupCard: View {
                     .padding(.vertical, -10)
                     .padding(.leading, -2)
                     .padding(.trailing, -12)
-                if let phonetic = result.phonetic, !phonetic.isEmpty {
-                    Spacer(minLength: 8)
-                    Text(phonetic)
-                        .font(Theme.caption())
-                        .foregroundStyle(Theme.inkSecondary)
-                        .lineLimit(1)
-                }
             }
             metaLine
             if let accentVariant = result.accentVariant {
@@ -61,12 +63,32 @@ public struct LookupCard: View {
                     .accessibilityIdentifier(AccessibilityID.lookupGloss)
             }
 
+            if isCurrentWashWord {
+                Text(CardCopy.coincidenceNote)
+                    .font(Theme.caption())
+                    .foregroundStyle(Theme.holdInk)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 6)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Theme.holdSurface)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Theme.holdBorder, lineWidth: 1))
+                    .padding(.bottom, 12)
+            }
+
             Divider()
 
             Text(CardCopy.hitSourceLine(for: result))
                 .font(Theme.caption())
                 .foregroundStyle(Theme.inkSecondary)
                 .padding(.vertical, 8)
+
+            Divider()
+
+            Text(CardCopy.pauseLine(wasPlayingBeforeLookup: wasPlayingBeforeLookup, wordIndex: wordIndex))
+                .font(Theme.caption())
+                .foregroundStyle(Theme.inkSecondary)
+                .padding(.top, 8)
 
             Button(CardCopy.closeLabel(wasPlayingBeforeLookup: wasPlayingBeforeLookup), action: onClose)
                 .buttonStyle(SecondaryActionButtonStyle())
@@ -87,7 +109,7 @@ public struct LookupCard: View {
             DispatchQueue.main.async {
                 guard !didLogShown else { return }
                 didLogShown = true
-                TelemetryHub.shared.record(
+                telemetry.record(
                     TelemetryName.cardShown,
                     fields: ["word": result.word, "kind": "hit"]
                 )
@@ -97,8 +119,9 @@ public struct LookupCard: View {
 
     @ViewBuilder
     private var metaLine: some View {
-        if let pos = result.partOfSpeech, !pos.isEmpty {
-            Text(pos)
+        let bits = [result.phonetic, result.partOfSpeech].compactMap { $0 }.filter { !$0.isEmpty }
+        if !bits.isEmpty {
+            Text(bits.joined(separator: " · "))
                 .font(Theme.caption())
                 .foregroundStyle(Theme.inkSecondary)
         }

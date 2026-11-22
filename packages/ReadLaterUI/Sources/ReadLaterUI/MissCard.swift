@@ -5,12 +5,15 @@ import SwiftUI
 /// design/miss-state.md and quoted exactly; `MissKind` labels come from
 /// `LookupOutcome` and are never reworded here.
 public struct MissCard: View {
+    private let telemetry: TelemetryHub
     private let word: String
     private let kind: MissKind
     private let packInstalled: Bool
     private let isOnline: Bool
     private let offerDeclined: Bool
     private let isInstalling: Bool
+    private let wasPlayingBeforeLookup: Bool
+    private let wordIndex: Int?
     private let onPronounce: () -> Void
     private let onInstall: () -> Void
     private let onNotNow: () -> Void
@@ -19,24 +22,30 @@ public struct MissCard: View {
     @State private var didLogShown = false
 
     public init(
+        telemetry: TelemetryHub,
         word: String,
         kind: MissKind,
         packInstalled: Bool,
         isOnline: Bool,
         offerDeclined: Bool,
         isInstalling: Bool,
+        wasPlayingBeforeLookup: Bool,
+        wordIndex: Int?,
         onPronounce: @escaping () -> Void,
         onInstall: @escaping () -> Void,
         onNotNow: @escaping () -> Void,
         onClose: @escaping () -> Void,
         onSearchWeb: @escaping () -> Void
     ) {
+        self.telemetry = telemetry
         self.word = word
         self.kind = kind
         self.packInstalled = packInstalled
         self.isOnline = isOnline
         self.offerDeclined = offerDeclined
         self.isInstalling = isInstalling
+        self.wasPlayingBeforeLookup = wasPlayingBeforeLookup
+        self.wordIndex = wordIndex
         self.onPronounce = onPronounce
         self.onInstall = onInstall
         self.onNotNow = onNotNow
@@ -84,14 +93,9 @@ public struct MissCard: View {
                 .font(Theme.caption())
                 .foregroundStyle(Theme.inkSecondary)
                 .padding(.top, 2)
-            // The source sits directly under the status, so the pack reads as the remedy.
-            Text(CardCopy.missSourceLine(packInstalled: packInstalled))
-                .font(Theme.caption())
-                .foregroundStyle(Theme.inkSecondary)
-                .padding(.top, 4)
+                .padding(.bottom, 12)
 
             Divider()
-                .padding(.vertical, 12)
 
             if showsOffer {
                 VStack(alignment: .leading, spacing: 2) {
@@ -105,7 +109,22 @@ public struct MissCard: View {
                         .font(Theme.caption())
                         .foregroundStyle(Theme.inkSecondary)
                 }
+                .padding(.vertical, 12)
+
+                Divider()
             }
+
+            Text(CardCopy.missSourceLine(packInstalled: packInstalled))
+                .font(Theme.caption())
+                .foregroundStyle(Theme.inkSecondary)
+                .padding(.vertical, 8)
+
+            Divider()
+
+            Text(CardCopy.pauseLine(wasPlayingBeforeLookup: wasPlayingBeforeLookup, wordIndex: wordIndex))
+                .font(Theme.caption())
+                .foregroundStyle(Theme.inkSecondary)
+                .padding(.top, 8)
 
             footer
                 .padding(.top, 8)
@@ -123,7 +142,7 @@ public struct MissCard: View {
             DispatchQueue.main.async {
                 guard !didLogShown else { return }
                 didLogShown = true
-                TelemetryHub.shared.record(
+                telemetry.record(
                     TelemetryName.cardShown,
                     fields: ["word": word, "kind": "miss"]
                 )

@@ -71,9 +71,9 @@ final class ReaderSessionLookupTests: XCTestCase {
 
     // MARK: - Network state
 
-    func test_networkStateStartsUnknown() {
+    func test_networkStateStartsOnline() {
         let session = makeSession(speech: makeSpeech(), lookup: FakeLookup())
-        XCTAssertNil(session.lookupState.isOnline, "no path callback yet, so the state is unknown, not online")
+        XCTAssertTrue(session.lookupState.isOnline, "the default state is online until a path callback says otherwise")
     }
 
     // MARK: - Decline persistence
@@ -102,6 +102,7 @@ final class ReaderSessionLookupTests: XCTestCase {
             speech: speech,
             lookupProvider: lookup,
             packs: PackRegistry(defaults: defaults),
+            telemetry: TelemetryHub(),
             speedStore: SpeedStore(defaults: defaults)
         )
     }

@@ -1,5 +1,6 @@
 import Foundation
 import Network
+import Observation
 import ReadLaterCore
 import ReadLaterStore
 import ReadLaterUI
@@ -9,9 +10,11 @@ import ReadLaterUI
 /// One place owns the wash, the lookupState.card, the hold, and the speech controller. The
 /// views read this and send intents back; none of them start or stop audio on
 /// their own, because the pause/restore contract only holds if one object
-/// remembers whether the voice was live before the tap.
+/// remembers whether the voice was live before the tap. Mutable state that no
+/// view reads is `@ObservationIgnored`, so its writes do not invalidate the reader.
 @MainActor
-final class ReaderSession: ObservableObject {
+@Observable
+final class ReaderSession {
     let document: ReadLaterCore.Document
     let spoken: SpokenWordNumbering
 
@@ -25,25 +28,26 @@ final class ReaderSession: ObservableObject {
     private let lookupProvider: any LookupProvider
     private let packs: any CapabilityPacks
     private let speedStore: SpeedStore
-    private let pathMonitor = NWPathMonitor()
+    @ObservationIgnored private let pathMonitor = NWPathMonitor()
     /// Whether the voice was live when the current lookup session began. Nil when
     /// no lookup is open. Set once per session; every tap in the session reuses it.
-    private var lookupWasPlaying: Bool?
+    @ObservationIgnored private var lookupWasPlaying: Bool?
     /// Bumped on each tap and on close. A result whose generation is stale is
     /// dropped, so a slow earlier word cannot replace a newer card.
-    private var lookupGeneration = 0
+    @ObservationIgnored private var lookupGeneration = 0
+    private let telemetry: TelemetryHub
 
     /// Where the next `play` starts. Set by a scrub while paused. A latch,
     /// not a plain optional: the stash clears only after a start succeeds,
     /// so a failed first press retries the same word (F19 1.3).
-    private var latch = ResumeLatch()
+    @ObservationIgnored private var latch = ResumeLatch()
     /// Set when a drag pauses a playing voice. The release plays again from
     /// the released word.
-    private var resumeAfterScrub = false
+    @ObservationIgnored private var resumeAfterScrub = false
     /// Receives the current word index when the place should be recorded.
     /// Throttled during reading; immediate on pause, scrub and finish.
-    var onProgress: ((Int, String) -> Void)?
-    private var progressThrottle = PositionWriteThrottle()
+    @ObservationIgnored var onProgress: ((Int, String) -> Void)?
+    @ObservationIgnored private var progressThrottle = PositionWriteThrottle()
 
 
     init(
@@ -51,6 +55,7 @@ final class ReaderSession: ObservableObject {
         speech: SpeechController,
         lookupProvider: any LookupProvider,
         packs: any CapabilityPacks,
+        telemetry: TelemetryHub,
         speedStore: SpeedStore = SpeedStore()
     ) {
         self.document = document
@@ -58,6 +63,7 @@ final class ReaderSession: ObservableObject {
         self.speech = speech
         self.lookupProvider = lookupProvider
         self.packs = packs
+        self.telemetry = telemetry
         self.speedStore = speedStore
         self.playbackState.speed = speedStore.speed
 
@@ -119,7 +125,7 @@ final class ReaderSession: ObservableObject {
         guard lookupState.card == nil, lookupState.note == nil else { return }
         // Logged at handler entry, before any state change, for M1 and M2.
         // The word is the wash at tap time, for M9.
-        TelemetryHub.shared.record(speech.state == .speaking ? TelemetryName.tapPause : TelemetryName.tapPlay,
+        telemetry.record(speech.state == .speaking ? TelemetryName.tapPause : TelemetryName.tapPlay,
                                    fields: ["word": String(washState.wordIndex ?? -1)])
         #if DEBUG
         DebugFrameMonitor.shared.noteTap()
@@ -127,10 +133,10 @@ final class ReaderSession: ObservableObject {
         if speech.state == .speaking {
             speech.pause()
             checkpoint(source: "pause")
-            TelemetryHub.shared.record(TelemetryName.pause)
+            telemetry.record(TelemetryName.pause)
             return
         }
-        TelemetryHub.shared.record(TelemetryName.play)
+        telemetry.record(TelemetryName.play)
         // A paused scrub arms the latch. It wins over resume-from-pause:
         // resuming would replay the old position and strand the scrub.
         if let target = latch.peek() {
@@ -142,7 +148,7 @@ final class ReaderSession: ObservableObject {
             speech.resume()
         case .speaking:
             speech.pause()
-            TelemetryHub.shared.record(TelemetryName.pause)
+            telemetry.record(TelemetryName.pause)
         case .warming, .idle, .finished:
             // Warming is a background pre-warm, not playback. The reader's
             // first press must start the article even if the voice is still
@@ -184,7 +190,7 @@ final class ReaderSession: ObservableObject {
         let from = playbackState.speed
         playbackState.speed = value
         speedStore.save(value)
-        TelemetryHub.shared.record(TelemetryName.speedChange, fields: ["from": String(from), "to": String(value)])
+        telemetry.record(TelemetryName.speedChange, fields: ["from": String(from), "to": String(value)])
         // The synthesizer cannot change tempo mid-utterance, so the controller
         // restarts the current utterance and keeps the word.
         speech.rate = value
@@ -210,7 +216,7 @@ final class ReaderSession: ObservableObject {
             latch.stash(index)
         }
         // Logged after the restart, for M4 (release to sound).
-        TelemetryHub.shared.record(TelemetryName.scrubCommit, fields: [
+        telemetry.record(TelemetryName.scrubCommit, fields: [
             "fraction": String(format: "%.4f", fraction),
             "word": String(index),
         ])
@@ -247,7 +253,7 @@ final class ReaderSession: ObservableObject {
         DebugFrameMonitor.shared.noteScrubBegan()
         #endif
         resumeAfterScrub = speech.state == .speaking
-        TelemetryHub.shared.record(TelemetryName.scrubBegin, fields: [
+        telemetry.record(TelemetryName.scrubBegin, fields: [
             "state": String(describing: speech.state),
         ])
         if resumeAfterScrub { speech.holdForScrub() }
@@ -380,7 +386,7 @@ final class ReaderSession: ObservableObject {
         let generation = lookupGeneration
         washState.selectedWordIndex = slot?.index
         playbackState.isPlaying = false
-        TelemetryHub.shared.record(TelemetryName.lookup, fields: ["word": token])
+        telemetry.record(TelemetryName.lookup, fields: ["word": token])
 
         Task { [weak self] in
             guard let self else { return }
@@ -392,7 +398,7 @@ final class ReaderSession: ObservableObject {
                 // The source and the line count are the proof that a lookupState.card
                 // carries text: an empty gloss from the wrong source is the
                 // defect this field catches.
-                TelemetryHub.shared.record(
+                telemetry.record(
                     TelemetryName.lookupHit,
                     fields: [
                         "source": result.source.rawValue,
@@ -402,7 +408,7 @@ final class ReaderSession: ObservableObject {
                 lookupState.card = .hit(result, wordIndex: slot?.index, wasPlaying: wasPlaying)
             case let .miss(kind):
                 let refined = self.refine(kind)
-                TelemetryHub.shared.record(
+                telemetry.record(
                     TelemetryName.lookupMiss,
                     fields: ["kind": String(describing: refined)]
                 )
@@ -429,7 +435,7 @@ final class ReaderSession: ObservableObject {
         // Close-request mark for M14: with lookupState.card.shown (paint) and
         // state.speaking (resume) this splits close-to-resume into test
         // delivery (tap to here) and teardown-plus-resume (here to speaking).
-        TelemetryHub.shared.record(TelemetryName.cardClose)
+        telemetry.record(TelemetryName.cardClose)
         let wasPlaying = card.wasPlaying
         lookupState.card = nil
         lookupWasPlaying = nil
@@ -508,19 +514,19 @@ final class ReaderSession: ObservableObject {
         guard playbackState.isPlaying, playbackState.autoScroll else { return }
         playbackState.autoScroll = false
         playbackState.isHeld = true
-        TelemetryHub.shared.record(TelemetryName.holdStart, fields: ["reason": "scroll"])
+        telemetry.record(TelemetryName.holdStart, fields: ["reason": "scroll"])
     }
 
     func holdFollowing() {
         playbackState.autoScroll = false
         playbackState.isHeld = playbackState.isPlaying
-        TelemetryHub.shared.record(TelemetryName.holdStart, fields: ["reason": "menu"])
+        telemetry.record(TelemetryName.holdStart, fields: ["reason": "menu"])
     }
 
     func resumeFollowing() {
         playbackState.autoScroll = true
         playbackState.isHeld = false
-        TelemetryHub.shared.record(TelemetryName.holdEnd, fields: ["outcome": "resume"])
+        telemetry.record(TelemetryName.holdEnd, fields: ["outcome": "resume"])
     }
 
     #if DEBUG
@@ -554,7 +560,7 @@ final class ReaderSession: ObservableObject {
 
     private func speechStateChanged(_ state: SpeechState) {
         // Every delegate change is logged, including late callbacks (F20.4).
-        TelemetryHub.shared.record("state.\(state)")
+        telemetry.record("state.\(state)")
         #if DEBUG
         DebugFrameMonitor.shared.noteStateChange()
         #endif
@@ -574,7 +580,7 @@ final class ReaderSession: ObservableObject {
             playbackState.isFinished = true
             playbackState.isPlaying = false
             record(max(spoken.totalWords - 1, 0), force: true, source: "finish")
-            TelemetryHub.shared.record(TelemetryName.finished)
+            telemetry.record(TelemetryName.finished)
         }
         playbackState.isPlaying = playbackState.isPlaying
     }
