@@ -108,6 +108,7 @@ public struct ReaderView<Player: View, Overlay: View>: View {
     }
 
     public var body: some View {
+        let footnotes = footnoteAttachments
         ZStack {
             VStack(spacing: 0) {
                 ScrollViewReader { proxy in
@@ -127,7 +128,7 @@ public struct ReaderView<Player: View, Overlay: View>: View {
                                     wash: wash,
                                     playback: playback,
                                     spoken: spoken,
-                                    footnote: footnoteAttachments[block.id],
+                                    footnote: footnotes[block.id],
                                     followsWash: autoScroll && holdsWash(block.id),
                                     onTapWord: onTapWord,
                                     onTapNote: onTapNote
