@@ -22,6 +22,7 @@ struct Article {
     source: String,
     blocks: f64,
     words: f64,
+    bytes: f64,
     wpb: f64,
     arms: BTreeMap<String, f64>,
 }
@@ -59,7 +60,7 @@ fn median(mut values: Vec<f64>) -> Option<f64> {
 
 fn group(log: &Log) -> BTreeMap<String, Article> {
     let mut articles: BTreeMap<String, Article> = BTreeMap::new();
-    for Sample { sweep, source, article, arm, blocks, words, wpb, ms, .. } in &log.samples {
+    for Sample { sweep, source, article, arm, blocks, words, bytes, wpb, ms, .. } in &log.samples {
         let entry = articles.entry(article.clone()).or_default();
         entry.label = article.clone();
         entry.sweep = sweep.clone();
@@ -67,6 +68,7 @@ fn group(log: &Log) -> BTreeMap<String, Article> {
         entry.blocks = *blocks;
         entry.words = *words;
         entry.wpb = *wpb;
+        entry.bytes = *bytes;
         entry.arms.insert(arm.clone(), *ms);
     }
     for article in articles.values_mut() {
@@ -170,6 +172,16 @@ fn run(args: Args) -> Result<(), String> {
         let pts = points(&articles, |a| a.source == "file", |a| a.words, metric);
         match linear(&pts) {
             Some(f) => println!("{:<12} {:>12.4} {:>14.6} {:>8.3} {:>6}", metric, f.coef[0], f.coef[1], f.r2, pts.len()),
+            None => println!("{metric:<12} not enough points"),
+        }
+    }
+    println!();
+
+    println!("Real pages: ms = a + b·HTML bytes");
+    for metric in ["extract", "plan", "total"] {
+        let pts = points(&articles, |a| a.source == "file", |a| a.bytes, metric);
+        match linear(&pts) {
+            Some(f) => println!("{:<12} {:>12.4} {:>14.3e} {:>8.3} {:>6}", metric, f.coef[0], f.coef[1], f.r2, pts.len()),
             None => println!("{metric:<12} not enough points"),
         }
     }
