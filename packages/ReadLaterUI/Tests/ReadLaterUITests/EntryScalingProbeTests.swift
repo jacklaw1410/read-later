@@ -10,12 +10,14 @@ import XCTest
 /// one `probe.sample` per article and arm, and a `probe.call` marker before each
 /// telemetry-recorded `ArticleIngress.read` call. `tools/entryscale` reads that file.
 /// `ENTRY_PROBE_PINS` and `ENTRY_PROBE_FIXTURES` optionally name directories of raw
-/// `.html` pages. Build with `-Xswiftc -enable-testing` so `@testable` reaches internals.
+/// `.html` pages. `ENTRY_PROBE_ONLY` (comma-separated labels) limits the run to those inputs.
+/// Build with `-Xswiftc -enable-testing` so `@testable` reaches internals.
 final class EntryScalingProbeTests: XCTestCase {
     private static let windowSeconds = 0.02
+    private static let minReps = 5
     private static let maxIterations = 100_000
     private static let telemetryCalls = 5
-    private static let arms = ["read", "extract", "plan", "invariant", "sha256", "save", "seed"]
+    private static let arms = ["read", "extract", "plan", "invariant", "sha256", "save", "library", "seed"]
 
     private static let vocabulary = [
         "the", "reader", "listens", "to", "a", "long", "article", "about", "careful", "listening",
@@ -74,6 +76,10 @@ final class EntryScalingProbeTests: XCTestCase {
                 inputs += try Self.fileInputs(in: URL(fileURLWithPath: dir, isDirectory: true))
             }
         }
+        if let only = ProcessInfo.processInfo.environment["ENTRY_PROBE_ONLY"] {
+            let keep = Set(only.split(separator: ",").map { String($0) })
+            inputs = inputs.filter { keep.contains($0.label) }
+        }
 
         for input in inputs {
             let page = FetchedPage(
@@ -125,6 +131,10 @@ final class EntryScalingProbeTests: XCTestCase {
             return ArticleIngress.sha256(input.html).count
         case "save":
             return (try? store.save(document: document)) == nil ? 0 : 1
+        case "library":
+            guard let stored = try? store.document(id: document.id) else { return -1 }
+            _ = try? store.save(document: stored)
+            return ReaderSeed(document: stored, savedWordIndex: nil).startWord ?? 0
         case "seed":
             return ReaderSeed(document: document, savedWordIndex: nil).startWord ?? 0
         default:
@@ -136,23 +146,34 @@ final class EntryScalingProbeTests: XCTestCase {
 
     private struct Timing {
         let ms: Double
-        let iterations: Int
+        let minMs: Double
+        let maxMs: Double
+        let reps: Int
         let check: Int
     }
 
     /// One result per article and arm. The first call is an untimed warm-up and
-    /// sizes the window. The window then repeats the call until it lasts at least
-    /// `windowSeconds`. `sink` keeps the optimizer from dropping the calls.
+    /// sizes the repeat count: at least `minReps`, and enough calls to fill
+    /// `windowSeconds`. Each call is timed on its own. The record keeps the median,
+    /// minimum and maximum, so a single slow call shows as spread.
     private static func timed(_ body: () -> Int) -> Timing {
         var check = body()
         let one = seconds { check = body() }
-        let iterations = min(maxIterations, max(1, Int((windowSeconds / max(one, 1e-9)).rounded(.up))))
-        var sink = 0
-        let total = seconds {
-            for _ in 0 ..< iterations { sink &+= body() }
+        let reps = min(maxIterations, max(minReps, Int((windowSeconds / max(one, 1e-9)).rounded(.up))))
+        var samples: [Double] = []
+        samples.reserveCapacity(reps)
+        for _ in 0 ..< reps {
+            let elapsed = seconds { check = body() }
+            samples.append(elapsed * 1000)
         }
-        _ = sink
-        return Timing(ms: total * 1000 / Double(iterations), iterations: iterations, check: check)
+        samples.sort()
+        return Timing(ms: samples[reps / 2], minMs: samples[0], maxMs: samples[reps - 1], reps: reps, check: check)
+    }
+
+    /// Opening tags in the page. This approximates the DOM node count without SwiftSoup.
+    private static func tagCount(_ html: String) -> Int {
+        guard let pattern = try? NSRegularExpression(pattern: "<[A-Za-z][A-Za-z0-9]*") else { return 0 }
+        return pattern.numberOfMatches(in: html, range: NSRange(html.startIndex..., in: html))
     }
 
     private static func seconds(_ work: () -> Void) -> Double {
@@ -175,7 +196,10 @@ final class EntryScalingProbeTests: XCTestCase {
             "bytes": String(input.html.utf8.count),
             "wpb": String(format: "%.3f", Double(words) / Double(max(blocks, 1))),
             "ms": String(format: "%.6f", timing.ms),
-            "iters": String(timing.iterations),
+            "ms_min": String(format: "%.6f", timing.minMs),
+            "ms_max": String(format: "%.6f", timing.maxMs),
+            "reps": String(timing.reps),
+            "nodes": String(tagCount(input.html)),
             "checksum": String(timing.check),
         ]
         oplog.record("probe.sample", fields: fields)
@@ -193,6 +217,7 @@ final class EntryScalingProbeTests: XCTestCase {
                 out.append(synthetic(sweep: "B", blocks: 100, perBlock: perBlock, seed: seed))
             }
             out.append(synthetic(sweep: "X", blocks: 20, perBlock: 1000, seed: seed))
+            out.append(synthetic(sweep: "T", blocks: 5, perBlock: 30, seed: seed))
         }
         return out
     }
