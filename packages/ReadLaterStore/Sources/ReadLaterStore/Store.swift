@@ -79,7 +79,7 @@ public final class Store: Sendable {
     public let oplog: Oplog
     let telemetry: TelemetryHub
 
-    public init(databaseURL: URL, device: String, telemetry: TelemetryHub = .shared) throws {
+    public init(databaseURL: URL, device: String, telemetry: TelemetryHub) throws {
         var configuration = Configuration()
         configuration.foreignKeysEnabled = true
         configuration.journalMode = .wal

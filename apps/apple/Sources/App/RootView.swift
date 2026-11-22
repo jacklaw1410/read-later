@@ -25,15 +25,17 @@ final class AppModel {
     private let speech: SpeechController
     private let packs: any CapabilityPacks
     private let telemetry: TelemetryHub
+    private let speedStore: SpeedStore
     private let lookup: PackLookupProvider
     private let store: ReadLaterStore.Store?
     private let recorder: ReadLaterStore.PositionRecorder?
-    init(packs: any CapabilityPacks, telemetry: TelemetryHub) {
+    init(packs: any CapabilityPacks, telemetry: TelemetryHub, speedStore: SpeedStore) {
         self.packs = packs
         self.telemetry = telemetry
-        self.lookup = PackLookupProvider(packs: packs)
+        self.speedStore = speedStore
+        self.lookup = PackLookupProvider(packs: packs, apple: AppleDictionaryLookup())
         self.speech = Self.makeSpeech(telemetry: telemetry)
-        self.store = Self.openStore()
+        self.store = Self.openStore(telemetry: telemetry)
         Self.seedIfRequested(store: self.store, telemetry: telemetry)
         self.recorder = self.store.map { ReadLaterStore.PositionRecorder(store: $0) }
         refreshLibrary()
@@ -59,11 +61,14 @@ final class AppModel {
 
     /// The resume store is best-effort: reading works without it, only the
     /// launch offer disappears.
-    private static func openStore() -> ReadLaterStore.Store? {
+    private static func openStore(telemetry: TelemetryHub) -> ReadLaterStore.Store? {
         guard let dir = storeDirectory else { return nil }
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         return try? ReadLaterStore.Store(
-            databaseURL: dir.appendingPathComponent("store.sqlite"), device: "apple-app")
+            databaseURL: dir.appendingPathComponent("store.sqlite"),
+            device: "apple-app",
+            telemetry: telemetry
+        )
     }
 
     /// Debug-only seeding for device latency runs (M2/M4 treatment). The
@@ -87,7 +92,8 @@ final class AppModel {
         session?.stop()
         try? store?.save(document: document)
         let next = ReaderSession(
-            document: document, speech: speech, lookupProvider: lookup, packs: packs, telemetry: telemetry)
+            document: document, speech: speech, lookupProvider: lookup, packs: packs,
+            telemetry: telemetry, speedStore: speedStore)
         next.onProgress = { [weak self] index, source in self?.recordPosition(index: index, source: source) }
         if let startWord { next.begin(at: startWord) }
         session = next
@@ -251,11 +257,17 @@ struct RootView: View {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    init(registry: PackRegistry, diagnostics: any DiagnosticsExporting, telemetry: TelemetryHub) {
+    init(
+        registry: PackRegistry,
+        speedStore: SpeedStore,
+        diagnostics: any DiagnosticsExporting,
+        telemetry: TelemetryHub
+    ) {
         self.registry = registry
         self.diagnostics = diagnostics
         self.telemetry = telemetry
-        _model = State(initialValue: AppModel(packs: registry, telemetry: telemetry))
+        _model = State(initialValue: AppModel(
+            packs: registry, telemetry: telemetry, speedStore: speedStore))
     }
 
     var body: some View {

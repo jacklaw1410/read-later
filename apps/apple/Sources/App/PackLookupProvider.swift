@@ -9,7 +9,7 @@ final class PackLookupProvider: LookupProvider {
     private let apple: AppleDictionaryLookup
     private let packs: any CapabilityPacks
 
-    init(packs: any CapabilityPacks, apple: AppleDictionaryLookup = AppleDictionaryLookup()) {
+    init(packs: any CapabilityPacks, apple: AppleDictionaryLookup) {
         self.packs = packs
         self.apple = apple
     }
