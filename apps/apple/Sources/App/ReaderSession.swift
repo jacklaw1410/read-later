@@ -16,7 +16,7 @@ import ReadLaterUI
 final class ReaderSession {
     let document: ReadLaterCore.Document
     let spoken: SpokenWordNumbering
-    /// Block roles and counts the reader draws each render. Built once here, with `spoken`.
+    /// Block roles and counts the reader draws each render. Built once per open by `ReaderSeed`.
     let blockRoles: BlockRoles
 
     let washState = WashState()
