@@ -3,8 +3,9 @@ import ReadLaterUI
 import XCTest
 @testable import ReadLater
 
-/// Lookup state in `ReaderSession`: replace-in-place, the playback snapshot,
-/// stale-result drop, the unknown network state. The persisted decline lives in `PackRegistry`.
+/// Lookup state in `LookupController`, reached through `ReaderSession`: replace-in-place,
+/// the playback snapshot, stale-result drop, and the network state that decides `.noNetwork`.
+/// The persisted decline lives in `PackRegistry`.
 @MainActor
 final class ReaderSessionLookupTests: XCTestCase {
     private var suiteName = ""
@@ -28,16 +29,16 @@ final class ReaderSessionLookupTests: XCTestCase {
         session.togglePlay()
         XCTAssertEqual(speech.state, .speaking)
 
-        session.tapped(blockID: 0, slot: nil, word: "zxqv")
-        await waitUntil { session.lookupState.card?.word == "zxqv" }
-        session.tapped(blockID: 0, slot: nil, word: "quux")
-        await waitUntil { session.lookupState.card?.word == "quux" }
+        session.lookup.tap(slot: nil, word: "zxqv")
+        await waitUntil { session.lookup.state.card?.word == "zxqv" }
+        session.lookup.tap(slot: nil, word: "quux")
+        await waitUntil { session.lookup.state.card?.word == "quux" }
 
-        XCTAssertEqual(session.lookupState.card?.word, "quux", "the second tap replaces the first card")
-        XCTAssertEqual(session.lookupState.card?.wasPlaying, true, "the second tap reuses the snapshot taken by the first")
+        XCTAssertEqual(session.lookup.state.card?.word, "quux", "the second tap replaces the first card")
+        XCTAssertEqual(session.lookup.state.card?.wasPlaying, true, "the second tap reuses the snapshot taken by the first")
         XCTAssertEqual(speech.state, .paused)
 
-        session.closeCard()
+        session.lookup.closeCard()
         XCTAssertEqual(speech.state, .speaking, "close restores playback that was live before the first tap")
     }
 
@@ -45,11 +46,11 @@ final class ReaderSessionLookupTests: XCTestCase {
         let speech = makeSpeech()
         let session = makeSession(speech: speech, lookup: FakeLookup())
 
-        session.tapped(blockID: 0, slot: nil, word: "zxqv")
-        await waitUntil { session.lookupState.card != nil }
-        XCTAssertEqual(session.lookupState.card?.wasPlaying, false)
+        session.lookup.tap(slot: nil, word: "zxqv")
+        await waitUntil { session.lookup.state.card != nil }
+        XCTAssertEqual(session.lookup.state.card?.wasPlaying, false)
 
-        session.closeCard()
+        session.lookup.closeCard()
         XCTAssertNotEqual(speech.state, .speaking, "close must not start a voice that was not live")
     }
 
@@ -61,19 +62,34 @@ final class ReaderSessionLookupTests: XCTestCase {
         lookup.delays["slow"] = .milliseconds(300)
         let session = makeSession(speech: makeSpeech(), lookup: lookup)
 
-        session.tapped(blockID: 0, slot: nil, word: "slow")
-        session.tapped(blockID: 0, slot: nil, word: "fast")
-        await waitUntil { session.lookupState.card?.word == "fast" }
+        session.lookup.tap(slot: nil, word: "slow")
+        session.lookup.tap(slot: nil, word: "fast")
+        await waitUntil { session.lookup.state.card?.word == "fast" }
 
         try? await Task.sleep(for: .milliseconds(500))
-        XCTAssertEqual(session.lookupState.card?.word, "fast", "the earlier slow result must not replace the newer card")
+        XCTAssertEqual(session.lookup.state.card?.word, "fast", "the earlier slow result must not replace the newer card")
     }
 
     // MARK: - Network state
 
-    func test_networkStateStartsOnline() {
-        let session = makeSession(speech: makeSpeech(), lookup: FakeLookup())
-        XCTAssertTrue(session.lookupState.isOnline, "the default state is online until a path callback says otherwise")
+    func test_unknownNetworkKeepsOrdinaryMiss() async {
+        let session = makeSession(speech: makeSpeech(), lookup: FakeLookup(), connectivity: Connectivity())
+
+        session.lookup.tap(slot: nil, word: "zxqv")
+        await waitUntil { session.lookup.state.card != nil }
+
+        XCTAssertEqual(missKind(session), .notInDictionary, "an unknown path is not called offline")
+    }
+
+    func test_offlineMissWithoutPackIsNoNetwork() async {
+        let session = makeSession(
+            speech: makeSpeech(), lookup: FakeLookup(), connectivity: Connectivity(status: .offline)
+        )
+
+        session.lookup.tap(slot: nil, word: "zxqv")
+        await waitUntil { session.lookup.state.card != nil }
+
+        XCTAssertEqual(missKind(session), .noNetwork)
     }
 
     // MARK: - Decline persistence
@@ -96,15 +112,25 @@ final class ReaderSessionLookupTests: XCTestCase {
         ScriptedSpeechController(millisecondsPerWord: 60_000)
     }
 
-    private func makeSession(speech: SpeechController, lookup: FakeLookup) -> ReaderSession {
+    private func makeSession(
+        speech: SpeechController,
+        lookup: FakeLookup,
+        connectivity: Connectivity? = nil
+    ) -> ReaderSession {
         ReaderSession(
             document: ArticleLibrary.demo,
             speech: speech,
             lookupProvider: lookup,
             packs: PackRegistry(defaults: defaults),
+            connectivity: connectivity ?? Connectivity(status: .online),
             telemetry: TelemetryHub(),
             speedStore: SpeedStore(defaults: defaults)
         )
+    }
+
+    private func missKind(_ session: ReaderSession) -> MissKind? {
+        if case let .miss(_, kind, _, _)? = session.lookup.state.card { return kind }
+        return nil
     }
 
     private func waitUntil(_ condition: () -> Bool) async {

@@ -24,12 +24,14 @@ final class AppModel {
 
     private let speech: SpeechController
     private let packs: any CapabilityPacks
+    private let connectivity: Connectivity
     private let telemetry: TelemetryHub
     private let lookup: PackLookupProvider
     private let store: ReadLaterStore.Store?
     private let recorder: ReadLaterStore.PositionRecorder?
-    init(packs: any CapabilityPacks, telemetry: TelemetryHub) {
+    init(packs: any CapabilityPacks, connectivity: Connectivity, telemetry: TelemetryHub) {
         self.packs = packs
+        self.connectivity = connectivity
         self.telemetry = telemetry
         self.lookup = PackLookupProvider(packs: packs)
         self.speech = Self.makeSpeech(telemetry: telemetry)
@@ -87,7 +89,13 @@ final class AppModel {
         session?.stop()
         try? store?.save(document: document)
         let next = ReaderSession(
-            document: document, speech: speech, lookupProvider: lookup, packs: packs, telemetry: telemetry)
+            document: document,
+            speech: speech,
+            lookupProvider: lookup,
+            packs: packs,
+            connectivity: connectivity,
+            telemetry: telemetry
+        )
         next.onProgress = { [weak self] index, source in self?.recordPosition(index: index, source: source) }
         if let startWord { next.begin(at: startWord) }
         session = next
@@ -244,6 +252,7 @@ final class AppModel {
 struct RootView: View {
     @State private var model: AppModel
     let registry: PackRegistry
+    let connectivity: Connectivity
     let diagnostics: any DiagnosticsExporting
     let telemetry: TelemetryHub
     @AppStorage(Appearance.storageKey) private var appearance = Appearance.system.rawValue
@@ -251,11 +260,17 @@ struct RootView: View {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    init(registry: PackRegistry, diagnostics: any DiagnosticsExporting, telemetry: TelemetryHub) {
+    init(
+        registry: PackRegistry,
+        connectivity: Connectivity,
+        diagnostics: any DiagnosticsExporting,
+        telemetry: TelemetryHub
+    ) {
         self.registry = registry
+        self.connectivity = connectivity
         self.diagnostics = diagnostics
         self.telemetry = telemetry
-        _model = State(initialValue: AppModel(packs: registry, telemetry: telemetry))
+        _model = State(initialValue: AppModel(packs: registry, connectivity: connectivity, telemetry: telemetry))
     }
 
     var body: some View {
@@ -263,7 +278,7 @@ struct RootView: View {
         Group {
             if let session = model.session {
                 ReaderScreen(
-                    session: session, registry: registry, telemetry: telemetry,
+                    session: session, registry: registry, connectivity: connectivity, telemetry: telemetry,
                     onExit: model.closeDocument)
                     .transition(.opacity)
                     // Escape closes card/note from any focus inside the
@@ -274,12 +289,12 @@ struct RootView: View {
                     // Same focus scope as before: every path out of the reader
                     // passes through here. No behavior change.
                     .onKeyPress(.escape) {
-                        if session.lookupState.card != nil {
-                            session.closeCard()
+                        if session.lookup.state.card != nil {
+                            session.lookup.closeCard()
                             return .handled
                         }
-                        if session.lookupState.note != nil {
-                            session.closeNote()
+                        if session.lookup.state.note != nil {
+                            session.lookup.closeNote()
                             return .handled
                         }
                         return .ignored
@@ -425,6 +440,7 @@ struct RootView: View {
 struct ReaderScreen: View {
     let session: ReaderSession
     let registry: any CapabilityPacks
+    let connectivity: Connectivity
     let telemetry: TelemetryHub
     let onExit: () -> Void
 
@@ -463,12 +479,13 @@ struct ReaderScreen: View {
             document: session.document,
             wash: session.washState,
             playback: session.playbackState,
+            selectedWordIndex: session.lookup.selectedWordIndex,
             spoken: session.spoken,
             autoScroll: session.playbackState.autoScroll && !session.playbackState.isScrubbing,
             isScrubbing: session.playbackState.isScrubbing,
             returnToken: returnToken,
-            onTapWord: { blockID, slot, word in
-                session.tapped(blockID: blockID, slot: slot, word: word)
+            onTapWord: { _, slot, word in
+                session.lookup.tap(slot: slot, word: word)
             },
             onTapNote: { session.openNote($0) },
             onHold: {
@@ -634,8 +651,8 @@ struct ReaderScreen: View {
 
     @ViewBuilder
     private var overlay: some View {
-        if let card = session.lookupState.card {
-            CardSheet(onDismiss: { session.closeCard() }) {
+        if let card = session.lookup.state.card {
+            CardSheet(onDismiss: { session.lookup.closeCard() }) {
                 Group {
                     switch card {
                     case let .hit(result, wordIndex, wasPlaying):
@@ -646,7 +663,7 @@ struct ReaderScreen: View {
                             wordIndex: wordIndex,
                             isCurrentWashWord: wordIndex != nil && wordIndex == session.washState.wordIndex,
                             onPronounce: { session.pronounce(result.word) },
-                            onClose: { session.closeCard() }
+                            onClose: { session.lookup.closeCard() }
                         )
                     case let .miss(word, kind, wordIndex, wasPlaying):
                         MissCard(
@@ -654,21 +671,21 @@ struct ReaderScreen: View {
                             word: word,
                             kind: kind,
                             packInstalled: registry.isInstalled,
-                            isOnline: session.lookupState.isOnline,
+                            isOnline: connectivity.status != .offline,
                             offerDeclined: registry.offerDeclined,
                             isInstalling: registry.isInstalling,
                             wasPlayingBeforeLookup: wasPlaying,
                             wordIndex: wordIndex,
                             onPronounce: { session.pronounce(word) },
-                            onInstall: { Task { await session.installPack() } },
-                            onNotNow: { session.declineOffer() },
-                            onClose: { session.closeCard() },
+                            onInstall: { Task { await session.lookup.installPack() } },
+                            onNotNow: { session.lookup.declineOffer() },
+                            onClose: { session.lookup.closeCard() },
                             onSearchWeb: {
                                 let query = word.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? word
                                 if let url = URL(string: "https://duckduckgo.com/?q=\(query)") {
                                     openURL(url)
                                 }
-                                session.closeCard()
+                                session.lookup.closeCard()
                             }
                         )
                     }
@@ -678,24 +695,24 @@ struct ReaderScreen: View {
                 // previous card's state and never logs `card.shown`.
                 .id(card.id)
             }
-            .animation(reduceMotion ? nil : ThemeMotion.sheet, value: session.lookupState.card == nil)
+            .animation(reduceMotion ? nil : ThemeMotion.sheet, value: session.lookup.state.card == nil)
             .zIndex(2)
         }
 
-        if let note = session.lookupState.note, session.document.noteBlocks.indices.contains(note.index) {
+        if let note = session.lookup.state.note, session.document.noteBlocks.indices.contains(note.index) {
             let block = session.document.noteBlocks[note.index]
             ZStack {
                 Theme.scrim
                     .ignoresSafeArea()
-                    .onTapGesture { session.closeNote() }
+                    .onTapGesture { session.lookup.closeNote() }
                 VStack {
                     Spacer(minLength: 0)
                     FootnoteOverlay(
                         marker: "¹",
                         text: block.text,
                         pauseLine: note.wasPlaying ? "Audio paused · resumes on close" : "Audio was already paused · stays paused",
-                        onTapWord: { word in session.tapped(blockID: block.id, slot: nil, word: word) },
-                        onClose: { session.closeNote() }
+                        onTapWord: { word in session.lookup.tap(slot: nil, word: word) },
+                        onClose: { session.lookup.closeNote() }
                     )
                     .padding(.horizontal, 12)
                     .padding(.bottom, 58)

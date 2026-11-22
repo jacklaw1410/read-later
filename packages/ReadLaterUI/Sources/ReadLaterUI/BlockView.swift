@@ -21,6 +21,7 @@ public struct BlockView: View {
     private let block: ReadLaterCore.Block
     private let wash: WashState
     private let playback: PlaybackState
+    private let selectedWordIndex: Int?
     private let spoken: SpokenWordNumbering
     private let footnote: FootnoteAttachment?
     private let followsWash: Bool
@@ -31,6 +32,7 @@ public struct BlockView: View {
         block: ReadLaterCore.Block,
         wash: WashState,
         playback: PlaybackState,
+        selectedWordIndex: Int? = nil,
         spoken: SpokenWordNumbering,
         footnote: FootnoteAttachment? = nil,
         followsWash: Bool = false,
@@ -40,6 +42,7 @@ public struct BlockView: View {
         self.block = block
         self.wash = wash
         self.playback = playback
+        self.selectedWordIndex = selectedWordIndex
         self.spoken = spoken
         self.footnote = footnote
         self.followsWash = followsWash
@@ -103,6 +106,7 @@ public struct BlockView: View {
             slots: spokenSlots,
             wash: wash,
             playback: playback,
+            selectedWordIndex: selectedWordIndex,
             marker: footnote?.marker,
             followsWash: followsWash
         ) { slot, word in
@@ -118,6 +122,7 @@ public struct BlockView: View {
             slots: spokenSlots,
             wash: wash,
             playback: playback,
+            selectedWordIndex: selectedWordIndex,
             style: .heading,
             marker: footnote?.marker,
             followsWash: followsWash
@@ -138,6 +143,7 @@ public struct BlockView: View {
                 slots: spokenSlots,
                 wash: wash,
                 playback: playback,
+                selectedWordIndex: selectedWordIndex,
                 marker: footnote?.marker
             ) { slot, word in
                 tap(slot, word)

@@ -8,6 +8,7 @@ public struct ReaderView<Player: View, Overlay: View>: View {
     private let document: ReadLaterCore.Document
     private let wash: WashState
     private let playback: PlaybackState
+    private let selectedWordIndex: Int?
     private let spoken: SpokenWordNumbering
     private let autoScroll: Bool
     private let isScrubbing: Bool
@@ -35,6 +36,7 @@ public struct ReaderView<Player: View, Overlay: View>: View {
         document: ReadLaterCore.Document,
         wash: WashState,
         playback: PlaybackState,
+        selectedWordIndex: Int? = nil,
         spoken: SpokenWordNumbering,
         autoScroll: Bool,
         isScrubbing: Bool = false,
@@ -49,6 +51,7 @@ public struct ReaderView<Player: View, Overlay: View>: View {
         self.document = document
         self.wash = wash
         self.playback = playback
+        self.selectedWordIndex = selectedWordIndex
         self.spoken = spoken
         self.autoScroll = autoScroll
         self.isScrubbing = isScrubbing
@@ -126,6 +129,7 @@ public struct ReaderView<Player: View, Overlay: View>: View {
                                     block: block,
                                     wash: wash,
                                     playback: playback,
+                                    selectedWordIndex: selectedWordIndex,
                                     spoken: spoken,
                                     footnote: footnoteAttachments[block.id],
                                     followsWash: autoScroll && holdsWash(block.id),
