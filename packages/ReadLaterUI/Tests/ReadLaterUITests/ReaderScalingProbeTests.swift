@@ -36,31 +36,20 @@ final class ReaderScalingProbeTests: XCTestCase {
             "os": ProcessInfo.processInfo.operatingSystemVersionString,
         ])
 
-        var articles = syntheticArticles()
+        var articles = Self.syntheticArticles()
         if let dir = ProcessInfo.processInfo.environment["READER_PROBE_FIXTURES"] {
-            articles += try fixtures(in: URL(fileURLWithPath: dir, isDirectory: true), oplog: oplog)
+            articles += try Self.fixtures(in: URL(fileURLWithPath: dir, isDirectory: true), oplog: oplog)
         }
 
         for entry in articles {
             let document = entry.document
             let spoken = SpokenWordNumbering(plan: document.plan)
-            let rows = document.bodyBlocks.filter { $0.kind != .footnoteMarker }.count
+            let rows = document.bodyBlocks.filter { $0.kind != ReadLaterCore.BlockKind.footnoteMarker }.count
             var checks: [String: Int] = [:]
             for name in Self.arms {
                 let timing = Self.timed { Self.run(name, document, spoken) }
                 checks[name] = timing.check
-                oplog.record("probe.sample", fields: [
-                    "corpus": entry.corpus,
-                    "article": entry.label,
-                    "component": name,
-                    "blocks": String(document.readingOrder.count),
-                    "rows": String(rows),
-                    "words": String(spoken.totalWords),
-                    "notes": String(document.noteBlocks.count),
-                    "ms": String(format: "%.6f", timing.ms),
-                    "iters": String(timing.iterations),
-                    "checksum": String(timing.check),
-                ])
+                Self.record(oplog, entry: entry, component: name, rows: rows, words: spoken.totalWords, timing: timing)
             }
             XCTAssertEqual(checks["footnote.rowwise"], checks["footnote.once"],
                            "footnote arms disagree on \(entry.label)")
@@ -77,7 +66,7 @@ final class ReaderScalingProbeTests: XCTestCase {
             perCall.append(Double(end - start) / 1_000_000 / 2000)
         }
         perCall.sort()
-        oplog.record("probe.sample", fields: [
+        let microFields: [String: String] = [
             "corpus": "micro",
             "article": "record",
             "component": "telemetry.record",
@@ -88,11 +77,28 @@ final class ReaderScalingProbeTests: XCTestCase {
             "ms": String(format: "%.6f", perCall[perCall.count / 2]),
             "iters": "2000",
             "checksum": "0",
-        ])
+        ]
+        oplog.record("probe.sample", fields: microFields)
         oplog.flushNow()
     }
 
     // MARK: - Arms
+
+    private static func record(_ oplog: TelemetryOplog, entry: Entry, component: String, rows: Int, words: Int, timing: Timing) {
+        let fields: [String: String] = [
+            "corpus": entry.corpus,
+            "article": entry.label,
+            "component": component,
+            "blocks": String(entry.document.readingOrder.count),
+            "rows": String(rows),
+            "words": String(words),
+            "notes": String(entry.document.noteBlocks.count),
+            "ms": String(format: "%.6f", timing.ms),
+            "iters": String(timing.iterations),
+            "checksum": String(timing.check),
+        ]
+        oplog.record("probe.sample", fields: fields)
+    }
 
     private struct Entry {
         let corpus: String
