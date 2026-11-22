@@ -17,6 +17,7 @@ const TOTAL_PARTS: [&str; 5] = ["extract", "plan", "sha256", "save", "seed"];
 
 #[derive(Default)]
 struct Article {
+    label: String,
     sweep: String,
     source: String,
     blocks: f64,
@@ -60,6 +61,7 @@ fn group(log: &Log) -> BTreeMap<String, Article> {
     let mut articles: BTreeMap<String, Article> = BTreeMap::new();
     for Sample { sweep, source, article, arm, blocks, words, wpb, ms, .. } in &log.samples {
         let entry = articles.entry(article.clone()).or_default();
+        entry.label = article.clone();
         entry.sweep = sweep.clone();
         entry.source = source.clone();
         entry.blocks = *blocks;
@@ -162,6 +164,27 @@ fn run(args: Args) -> Result<(), String> {
     }
     println!();
 
+    println!("Real pages by stage: ms = a + b·words");
+    println!("{:<12} {:>12} {:>14} {:>8} {:>6}", "metric", "a (ms)", "b (ms/word)", "R²", "n");
+    for metric in ARMS.iter().copied().chain(["total"]) {
+        let pts = points(&articles, |a| a.source == "file", |a| a.words, metric);
+        match linear(&pts) {
+            Some(f) => println!("{:<12} {:>12.4} {:>14.6} {:>8.3} {:>6}", metric, f.coef[0], f.coef[1], f.r2, pts.len()),
+            None => println!("{metric:<12} not enough points"),
+        }
+    }
+    println!();
+
+    let mut smallest: Vec<&Article> = articles.values().filter(|a| a.source == "file").collect();
+    smallest.sort_by(|a, b| a.words.partial_cmp(&b.words).unwrap_or(std::cmp::Ordering::Equal));
+    println!("Smallest real pages, ms per stage (by words):");
+    println!("{:<28} {:>7} {:>7} {:>9} {:>9} {:>9} {:>9} {:>9} {:>9}", "article", "words", "blocks", "extract", "plan", "sha256", "save", "seed", "total");
+    for a in smallest.iter().take(15) {
+        let cell = |m: &str| a.arms.get(m).map_or("-".to_string(), |v| format!("{v:.3}"));
+        println!("{:<28} {:>7.0} {:>7.0} {:>9} {:>9} {:>9} {:>9} {:>9} {:>9}", a.label, a.words, a.blocks, cell("extract"), cell("plan"), cell("sha256"), cell("save"), cell("seed"), cell("total"));
+    }
+    println!();
+
     let mut ratios_extract = Vec::new();
     let mut ratios_plan = Vec::new();
     let mut by_article: BTreeMap<String, Vec<oplog::Split>> = BTreeMap::new();
@@ -215,4 +238,11 @@ fn main() -> ExitCode {
             ExitCode::FAILURE
         }
     }
+}
+
+fn linear(points: &[(f64, f64)]) -> Option<fit::Ols> {
+    let ones = vec![1.0; points.len()];
+    let xs: Vec<f64> = points.iter().map(|p| p.0).collect();
+    let ys: Vec<f64> = points.iter().map(|p| p.1).collect();
+    fit::ols(&[ones, xs], &ys)
 }
