@@ -100,7 +100,7 @@ public struct MissCard: View {
             if showsOffer {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(CardCopy.offerTitle)
-                        .font(Theme.offerTitle())
+                        .font(Theme.player().weight(.semibold))
                         .foregroundStyle(Theme.ink)
                     Text(CardCopy.offerMeta)
                         .font(Theme.caption())

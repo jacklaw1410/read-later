@@ -28,6 +28,8 @@ final class ReaderSession {
     private let lookupProvider: any LookupProvider
     private let packs: any CapabilityPacks
     private let speedStore: SpeedStore
+    /// Tracks reachability so a miss while offline is reported as `.noNetwork`
+    /// instead of pretending the word is unknown. Updated on the main queue.
     @ObservationIgnored private let pathMonitor = NWPathMonitor()
     /// Whether the voice was live when the current lookup session began. Nil when
     /// no lookup is open. Set once per session; every tap in the session reuses it.

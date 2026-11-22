@@ -154,10 +154,6 @@ public extension Theme {
     static func gloss() -> Font { .system(size: 17, weight: .regular, design: .default) }
     static let glossSize: CGFloat = 17
 
-    /// `offerTitle`. Offer title on the miss card.
-    static func offerTitle() -> Font { .system(size: 15, weight: .semibold, design: .default) }
-    static let offerTitleSize: CGFloat = 15
-
     /// `chip`. Skip chip label. Tracking is in em, so it scales with the size.
     static func chip() -> Font { .system(size: 10, weight: .bold, design: .monospaced) }
     static let chipSize: CGFloat = 10
