@@ -1,0 +1,9 @@
+[package]
+name = "readlater-readerscale"
+version = "0.1.0"
+edition = "2024"
+publish = false
+description = "Fit the Reader scaling probe: per-render cost against word and block counts, read from the oplog."
+
+[dependencies]
+serde_json = "1"
