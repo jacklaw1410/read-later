@@ -121,6 +121,32 @@ public struct BlockRoles: Sendable {
     }
 }
 
+// MARK: - Reader seed
+
+/// What a reader session starts from for one document: the spoken word order,
+/// the block roles, and the word to start at. Built once per open, from the
+/// stored plan and the saved word index.
+public struct ReaderSeed: Sendable {
+    public let document: Document
+    public let spoken: SpokenWordNumbering
+    public let blockRoles: BlockRoles
+    /// Word to start at, clamped to the spoken words. Nil when there is no
+    /// saved place or no spoken word, so the wash stays empty.
+    public let startWord: Int?
+
+    public init(document: Document, savedWordIndex: Int?) {
+        let spoken = SpokenWordNumbering(plan: document.plan)
+        self.document = document
+        self.spoken = spoken
+        self.blockRoles = BlockRoles(document: document)
+        if let saved = savedWordIndex, spoken.totalWords > 0 {
+            self.startWord = min(max(saved, 0), spoken.totalWords - 1)
+        } else {
+            self.startWord = nil
+        }
+    }
+}
+
 // MARK: - Reader metrics
 
 /// The reader's line and type measurements, taken from the prototype so the

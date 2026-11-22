@@ -115,6 +115,33 @@ final class ReaderSurfaceTests: XCTestCase {
         XCTAssertEqual(blockRoles.skippedRegionCount, doc.skippedRegionCount)
     }
 
+    // MARK: - Reader seed
+
+    func testSeedWithoutSavedPlaceHasNoStartWord() {
+        let doc = document(blocks: [proseBlock(id: 1, text: "Hello world.")])
+        XCTAssertNil(ReaderSeed(document: doc, savedWordIndex: nil).startWord)
+    }
+
+    func testSeedKeepsSavedWordInRange() {
+        let doc = document(blocks: [proseBlock(id: 1, text: "One two three.")])
+        XCTAssertEqual(ReaderSeed(document: doc, savedWordIndex: 1).startWord, 1)
+    }
+
+    func testSeedClampsSavedWordToLastSpokenWord() {
+        let doc = document(blocks: [proseBlock(id: 1, text: "One two three.")])
+        XCTAssertEqual(ReaderSeed(document: doc, savedWordIndex: 99).startWord, 2)
+    }
+
+    func testSeedClampsNegativeSavedWordToZero() {
+        let doc = document(blocks: [proseBlock(id: 1, text: "One two three.")])
+        XCTAssertEqual(ReaderSeed(document: doc, savedWordIndex: -4).startWord, 0)
+    }
+
+    func testSeedWithoutSpokenWordsHasNoStartWord() {
+        let doc = document(blocks: [skippedBlock(id: 1, kind: .code, text: "let x = 1")])
+        XCTAssertNil(ReaderSeed(document: doc, savedWordIndex: 3).startWord)
+    }
+
     // MARK: - Spoken word numbering gaps
 
     func testCodeBlockHasNoSpokenEntryAndGapTapReturnsNil() {

@@ -91,11 +91,11 @@ final class AppModel {
         flushPosition()
         session?.stop()
         try? store?.save(document: document)
+        let seed = ReaderSeed(document: document, savedWordIndex: startWord)
         let next = ReaderSession(
-            document: document, speech: speech, lookupProvider: lookup, packs: packs,
+            seed: seed, speech: speech, lookupProvider: lookup, packs: packs,
             telemetry: telemetry, speedStore: speedStore)
         next.onProgress = { [weak self] index, source in self?.recordPosition(index: index, source: source) }
-        if let startWord { next.begin(at: startWord) }
         session = next
         next.warmUp()
         refreshLibrary()
@@ -121,8 +121,7 @@ final class AppModel {
               let saved = try? store.latestUnfinishedPosition(),
               let document = try? store.document(id: saved.documentID)
         else { return }
-        let total = SpokenWordNumbering(plan: document.plan).totalWords
-        open(document, startWord: min(saved.wordIndex, max(total - 1, 0)))
+        open(document, startWord: saved.wordIndex)
     }
 
     // MARK: - Library
@@ -211,8 +210,7 @@ final class AppModel {
     }
 
     private func openAtPlace(_ document: ReadLaterCore.Document, row: ReadingPosition) {
-        let total = SpokenWordNumbering(plan: document.plan).totalWords
-        open(document, startWord: min(row.wordIndex, max(total - 1, 0)))
+        open(document, startWord: row.wordIndex)
     }
 
     private func refetchAndOpen(_ row: ReadingPosition, url: URL) async -> Bool {
