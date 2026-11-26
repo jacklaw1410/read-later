@@ -36,7 +36,9 @@ public enum LibraryCopy {
     /// the title only.
     public static func placeLine(wordIndex: Int, totalWords: Int) -> String {
         guard totalWords > 0 else { return "" }
-        return "word \(max(min(wordIndex + 1, totalWords), 1)) of \(totalWords)"
+        // Clamp before adding one: a huge index overflows `wordIndex + 1`
+        // in checked builds and wraps in unchecked ones.
+        return "word \(max(min(wordIndex, totalWords - 1) + 1, 1)) of \(totalWords)"
     }
 
     /// The link the entry screen starts with: the sample once, then empty, so

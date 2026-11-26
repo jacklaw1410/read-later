@@ -12,6 +12,8 @@ import Foundation
 @Test func placeLineClampsToTheArticleLength() {
     #expect(LibraryCopy.placeLine(wordIndex: 999, totalWords: 300) == "word 300 of 300")
     #expect(LibraryCopy.placeLine(wordIndex: -3, totalWords: 300) == "word 1 of 300")
+    // Clamp before +1: Int.max would overflow in the old order.
+    #expect(LibraryCopy.placeLine(wordIndex: Int.max, totalWords: 300) == "word 300 of 300")
 }
 
 @Test func placeLineIsEmptyWithoutALength() {
