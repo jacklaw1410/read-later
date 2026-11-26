@@ -104,7 +104,16 @@ public final class TelemetryOplog: @unchecked Sendable {
 
     private let lock = NSLock()
     private let writeLock = NSLock()
+    private let encoderLock = NSLock()
     private let queue = DispatchQueue(label: "app.readlater.telemetry-oplog", qos: .utility)
+
+    /// Created once per log, not once per event. `record` uses it under
+    /// `encoderLock`, so concurrent callers share one safe encoder.
+    private let encoder = JSONEncoder()
+    /// UTC, with fractional seconds, and no trailing `Z`. The trailing `Z`
+    /// may be absent; parsers must not require it.
+    private let isoStyle: Date.ISO8601FormatStyle =
+        .iso8601.year().month().day().time(includingFractionalSeconds: true)
 
     private var pending: [String] = []
     private var deadline: TimeInterval?
@@ -170,17 +179,17 @@ public final class TelemetryOplog: @unchecked Sendable {
     public func record(_ name: String, fields: [String: String] = [:]) {
         let event = TelemetryEvent(
             t: clock() - originUptime,
-            iso: Self.isoString(wall()),
+            iso: isoStyle.format(wall()),
             session: sessionID,
             event: name,
             fields: fields
         )
-        let line: String = {
-            guard let data = try? JSONEncoder().encode(event),
+        let line: String = encoderLock.withLock {
+            guard let data = try? encoder.encode(event),
                   let text = String(data: data, encoding: .utf8)
             else { return "" }
             return text
-        }()
+        }
         lock.withLock {
             if !line.isEmpty { pending.append(line) }
             ring.append(event)
@@ -314,11 +323,5 @@ public final class TelemetryOplog: @unchecked Sendable {
         } else {
             try? manager.removeItem(at: current)
         }
-    }
-
-    private static func isoString(_ date: Date) -> String {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        return formatter.string(from: date)
     }
 }
