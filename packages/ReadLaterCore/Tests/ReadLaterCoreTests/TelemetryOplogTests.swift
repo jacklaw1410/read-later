@@ -50,6 +50,15 @@ private func allEvents(_ log: TelemetryOplog) throws -> [TelemetryEvent] {
     try log.logFiles().reversed().flatMap { try readLines($0) }
 }
 
+/// Fractional milliseconds from either stamp shape, with or without a `Z`.
+private func fractionMillis(_ iso: String) -> Int? {
+    let core = iso.hasSuffix("Z") ? String(iso.dropLast()) : iso
+    guard let fraction = core.split(separator: ".").last,
+          fraction.count == 3, let value = Int(fraction)
+    else { return nil }
+    return value
+}
+
 @Suite("Telemetry oplog")
 struct TelemetryOplogTests {
     @Test("Append then flush keeps order, session and fields")
@@ -168,6 +177,46 @@ struct TelemetryOplogTests {
         hub.record(TelemetryName.firstWord)
         #expect(!hub.hasActiveRun)
         #expect(hub.oplog.tail(3).map(\.event) == ["T0.tap", "T1.fetchStart", "T7.firstWord"])
+    }
+
+    @Test("A fixed date records the ISO8601 style output")
+    func fixedDateISOStyle() throws {
+        let date = Date(timeIntervalSince1970: 1_700_000_000.123)
+        let fake = FakeClock(today: date)
+        let (log, _) = makeLog(fake)
+        log.record("fixed-date")
+        log.flushNow()
+        let event = try #require(try allEvents(log).first)
+
+        let expected = Date.ISO8601FormatStyle.iso8601
+            .year().month().day().time(includingFractionalSeconds: true)
+            .format(date)
+        // On Swift 6.4.2 this is "2023-11-14T22:13:20.122" — no trailing Z.
+        // The old formatter writes "2023-11-14T22:13:20.123Z": fractional
+        // milliseconds differ by at most 1 ms, and the trailing Z can be absent.
+        #expect(event.iso == expected)
+
+        let old = ISO8601DateFormatter()
+        old.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        let legacy = old.string(from: date)
+        #expect(String(event.iso.prefix(19)) == String(legacy.prefix(19)))
+        let newMillis = try #require(fractionMillis(event.iso))
+        let oldMillis = try #require(fractionMillis(legacy))
+        #expect(abs(newMillis - oldMillis) <= 1)
+    }
+
+    @Test("Monotonic t keeps sub-millisecond precision through encoding")
+    func monotonicPrecision() throws {
+        let fake = FakeClock(start: 1_000.000000123)
+        let (log, _) = makeLog(fake)
+        let expected = fake.now - 1_000
+        log.record("precise")
+        log.flushNow()
+        let events = try allEvents(log)
+        #expect(events.count == 1)
+        #expect(events[0].t == expected)
+        #expect(events[0].t > 0)
+        #expect(events[0].t < 0.001)
     }
 
     @Test("A second tap supersedes a dangling run")
