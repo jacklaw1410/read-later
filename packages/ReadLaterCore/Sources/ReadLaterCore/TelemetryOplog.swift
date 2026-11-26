@@ -86,8 +86,8 @@ public enum TelemetryName {
     public static let frameScrubWindow = "frame.scrubWindow"
 }
 
-/// Append-only JSONL event log. The app writes it; the analyst takes it off
-/// the device. No analytics SDK, no network: local files only.
+/// Append-only JSONL measurement log. The app writes it; the analyst takes it
+/// off the device. No analytics SDK, no network: local files only.
 ///
 /// Threading: `record` never throws and never blocks the caller. It appends
 /// to a bounded in-memory buffer under a lock and schedules a write on a
@@ -95,17 +95,22 @@ public enum TelemetryName {
 ///
 /// Unchecked Sendable by design: every mutable field is guarded by `lock`
 /// (buffer, ring, schedule) or `writeLock` (file writes).
-public final class TelemetryOplog: @unchecked Sendable {
-    public static let defaultFileName = "oplog.jsonl"
+public final class TelemetryLog: @unchecked Sendable {
+    public static let defaultFileName = "telemetry.jsonl"
+    /// Files from older builds. Read for exports, never written again.
+    public static let legacyFileName = "oplog.jsonl"
     public static let defaultMaxBytes = 1_048_576
     public static let defaultMaxFiles = 5
     public static let defaultRingCapacity = 200
     public static let defaultFlushDelay: TimeInterval = 1.0
 
+    private static let stem = "telemetry"
+    private static let legacyStem = "oplog"
+
     private let lock = NSLock()
     private let writeLock = NSLock()
     private let encoderLock = NSLock()
-    private let queue = DispatchQueue(label: "app.readlater.telemetry-oplog", qos: .utility)
+    private let queue = DispatchQueue(label: "app.readlater.telemetry", qos: .utility)
 
     /// Created once per log, not once per event. `record` uses it under
     /// `encoderLock`, so concurrent callers share one safe encoder.
@@ -131,7 +136,7 @@ public final class TelemetryOplog: @unchecked Sendable {
     private let originUptime: TimeInterval
 
     /// - Parameters:
-    ///   - directory: Where `oplog.jsonl` lives. Nil keeps everything in
+    ///   - directory: Where `telemetry.jsonl` lives. Nil keeps everything in
     ///     memory (ring only); the app sets the real directory at launch.
     ///   - clock: Monotonic seconds (uptime basis). Injected in tests.
     ///   - wall: Wall-clock date. Injected in tests.
@@ -159,10 +164,10 @@ public final class TelemetryOplog: @unchecked Sendable {
 
     public var session: String { sessionID }
 
-    /// The stock location: `Application Support/Oplog/`.
+    /// The stock location: `Application Support/Telemetry/`.
     public static func defaultDirectory() -> URL? {
         FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
-            .appendingPathComponent("Oplog", isDirectory: true)
+            .appendingPathComponent("Telemetry", isDirectory: true)
     }
 
     /// Sets the directory after init. The app calls this at launch; until
@@ -243,14 +248,17 @@ public final class TelemetryOplog: @unchecked Sendable {
     }
 
     /// Log files on disk, current first. Empty when memory-only.
+    /// Legacy `oplog*.jsonl` files are included so exports still see them.
     public func logFiles() -> [URL] {
         guard let dir = lock.withLock({ directory }) else { return [] }
         var out: [URL] = []
-        let current = dir.appendingPathComponent(Self.defaultFileName)
-        if FileManager.default.fileExists(atPath: current.path) { out.append(current) }
-        for i in 1 ..< maxFiles {
-            let url = dir.appendingPathComponent("oplog.\(i).jsonl")
-            if FileManager.default.fileExists(atPath: url.path) { out.append(url) }
+        for stem in [Self.stem, Self.legacyStem] {
+            let current = dir.appendingPathComponent(Self.fileName(stem: stem))
+            if FileManager.default.fileExists(atPath: current.path) { out.append(current) }
+            for i in 1 ..< maxFiles {
+                let url = dir.appendingPathComponent(Self.fileName(stem: stem, index: i))
+                if FileManager.default.fileExists(atPath: url.path) { out.append(url) }
+            }
         }
         return out
     }
@@ -303,25 +311,34 @@ public final class TelemetryOplog: @unchecked Sendable {
     }
 
     /// Rotates before a write that would pass the cap. Keeps the newest
-    /// `maxFiles` files: `oplog.jsonl` plus `oplog.1.jsonl` (newest
-    /// rotated) through `oplog.(maxFiles-1).jsonl`.
+    /// `maxFiles` files: `telemetry.jsonl` plus `telemetry.1.jsonl` (newest
+    /// rotated) through `telemetry.(maxFiles-1).jsonl`.
     private func rotateIfNeeded(current: URL, incomingBytes: Int) {
         let manager = FileManager.default
         let size = (try? manager.attributesOfItem(atPath: current.path)[.size] as? Int) ?? 0
         guard size + incomingBytes > maxBytes else { return }
         guard let dir = lock.withLock({ directory }) else { return }
         for i in stride(from: maxFiles - 1, through: 2, by: -1) {
-            let older = dir.appendingPathComponent("oplog.\(i - 1).jsonl")
-            let newer = dir.appendingPathComponent("oplog.\(i).jsonl")
+            let older = dir.appendingPathComponent(Self.fileName(stem: Self.stem, index: i - 1))
+            let newer = dir.appendingPathComponent(Self.fileName(stem: Self.stem, index: i))
             try? manager.removeItem(at: newer)
             if manager.fileExists(atPath: older.path) { try? manager.moveItem(at: older, to: newer) }
         }
         if maxFiles > 1 {
-            let first = dir.appendingPathComponent("oplog.1.jsonl")
+            let first = dir.appendingPathComponent(Self.fileName(stem: Self.stem, index: 1))
             try? manager.removeItem(at: first)
             if manager.fileExists(atPath: current.path) { try? manager.moveItem(at: current, to: first) }
         } else {
             try? manager.removeItem(at: current)
         }
     }
+
+    private static func fileName(stem: String, index: Int? = nil) -> String {
+        let base = index.map { "\(stem).\($0)" } ?? stem
+        return "\(base).jsonl"
+    }
 }
+
+/// Compatibility name for the measurement log. New code uses `TelemetryLog`.
+/// Oplog names the separate sync log and must not be used for telemetry.
+public typealias TelemetryOplog = TelemetryLog

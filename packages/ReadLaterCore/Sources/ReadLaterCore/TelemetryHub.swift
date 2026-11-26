@@ -169,12 +169,12 @@ final class SignpostEmitter: @unchecked Sendable {
 /// launch with the real directory; until then `record` fills the ring and
 /// drops nothing the ring can hold. Tests build their own instances.
 ///
-/// Unchecked Sendable by design: the oplog owns its locks, the emitter owns
-/// its, and the observer list is append-once at init.
+/// Unchecked Sendable by design: the telemetry log owns its locks, the emitter
+/// owns its, and the observer list is append-once at init.
 public final class TelemetryHub: @unchecked Sendable {
     public static let shared = TelemetryHub()
 
-    public let oplog: TelemetryOplog
+    public let oplog: TelemetryLog
     private let emitter = SignpostEmitter()
     private var observers: [NSObjectProtocol] = []
     private let observerLock = NSLock()
@@ -186,7 +186,7 @@ public final class TelemetryHub: @unchecked Sendable {
         wall: @escaping @Sendable () -> Date = Date.init,
         originUptime: TimeInterval? = nil
     ) {
-        oplog = TelemetryOplog(
+        oplog = TelemetryLog(
             directory: directory, sessionID: sessionID, clock: clock, wall: wall,
             originUptime: originUptime
         )
@@ -209,9 +209,9 @@ public final class TelemetryHub: @unchecked Sendable {
         for token in tokens { NotificationCenter.default.removeObserver(token) }
     }
 
-    /// Points the oplog at `Application Support/Oplog/`. Called once at app
-    /// launch, before the first record.
-    public func configure(directory: URL? = TelemetryOplog.defaultDirectory()) {
+    /// Points the telemetry log at `Application Support/Telemetry/`. Called
+    /// once at app launch, before the first record.
+    public func configure(directory: URL? = TelemetryLog.defaultDirectory()) {
         oplog.setDirectory(directory)
     }
 

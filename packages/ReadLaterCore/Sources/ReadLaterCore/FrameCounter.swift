@@ -68,7 +68,7 @@ public struct FrameWindowSummary: Sendable, Hashable {
         self.longestGap = longestGap
     }
 
-    /// Oplog-ready fields. Times in milliseconds; `extra` overrides nothing,
+    /// Telemetry-ready fields. Times in milliseconds; `extra` overrides nothing,
     /// it only adds caller keys such as the tap-to-state gap.
     public func fields(extra: [String: String] = [:]) -> [String: String] {
         var out = extra
