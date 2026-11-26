@@ -89,6 +89,23 @@ struct TelemetryOplogTests {
         #expect(events.allSatisfy { !$0.iso.isEmpty })
     }
 
+    @Test("New files use the telemetry name and legacy files stay readable")
+    func newAndLegacyFileNames() throws {
+        let fake = FakeClock()
+        let (log, dir) = makeLog(fake)
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        let old = dir.appendingPathComponent(TelemetryLog.legacyFileName)
+        let legacyLine = #"{"t":1,"iso":"2023-11-14T22:13:20.000Z","session":"test-session","event":"old","fields":{}}"# + "\n"
+        try legacyLine.write(to: old, atomically: true, encoding: .utf8)
+        log.record("new")
+        log.flushNow()
+        #expect(TelemetryLog.defaultFileName == "telemetry.jsonl")
+        #expect(log.logFiles().map(\.lastPathComponent) == [
+            TelemetryLog.defaultFileName, TelemetryLog.legacyFileName,
+        ])
+        #expect(try allEvents(log).map(\.event) == ["old", "new"])
+    }
+
     @Test("Rotation keeps the newest files and the latest event")
     func rotationKeepsNewest() throws {
         let fake = FakeClock()

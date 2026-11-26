@@ -6,14 +6,14 @@ import Darwin
 #endif
 
 /// One action that produces a folder the analyst can take off the device:
-/// the oplog files plus a `summary.json` describing the build.
+/// the telemetry files plus a `summary.json` describing the build.
 ///
-/// The files come from `Application Support/Oplog/` inside the app
+/// The files come from `Application Support/Telemetry/` inside the app
 /// container. The same folder is reachable without the UI (see
 /// `pullCommand`, shown in the Diagnostics screen and the app README).
 enum DiagnosticsExport {
-    /// Diagnostics is a developer surface: internal paths, oplog payloads and
-    /// a pull command. A release build hides it. The oplog itself keeps
+    /// Diagnostics is a developer surface: internal paths, telemetry payloads
+    /// and a pull command. A release build hides it. The telemetry log keeps
     /// recording, so a pulled folder still answers the device plan.
     static var isEnabled: Bool {
         #if DEBUG
@@ -39,7 +39,7 @@ enum DiagnosticsExport {
         var oplogFiles: [String]
     }
 
-    /// Flushes the oplog, copies every log file plus `summary.json` into a
+    /// Flushes the telemetry log, copies every log file plus `summary.json` into a
     /// fresh folder in the temporary directory, and returns that folder.
     /// Throws only here, at the reader's explicit request — never on the
     /// reader path.
@@ -113,12 +113,13 @@ enum DiagnosticsExport {
         )
     }
 
-    /// The `devicectl` command that pulls the same Oplog folder without the
-    /// UI. `<UDID>` is the device from `xcrun devicectl list devices`.
-    static func pullCommand(bundleID: String, source: String = "Library/Application Support/Oplog") -> String {
+    /// The `devicectl` command that pulls the same Telemetry folder without
+    /// the UI. `<UDID>` is the device from `xcrun devicectl list devices`.
+    /// Pass a different `source` to pull files from older builds.
+    static func pullCommand(bundleID: String, source: String = "Library/Application Support/Telemetry") -> String {
         "xcrun devicectl device copy from --device <UDID>"
             + " --domain-type appDataContainer --domain-identifier \(bundleID)"
-            + " --source \"\(source)\" --destination ./oplog-from-device"
+            + " --source \"\(source)\" --destination ./telemetry-from-device"
     }
 
     /// The `uname` machine string, e.g. `arm64` or `iPhone17,2`.
