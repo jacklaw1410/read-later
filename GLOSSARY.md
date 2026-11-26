@@ -23,8 +23,16 @@ _Avoid_: highlight, marker, cursor, karaoke
 How far, in words, the wash runs ahead of the voice.
 _Avoid_: offset, latency
 
+**Following**:
+The state in which auto-scroll keeps the wash in view. Turning following off enters Hold. Turning following on ends Hold.
+_Avoid_: follow toggle
+
+**Follow dot**:
+The control that turns following on and off.
+_Avoid_: follow button
+
 **Hold**:
-The state where the reader has scrolled away from the wash, so auto-scroll stops following. The hold badge offers resume.
+The state where the page no longer follows the wash, so auto-scroll stops. Hold applies whether or not playback runs. The reader enters Hold by scrolling away from the wash or by turning following off, while playing or paused. Hold ends by Resume, by the Hold resume control or the wash resume control, or by turning following on. While in Hold, Play does not move the page. The current build holds only while playing.
 _Avoid_: pause (that is audio), lock, detach
 
 **No-yank**:
@@ -32,7 +40,13 @@ The rule that auto-scroll never overrides the reader's own scroll.
 _Avoid_: sticky scroll, follow
 
 **Resume**:
-Returning the wash to its position after a lookup, note or link, with playback and hold restored.
+Ending Hold. The page follows the wash again and brings the wash back into view at once. Playback is unchanged. Restarting audio after a lookup is not Resume; the card says Close.
+Invariant: leaving Hold brings the wash back into view immediately. The current build does not meet it yet.
+_Avoid_: return, unhold
+
+**Return**:
+Returning the wash to its position after a lookup, note or link, with playback and hold restored. The current build restores playback after a lookup, not the wash position.
+_Avoid_: resume
 
 ## App states
 
@@ -89,8 +103,8 @@ Dragging the progress control to preview a place; the audio seek commits on rele
 _Avoid_: drag
 
 **Step**:
-Moving the wash by one utterance (normally one sentence).
-_Avoid_: word step, sentence step
+Moving the wash by one utterance, normally one sentence.
+_Avoid_: word step, sentence step, sentence navigation
 
 **Speed**:
 The speech speed, chosen from the fixed steps.
@@ -149,13 +163,13 @@ The long tail of rare, unranked headwords. Readers tap them.
 _Avoid_: long tail (say *tail*), rare words
 
 **Miss** / **miss state**:
-A miss is a tap whose lookup returns no gloss. The miss state is what the card shows: not in dictionary, no network, or an accent variant was matched. A miss describes the result, not the reader or the word.
+A miss is a tap whose lookup returns no gloss. The miss state is what the card shows: not in dictionary or no network. A tap on text that is not a word shows the not in dictionary state with other copy. An accent variant match is a hit, shown with a note that the gloss belongs to the unaccented form. A miss describes the result, not the reader or the word.
 _Avoid_: error, failure, unknown word
 
 ## Packs
 
 **Decline**:
-The reader's permanent choice not to install on this device. After a decline, the offer is not shown again; the pack can still be installed later.
+The reader's permanent choice to end the install offer on this device. After a decline, the offer card does not return. The pack stays installable from pack management.
 _Avoid_: dismiss, reject
 
 **Installed**:
@@ -164,10 +178,10 @@ _Avoid_: enabled, active
 
 **Update**:
 A newer pack available for an already installed one. Checked when pack management opens, not at launch.
-_Avoid_: upgrade, new version, update available, updateVersion, isUpdateAvailable
+_Avoid_: upgrade, new version
 
 **Pack management**:
-The place where packs are installed, updated, or removed.
+The place where packs are installed, updated, or removed. The screen is labeled Dictionaries.
 _Avoid_: dictionaries, add-ons, plugins
 
 ## Surfaces
@@ -193,9 +207,17 @@ _Avoid_: sidebar
 The bottom playback controls: play, pause, and steps.
 _Avoid_: bottom bar, player bar, transport bar
 
+**Hold resume control**:
+The control shown during playback while in Hold. Activating it ends Hold. The wash resume control shows whenever the wash is off-screen while paused or held, and can show with the Hold resume control.
+_Avoid_: hold indicator, hold badge, hold strip, auto-scroll badge
+
+**Wash resume control**:
+The control shown when the wash is off-screen while paused or held. Activating it ends Hold and brings the wash back into view.
+_Avoid_: wash control, return pill, return button, resume pill
+
 **Lookup card**:
 The overlay panel for a lookup that resolved to a gloss. Never a SwiftUI sheet.
-_Avoid_: sheet, modal, popup, popover, hit card
+_Avoid_: gloss card, sheet, modal, popup, popover, hit card
 
 **Miss card**:
 The overlay panel for a lookup with no gloss, showing the miss state and available actions. Never a SwiftUI sheet.
@@ -216,7 +238,7 @@ A reader-chosen flag on a reading position, shown as the filled icon on the libr
 _Avoid_: bookmark, starred
 
 **Finished**:
-An article whose furthest reached spoken word is the last one (`reachedEnd`). Skipped regions add no spoken words. It is not the human done signal, `markedDone`.
+An article whose furthest reached spoken word is the last one (`reachedEnd`, target). The current build sets it from the last word written, so scrubbing back clears it. Skipped regions add no spoken words. It is not the human done signal, `markedDone`.
 _Avoid_: completed, done
 
 **Refresh**:
@@ -224,7 +246,7 @@ Dropping the cached plan while keeping the reading position. Reopening refetches
 _Avoid_: cache bust, reload
 
 **Remove**:
-Dropping the article and its reading position together.
+Dropping the article and its reading position together. Removing a pack is a Pack management action, not Remove.
 _Avoid_: forget, delete
 
 ## Measurement
