@@ -664,9 +664,9 @@ public struct EntryView: View {
         switch request.mode {
         case .text:
             setLoading(.stripping)
-            reveal(.ready)
-            switch ArticleIngress.pasted(request.raw, telemetry: telemetry) {
+            switch await ArticleIngress.pasted(request.raw, telemetry: telemetry) {
             case .success(let document):
+                reveal(.ready)
                 telemetry.record(TelemetryName.readerOpen, fields: ["source": request.source.rawValue])
                 onOpen(document, request.source, nil)
             case .failure(let error):
@@ -699,7 +699,13 @@ public struct EntryView: View {
             return
         }
         setLoading(.stripping)
-        switch ArticleIngress.read(page, telemetry: telemetry, original: URL(string: request.link)) {
+        // The page read runs off the main actor, so this stage paints while
+        // the extractor works and the Loadline keeps moving.
+        switch await Ingest.document(
+            from: page,
+            original: URL(string: request.link),
+            telemetry: telemetry
+        ) {
         case .success(let document):
             reveal(.ready)
             telemetry.record(TelemetryName.readerOpen, fields: ["source": request.source.rawValue])
