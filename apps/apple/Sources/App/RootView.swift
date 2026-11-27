@@ -199,8 +199,9 @@ final class AppModel {
             // next launch re-reads.
             return
         }
-        let resolved = store.resolve(row: saved, newPlan: document.plan)
-        open(document, startWord: resolved.start, source: .library)
+        let reopened = reopenedDocument(document)
+        let resolved = store.resolve(row: saved, newPlan: reopened.plan)
+        open(reopened, startWord: resolved.start, source: .library)
         // Set after open: open() clears the notice, and the note is
         // informational, so a pre-existing failure would outrank it — but
         // this entry point names no failures, hence the plain nil guard.
@@ -234,10 +235,11 @@ final class AppModel {
         }
     }
 
-    /// Opens a library row. The stored plan is the normal path. After a
-    /// release the plan is gone, so the page is fetched and read again from
-    /// its last known URL, then opened at the same place. Returns true when
-    /// the article opened, which the library sheet uses to close itself.
+    /// Opens a library row. The stored plan is the normal path; only an older
+    /// parser re-plans the saved page bytes first. After a release the plan is
+    /// gone, so the page is fetched and read again from its last known URL,
+    /// then opened at the same place. Returns true when the article opened,
+    /// which the library sheet uses to close itself.
     func openFromLibrary(_ row: ReadingPosition) async -> Bool {
         guard let store else {
             // Unconditional: nothing in-attempt yet (the nil below runs only
@@ -249,7 +251,7 @@ final class AppModel {
         libraryMessage = nil
         do {
             if let document = try store.document(id: row.documentID) {
-                openAtPlace(document, row: row)
+                openAtPlace(reopenedDocument(document), row: row)
                 return true
             }
         } catch {
@@ -317,6 +319,25 @@ final class AppModel {
             libraryMessage = LibraryCopy.forgetFailed
         }
         refreshLibrary()
+    }
+
+    /// A stored document with a current parser is returned untouched. An older
+    /// parser re-plans from the saved page bytes only: no network fetch runs.
+    /// The old plan stays on disk until `open` saves the validated result, so
+    /// a failed extraction, a missing page or a hash mismatch keeps the
+    /// article readable from the plan the reader already has.
+    private func reopenedDocument(_ document: ReadLaterCore.Document) -> ReadLaterCore.Document {
+        guard document.plan.extractorVersion < BlockPlan.currentExtractorVersion,
+              let store,
+              let page = try? store.rawPage(
+                contentHash: ReadLaterStore.Store.resumeKey(for: document))
+        else {
+            return document
+        }
+        return LibraryReopen.document(
+            document,
+            page: FetchedPage(html: page.html, status: page.status, url: page.finalURL),
+            telemetry: telemetry)
     }
 
     @discardableResult
