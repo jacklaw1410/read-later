@@ -71,7 +71,7 @@ public struct ReadingPosition: Sendable, Hashable, Equatable {
     /// release, when the stored plan is gone.
     public var url: URL?
     /// The link as pasted, preferred for refetch. Nil for pasted text, the
-    /// demo, and rows written before v9.
+    /// demo, and rows written before v7.
     public var originalURL: URL?
     /// Spoken length, so a row can say "word X of Y" with no store read.
     public var totalWords: Int
