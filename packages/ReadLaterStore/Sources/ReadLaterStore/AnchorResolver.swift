@@ -144,8 +144,10 @@ enum AnchorResolver {
 
     /// Word index to resume at in `newPlan` plus whether the rewrite gate
     /// fired. Order: exact single hit, nearest copy, rewrite gate, unique
-    /// fuzzy head, proportion, entry start (0). A present anchor beats the
-    /// length gate; the gate fires only when the anchor itself is gone.
+    /// fuzzy head, proportion, entry start (0). Only a verbatim copy beats
+    /// the length gate. Once no copy survives, the gate runs before the
+    /// fuzzy head, so a large rewrite resets to the top even when the
+    /// five-word head still matches (owner decision 2026-11-27).
     /// Nil field falls to entry start with no rewrite, the safe default.
     /// Thin wrapper over `resolveDetailed`, kept for the existing tests and
     /// callers. Drops the count and total; they agree with the start and
