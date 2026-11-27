@@ -71,7 +71,7 @@ public enum ArticleIngress {
     ) async -> Result<Document, IngressError> {
         switch input {
         case .text(let text):
-            return pasted(text, telemetry: telemetry)
+            return await pasted(text, telemetry: telemetry)
         case .link(let raw):
             guard let url = linkURL(from: raw) else {
                 return .failure(raw.isEmpty ? .empty : .badLink)
@@ -80,7 +80,7 @@ public enum ArticleIngress {
             case .failure(let error):
                 return .failure(error)
             case .success(let page):
-                return read(page, telemetry: telemetry, original: url, extractor: extractor)
+                return await Ingest.document(from: page, original: url, telemetry: telemetry, extractor: extractor)
             }
         }
     }
@@ -135,11 +135,6 @@ public enum ArticleIngress {
         }
     }
 
-    /// Extracts one fetched page. The saved URL is the one that answered, so a
-    /// redirect to a canonical address is recorded, not the link that was typed.
-    /// It is normalized on the way in (research `spec/library-identity.md` §2).
-    /// `original` is the link as pasted, kept alongside for refetch (§2);
-    /// nil for callers that never saw the pasted string.
     /// Which pasted link a refetch carries. The request URL when it is not
     /// the canonical one (the pasted short link), else nil: the canonical
     /// retry must not re-stamp the dead link it just rescued, and a plain
@@ -178,72 +173,24 @@ public enum ArticleIngress {
         }
         return parts
     }
-    public static func read(
-        _ page: FetchedPage,
-        telemetry: TelemetryHub,
-        original: URL? = nil,
-        extractor: Extractor = SwiftSoupExtractor()
-    ) -> Result<Document, IngressError> {
-        telemetry.record(TelemetryName.extractStart, fields: ["bytes": String(page.html.count)])
-        do {
-            let result = try extractor.extract(html: page.html, source: page.url.absoluteString, httpStatus: page.status)
-            telemetry.record(TelemetryName.parsed, fields: ["blocks": String(result.blocks.count)])
-            let plan = SpokenPlanBuilder.build(
-                blocks: result.blocks,
-                source: page.url.host ?? page.url.absoluteString,
-                sourceSHA256: sha256(page.html)
-            )
-            guard !plan.blocks.isEmpty else { return .failure(.failed) }
-            telemetry.record(TelemetryName.planReady, fields: [
-                "sentences": String(plan.sentenceCount),
-                "words": String(plan.spokenWords),
-            ])
-            return .success(Document(
-                url: CanonicalURL.canonicalize(page.url),
-                originalURL: original,
-                title: title(for: result, page: page),
-                plan: plan
-            ))
-        } catch let error as ExtractionError {
-            switch error {
-            case .walled:
-                telemetry.record(TelemetryName.extractFailed, fields: ["kind": "walled"])
-                return .failure(.walled)
-            case .unrendered:
-                telemetry.record(TelemetryName.extractFailed, fields: ["kind": "unrendered"])
-                return .failure(.unrendered)
-            case .notAnArticle:
-                telemetry.record(TelemetryName.extractFailed, fields: ["kind": "notAnArticle"])
-                return .failure(.notAnArticle)
-            case .emptyDocument, .badURL:
-                telemetry.record(TelemetryName.extractFailed, fields: ["kind": "failed"])
-                return .failure(.failed)
-            }
-        } catch {
-            telemetry.record(TelemetryName.extractFailed, fields: ["kind": "failed"])
-            return .failure(.failed)
-        }
+    /// Pasted text needs no page, but its plan build, invariant and hash take
+    /// the same trip off the caller's executor as a fetched page.
+    public static func pasted(_ text: String, telemetry: TelemetryHub) async -> Result<Document, IngressError> {
+        await Task.detached(priority: .userInitiated) {
+            pastedOnCaller(text, telemetry: telemetry)
+        }.value
     }
 
-    /// Pasted text needs no page and no plan call beyond the paragraph split.
-    public static func pasted(_ text: String, telemetry: TelemetryHub) -> Result<Document, IngressError> {
+    /// The paste body, run by `pasted` on a background task.
+    static func pastedOnCaller(_ text: String, telemetry: TelemetryHub) -> Result<Document, IngressError> {
         guard let document = PasteLoader.document(from: text, title: nil) else {
             return .failure(.empty)
         }
         telemetry.record(TelemetryName.planReady, fields: [
             "source": EntrySource.rawText.rawValue,
             "words": String(document.plan.spokenWords),
+            "thread": Ingest.threadTag,
         ])
         return .success(document)
-    }
-
-    static func title(for result: ExtractionResult, page: FetchedPage) -> String {
-        if !result.title.isEmpty { return result.title }
-        let host = page.url.host ?? ""
-        return host.isEmpty ? "Untitled" : host
-    }
-
-    static func sha256(_ text: String) -> String {
-        PasteLoader.sha256(text)
     }
 }

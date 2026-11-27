@@ -24,17 +24,17 @@ private func prose(_ subject: String) -> String {
         + "to read it as prose. It continues for a second sentence so the paragraph is long.</p>"
 }
 
-@Test func pastedTextBecomesADocument() throws {
+@Test func pastedTextBecomesADocument() async throws {
     let text = "First paragraph.\n\nSecond paragraph."
-    let result = ArticleIngress.pasted(text, telemetry: TelemetryHub())
+    let result = await ArticleIngress.pasted(text, telemetry: TelemetryHub())
     let document = try result.get()
     #expect(document.plan.blocks.count == 2)
     #expect(document.title == "First paragraph. Second paragraph.")
     #expect(document.url == nil)
 }
 
-@Test func emptyTextIsRefusedWithThePromptToPaste() {
-    let result = ArticleIngress.pasted("   \n\n  ", telemetry: TelemetryHub())
+@Test func emptyTextIsRefusedWithThePromptToPaste() async {
+    let result = await ArticleIngress.pasted("   \n\n  ", telemetry: TelemetryHub())
     #expect(result == .failure(.empty))
     #expect(IngressError.empty.message == "nothing to open — paste a link or text")
 }
@@ -87,7 +87,7 @@ private func prose(_ subject: String) -> String {
     let fetched = FetchedPage(
         html: html, status: 200,
         url: URL(string: "https://Example.com/article?utm_source=reddit&page=2#top")!)
-    let document = try ArticleIngress.read(fetched, telemetry: TelemetryHub()).get()
+    let document = try await Ingest.document(from: fetched, telemetry: TelemetryHub()).get()
     #expect(document.url?.absoluteString == "https://example.com/article?page=2")
 }
 
@@ -95,9 +95,47 @@ private func prose(_ subject: String) -> String {
     let body = prose("Alpha") + prose("Beta") + prose("Gamma")
     let html = "<html><head></head><body>\(body)</body></html>"
     let fetched = FetchedPage(html: html, status: 200, url: URL(string: "https://example.com/a")!)
-    let result = ArticleIngress.read(fetched, telemetry: TelemetryHub())
+    let result = await Ingest.document(from: fetched, telemetry: TelemetryHub())
     let document = try result.get()
     #expect(document.title == "example.com")
+}
+
+/// Records the thread the extractor body ran on. The seam is called from the
+/// main actor, so this fails if the work stays on the caller's executor.
+private final class ThreadProbeExtractor: Extractor, @unchecked Sendable {
+    private let lock = NSLock()
+    private var value: Bool?
+
+    var ranOnMainThread: Bool? {
+        lock.withLock { value }
+    }
+
+    func extract(html: String, source: String, httpStatus: Int?) throws -> ExtractionResult {
+        lock.withLock { value = Thread.isMainThread }
+        return try SwiftSoupExtractor().extract(html: html, source: source, httpStatus: httpStatus)
+    }
+}
+
+@Test @MainActor func ingestRunsExtractionOffTheMainThread() async throws {
+    let probe = ThreadProbeExtractor()
+    let result = await Ingest.document(
+        from: page(prose("Alpha") + prose("Beta") + prose("Gamma")),
+        telemetry: TelemetryHub(),
+        extractor: probe
+    )
+    _ = try result.get()
+    #expect(probe.ranOnMainThread == false)
+}
+
+@Test @MainActor func ingestKeepsTelemetryOrder() async throws {
+    let hub = TelemetryHub()
+    let result = await Ingest.document(
+        from: page(prose("Alpha") + prose("Beta") + prose("Gamma")),
+        telemetry: hub
+    )
+    _ = try result.get()
+    let names = hub.telemetryLog.tail(3).map(\.event)
+    #expect(names == [TelemetryName.extractStart, TelemetryName.parsed, TelemetryName.planReady])
 }
 
 @Test func aTransportFailureIsNamedAsOffline() async {
@@ -183,7 +221,7 @@ func liveFetchOfOneArticle() async throws {
     #expect(ArticleIngress.originalForRefetch(request: pasted, canonical: nil) == pasted)
 }
 
-@Test func pastedTextCarriesTheExtractorVersionToo() throws {
-    let document = try ArticleIngress.pasted("First paragraph.\n\nSecond paragraph.", telemetry: TelemetryHub()).get()
+@Test func pastedTextCarriesTheExtractorVersionToo() async throws {
+    let document = try await ArticleIngress.pasted("First paragraph.\n\nSecond paragraph.", telemetry: TelemetryHub()).get()
     #expect(document.plan.extractorVersion == BlockPlan.currentExtractorVersion)
 }

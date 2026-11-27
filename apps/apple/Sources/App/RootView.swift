@@ -92,7 +92,11 @@ final class AppModel {
         guard let store, let b64 = DebugLaunch.options.seedTextB64,
               let data = Data(base64Encoded: b64),
               let text = String(data: data, encoding: .utf8),
-              case .success(let document) = ArticleIngress.pasted(text, telemetry: telemetry) else { return }
+              let document = PasteLoader.document(from: text, title: nil) else { return }
+        telemetry.record(TelemetryName.planReady, fields: [
+            "source": EntrySource.rawText.rawValue,
+            "words": String(document.plan.spokenWords),
+        ])
         try? store.save(document: document)
         try? store.recordPosition(of: document, wordIndex: 0, source: "seed")
         #endif
@@ -176,7 +180,7 @@ final class AppModel {
     /// row names `readFailed`; a missing document (released by design)
     /// skips silently, while a corrupt plan or disk failure names
     /// `readFailed` like the row fetch above.
-    func openLatestSavedPlace() {
+    func openLatestSavedPlace() async {
         guard let store else { return }
         let saved: ReadingPosition
         do {
@@ -199,7 +203,7 @@ final class AppModel {
             // next launch re-reads.
             return
         }
-        let reopened = reopenedDocument(document)
+        let reopened = await reopenedDocument(document)
         let resolved = store.resolve(row: saved, newPlan: reopened.plan)
         open(reopened, startWord: resolved.start, source: .library)
         // Set after open: open() clears the notice, and the note is
@@ -251,7 +255,7 @@ final class AppModel {
         libraryMessage = nil
         do {
             if let document = try store.document(id: row.documentID) {
-                openAtPlace(reopenedDocument(document), row: row)
+                openAtPlace(await reopenedDocument(document), row: row)
                 return true
             }
         } catch {
@@ -326,7 +330,7 @@ final class AppModel {
     /// The old plan stays on disk until `open` saves the validated result, so
     /// a failed extraction, a missing page or a hash mismatch keeps the
     /// article readable from the plan the reader already has.
-    private func reopenedDocument(_ document: ReadLaterCore.Document) -> ReadLaterCore.Document {
+    private func reopenedDocument(_ document: ReadLaterCore.Document) async -> ReadLaterCore.Document {
         guard document.plan.extractorVersion < BlockPlan.currentExtractorVersion,
               let store,
               let page = try? store.rawPage(
@@ -334,7 +338,7 @@ final class AppModel {
         else {
             return document
         }
-        return LibraryReopen.document(
+        return await LibraryReopen.document(
             document,
             page: FetchedPage(html: page.html, status: page.status, url: page.finalURL),
             telemetry: telemetry)
@@ -454,7 +458,11 @@ final class AppModel {
             }
             return false
         case .success(let page):
-            switch ArticleIngress.read(page, telemetry: telemetry, original: ArticleIngress.originalForRefetch(request: url, canonical: row.url)) {
+            switch await Ingest.document(
+                from: page,
+                original: ArticleIngress.originalForRefetch(request: url, canonical: row.url),
+                telemetry: telemetry
+            ) {
             case .failure(let error):
                 if libraryMessage == nil {
                     libraryMessage = error.message
@@ -621,6 +629,7 @@ struct RootView: View {
         .frame(minWidth: 380, minHeight: 560)
 #if os(macOS)
         .onAppear {
+            #if DEBUG
             let options = LaunchOptions()
             if options.isActive {
                 DispatchQueue.main.async {
@@ -646,6 +655,7 @@ struct RootView: View {
                     }
                 }
             }
+            #endif
         }
 #endif
         .background(Theme.paper)
@@ -700,7 +710,7 @@ struct RootView: View {
             // the telemetry run, so T7.firstWord lands in the trace.
             telemetry.record(TelemetryName.tap)
             if model.session == nil {
-                model.openLatestSavedPlace()
+                await model.openLatestSavedPlace()
             }
             if let session = model.session, !session.playbackState.isPlaying {
                 session.togglePlay()

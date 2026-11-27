@@ -16,13 +16,13 @@ public enum LibraryReopen {
         page: FetchedPage?,
         telemetry: TelemetryHub,
         extractor: Extractor = SwiftSoupExtractor()
-    ) -> Document {
+    ) async -> Document {
         guard stored.plan.extractorVersion < BlockPlan.currentExtractorVersion else {
             return stored
         }
         guard let page else { return stored }
-        guard case .success(let fresh) = ArticleIngress.read(
-            page, telemetry: telemetry, original: stored.originalURL, extractor: extractor
+        guard case .success(let fresh) = await Ingest.document(
+            from: page, original: stored.originalURL, telemetry: telemetry, extractor: extractor
         ) else {
             return stored
         }
