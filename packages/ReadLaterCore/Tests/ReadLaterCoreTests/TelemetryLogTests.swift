@@ -25,13 +25,13 @@ private final class FakeClock: @unchecked Sendable {
 
 private func makeLog(
     _ fake: FakeClock,
-    maxBytes: Int = TelemetryOplog.defaultMaxBytes,
-    maxFiles: Int = TelemetryOplog.defaultMaxFiles,
-    ringCapacity: Int = TelemetryOplog.defaultRingCapacity
-) -> (TelemetryOplog, URL) {
+    maxBytes: Int = TelemetryLog.defaultMaxBytes,
+    maxFiles: Int = TelemetryLog.defaultMaxFiles,
+    ringCapacity: Int = TelemetryLog.defaultRingCapacity
+) -> (TelemetryLog, URL) {
     let dir = FileManager.default.temporaryDirectory
-        .appendingPathComponent("oplog-test-\(UUID().uuidString)", isDirectory: true)
-    let log = TelemetryOplog(
+        .appendingPathComponent("telemetry-test-\(UUID().uuidString)", isDirectory: true)
+    let log = TelemetryLog(
         directory: dir, sessionID: "test-session", maxBytes: maxBytes, maxFiles: maxFiles,
         ringCapacity: ringCapacity, clock: fake.clock, wall: fake.wall, originUptime: 1_000
     )
@@ -46,7 +46,7 @@ private func readLines(_ url: URL) throws -> [TelemetryEvent] {
     }
 }
 
-private func allEvents(_ log: TelemetryOplog) throws -> [TelemetryEvent] {
+private func allEvents(_ log: TelemetryLog) throws -> [TelemetryEvent] {
     try log.logFiles().reversed().flatMap { try readLines($0) }
 }
 
@@ -59,8 +59,8 @@ private func fractionMillis(_ iso: String) -> Int? {
     return value
 }
 
-@Suite("Telemetry oplog")
-struct TelemetryOplogTests {
+@Suite("Telemetry log")
+struct TelemetryLogTests {
     @Test("Append then flush keeps order, session and fields")
     func appendFlushOrdering() throws {
         let fake = FakeClock()
@@ -146,7 +146,7 @@ struct TelemetryOplogTests {
         log.flushIfDue()
         #expect(try allEvents(log).isEmpty)
 
-        fake.now += TelemetryOplog.defaultFlushDelay + 1
+        fake.now += TelemetryLog.defaultFlushDelay + 1
         log.flushIfDue()
         #expect(try allEvents(log).map(\.event) == ["before-deadline"])
     }
@@ -154,8 +154,8 @@ struct TelemetryOplogTests {
     @Test("An unwritable directory never throws and keeps the ring")
     func unwritableDirectory() throws {
         let fake = FakeClock()
-        let dead = URL(fileURLWithPath: "/dev/null/oplog-test-\(UUID().uuidString)")
-        let log = TelemetryOplog(
+        let dead = URL(fileURLWithPath: "/dev/null/telemetry-test-\(UUID().uuidString)")
+        let log = TelemetryLog(
             directory: dead, sessionID: "test-session",
             clock: fake.clock, wall: fake.wall, originUptime: 1_000
         )
@@ -193,7 +193,7 @@ struct TelemetryOplogTests {
         #expect(hub.hasActiveRun)
         hub.record(TelemetryName.firstWord)
         #expect(!hub.hasActiveRun)
-        #expect(hub.oplog.tail(3).map(\.event) == ["T0.tap", "T1.fetchStart", "T7.firstWord"])
+        #expect(hub.telemetryLog.tail(3).map(\.event) == ["T0.tap", "T1.fetchStart", "T7.firstWord"])
     }
 
     @Test("A fixed date records the ISO8601 style output")
@@ -246,11 +246,11 @@ struct TelemetryOplogTests {
         hub.record(TelemetryName.tap)
         hub.record(TelemetryName.tap)
         #expect(hub.hasActiveRun)
-        let tail = hub.oplog.tail(3).map(\.event)
+        let tail = hub.telemetryLog.tail(3).map(\.event)
         #expect(tail == ["T0.tap", "run.end", "T0.tap"])
         hub.endRunIfActive(outcome: "stopped")
         #expect(!hub.hasActiveRun)
-        #expect(hub.oplog.tail(1).first?.fields == ["outcome": "stopped"])
+        #expect(hub.telemetryLog.tail(1).first?.fields == ["outcome": "stopped"])
     }
 
     @Test("Reader-entry event carries session and source")
@@ -264,7 +264,7 @@ struct TelemetryOplogTests {
         await withCheckedContinuation { continuation in
             DispatchQueue.main.async { continuation.resume() }
         }
-        let event = try #require(hub.oplog.tail(1).first)
+        let event = try #require(hub.telemetryLog.tail(1).first)
         #expect(event.event == TelemetryName.readerEntered)
         #expect(event.session == "frame-test")
         #expect(event.fields == ["source": "link"])

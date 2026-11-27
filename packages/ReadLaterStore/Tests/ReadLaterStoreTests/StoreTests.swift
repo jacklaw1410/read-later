@@ -70,6 +70,6 @@ struct StoreTests {
         #expect(try reopened.document(id: document.id) == document)
         #expect(try reopened.phrases().map(\.id).contains(phrase.id))
         #expect(try reopened.occurrences(forPhrase: phrase.id).count == 1)
-        #expect(try reopened.oplog.entries().count == 3)
+        #expect(try reopened.syncOplog.entries().count == 3)
     }
 }

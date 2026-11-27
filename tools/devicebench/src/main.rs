@@ -3,7 +3,8 @@
 //! Commands (see README.md for the protocol):
 //!   record  --seconds S --out FILE.wav [--device NAME]
 //!   onsets  --wav FILE.wav [--min 0.01]
-//!   align   --oplog FILE.jsonl --wav FILE.wav [--session ID] [--silence 0.3]
+//!   align   --telemetry FILE.jsonl --wav FILE.wav [--session ID] [--silence 0.3]
+//!           (--oplog FILE.jsonl is accepted as a legacy alias)
 //!           [--clock-session ID] [--click-factor 8] [--quiet-factor 1.5]
 //!   gen     --out FILE.wav --times 1.0,2.0 --seconds S [--rate 48000]
 
@@ -35,7 +36,8 @@ fn main() -> ExitCode {
 const USAGE: &str = "usage:
   devicebench record --seconds S --out FILE.wav [--device NAME]
   devicebench onsets --wav FILE.wav [--min 0.01]
-  devicebench align --oplog FILE.jsonl --wav FILE.wav [--session ID] [--silence 0.3] [--clock-session ID] [--click-factor 8] [--quiet-factor 1.5] [--wall] [--stop-window 0.5]
+  devicebench align --telemetry FILE.jsonl --wav FILE.wav [--session ID] [--silence 0.3] [--clock-session ID] [--click-factor 8] [--quiet-factor 1.5] [--wall] [--stop-window 0.5]
+  devicebench align --oplog FILE.jsonl ...        (legacy alias for --telemetry)
   devicebench gen --out FILE.wav --times 1.0,2.0 --seconds S [--rate 48000]";
 
 /// Spacing tolerance for every click after the first. The first click's late
@@ -113,8 +115,11 @@ fn cmd_onsets(args: &[String]) -> Result<(), String> {
 }
 
 fn cmd_align(args: &[String]) -> Result<(), String> {
-    let oplog = std::fs::read_to_string(required(args, "--oplog")?).map_err(|e| e.to_string())?;
-    let events = align::parse_oplog(&oplog);
+    let telemetry_path = flag(args, "--telemetry")
+        .or_else(|| flag(args, "--oplog"))
+        .ok_or_else(|| format!("missing --telemetry\n{USAGE}"))?;
+    let telemetry = std::fs::read_to_string(telemetry_path).map_err(|e| e.to_string())?;
+    let events = align::parse_telemetry(&telemetry);
     let (samples, rate) = record::read_wav(Path::new(required(args, "--wav")?))?;
     let env = detect::Envelope::new(&samples, rate, 1.0);
     let floor = detect::noise_floor(&env, 0.5);
@@ -140,7 +145,7 @@ fn cmd_align(args: &[String]) -> Result<(), String> {
         None => align::sessions_with_markers(&events),
     };
     if sessions.is_empty() {
-        return Err("no marker.request events in the oplog".into());
+        return Err("no marker.request events in the telemetry log".into());
     }
 
     println!("session,event,phone_t,rec_t,response_ms,silence_level");
@@ -190,7 +195,7 @@ fn cmd_align(args: &[String]) -> Result<(), String> {
 /// taps and the clicks come from different app launches. Each launch has its
 /// own `t` origin, but `iso` is the phone's wall clock and is shared.
 fn align_by_wall(
-    events: &[align::OplogEvent],
+    events: &[align::TelemetryEvent],
     env: &detect::Envelope,
     onsets: &[f64],
     clock: &str,
@@ -256,7 +261,7 @@ fn print_residuals(markers: &[(f64, f64)], clicks: &[f64], offset: f64, wall: bo
 
 /// Prints one event row: the response in milliseconds, and for a pause or a scrub the
 /// silence level used. A response of `none` means no quiet run was found.
-fn print_event(env: &detect::Envelope, session: &str, e: &align::OplogEvent, rec_t: f64, levels: Levels) {
+fn print_event(env: &detect::Envelope, session: &str, e: &align::TelemetryEvent, rec_t: f64, levels: Levels) {
     let (response, level) = respond(env, &e.event, rec_t, levels);
     if e.event == "scrub.commit" && response.is_none() {
         explain_scrub(env, rec_t, levels);
@@ -354,7 +359,7 @@ fn cmd_gen(args: &[String]) -> Result<(), String> {
 mod baseline_repro_tests {
     //! Replays the filed baseline numbers from the surviving /tmp recordings.
     //!
-    //! The oplogs that fixed the clock offset are gone (see results.md: only
+    //! The telemetry logs that fixed the clock offset are gone (see results.md: only
     //! /tmp WAVs survive), so this test takes the filed `rec_t` anchors from
     //! the CSVs and re-runs the detection rule on the WAV at each anchor. It
     //! proves the detector deterministically reproduces the filed M2/M3/M4

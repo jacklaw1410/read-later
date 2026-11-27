@@ -112,7 +112,7 @@ public enum EntryPaste {
     /// prompt is up. `fail` fires when the poll runs out, and the blocked
     /// note shows. A silent miss would read as a broken button.
     ///
-    /// Each tap records `paste.tap`. The `paste.*` oplog events record the
+    /// Each tap records `paste.tap`. The `paste.*` telemetry events record the
     /// branch taken and the result. They may help diagnose a device denial.
     public static func pasteFromBoard(
         telemetry: TelemetryHub,

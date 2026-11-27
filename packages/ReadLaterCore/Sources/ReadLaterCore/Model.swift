@@ -279,7 +279,7 @@ public struct Phrase: Codable, Sendable, Identifiable, Hashable {
     }
 }
 
-/// One row of the oplog. Sync replays these; it never mirrors a store.
+/// One row of the sync oplog. Sync replays these; it never mirrors a store.
 /// Source of truth: read-later-research/spec/adr-0003 (oplog + CloudKit).
 public struct ChangeLogEntry: Codable, Sendable, Hashable {
     public var seq: Int64

@@ -35,8 +35,8 @@ enum DiagnosticsExport {
         var dictionaryVersion: String
         var exportedAtISO: String
         var sessionID: String
-        var oplogSource: String
-        var oplogFiles: [String]
+        var telemetrySource: String
+        var telemetryFiles: [String]
     }
 
     /// Flushes the telemetry log, copies every log file plus `summary.json` into a
@@ -56,7 +56,7 @@ enum DiagnosticsExport {
         try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
 
         var names: [String] = []
-        for file in hub.oplog.logFiles() {
+        for file in hub.telemetryLog.logFiles() {
             let target = folder.appendingPathComponent(file.lastPathComponent)
             if FileManager.default.fileExists(atPath: target.path) {
                 try FileManager.default.removeItem(at: target)
@@ -66,7 +66,7 @@ enum DiagnosticsExport {
         }
         let summary = buildSummary(
             dictionaryVersion: dictionaryVersion, pace: pace,
-            oplogFiles: names.sorted(), hub: hub
+            telemetryFiles: names.sorted(), hub: hub
         )
         let data = try JSONEncoder().encode(summary)
         try data.write(to: folder.appendingPathComponent("summary.json"), options: .atomic)
@@ -90,14 +90,14 @@ enum DiagnosticsExport {
     static func buildSummary(
         dictionaryVersion: String,
         pace: String,
-        oplogFiles: [String] = [],
+        telemetryFiles: [String] = [],
         hub: TelemetryHub
     ) -> Summary {
         let info = Bundle.main.infoDictionary
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         return Summary(
-            schema: "rl-diagnostics-1",
+            schema: "rl-diagnostics-2",
             buildSHA: Self.buildSHA(),
             bundleID: Bundle.main.bundleIdentifier ?? "unknown",
             appVersion: (info?["CFBundleShortVersionString"] as? String) ?? "unknown",
@@ -107,9 +107,9 @@ enum DiagnosticsExport {
             pace: pace,
             dictionaryVersion: dictionaryVersion,
             exportedAtISO: formatter.string(from: Date()),
-            sessionID: hub.oplog.session,
-            oplogSource: hub.oplog.configuredDirectory?.path ?? "memory-only (not configured)",
-            oplogFiles: oplogFiles
+            sessionID: hub.telemetryLog.session,
+            telemetrySource: hub.telemetryLog.configuredDirectory?.path ?? "memory-only (not configured)",
+            telemetryFiles: telemetryFiles
         )
     }
 

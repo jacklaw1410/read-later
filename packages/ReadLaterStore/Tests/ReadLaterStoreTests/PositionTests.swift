@@ -120,7 +120,7 @@ struct PositionTests {
         let url = dir.appendingPathComponent("store.sqlite")
         let reopened = try Store(databaseURL: url, device: "test-device", telemetry: TelemetryHub())
         #expect(try reopened.position(contentHash: Store.resumeKey(for: document))?.wordIndex == 6)
-        #expect(try reopened.oplog.entries().count == 1)
+        #expect(try reopened.syncOplog.entries().count == 1)
     }
 
     @Test("Throttle writes once per interval and always on demand")

@@ -130,7 +130,7 @@ final class SignpostEmitter: @unchecked Sendable {
     }
 
     /// Emits the event on the active run or launch interval. Unknown names
-    /// are oplog-only by design: only checkpoint names get a signpost.
+    /// are telemetry-only by design: only checkpoint names get a signpost.
     func event(_ name: String) {
         lock.withLock {
             #if canImport(os)
@@ -163,7 +163,7 @@ final class SignpostEmitter: @unchecked Sendable {
     }
 }
 
-/// The process-wide telemetry hub. One oplog, one signpost emitter.
+/// The process-wide telemetry hub. One telemetry log, one signpost emitter.
 ///
 /// The shared instance starts memory-only. The app calls `configure` at
 /// launch with the real directory; until then `record` fills the ring and
@@ -174,7 +174,7 @@ final class SignpostEmitter: @unchecked Sendable {
 public final class TelemetryHub: @unchecked Sendable {
     public static let shared = TelemetryHub()
 
-    public let oplog: TelemetryLog
+    public let telemetryLog: TelemetryLog
     private let emitter = SignpostEmitter()
     private var observers: [NSObjectProtocol] = []
     private let observerLock = NSLock()
@@ -186,7 +186,7 @@ public final class TelemetryHub: @unchecked Sendable {
         wall: @escaping @Sendable () -> Date = Date.init,
         originUptime: TimeInterval? = nil
     ) {
-        oplog = TelemetryLog(
+        telemetryLog = TelemetryLog(
             directory: directory, sessionID: sessionID, clock: clock, wall: wall,
             originUptime: originUptime
         )
@@ -198,7 +198,7 @@ public final class TelemetryHub: @unchecked Sendable {
             "NSApplicationWillBecomeActiveNotification",
         ] {
             let token = center.addObserver(forName: Notification.Name(raw), object: nil, queue: nil) { [weak self] _ in
-                self?.oplog.flushNow()
+                self?.telemetryLog.flushNow()
             }
             observerLock.withLock { observers.append(token) }
         }
@@ -212,12 +212,12 @@ public final class TelemetryHub: @unchecked Sendable {
     /// Points the telemetry log at `Application Support/Telemetry/`. Called
     /// once at app launch, before the first record.
     public func configure(directory: URL? = TelemetryLog.defaultDirectory()) {
-        oplog.setDirectory(directory)
+        telemetryLog.setDirectory(directory)
     }
 
     public var hasActiveRun: Bool { emitter.hasActiveRun }
 
-    /// Records to the oplog and, for checkpoint names, to the signpost
+    /// Records to the telemetry log and, for checkpoint names, to the signpost
     /// emitter. A tap ends a dangling run as superseded before starting the
     /// new one; the first word ends the run.
     public func record(_ name: String, fields: [String: String] = [:]) {
@@ -226,7 +226,7 @@ public final class TelemetryHub: @unchecked Sendable {
             emitter.beginLaunch()
         case TelemetryName.tap:
             if emitter.hasActiveRun {
-                oplog.record(TelemetryName.runEnd, fields: ["outcome": "superseded"])
+                telemetryLog.record(TelemetryName.runEnd, fields: ["outcome": "superseded"])
                 emitter.endRun()
             }
             emitter.beginRun()
@@ -239,14 +239,14 @@ public final class TelemetryHub: @unchecked Sendable {
         default:
             emitter.event(name)
         }
-        oplog.record(name, fields: fields)
+        telemetryLog.record(name, fields: fields)
     }
 
     /// Ends the active run without a first word (reader left, session
     /// stopped). No-op when no run is active.
     public func endRunIfActive(outcome: String) {
         guard emitter.hasActiveRun else { return }
-        oplog.record(TelemetryName.runEnd, fields: ["outcome": outcome])
+        telemetryLog.record(TelemetryName.runEnd, fields: ["outcome": outcome])
         emitter.endRun()
     }
 
@@ -269,6 +269,6 @@ public final class TelemetryHub: @unchecked Sendable {
     }
 
     public func flush() {
-        oplog.flushNow()
+        telemetryLog.flushNow()
     }
 }

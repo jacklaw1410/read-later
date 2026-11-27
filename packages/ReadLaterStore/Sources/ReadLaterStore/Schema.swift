@@ -9,7 +9,9 @@ enum Schema {
     static let document = "document"
     static let phrase = "phrase"
     static let phraseOccurrence = "phrase_occurrence"
-    static let changelog = "changelog"
+    static let syncOplog = "syncoplog"
+    /// Pre-v6 table name. Only the v1 creation and the v6 rename use it.
+    static let legacyChangelog = "changelog"
     static let phraseFTS = "phrase_ft"
     static let readingPosition = "reading_position"
 
@@ -45,7 +47,7 @@ enum Schema {
             )
             """)
         try db.execute(sql: """
-            CREATE TABLE changelog(
+            CREATE TABLE \(Schema.legacyChangelog)(
                 seq INTEGER PRIMARY KEY AUTOINCREMENT,
                 device TEXT NOT NULL,
                 "at" REAL NOT NULL,
