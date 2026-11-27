@@ -629,6 +629,7 @@ struct RootView: View {
         .frame(minWidth: 380, minHeight: 560)
 #if os(macOS)
         .onAppear {
+            #if DEBUG
             let options = LaunchOptions()
             if options.isActive {
                 DispatchQueue.main.async {
@@ -654,6 +655,7 @@ struct RootView: View {
                     }
                 }
             }
+            #endif
         }
 #endif
         .background(Theme.paper)
