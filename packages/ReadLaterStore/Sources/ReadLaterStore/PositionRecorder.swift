@@ -1,12 +1,18 @@
 import Foundation
 import ReadLaterCore
 
-/// Serial off-main writer for the reading place.
+/// Serial off-main writer for the reading place and the rows an open writes.
 ///
 /// A `dbQueue.write` called on the main thread blocks it for the write
 /// duration (M8). The recorder owns one background queue: `record` returns
 /// at once, the write runs there, and `wait` drains the queue for
 /// flush, close and background, so no place write is lost.
+///
+/// The queue is FIFO across every job: an open enqueues its document save
+/// before the session's first tick, so a place write never runs ahead of
+/// the row it names. Follow-up row work (absorbing released siblings,
+/// retiring a re-fetched row) shares the queue, so it sees the save's row
+/// and no caller-thread read waits behind a pending write.
 public final class PositionRecorder: Sendable {
     private let store: Store
     private let queue: DispatchQueue
@@ -14,6 +20,53 @@ public final class PositionRecorder: Sendable {
     public init(store: Store, label: String = "app.readlater.position") {
         self.store = store
         self.queue = DispatchQueue(label: label, qos: .utility)
+    }
+
+    /// Enqueues the document row for an article just opened. Never blocks
+    /// the caller: the plan encode and the SQLite write run on the writer
+    /// queue, so a large article does not stall the transition into the
+    /// reader. The save encodes the plan once.
+    ///
+    /// FIFO with `record`: the session's first tick is enqueued after this
+    /// call returns, so the place write always finds its document row.
+    /// `completion` runs on the queue with whether the row was written; the
+    /// app hops to main to name a failure in the reader, so an unkept row
+    /// is reported, not hidden.
+    public func save(
+        document: Document,
+        completion: @Sendable @escaping (Bool) -> Void = { _ in }
+    ) {
+        run(
+            "save.document",
+            fields: {
+                [
+                    "contentHash": Store.resumeKey(for: document),
+                    "words": String(document.plan.spokenWords),
+                ]
+            },
+            { store in
+                try store.save(document: document)
+            },
+            completion: completion)
+    }
+
+    /// Enqueues a re-fetch's row retirement behind the open's save. Same
+    /// queue, so the supersede runs after the new document row exists and
+    /// the caller never waits for either write. `completion` carries
+    /// whether the rows retired.
+    public func supersedeOnRefetch(
+        oldRow: ReadingPosition,
+        newDocument: Document,
+        startWord: Int,
+        completion: @Sendable @escaping (Bool) -> Void = { _ in }
+    ) {
+        run(
+            "position.supersede",
+            fields: { ["contentHash": Store.resumeKey(for: newDocument)] },
+            { store in
+                try store.supersedeOnRefetch(oldRow: oldRow, newDocument: newDocument, startWord: startWord)
+            },
+            completion: completion)
     }
 
     /// Enqueues one place write. Never blocks the caller: no plan work runs
@@ -102,15 +155,19 @@ public final class PositionRecorder: Sendable {
     /// encode inside the write itself; the failure path pays a second one
     /// for the clamped context. Every caller passes explicit fields:
     /// no default, so a future write cannot ship an identity-less error row.
+    /// `completion` runs on the queue with whether the write landed; the
+    /// app hops to main itself for a notice.
     private func run(
         _ op: String,
         fields: @Sendable @escaping () -> [String: String],
-        _ work: @Sendable @escaping (Store) throws -> Void
+        _ work: @Sendable @escaping (Store) throws -> Void,
+        completion: @Sendable @escaping (Bool) -> Void = { _ in }
     ) {
         queue.async { [store] in
             let start = CFAbsoluteTimeGetCurrent()
             do {
                 try work(store)
+                completion(true)
             } catch {
                 let ms = String(format: "%.2f", (CFAbsoluteTimeGetCurrent() - start) * 1000)
                 var logged = fields()
@@ -121,6 +178,7 @@ public final class PositionRecorder: Sendable {
                 logged["main"] = Thread.isMainThread ? "1" : "0"
                 logged["error"] = String(describing: error)
                 store.telemetry.record(TelemetryName.storeWrite, fields: logged)
+                completion(false)
             }
         }
     }

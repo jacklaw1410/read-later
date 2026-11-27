@@ -102,7 +102,8 @@ final class AppModel {
         _ document: ReadLaterCore.Document,
         startWord: Int? = nil,
         source: EntrySource,
-        page: FetchedPage? = nil
+        page: FetchedPage? = nil,
+        absorb row: ReadingPosition? = nil
     ) {
         readerSource = source
         openToken += 1
@@ -118,21 +119,21 @@ final class AppModel {
         // first-failure-wins still holds; across attempts the latest action
         // wins, since its list is what the sheet will show.
         libraryMessage = nil
-        // The save runs on main (dbQueue.write blocks the caller): accepted
-        // under the same M8 exception as the deletes — one user-initiated
-        // write per open, and the session needs the row to exist now.
+        // The save runs on the writer queue: the plan encode and the SQLite
+        // write never block the open, so the reader opens without waiting
+        // for the row (M8). FIFO on that queue puts the session's first
+        // position tick behind this save, so the place always finds its row.
         if store == nil {
             // No library on this device: the reader still opens, but no
             // place is kept. Told in the reader, where it is seen.
             readerNotice = LibraryCopy.noStore
         } else {
-            do {
-                try store?.save(document: document)
-            } catch {
-                // The reader still opens: the failure is the library row, not
-                // the article. Told in the reader, where it is seen; the
-                // library sheet is already closing.
-                readerNotice = LibraryCopy.libraryRowLost
+            recorder?.save(document: document) { [weak self] saved in
+                Task { @MainActor in
+                    self?.openRowSaved(
+                        document: document, saved: saved,
+                        absorb: row, startWord: startWord ?? 0)
+                }
             }
         }
         // The bytes this plan was read from, for a future re-plan on a
@@ -150,11 +151,34 @@ final class AppModel {
         next.onProgress = { [weak self] index, source in self?.recordPosition(index: index, source: source) }
         session = next
         next.warmUp()
-        refreshLibrary()
         telemetry.record(TelemetryName.articleReady, fields: [
             "title": document.title,
             "words": String(document.plan.spokenWords),
         ])
+    }
+
+    /// Lands the open's save outcome on main, after the writer queue wrote
+    /// the row. The reader still opens when the save failed: the failure is
+    /// the library row, not the article, and it is named in the reader, not
+    /// hidden (the identity PR's semantics). Only the document still open
+    /// may name it, so a later open does not inherit an earlier failure.
+    /// The list re-reads here, after the row exists, so no main-thread read
+    /// waits behind the write. Sibling absorb runs here too, not on the
+    /// open: it reads the store, and behind the pending save that read
+    /// would stall the transition.
+    private func openRowSaved(
+        document: ReadLaterCore.Document, saved: Bool,
+        absorb row: ReadingPosition?, startWord: Int
+    ) {
+        if saved {
+            if let row {
+                absorbReleasedSiblings(document: document, row: row, startWord: startWord)
+            }
+        } else if session?.document.id == document.id,
+                  readerNotice == nil || readerNotice == LibraryCopy.articleUpdated {
+            readerNotice = LibraryCopy.libraryRowLost
+        }
+        refreshLibrary()
     }
 
     func closeDocument() {
@@ -211,11 +235,12 @@ final class AppModel {
 
     // MARK: - Library
 
-    /// Reads the browse list again. Called on launch, open, close and after
-    /// every library action, so the list never shows a stale row. Runs on
-    /// main (dbQueue.read blocks the caller): accepted under the same M8
-    /// exception as the deletes — a rare, user-initiated read whose result
-    /// the sheet needs synchronously.
+    /// Reads the browse list again. Called on launch, close, after every
+    /// library action, and on main once an open's save lands, so the list
+    /// never shows a stale row. Runs on main (dbQueue.read blocks the
+    /// caller): accepted under the same M8 exception as the deletes — a
+    /// rare, user-initiated read whose result the sheet needs
+    /// synchronously, and never issued behind a pending save.
     func refreshLibrary() {
         guard let store else {
             library = []
@@ -332,87 +357,84 @@ final class AppModel {
             let total = SpokenWordNumbering(plan: document.plan).totalWords
             start = min(max(row.wordIndex, 0), max(total - 1, 0))
         }
-        open(document, startWord: start, source: .library, page: page)
+        open(document, startWord: start, source: .library, page: page, absorb: row)
         // Set after open: open() clears the notice, and a failed save
         // (row loss) outranks the rewrite note.
         if resolved?.rewrote == true, readerNotice == nil {
             readerNotice = LibraryCopy.articleUpdated
         }
-        // A retire that threw leaves a missing-document sibling behind; the
-        // next tick seeds a second row and the library shows two until
-        // something retires the stale one. Absorb it now: same URL, bytes
-        // gone, so its only value is the saved flag it carries. Present
-        // siblings are live entries the user can still open — never touched.
-        // One small read per open plus rare writes, under the same M8
-        // exception as the save above. Libraries with released pre-v5 rows
-        // pay a COUNT plus the widened scan, still gated to those rows.
-        if let urlString = document.url?.absoluteString, let store {
-            let key = ReadLaterStore.Store.resumeKey(for: document)
-            // A corrupt position row (bad UUID, undecodable) throws out of
-            // the sibling lookup itself: name it like a corrupt document
-            // below instead of skipping in silence.
-            let siblings: [ReadingPosition]
+        return start
+    }
+
+    /// Absorbs released siblings of the article just opened: same URL, bytes
+    /// gone, so the row's only value is the saved flag it carries. Present
+    /// siblings are live entries the user can still open — never touched.
+    ///
+    /// Runs on main from `openRowSaved`, after the writer queue wrote the
+    /// save: the supersede guard needs the new row in place, and running
+    /// the same reads behind the pending save would stall the transition.
+    /// One small read per open plus rare writes. A retire that threw leaves
+    /// a missing-document sibling behind; the next tick seeds a second row
+    /// and the library shows two until something retires the stale one, so
+    /// this heals on the next open. The reader is already open, so a
+    /// failure names both surfaces: the sheet line is invisible until the
+    /// sheet closes, and the failure outranks the informational rewrite
+    /// note but the first one wins.
+    private func absorbReleasedSiblings(
+        document: ReadLaterCore.Document, row: ReadingPosition, startWord: Int
+    ) {
+        guard let urlString = document.url?.absoluteString, let store else { return }
+        let key = ReadLaterStore.Store.resumeKey(for: document)
+        // A corrupt position row (bad UUID, undecodable) throws out of the
+        // sibling lookup itself: name it like a corrupt document instead of
+        // skipping in silence.
+        let siblings: [ReadingPosition]
+        do {
+            siblings = try store.siblingRows(url: urlString, excluding: key)
+        } catch {
+            nameAbsorbFailure(LibraryCopy.readFailed)
+            return
+        }
+        for sibling in siblings {
+            // The refetch supersede retires `row` itself: absorbing it here
+            // too would seed the new row twice (converges via the merge, but
+            // costs a second write). The other caller of `openAtPlace`
+            // passes a row whose hash already equals the new key, so it is
+            // never a sibling and the skip never fires there.
+            guard sibling.contentHash != row.contentHash else { continue }
+            // A corrupt plan decodes to a throw, not a nil: never absorb it
+            // (its history is not known-gone), and name the failure instead
+            // of healing past it.
+            let siblingDoc: ReadLaterCore.Document?
             do {
-                siblings = try store.siblingRows(url: urlString, excluding: key)
+                siblingDoc = try store.document(id: sibling.documentID)
             } catch {
-                // The reader is open (open() already ran): the sheet line
-                // is invisible until it closes, so name it on both surfaces
-                // like the refetch supersede failure below. Failures outrank
-                // the informational rewrite note but the first one wins.
-                if libraryMessage == nil {
-                    libraryMessage = LibraryCopy.readFailed
-                }
-                if readerNotice == nil || readerNotice == LibraryCopy.articleUpdated {
-                    readerNotice = LibraryCopy.readFailed
-                }
-                return start
+                nameAbsorbFailure(LibraryCopy.readFailed)
+                continue
             }
-            var absorbed = false
-            for sibling in siblings {
-                // The refetch supersede below retires `row` itself: absorbing
-                // it here too would seed the new row twice (converges via the
-                // merge, but costs a second write). The only other caller of
-                // `openAtPlace` passes a row whose hash already equals the new
-                // key, so it is never a sibling and the skip never fires
-                // there.
-                guard sibling.contentHash != row.contentHash else { continue }
-                // A corrupt plan decodes to a throw, not a nil: never
-                // absorb it (its history is not known-gone), and name
-                // the failure instead of healing past it.
-                let siblingDoc: ReadLaterCore.Document?
-                do {
-                    siblingDoc = try store.document(id: sibling.documentID)
-                } catch {
-                    if libraryMessage == nil {
-                        libraryMessage = LibraryCopy.readFailed
-                    }
-                    if readerNotice == nil || readerNotice == LibraryCopy.articleUpdated {
-                        readerNotice = LibraryCopy.readFailed
-                    }
-                    continue
-                }
-                guard siblingDoc == nil else { continue }
-                do {
-                    try store.supersedeOnRefetch(oldRow: sibling, newDocument: document, startWord: start)
-                    absorbed = true
-                } catch {
-                    // A real write failure (not a missing row): the stale
-                    // duplicate stays until the next open heals it. Name it
-                    // on both surfaces; other siblings may still absorb.
-                    if libraryMessage == nil {
-                        libraryMessage = LibraryCopy.refreshFailed
-                    }
-                    if readerNotice == nil || readerNotice == LibraryCopy.articleUpdated {
-                        readerNotice = LibraryCopy.refreshFailed
-                    }
-                    continue
-                }
-            }
-            if absorbed {
-                refreshLibrary()
+            guard siblingDoc == nil else { continue }
+            do {
+                try store.supersedeOnRefetch(
+                    oldRow: sibling, newDocument: document, startWord: startWord)
+            } catch {
+                // A real write failure (not a missing row): the stale
+                // duplicate stays until the next open heals it. Other
+                // siblings may still absorb.
+                nameAbsorbFailure(LibraryCopy.refreshFailed)
+                continue
             }
         }
-        return start
+    }
+
+    /// One absorb failure on both surfaces, first one wins. Kept together so
+    /// the read and write call sites cannot drift apart on precedence.
+    private func nameAbsorbFailure(_ message: String) {
+        if libraryMessage == nil {
+            libraryMessage = message
+        }
+        if readerNotice == nil || readerNotice == LibraryCopy.articleUpdated {
+            readerNotice = message
+        }
     }
 
     private func refetchAndOpen(_ row: ReadingPosition, url: URL) async -> Bool {
@@ -442,49 +464,35 @@ final class AppModel {
             case .success(let document):
                 let start = openAtPlace(document, row: row, page: page)
                 // Changed bytes mint a new id and hash: retire the old row
-                // so the library keeps one row per article. Runs on main
-                // (dbQueue.write blocks the caller): accepted under the same
-                // M8 exception as the deletes — one rare user-initiated
-                // write per refetch, and the rows must retire together.
-                // The seeded row carries the old link; a rescue still in
-                // flight retargets to the new row below. Refresh after: the
-                // seed replaced the row `open()` already listed.
+                // so the library keeps one row per article. Enqueued behind
+                // the open's save on the writer queue, so the transaction
+                // sees the new row and the caller never waits for either
+                // write. The seeded row carries the old link; a rescue still
+                // in flight retargets below.
                 var clearHash = row.contentHash
                 var clearDoc = row.documentID
                 if ReadLaterStore.Store.resumeKey(for: document) != row.contentHash {
-                    do {
-                        guard let store else {
-                            // First failure wins, like every other sheet message.
-                            if libraryMessage == nil {
-                                libraryMessage = LibraryCopy.noStore
-                            }
-                            return true
-                        }
-                        try store.supersedeOnRefetch(oldRow: row, newDocument: document, startWord: start)
-                    } catch {
-                        // The session already holds the new bytes, but the
-                        // transaction rolled back: no row seeded, old row
-                        // intact with its bytes already gone (that is why
-                        // this refetched). The next tick seeds the new row;
-                        // the next open heals either way: the new row
-                        // absorbs its document-less sibling, the old row
-                        // refetches and retires again (see `openAtPlace`).
-                        // Name it where it is seen — the reader is open —
-                        // and list what is there. A failure outranks the
-                        // informational rewrite note; the first one wins, so
-                        // an earlier sibling-loop failure stands on both.
+                    guard let recorder else {
+                        // First failure wins, like every other sheet message.
                         if libraryMessage == nil {
-                            libraryMessage = LibraryCopy.refreshFailed
+                            libraryMessage = LibraryCopy.noStore
                         }
-                        if readerNotice == nil || readerNotice == LibraryCopy.articleUpdated {
-                            readerNotice = LibraryCopy.refreshFailed
-                        }
-                        refreshLibrary()
                         return true
+                    }
+                    // A failed supersede rolls back: no row seeded, old row
+                    // intact with its bytes already gone (that is why this
+                    // refetched). The next tick seeds the new row; the next
+                    // open heals either way: the new row absorbs its
+                    // document-less sibling, the old row refetches and
+                    // retires again (see `openAtPlace`). Named on both
+                    // surfaces from the completion.
+                    recorder.supersedeOnRefetch(
+                        oldRow: row, newDocument: document, startWord: start
+                    ) { [weak self] retired in
+                        Task { @MainActor in self?.refetchRowRetired(retired: retired) }
                     }
                     clearHash = ReadLaterStore.Store.resumeKey(for: document)
                     clearDoc = document.id
-                    refreshLibrary()
                 }
                 // The canonical fallback rescued a dead pasted link: drop it
                 // from both rows so later opens fetch once, from the
@@ -505,10 +513,36 @@ final class AppModel {
                     // open would tick it back into the position row.
                     // Retargeted above when a supersede seeded a new row.
                     recorder?.clearRescuedLink(contentHash: clearHash, documentID: clearDoc)
+                    if clearHash != row.contentHash {
+                        // The supersede above may fail and leave the old row
+                        // holding the dead link. Clearing it too costs one
+                        // no-op write on success (the row is gone) and saves
+                        // the extra fetch on failure.
+                        recorder?.clearRescuedLink(contentHash: row.contentHash, documentID: row.documentID)
+                    }
                 }
                 return true
             }
         }
+    }
+
+    /// Lands the refetch retire on main. The session already holds the new
+    /// bytes: a failed retire is the stale row, not the article, and it is
+    /// named where it is seen — the reader is open — plus the sheet line
+    /// for when it closes. A failure outranks the informational rewrite
+    /// note; the first one wins, so an earlier sibling failure stands. The
+    /// list re-reads either way: success replaced the row, failure leaves
+    /// the stale one visible until the next open heals it.
+    private func refetchRowRetired(retired: Bool) {
+        if !retired {
+            if libraryMessage == nil {
+                libraryMessage = LibraryCopy.refreshFailed
+            }
+            if readerNotice == nil || readerNotice == LibraryCopy.articleUpdated {
+                readerNotice = LibraryCopy.refreshFailed
+            }
+        }
+        refreshLibrary()
     }
 
     /// Writes the current place now. Called on pause-adjacent transitions the
