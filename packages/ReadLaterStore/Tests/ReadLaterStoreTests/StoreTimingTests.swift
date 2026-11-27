@@ -87,4 +87,48 @@ struct StoreTimingTests {
         // The recorder queue is off-main: its writes carry main == "0".
         #expect(position?.fields["main"] == "0")
     }
+
+    @Test("Recorder saves the document off main and the place follows it")
+    func recorderSavesDocumentOffMain() throws {
+        let hub = TelemetryHub()
+        let (store, dir) = try makeTemporaryStore(telemetry: hub)
+        defer { removeTemporaryStore(at: dir) }
+
+        let document = makeSampleDocument()
+        let recorder = PositionRecorder(store: store)
+        // One queue, FIFO: the place is enqueued after the save, so it finds
+        // the document row even though neither call blocked the test thread.
+        recorder.save(document: document)
+        recorder.record(document: document, wordIndex: 4, source: "tick")
+        recorder.wait()
+
+        let hash = Store.resumeKey(for: document)
+        #expect(try store.document(id: document.id)?.plan == document.plan)
+        #expect(try store.position(contentHash: hash)?.wordIndex == 4)
+
+        let events = hub.telemetryLog.tail(20).filter { $0.event == TelemetryName.storeWrite }
+        let save = events.first { $0.fields["write"] == "save.document" }
+        // The save ran on the writer queue, not the caller.
+        #expect(save?.fields["main"] == "0")
+    }
+
+    @Test("Recorder reports a failed save to the completion")
+    func recorderReportsFailedSave() throws {
+        let (store, dir) = try makeTemporaryStore()
+        defer { removeTemporaryStore(at: dir) }
+
+        // Remove the table the save needs so the write throws on the queue.
+        try store.dbQueue.write { db in
+            try db.execute(sql: "DROP TABLE document")
+        }
+        let recorder = PositionRecorder(store: store)
+        let failed = DispatchSemaphore(value: 0)
+        recorder.save(document: makeSampleDocument()) { saved in
+            if !saved { failed.signal() }
+        }
+        recorder.wait()
+        // A silent failure would leave the reader with no notice: the
+        // completion must carry the error, and the open path names it.
+        #expect(failed.wait(timeout: .now()) == .success)
+    }
 }

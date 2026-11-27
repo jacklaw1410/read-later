@@ -254,7 +254,7 @@ All four production ops are written by `SyncOplog.insert` inside `Store.timedWri
 
 | `op` | Written at | When | `payload` |
 |---|---|---|---|
-| `document.save` | `Store.swift:134-151` | Document upsert on open/ingress | JSON-encoded `Document`: `id`, `url`, `title`, `plan` (`BlockPlan` JSON), `addedAt` (`Store.swift:127-133`, `Model.swift:236-249`) |
+| `document.save` | `Store.swift` `save(document:)` | Document upsert on open/ingress, enqueued on the writer queue | JSON-encoded `Document`: `id`, `url`, `originalURL`, `title`, `plan` (`BlockPlan` JSON), `addedAt`. One plan encode feeds both `plan_json` and this payload |
 | `document.delete` | `Store.swift:172-177` | Document delete, including `cacheBust` (`Store.swift:316-320`) | `{"id": "<uuid>"}` (`Store.swift:173`) |
 | `phrase.save` | `Store.swift:329-350` | Saved phrase upsert | JSON-encoded `Phrase`: `id`, `word`, `gloss`, `source`, `createdAt` (`Model.swift:266-279`) |
 | `occurrence.record` | `Store.swift:364-393` | Each saved phrase sighting | JSON map `phrase_id`, `document_id`, `block_id`, `char_offset` (`Store.swift:372-377`) |

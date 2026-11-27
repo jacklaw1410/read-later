@@ -213,6 +213,11 @@ public final class Store: Sendable {
     // MARK: - Documents
 
     public func save(document: Document) throws {
+        // One plan encode serves both sinks: `plan_json` stores these bytes
+        // and the sync payload splices the same bytes under `plan`. Encoding
+        // the `Document` would walk every block and sentence a second time,
+        // and the open path pays that on the writer thread for every
+        // article.
         let planData = try JSONEncoder().encode(document.plan)
         guard let planJSON = String(data: planData, encoding: .utf8) else {
             throw StoreError.planEncodingFailed
@@ -222,7 +227,10 @@ public final class Store: Sendable {
         // or session params) is provenance, kept for refetch and display
         // (spec §2, silent on sync). Whether sync strips it is a sync-slice
         // call; the local store keeps it either way.
-        guard let payload = encodedJSON(document) else {
+        let payload: String
+        do {
+            payload = try documentPayload(document, planJSON: planJSON)
+        } catch {
             throw StoreError.payloadEncodingFailed
         }
         // Op name is legacy `verb.noun` while every other write is
@@ -1050,6 +1058,24 @@ public final class Store: Sendable {
             anchorHash: anchorHash, anchorHead: anchorHead,
             updatedAt: Date(timeIntervalSinceReferenceDate: updatedAt))
     }
+}
+
+/// The `document.save` sync payload: the JSON a synthesized `Document`
+/// encode produces (`id`, `url`, `originalURL`, `title`, `plan`,
+/// `addedAt`), with an already-encoded plan spliced in. Every leaf still
+/// comes from `JSONEncoder`, so escaping and the Date/URL spelling match.
+/// Key order follows the declaration; JSON object order carries no meaning.
+private func documentPayload(_ document: Document, planJSON: String) throws -> String {
+    let encoder = JSONEncoder()
+    func field<T: Encodable>(_ value: T) throws -> String {
+        String(decoding: try encoder.encode(value), as: UTF8.self)
+    }
+    let id = try field(document.id)
+    let url = try field(document.url)
+    let originalURL = try field(document.originalURL)
+    let title = try field(document.title)
+    let addedAt = try field(document.addedAt)
+    return #"{"id":\#(id),"url":\#(url),"originalURL":\#(originalURL),"title":\#(title),"plan":\#(planJSON),"addedAt":\#(addedAt)}"#
 }
 
 private func encodedJSON<T: Encodable>(_ value: T) -> String? {

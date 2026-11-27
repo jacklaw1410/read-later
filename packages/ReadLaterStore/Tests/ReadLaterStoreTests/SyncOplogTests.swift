@@ -47,6 +47,35 @@ struct SyncOplogTests {
         #expect(Set(seqs).count == 4)
     }
 
+    @Test("The document.save payload carries the one encoded plan")
+    func documentSavePayloadSplicesThePlan() throws {
+        let (store, dir) = try makeTemporaryStore()
+        defer { removeTemporaryStore(at: dir) }
+
+        var document = makeSampleDocument()
+        document.originalURL = URL(string: "https://example.com/a?ref=paste")
+        try store.save(document: document)
+
+        let entry = try #require(try store.syncOplog.entries().first)
+        #expect(entry.op == "document.save")
+        // The payload still decodes as the full Document the log documents.
+        let decoded = try JSONDecoder().decode(
+            ReadLaterCore.Document.self, from: Data(entry.payload.utf8))
+        #expect(decoded == document)
+        // Both sinks use the same bytes, so a save encodes the plan once and
+        // the stored plan cannot drift from the payload's. Compare against
+        // the stored column, not a fresh encode: `JSONEncoder` does not
+        // promise key order between encodes.
+        let planJSON: String = try store.dbQueue.read { db in
+            let value = try String.fetchOne(
+                db, sql: "SELECT plan_json FROM document WHERE id = ?",
+                arguments: [document.id.uuidString])
+            return try #require(value)
+        }
+        #expect(entry.payload.contains(planJSON))
+        #expect(try store.document(id: document.id) == document)
+    }
+
     @Test("Entries page after a cursor with a limit")
     func entriesPageAfterCursor() throws {
         let (store, dir) = try makeTemporaryStore()
