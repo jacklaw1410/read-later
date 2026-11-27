@@ -44,12 +44,14 @@ public protocol SpeechController: AnyObject {
     /// queued ahead of the voice. Two is the measured default.
     func speak(sentences: [(blockID: Int, sentence: Sentence)], prefetch: Int)
 
+    /// Silences the voice now and keeps the queue at the current word.
+    /// `resume()` plays on from that word. Waiting for a word boundary can
+    /// land after the voice has passed it, which leaves the controller
+    /// claiming a pause the synthesizer never took.
     func pause()
-    /// Silences the voice now and keeps the queue at the current word. `resume()`
-    /// plays on from that word. Unlike `pause()`, this does not wait for a word
-    /// boundary, so a release that comes first cannot restart into a voice whose
-    /// pause lands later.
-    func holdForScrub()
+    /// Holds the voice at the current word while a scrub drag runs.
+    /// `resume()` plays on from that word.
+    func holdAtWord()
     func resume()
     func stop()
 

@@ -25,6 +25,10 @@ public final class AVSpeechController: NSObject, SpeechController {
     private var bridge: SpeechDelegateBridge?
     public var onWord: ((SpokenWordRange) -> Void)?
     public var onStateChange: ((SpeechState) -> Void)?
+    /// Debug-only stall probe. Nil in Release, so every call is one optional
+    /// check. The probe owns its timer and its log lines; this class only
+    /// reports what happened.
+    public var onProbe: ((SpeechProbeEvent) -> Void)?
 
     /// UI speed multiplier. 1.0 is the reference pace, about 140 words per minute.
     /// A change while speaking restarts from the current word, because the
@@ -74,8 +78,9 @@ public final class AVSpeechController: NSObject, SpeechController {
     private var prefetchWindow = SpeechQueue.prefetch
     private var headTruncation: HeadTruncation?
     private var currentWordIndex = 0
-    /// Word a scrub hold stopped at. `resume()` plays on from it, not from the
-    /// queue position, which is past the cut sentence.
+    /// Word the voice was held at: a scrub drag, a pause, or an interruption.
+    /// `resume()` plays on from it, not from the queue position, which is past
+    /// the cut sentence.
     private var heldWord: Int?
     private var rateTask: Task<Void, Never>?
     private var rateSettler = RateSettler()
@@ -185,16 +190,14 @@ public final class AVSpeechController: NSObject, SpeechController {
     }
 
     public func pause() {
-        guard state == .speaking else { return }
-        let accepted = synthesizer.pauseSpeaking(at: .word)
-        telemetry.record(TelemetryName.speechPauseCall, fields: [
-            "accepted": String(accepted),
-            "synthPaused": String(synthesizer.isPaused),
-        ])
-        state = .paused
+        hold(reason: .pause)
     }
 
-    public func holdForScrub() {
+    public func holdAtWord() {
+        hold(reason: .scrub)
+    }
+
+    private func hold(reason: SpeechHoldReason) {
         guard state == .speaking else { return }
         epoch += 1
         synthesizer.stopSpeaking(at: .immediate)
@@ -202,6 +205,7 @@ public final class AVSpeechController: NSObject, SpeechController {
         retained.removeAll()
         heldWord = currentWordIndex
         state = .paused
+        onProbe?(.held(reason: reason))
     }
 
     public func resume() {
@@ -222,6 +226,7 @@ public final class AVSpeechController: NSObject, SpeechController {
         }
         synthesizer.continueSpeaking()
         state = .speaking
+        onProbe?(.resumed)
     }
 
     public func stop() {
@@ -235,6 +240,7 @@ public final class AVSpeechController: NSObject, SpeechController {
         currentWordIndex = 0
         heldWord = nil
         state = .idle
+        onProbe?(.stopped)
     }
 
     /// Restarts speech at a global word index without restarting the
@@ -295,6 +301,18 @@ public final class AVSpeechController: NSObject, SpeechController {
         !inFlight.isEmpty
     }
 
+    /// Read-only engine truth for the stall probe's sample. Nil is not a case:
+    /// the sample always names the current state.
+    public var health: SpeechProbeSample {
+        SpeechProbeSample(
+            state: state,
+            isSpeaking: synthesizer.isSpeaking,
+            isPaused: synthesizer.isPaused,
+            queued: inFlight.count,
+            word: currentWordIndex
+        )
+    }
+
     // MARK: - Queue
 
     /// Maps the app speed to the synthesizer rate. `1×` is
@@ -346,20 +364,19 @@ public final class AVSpeechController: NSObject, SpeechController {
             guard let raw = note.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt,
                   let type = AVAudioSession.InterruptionType(rawValue: raw)
             else { return }
+            onProbe?(.interrupted(type: raw, state: state))
             switch type {
             case .began:
                 if state == .speaking {
                     pausedByInterruption = true
-                    synthesizer.pauseSpeaking(at: .word)
-                    state = .paused
+                    hold(reason: .interruption)
                 }
             case .ended:
                 let options = (note.userInfo?[AVAudioSessionInterruptionOptionKey] as? UInt)
                     .map(AVAudioSession.InterruptionOptions.init(rawValue:)) ?? []
                 defer { pausedByInterruption = false }
                 guard pausedByInterruption, options.contains(.shouldResume), state == .paused else { return }
-                synthesizer.continueSpeaking()
-                state = .speaking
+                resume()
             @unknown default:
                 break
             }
@@ -378,6 +395,7 @@ extension AVSpeechController {
         // transport then swallows the reader's first press.
         guard let entry = inFlight[utteranceID], !warmupIDs.contains(utteranceID) else { return }
         state = .speaking
+        onProbe?(.utteranceStarted(utterance: entry.utteranceIndex))
         // M4 phone-side mark: every utterance start, ungated (see TelemetryName).
         telemetry.record(TelemetryName.utteranceStart, fields: [
             "utterance": String(entry.utteranceIndex),
@@ -406,6 +424,7 @@ extension AVSpeechController {
               let global = current.wordIndex(reportedRange: adjusted, in: utterance)
         else { return }
         currentWordIndex = global
+        onProbe?(.boundary(utterance: entry.utteranceIndex, word: global))
         if !ttfwWordDelivered {
             ttfwWordDelivered = true
             if telemetry.hasActiveRun {
@@ -438,6 +457,7 @@ extension AVSpeechController {
         }
         if inFlight.isEmpty, nextToEnqueue >= current.utterances.count {
             state = .finished
+            onProbe?(.finished)
         }
     }
 
@@ -462,6 +482,7 @@ extension AVSpeechController {
     }
 
     fileprivate func handleDidCancel(utteranceID: ObjectIdentifier) {
+        onProbe?(.cancelled(tracked: inFlight[utteranceID] != nil, state: state))
         if warmupIDs.remove(utteranceID) != nil {
             retained.removeValue(forKey: utteranceID)
             if state == .warming { state = .idle }

@@ -77,11 +77,16 @@ public enum TelemetryName {
     public static let tapPause = "tap.pause"
     public static let scrubCommit = "scrub.commit"
     public static let scrubBegin = "scrub.begin"
-    public static let speechPauseCall = "speech.pauseCall"
     public static let speechDidPause = "speech.didPause"
     public static let speechDidResume = "speech.didResume"
     public static let speechEnqueue = "speech.enqueue"
     public static let speechDidFinish = "speech.didFinish"
+    /// Stall probes, Debug builds only (`StallProbe`). The device runs that
+    /// chase a stall use Debug; release builds do not write them.
+    public static let speechWord = "speech.word"
+    public static let speechHeartbeat = "speech.heartbeat"
+    public static let speechDidCancel = "speech.didCancel"
+    public static let audioInterruption = "audio.interruption"
     public static let storeWrite = "store.write"
     public static let markerRequest = "marker.request"
     public static let framesSecond = "frames.second"

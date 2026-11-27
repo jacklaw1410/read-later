@@ -44,7 +44,16 @@ enum DebugLaunch {
         if case let .scripted(millisecondsPerWord) = options.voice {
             return ScriptedSpeechController(millisecondsPerWord: millisecondsPerWord)
         }
-        return AVSpeechController(telemetry: telemetry)
+        let speech = AVSpeechController(telemetry: telemetry)
+        // Stall evidence is a Debug tool. The controller owns the probe, the
+        // probe holds the voice weakly, so there is no cycle and no probe in
+        // a Release build at all.
+        let probe = StallProbe(
+            sample: { [weak speech] in speech?.health },
+            record: { name, fields in telemetry.record(name, fields: fields) }
+        )
+        speech.onProbe = { probe.note($0) }
+        return speech
     }
 
     private static func resetStore() {
