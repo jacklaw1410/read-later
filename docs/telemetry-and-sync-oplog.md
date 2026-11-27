@@ -164,6 +164,7 @@ compile out of Release and require launch arguments
 | `T7.firstWord` (signpost) | `TelemetryLog.swift:38` | `AVSpeechController.swift:409-413` | First word boundary, only when a run is active; ends the run | none |
 | `run.end` | `TelemetryLog.swift:39` | `TelemetryHub.swift:229`, `:249`; triggered `RootView.swift:115` | Superseded tap, reader close, or `endRunIfActive` | `outcome`: `superseded`, `closed`, or caller value (`stopped` in tests, `TelemetryLogTests.swift:185`) |
 | `launch.build` | `TelemetryLog.swift:72` | `ReadLaterApp.swift:33-57` | App `init`; ties the log to a build | `commit`, `configuration`, `model`, `os` |
+| `reader.entered` | `TelemetryLog.swift:47` | `TelemetryHub.swift:267`; called `packages/ReadLaterUI/Sources/ReadLaterUI/ReaderView.swift:219` | Reader view first frame, one main-loop turn after appear | `source`: `link`, `clipboard`, `rawText`, `sample`, `library` |
 
 ### Ingestion and article open
 
