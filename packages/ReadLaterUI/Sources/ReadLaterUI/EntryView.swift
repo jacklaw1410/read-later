@@ -666,7 +666,7 @@ public struct EntryView: View {
             setLoading(.stripping)
             switch await ArticleIngress.pasted(request.raw, telemetry: telemetry) {
             case .success(let document):
-                reveal(.ready)
+                settle(.ready)
                 telemetry.record(TelemetryName.readerOpen, fields: ["source": request.source.rawValue])
                 onOpen(document, request.source, nil)
             case .failure(let error):
@@ -679,7 +679,7 @@ public struct EntryView: View {
         if request.link == EntryCopy.sampleLink {
             setLoading(.fetching)
             reveal(.stripping)
-            reveal(.ready)
+            settle(.ready)
             telemetry.record(TelemetryName.fetchSkipped, fields: ["reason": "sample-link"])
             telemetry.record(TelemetryName.planReady, fields: [
                 "source": EntrySource.sample.rawValue,
@@ -707,7 +707,7 @@ public struct EntryView: View {
             telemetry: telemetry
         ) {
         case .success(let document):
-            reveal(.ready)
+            settle(.ready)
             telemetry.record(TelemetryName.readerOpen, fields: ["source": request.source.rawValue])
             onOpen(document, request.source, page)
         case .failure(let error):
@@ -720,5 +720,17 @@ public struct EntryView: View {
     @MainActor
     private func reveal(_ stage: EntryStage) {
         setLoading(stage)
+    }
+
+    /// Sets the final stage with no animation. The reader replaces Entry in
+    /// the same turn, so a 0.3 s bar animation would only hold the first
+    /// Reader frame behind it. The stage is still set, in order.
+    @MainActor
+    private func settle(_ stage: EntryStage) {
+        var transaction = Transaction()
+        transaction.disablesAnimations = true
+        withTransaction(transaction) {
+            setLoading(stage)
+        }
     }
 }
