@@ -100,15 +100,12 @@ public enum TelemetryName {
 /// (buffer, ring, schedule) or `writeLock` (file writes).
 public final class TelemetryLog: @unchecked Sendable {
     public static let defaultFileName = "telemetry.jsonl"
-    /// Files from older builds. Read for exports, never written again.
-    public static let legacyFileName = "oplog.jsonl"
     public static let defaultMaxBytes = 1_048_576
     public static let defaultMaxFiles = 5
     public static let defaultRingCapacity = 200
     public static let defaultFlushDelay: TimeInterval = 1.0
 
     private static let stem = "telemetry"
-    private static let legacyStem = "oplog"
 
     private let lock = NSLock()
     private let writeLock = NSLock()
@@ -251,17 +248,14 @@ public final class TelemetryLog: @unchecked Sendable {
     }
 
     /// Log files on disk, current first. Empty when memory-only.
-    /// Legacy `oplog*.jsonl` files are included so exports still see them.
     public func logFiles() -> [URL] {
         guard let dir = lock.withLock({ directory }) else { return [] }
         var out: [URL] = []
-        for stem in [Self.stem, Self.legacyStem] {
-            let current = dir.appendingPathComponent(Self.fileName(stem: stem))
-            if FileManager.default.fileExists(atPath: current.path) { out.append(current) }
-            for i in 1 ..< maxFiles {
-                let url = dir.appendingPathComponent(Self.fileName(stem: stem, index: i))
-                if FileManager.default.fileExists(atPath: url.path) { out.append(url) }
-            }
+        let current = dir.appendingPathComponent(Self.fileName(stem: Self.stem))
+        if FileManager.default.fileExists(atPath: current.path) { out.append(current) }
+        for i in 1 ..< maxFiles {
+            let url = dir.appendingPathComponent(Self.fileName(stem: Self.stem, index: i))
+            if FileManager.default.fileExists(atPath: url.path) { out.append(url) }
         }
         return out
     }
@@ -341,7 +335,3 @@ public final class TelemetryLog: @unchecked Sendable {
         return "\(base).jsonl"
     }
 }
-
-/// Compatibility name for the measurement log. New code uses `TelemetryLog`.
-/// Oplog names the separate sync log and must not be used for telemetry.
-public typealias TelemetryOplog = TelemetryLog

@@ -22,7 +22,7 @@ struct TelemetryNameTests {
     func namesAreUniqueAndEmitted() throws {
         let definition = try String(
             contentsOf: Self.repoRoot
-                .appendingPathComponent("packages/ReadLaterCore/Sources/ReadLaterCore/TelemetryOplog.swift"),
+                .appendingPathComponent("packages/ReadLaterCore/Sources/ReadLaterCore/TelemetryLog.swift"),
             encoding: .utf8
         )
         let names = try Self.extractNames(from: definition)
@@ -61,7 +61,7 @@ struct TelemetryNameTests {
                 && !path.contains("/Tests/")
                 && !path.contains("/E2ETests/")
                 && !path.contains("/.build/")
-                && path != "ReadLaterCore/Sources/ReadLaterCore/TelemetryOplog.swift"
+                && path != "ReadLaterCore/Sources/ReadLaterCore/TelemetryLog.swift"
             {
                 out.append(try String(contentsOf: base.appendingPathComponent(path), encoding: .utf8))
             }

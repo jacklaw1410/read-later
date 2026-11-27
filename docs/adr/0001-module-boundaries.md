@@ -1,6 +1,6 @@
 # ADR-0001 — Module boundaries and the contracts seam
 
-Status: accepted · Date: 2026-11-12 · Amended: 2026-11-21
+Status: accepted · Date: 2026-11-12 · Amended: 2026-11-27
 
 ## Decision
 
@@ -15,7 +15,7 @@ manifest.
 
 `ReadLaterCore` may also hold in-process protocols and the value types
 they use, provided they import only Foundation and SwiftSoup. Examples:
-`Diagnostics`, `SpeechController`, `LookupProvider`, `Extractor`,
+`SpeechController`, `LookupProvider`, `Extractor`,
 `CapabilityPacks`, `LibraryProvider`, `LibraryRow` and `DiagnosticsExporting`.
 A view in `ReadLaterUI` reads app-only state, such as pack installs or
 library rows, through a protocol defined in Core. The app target
