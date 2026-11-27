@@ -9,7 +9,7 @@ contains. For why they stay separate, see `adr/0004-two-logs.md`.
   `telemetry*.jsonl` under `Application Support/Telemetry/`.
 - **Oplog** is the append-only log of sync operations (`GLOSSARY.md`). The
   code type is `SyncOplog`; rows live in the `syncoplog` SQLite table and are
-  `ChangeLogEntry`.
+  `SyncOplogEntry`.
 
 The app writes telemetry locally. No analytics SDK and no network are
 involved. Sync replays the oplog; it never mirrors a store
@@ -107,7 +107,7 @@ CREATE TABLE syncoplog(
 )
 ```
 
-`ChangeLogEntry` is the typed row: `seq`, `device`, `at: Date`, `op`,
+`SyncOplogEntry` is the typed row: `seq`, `device`, `at: Date`, `op`,
 `payload: String` (`packages/ReadLaterCore/Sources/ReadLaterCore/Model.swift:282-298`).
 Dates are `timeIntervalSinceReferenceDate` REALs so a save/read round-trips
 bit-exact (`packages/ReadLaterStore/Sources/ReadLaterStore/Store.swift:74-76`).

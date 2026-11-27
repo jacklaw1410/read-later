@@ -34,7 +34,7 @@ public final class SyncOplog: Sendable {
     }
 
     /// Entries after `seq`, oldest first, up to `limit` rows.
-    public func entries(after seq: Int64 = 0, limit: Int = 100) throws -> [ChangeLogEntry] {
+    public func entries(after seq: Int64 = 0, limit: Int = 100) throws -> [SyncOplogEntry] {
         try dbQueue.read { db in
             let rows = try Row.fetchAll(db, sql: """
                 SELECT seq, device, "at", op, payload FROM \(Schema.syncOplog)
@@ -42,7 +42,7 @@ public final class SyncOplog: Sendable {
                 """, arguments: [seq, limit])
             return rows.map { row in
                 let at: Double = row["at"]
-                return ChangeLogEntry(
+                return SyncOplogEntry(
                     seq: row["seq"],
                     device: row["device"],
                     at: Date(timeIntervalSinceReferenceDate: at),

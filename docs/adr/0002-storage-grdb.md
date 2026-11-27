@@ -6,7 +6,7 @@ Status: accepted · Date: 2026-11-12 · Amended: 2026-11-27
 
 `ReadLaterStore` is GRDB over system SQLite, with FTS5 for phrase
 search and an explicit oplog as the sync boundary. `SyncOplog` writes
-`ChangeLogEntry` rows to the `syncoplog` table. CloudKit mirrors the log,
+`SyncOplogEntry` rows to the `syncoplog` table. CloudKit mirrors the log,
 never the store.
 
 ## Context
