@@ -17,6 +17,9 @@ public struct ReaderView<Player: View, Overlay: View>: View {
     /// Bumped by the caller to scroll back to the wash block. The tap on the
     /// return pill is the only writer, so play alone never yanks.
     private let returnToken: Int
+    /// Telemetry and ingress name for the one Reader-entry event.
+    private let telemetry: TelemetryHub
+    private let source: EntrySource
     private let onTapWord: (Int, WordSlot?, String) -> Void
     private let onTapNote: (Int) -> Void
     /// Fired when the reader's own scroll trips the hold detector. The caller
@@ -33,6 +36,7 @@ public struct ReaderView<Player: View, Overlay: View>: View {
     @State private var washMidY: CGFloat?
     @State private var viewportHeight: CGFloat = 0
     @State private var lastReportedVisible = true
+    @State private var didMarkEntered = false
 
     public init(
         document: ReadLaterCore.Document,
@@ -44,6 +48,8 @@ public struct ReaderView<Player: View, Overlay: View>: View {
         autoScroll: Bool,
         isScrubbing: Bool = false,
         returnToken: Int = 0,
+        telemetry: TelemetryHub,
+        source: EntrySource,
         onTapWord: @escaping (_ blockID: Int, _ slot: WordSlot?, _ word: String) -> Void,
         onTapNote: @escaping (Int) -> Void,
         onHold: @escaping () -> Void = {},
@@ -60,6 +66,8 @@ public struct ReaderView<Player: View, Overlay: View>: View {
         self.autoScroll = autoScroll
         self.isScrubbing = isScrubbing
         self.returnToken = returnToken
+        self.telemetry = telemetry
+        self.source = source
         self.onTapWord = onTapWord
         self.onTapNote = onTapNote
         self.onHold = onHold
@@ -205,6 +213,11 @@ public struct ReaderView<Player: View, Overlay: View>: View {
             overlay()
         }
         .background(Theme.paper)
+        .onAppear {
+            guard !didMarkEntered else { return }
+            didMarkEntered = true
+            telemetry.markReaderEntered(source: source.rawValue)
+        }
     }
 
     /// Reports wash visibility once per change. The pill reads this, not the

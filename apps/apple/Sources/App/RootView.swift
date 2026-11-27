@@ -17,6 +17,10 @@ final class AppModel {
     private(set) var library: [ReadingPosition] = []
     /// One line the library view shows when an action fails.
     private(set) var libraryMessage: String?
+    /// Ingress name for the Reader-entry event. Every open names its path.
+    private(set) var readerSource: EntrySource = .library
+    /// Changes on every open, so SwiftUI builds fresh Reader state per open.
+    private(set) var openToken = 0
     /// The root's two sheets. The model owns them so the open paths and the
     /// snapshot harness raise the same screens the buttons raise.
     var isLibraryPresented = false
@@ -89,7 +93,9 @@ final class AppModel {
         #endif
     }
 
-    func open(_ document: ReadLaterCore.Document, startWord: Int? = nil) {
+    func open(_ document: ReadLaterCore.Document, startWord: Int? = nil, source: EntrySource) {
+        readerSource = source
+        openToken += 1
         flushPosition()
         session?.stop()
         try? store?.save(document: document)
@@ -123,7 +129,7 @@ final class AppModel {
               let saved = try? store.latestUnfinishedPosition(),
               let document = try? store.document(id: saved.documentID)
         else { return }
-        open(document, startWord: saved.wordIndex)
+        open(document, startWord: saved.wordIndex, source: .library)
     }
 
     // MARK: - Library
@@ -212,7 +218,7 @@ final class AppModel {
     }
 
     private func openAtPlace(_ document: ReadLaterCore.Document, row: ReadingPosition) {
-        open(document, startWord: row.wordIndex)
+        open(document, startWord: row.wordIndex, source: .library)
     }
 
     private func refetchAndOpen(_ row: ReadingPosition, url: URL) async -> Bool {
@@ -281,7 +287,9 @@ struct RootView: View {
             if let session = model.session {
                 ReaderScreen(
                     session: session, registry: registry, connectivity: connectivity, telemetry: telemetry,
+                    source: model.readerSource,
                     onExit: model.closeDocument)
+                    .id(model.openToken)
                     .transition(.opacity)
                     // Escape closes card/note from any focus inside the
                     // reader. Hoisted here because RootView.body runs once per
@@ -304,7 +312,7 @@ struct RootView: View {
             } else {
                 EntryView(
                     telemetry: telemetry,
-                    onOpen: { model.open($0) },
+                    onOpen: { document, source in model.open(document, source: source) },
                     onSettings: { model.isSettingsPresented = true },
                     onLibrary: { model.isLibraryPresented = true },
                     prefillLink: LibraryCopy.prefillLink(seenDemo: seenDemo)
@@ -444,6 +452,7 @@ struct ReaderScreen: View {
     let registry: any CapabilityPacks
     let connectivity: Connectivity
     let telemetry: TelemetryHub
+    let source: EntrySource
     let onExit: () -> Void
 
     @Environment(\.openURL) private var openURL
@@ -487,6 +496,8 @@ struct ReaderScreen: View {
             autoScroll: session.playbackState.autoScroll && !session.playbackState.isScrubbing,
             isScrubbing: session.playbackState.isScrubbing,
             returnToken: returnToken,
+            telemetry: telemetry,
+            source: source,
             onTapWord: { _, slot, word in
                 session.lookup.tap(slot: slot, word: word)
             },

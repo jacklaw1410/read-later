@@ -252,4 +252,21 @@ struct TelemetryOplogTests {
         #expect(!hub.hasActiveRun)
         #expect(hub.oplog.tail(1).first?.fields == ["outcome": "stopped"])
     }
+
+    @Test("Reader-entry event carries session and source")
+    func readerEnteredEvent() async throws {
+        let fake = FakeClock()
+        let hub = TelemetryHub(
+            directory: nil, sessionID: "frame-test",
+            clock: fake.clock, wall: fake.wall, originUptime: 1_000
+        )
+        hub.markReaderEntered(source: "link")
+        await withCheckedContinuation { continuation in
+            DispatchQueue.main.async { continuation.resume() }
+        }
+        let event = try #require(hub.oplog.tail(1).first)
+        #expect(event.event == TelemetryName.readerEntered)
+        #expect(event.session == "frame-test")
+        #expect(event.fields == ["source": "link"])
+    }
 }

@@ -1,6 +1,21 @@
 import Foundation
 import ReadLaterCore
 
+/// Where an Entry request came from. The raw value is the `source` field on
+/// Reader Telemetry; only these five values can be recorded.
+public enum EntrySource: String, Sendable {
+    /// A link typed into the field.
+    case link
+    /// A link put into the field by the clipboard button.
+    case clipboard
+    /// Article text entered in text mode.
+    case rawText
+    /// The bundled demo article.
+    case sample
+    /// A saved place opened from the Library.
+    case library
+}
+
 /// What the entry screen accepts. The screen picks one case from its
 /// segmented control, so one open never reads both fields.
 public enum IngressInput: Equatable, Sendable {
@@ -173,7 +188,7 @@ public enum ArticleIngress {
             return .failure(.empty)
         }
         telemetry.record(TelemetryName.planReady, fields: [
-            "source": "pasted",
+            "source": EntrySource.rawText.rawValue,
             "words": String(document.plan.spokenWords),
         ])
         return .success(document)
