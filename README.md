@@ -143,7 +143,7 @@ Counts below were observed on 2026-11-27 with Swift 6.4.2.
 |---|---|---|
 | `ReadLaterCore` | `swift test` in `packages/ReadLaterCore` | 127 swift-testing tests pass |
 | `ReadLaterPacks` | `swift test` in `packages/ReadLaterPacks` | 52 swift-testing tests pass |
-| `ReadLaterStore` | `swift test` in `packages/ReadLaterStore` | 103 swift-testing tests pass |
+| `ReadLaterStore` | `swift test` in `packages/ReadLaterStore` | 94 swift-testing tests pass |
 | `ReadLaterUI` | `swift test` in `packages/ReadLaterUI` | 56 swift-testing tests pass |
 
 ```bash

@@ -93,7 +93,7 @@ struct RawPageTests {
         let (store, dir) = try makeTemporaryStore()
         defer { removeTemporaryStore(at: dir) }
 
-        // v10 backfills source_sha256 = NULL when plan_json will not parse.
+        // The migration backfills source_sha256 = NULL when plan_json will not parse.
         // The delete falls back to `doc:<id>` for the hash scope, but the
         // id-scoped orphan sweep still finds the page filed under this id.
         let document = makeSampleDocument()

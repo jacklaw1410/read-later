@@ -399,8 +399,8 @@ struct LibraryIdentityTests {
         #expect(try store.position(contentHash: key)?.extractorVersion == 3)
     }
 
-    @Test("Original URL rides the position row and survives re-records")
-    func originalURLRoundTrip() throws {
+    @Test("Links ride the position row and survive re-records")
+    func linksRoundTrip() throws {
         let (store, dir) = try makeTemporaryStore()
         defer { removeTemporaryStore(at: dir) }
 
@@ -409,6 +409,7 @@ struct LibraryIdentityTests {
         try store.save(document: document)
         try store.recordPosition(of: document, wordIndex: 1)
         let key = Store.resumeKey(for: document)
+        let canonical = try #require(try store.position(contentHash: key)?.url)
         #expect(try store.position(contentHash: key)?.originalURL?.absoluteString == "https://short.link/x?utm_source=feed")
 
         // Re-records without an original keep the first one: the paste
@@ -423,23 +424,11 @@ struct LibraryIdentityTests {
         repasted.originalURL = URL(string: "https://short.link/y")
         try store.recordPosition(of: repasted, wordIndex: 3)
         #expect(try store.position(contentHash: key)?.originalURL?.absoluteString == "https://short.link/y")
-    }
-
-    @Test("A nil re-record keeps the canonical URL too")
-    func nilRerecordKeepsCanonicalURL() throws {
-        let (store, dir) = try makeTemporaryStore()
-        defer { removeTemporaryStore(at: dir) }
-
-        let document = makeSampleDocument()
-        try store.save(document: document)
-        try store.recordPosition(of: document, wordIndex: 1)
-        let key = Store.resumeKey(for: document)
-        let canonical = try #require(try store.position(contentHash: key)?.url)
 
         // Pasted text arrives with no URL. The row keeps the earlier link.
         var pasted = document
         pasted.url = nil
-        try store.recordPosition(of: pasted, wordIndex: 2)
+        try store.recordPosition(of: pasted, wordIndex: 4)
         #expect(try store.position(contentHash: key)?.url == canonical)
     }
 
@@ -605,16 +594,6 @@ struct LibraryIdentityTests {
             totalWords: -1, updatedAt: Date(timeIntervalSinceReferenceDate: 0))
         #expect(row.totalWords == 0)
         #expect(row.reachedEnd == false)
-    }
-
-    @Test("v14 creates the sibling-lookup index")
-    func v14PositionURLIndexExists() throws {
-        let (store, dir) = try makeTemporaryStore()
-        defer { removeTemporaryStore(at: dir) }
-        let names: [String] = try store.dbQueue.read { db in
-            try String.fetchAll(db, sql: "SELECT name FROM sqlite_master WHERE name = 'idx_reading_position_url'")
-        }
-        #expect(names == ["idx_reading_position_url"])
     }
 
     @Test("Sibling lookup finds same-URL rows with a different hash")
@@ -835,276 +814,128 @@ struct LibraryIdentityTests {
         #expect(store.resolve(row: row, newPlan: plan) == (0, false))
     }
 
-    @Test("v11 leaves existing documents readable with no pasted link")
-    func v11MigrationLeavesOriginalURLEmpty() throws {
+    @Test("One migration upgrades v6: schema, canonical URLs, and healed rows")
+    func migrationUpgradesV6Database() throws {
         let dir = FileManager.default.temporaryDirectory
             .appendingPathComponent("ReadLaterStoreTests-\(UUID().uuidString)", isDirectory: true)
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         defer { removeTemporaryStore(at: dir) }
         let databaseURL = dir.appendingPathComponent("store.sqlite")
 
-        let document = makeSampleDocument()
-        let planData = try JSONEncoder().encode(document.plan)
-        let planJSON = try #require(String(data: planData, encoding: .utf8))
+        // v6-era shapes: URL drift on a row, a v5 zero total, a released row
+        // with no document, and a plan whose `spoken_words` lies (999).
+        var lying = makeSamplePlan()
+        lying.spokenWords = 999
+        let lyingJSON = try #require(String(data: try JSONEncoder().encode(lying), encoding: .utf8))
+        let live = makeSampleDocument()
+        let nilURLDocID = UUID()
+        let corruptDocID = UUID()
         let queue = try DatabaseQueue(path: databaseURL.path)
-        try makeMigrator().migrate(queue, upTo: "v11_document_sha")
+        try makeMigrator().migrate(queue, upTo: "v6_syncoplog")
         try queue.write { db in
             try db.execute(sql: """
-                INSERT INTO document(id, url, title, added_at, plan_json, source_sha256)
-                VALUES (?, ?, ?, ?, ?, ?)
+                INSERT INTO document(id, url, title, added_at, plan_json) VALUES (?, ?, ?, ?, ?)
                 """, arguments: [
-                    document.id.uuidString, document.url?.absoluteString, document.title,
-                    1000.0, planJSON, document.plan.sourceSHA256,
+                    live.id.uuidString, "https://Example.COM/article?utm_source=x#frag",
+                    "Pre-canonical", 1000.0, lyingJSON,
                 ])
+            try db.execute(sql: """
+                INSERT INTO document(id, url, title, added_at, plan_json) VALUES (?, ?, ?, ?, ?)
+                """, arguments: [nilURLDocID.uuidString, nil, "Nil URL", 1000.0, lyingJSON])
+            try db.execute(sql: """
+                INSERT INTO document(id, url, title, added_at, plan_json) VALUES (?, ?, ?, ?, ?)
+                """, arguments: [corruptDocID.uuidString, "https://example.com/corrupt", "Corrupt", 1000.0, "not json"])
+            let rows: [(String, String, String, Int, String?, Int)] = [
+                ("oldnull", live.id.uuidString, "Old row", 3, nil, 0),
+                ("precanonical", live.id.uuidString, "Pre-canonical", 1,
+                 "https://Example.COM/article?utm_source=x#frag", 50),
+                ("nilurllive", nilURLDocID.uuidString, "Nil URL", 3, nil, 0),
+                ("corruptplan", corruptDocID.uuidString, "Corrupt", 3, nil, 9),
+                ("oldfinish", live.id.uuidString, "Finished", 13, nil, 0),
+            ]
+            for row in rows {
+                try db.execute(sql: """
+                    INSERT INTO reading_position(
+                        content_hash, document_id, title, word_index, finished, saved, url, total_words, updated_at)
+                    VALUES (?, ?, ?, ?, 0, 0, ?, ?, 1000.0)
+                    """, arguments: [row.0, row.1, row.2, row.3, row.4, row.5])
+            }
+            // Released row: no document, so no URL to heal from.
+            try db.execute(sql: """
+                INSERT INTO reading_position(
+                    content_hash, document_id, title, word_index, finished, saved, url, total_words, updated_at)
+                VALUES (?, ?, ?, ?, 0, 1, NULL, 14, 1000.0)
+                """, arguments: ["released-old", UUID().uuidString, "Released", 3])
         }
 
         let store = try Store(databaseURL: databaseURL, device: "test-device", telemetry: TelemetryHub())
-        #expect(try store.document(id: document.id)?.originalURL == nil)
-        #expect(try store.document(id: document.id)?.url?.absoluteString == "https://example.com/article")
-    }
 
-    @Test("v12 canonicalizes stored URLs, keeps the pasted link")
-    func v12MigrationCanonicalizesURLs() throws {
-        let dir = FileManager.default.temporaryDirectory
-            .appendingPathComponent("ReadLaterStoreTests-\(UUID().uuidString)", isDirectory: true)
-        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        defer { removeTemporaryStore(at: dir) }
-        let databaseURL = dir.appendingPathComponent("store.sqlite")
-
-        let document = makeSampleDocument()
-        let planData = try JSONEncoder().encode(document.plan)
-        let planJSON = try #require(String(data: planData, encoding: .utf8))
-        let queue = try DatabaseQueue(path: databaseURL.path)
-        try makeMigrator().migrate(queue, upTo: "v12_document_original_url")
-        let docID = UUID().uuidString
-        try queue.write { db in
-            try db.execute(sql: """
-                INSERT INTO document(id, url, original_url, title, added_at, plan_json, source_sha256)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-                """, arguments: [
-                    docID, "https://Example.COM/article?utm_source=x#frag", "https://short.link/x",
-                    "Pre-canonical", 1000.0, planJSON, document.plan.sourceSHA256,
-                ])
-            try db.execute(sql: """
-                INSERT INTO reading_position(
-                    content_hash, document_id, title, word_index, finished, saved, url, original_url, total_words,
-                    extractor_version, furthest, marked_done, anchor_hash, anchor_head, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, arguments: [
-                    "precanonical", docID, "Pre-canonical", 1, 0, 0,
-                    "https://Example.COM/article?utm_source=x#frag", "https://short.link/x",
-                    50, 1, 1, 0, "", "", 1000.0,
-                ])
+        // Schema: both indexes and the raw-page table exist after one pass.
+        let artifacts: [String] = try store.dbQueue.read { db in
+            try String.fetchAll(db, sql: """
+                SELECT name FROM sqlite_master
+                WHERE name IN ('idx_reading_position_url', 'idx_document_sha', 'idx_raw_page_document', 'raw_page')
+                ORDER BY name
+                """)
         }
+        #expect(artifacts == [
+            "idx_document_sha", "idx_raw_page_document", "idx_reading_position_url", "raw_page",
+        ])
 
-        let store = try Store(databaseURL: databaseURL, device: "test-device", telemetry: TelemetryHub())
-        let back = try #require(try store.position(contentHash: "precanonical"))
-        #expect(back.url?.absoluteString == "https://example.com/article")
-        #expect(back.originalURL?.absoluteString == "https://short.link/x")
-        let docBack = try #require(try store.document(id: UUID(uuidString: docID)!))
-        #expect(docBack.url?.absoluteString == "https://example.com/article")
-        #expect(docBack.originalURL?.absoluteString == "https://short.link/x")
-    }
-
-    @Test("v13 backfills a pre-v5 NULL position URL from the document")
-    func v13MigrationBackfillsNullPositionURL() throws {
-        let dir = FileManager.default.temporaryDirectory
-            .appendingPathComponent("ReadLaterStoreTests-\(UUID().uuidString)", isDirectory: true)
-        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        defer { removeTemporaryStore(at: dir) }
-        let databaseURL = dir.appendingPathComponent("store.sqlite")
-
-        let document = makeSampleDocument()
-        let queue = try DatabaseQueue(path: databaseURL.path)
-        try makeMigrator().migrate(queue, upTo: "v13_canonicalize_urls")
-        // A pre-v5 row survived with NULL url and a zero total; its
-        // document carries a plan whose stored `spoken_words` lies (999).
-        // The heal computes the total from the blocks (14), never trusting
-        // the stored field.
-        var plan = document.plan
-        plan.spokenWords = 999
-        let healedData = try JSONEncoder().encode(plan)
-        let healedJSON = try #require(String(data: healedData, encoding: .utf8))
-        let docID = UUID().uuidString
-        try queue.write { db in
-            try db.execute(sql: """
-                INSERT INTO document(id, url, original_url, title, added_at, plan_json, source_sha256)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-                """, arguments: [
-                    docID, "https://example.com/article", nil,
-                    "Old row", 1000.0, healedJSON, document.plan.sourceSHA256,
-                ])
-            try db.execute(sql: """
-                INSERT INTO reading_position(
-                    content_hash, document_id, title, word_index, finished, saved, url, original_url, total_words,
-                    extractor_version, furthest, marked_done, anchor_hash, anchor_head, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, arguments: [
-                    "oldnull", docID, "Old row", 3, 0, 1,
-                    nil, nil,
-                    0, 0, 0, 0, "", "", 1000.0,
-                ])
+        // Source hash backfills from the plan; a corrupt plan leaves NULL.
+        let liveSHA: String? = try store.dbQueue.read { db in
+            try String.fetchOne(db, sql: "SELECT source_sha256 FROM document WHERE id = ?",
+                                arguments: [live.id.uuidString])
         }
-
-        let store = try Store(databaseURL: databaseURL, device: "test-device", telemetry: TelemetryHub())
-        let back = try #require(try store.position(contentHash: "oldnull"))
-        #expect(back.url?.absoluteString == "https://example.com/article")
-        #expect(back.totalWords == 14)
-        // Furthest re-seeds from the word in the same pass (3 of 14):
-        // the v6 backfill zeroed it positionally, so healing the total
-        // alone would understate real progress until the next tick.
-        #expect(back.furthest == 3)
-        // The gate now sees it: same canonical URL, different hash.
-        #expect(try store.siblingRows(url: "https://example.com/article", excluding: "other").map(\.contentHash).contains("oldnull"))
-    }
-
-    @Test("v13 keeps NULL url for a live nil-url document, heals the total")
-    func v13MigrationLiveNilURLDocument() throws {
-        let dir = FileManager.default.temporaryDirectory
-            .appendingPathComponent("ReadLaterStoreTests-\(UUID().uuidString)", isDirectory: true)
-        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        defer { removeTemporaryStore(at: dir) }
-        let databaseURL = dir.appendingPathComponent("store.sqlite")
-
-        var plan = makeSamplePlan()
-        plan.spokenWords = 999
-        let healedJSON = try #require(String(data: try JSONEncoder().encode(plan), encoding: .utf8))
-        let queue = try DatabaseQueue(path: databaseURL.path)
-        try makeMigrator().migrate(queue, upTo: "v13_canonicalize_urls")
-        // Live document whose own URL is nil: nothing to backfill from,
-        // so the row stays NULL — but the total still heals computed.
-        let docID = UUID().uuidString
-        try queue.write { db in
-            try db.execute(sql: """
-                INSERT INTO document(id, url, original_url, title, added_at, plan_json, source_sha256)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-                """, arguments: [
-                    docID, nil, "https://example.com/article",
-                    "Nil URL", 1000.0, healedJSON, plan.sourceSHA256,
-                ])
-            try db.execute(sql: """
-                INSERT INTO reading_position(
-                    content_hash, document_id, title, word_index, finished, saved, url, original_url, total_words,
-                    extractor_version, furthest, marked_done, anchor_hash, anchor_head, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, arguments: [
-                    "nilurllive", docID, "Nil URL", 3, 0, 0,
-                    nil, "https://example.com/article",
-                    0, 0, 0, 0, "", "", 1000.0,
-                ])
+        let corruptSHA: String? = try store.dbQueue.read { db in
+            try String.fetchOne(db, sql: "SELECT source_sha256 FROM document WHERE id = ?",
+                                arguments: [corruptDocID.uuidString])
         }
+        #expect(liveSHA == live.plan.sourceSHA256)
+        #expect(corruptSHA == nil)
 
-        let store = try Store(databaseURL: databaseURL, device: "test-device", telemetry: TelemetryHub())
-        let back = try #require(try store.position(contentHash: "nilurllive"))
-        #expect(back.url == nil)
-        #expect(back.totalWords == 14)
-    }
+        // Canonical URLs on the document and on the drifted row; the pasted
+        // link is provenance and stays exactly as written.
+        #expect(try store.document(id: live.id)?.url?.absoluteString == "https://example.com/article")
+        let pre = try #require(try store.position(contentHash: "precanonical"))
+        #expect(pre.url?.absoluteString == "https://example.com/article")
+        // v6 rows had no pasted-link column; the migration adds it empty.
+        #expect(pre.originalURL == nil)
+        // A nonzero total is trusted: only the v5 zero shape heals.
+        #expect(pre.totalWords == 50)
 
-    @Test("v13 keeps the stored total when the plan will not decode")
-    func v13MigrationCorruptPlanKeepsTotal() throws {
-        let dir = FileManager.default.temporaryDirectory
-            .appendingPathComponent("ReadLaterStoreTests-\(UUID().uuidString)", isDirectory: true)
-        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        defer { removeTemporaryStore(at: dir) }
-        let databaseURL = dir.appendingPathComponent("store.sqlite")
+        // v5 shape: URL, total, word and furthest heal together from the
+        // document. The stored `spoken_words` lie is not trusted.
+        let healed = try #require(try store.position(contentHash: "oldnull"))
+        #expect(healed.url?.absoluteString == "https://example.com/article")
+        #expect(healed.totalWords == 14)
+        #expect(healed.wordIndex == 3)
+        #expect(healed.furthest == 3)
+        #expect(try store.siblingRows(url: "https://example.com/article", excluding: "other")
+            .map(\.contentHash).contains("oldnull"))
 
-        let queue = try DatabaseQueue(path: databaseURL.path)
-        try makeMigrator().migrate(queue, upTo: "v13_canonicalize_urls")
-        // Corrupt plan_json: the URL still heals, the stored total stands
-        // instead of zeroing — a wrong-but-present count beats a certain
-        // "0 words" place line until the next tick recomputes it.
-        let docID = UUID().uuidString
-        try queue.write { db in
-            try db.execute(sql: """
-                INSERT INTO document(id, url, original_url, title, added_at, plan_json, source_sha256)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-                """, arguments: [
-                    docID, "https://example.com/article", nil,
-                    "Corrupt", 1000.0, "not json", "zzz",
-                ])
-            try db.execute(sql: """
-                INSERT INTO reading_position(
-                    content_hash, document_id, title, word_index, finished, saved, url, original_url, total_words,
-                    extractor_version, furthest, marked_done, anchor_hash, anchor_head, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, arguments: [
-                    "corruptplan", docID, "Corrupt", 3, 0, 0,
-                    nil, nil,
-                    9, 0, 0, 0, "", "", 1000.0,
-                ])
-        }
+        // Live document with no URL: nothing to copy, the total still heals.
+        let nilURL = try #require(try store.position(contentHash: "nilurllive"))
+        #expect(nilURL.url == nil)
+        #expect(nilURL.totalWords == 14)
 
-        let store = try Store(databaseURL: databaseURL, device: "test-device", telemetry: TelemetryHub())
-        let back = try #require(try store.position(contentHash: "corruptplan"))
-        #expect(back.url?.absoluteString == "https://example.com/article")
-        #expect(back.totalWords == 9)
-    }
+        // Corrupt plan: the URL heals, the stored total stands.
+        let corrupt = try #require(try store.position(contentHash: "corruptplan"))
+        #expect(corrupt.url?.absoluteString == "https://example.com/corrupt")
+        #expect(corrupt.totalWords == 9)
 
-    @Test("v13 re-seeds furthest from the word it heals the total beside")
-    func v13MigrationReseedsFurthest() throws {
-        let dir = FileManager.default.temporaryDirectory
-            .appendingPathComponent("ReadLaterStoreTests-\(UUID().uuidString)", isDirectory: true)
-        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        defer { removeTemporaryStore(at: dir) }
-        let databaseURL = dir.appendingPathComponent("store.sqlite")
+        // Finished pre-v5 row: the word re-seeds furthest, so the article is
+        // not offered as resumable.
+        let finished = try #require(try store.position(contentHash: "oldfinish"))
+        #expect(finished.totalWords == 14)
+        #expect(finished.wordIndex == 13)
+        #expect(finished.furthest == 13)
+        #expect(finished.reachedEnd == true)
+        #expect(try store.latestUnfinishedPosition()?.contentHash != "oldfinish")
 
-        let plan = makeSamplePlan()
-        let healedJSON = try #require(String(data: try JSONEncoder().encode(plan), encoding: .utf8))
-        let queue = try DatabaseQueue(path: databaseURL.path)
-        try makeMigrator().migrate(queue, upTo: "v13_canonicalize_urls")
-        // Pre-v5 finished row: v5 left total 0, v6 then clamped furthest
-        // to max(0 - 1, 0) = 0 positionally. Healing the total alone would
-        // offer a finished article as resumable; the word re-seeds furthest
-        // in the same pass (13 of 14 → reached, never offered).
-        let docID = UUID().uuidString
-        try queue.write { db in
-            try db.execute(sql: """
-                INSERT INTO document(id, url, original_url, title, added_at, plan_json, source_sha256)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-                """, arguments: [
-                    docID, "https://example.com/article", nil,
-                    "Finished", 1000.0, healedJSON, plan.sourceSHA256,
-                ])
-            try db.execute(sql: """
-                INSERT INTO reading_position(
-                    content_hash, document_id, title, word_index, finished, saved, url, original_url, total_words,
-                    extractor_version, furthest, marked_done, anchor_hash, anchor_head, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, arguments: [
-                    "oldfinish", docID, "Finished", 13, 1, 0,
-                    nil, nil,
-                    0, 0, 0, 0, "", "", 1000.0,
-                ])
-            // Hand-set overshoot beside it: furthest past the end ceilings
-            // to the healed last word instead of persisting in SQL.
-            try db.execute(sql: """
-                INSERT INTO reading_position(
-                    content_hash, document_id, title, word_index, finished, saved, url, original_url, total_words,
-                    extractor_version, furthest, marked_done, anchor_hash, anchor_head, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, arguments: [
-                    "oldover", docID, "Overshoot", 5, 0, 0,
-                    nil, nil,
-                    0, 0, 100, 0, "", "", 500.0,
-                ])
-        }
-
-        let store = try Store(databaseURL: databaseURL, device: "test-device", telemetry: TelemetryHub())
-        let back = try #require(try store.position(contentHash: "oldfinish"))
-        #expect(back.totalWords == 14)
-        #expect(back.wordIndex == 13)
-        #expect(back.furthest == 13)
-        #expect(back.reachedEnd == true)
-        #expect(try store.latestUnfinishedPosition() == nil)
-        let over = try #require(try store.position(contentHash: "oldover"))
-        #expect(over.totalWords == 14)
-        #expect(over.wordIndex == 5)
-        #expect(over.furthest == 13)
-        #expect(over.reachedEnd == true)
-        // Intentional §6 split: the mechanical flag derives from the word
-        // (5 of 14, unfinished) while the offer derives from furthest —
-        // pin both so a "fix the flag" edit cannot scrub back-from-end.
-        #expect(over.finished == false)
+        // Released row: no document to heal from, so the URL stays NULL.
+        let released = try #require(try store.position(contentHash: "released-old"))
+        #expect(released.url == nil)
     }
 
     @Test("Sibling lookup falls back to the pasted link for URL-less rows")
@@ -1115,12 +946,11 @@ struct LibraryIdentityTests {
         defer { removeTemporaryStore(at: dir) }
         let databaseURL = dir.appendingPathComponent("store.sqlite")
 
-        let queue = try DatabaseQueue(path: databaseURL.path)
-        try makeMigrator().migrate(queue, upTo: "v13_canonicalize_urls")
-        // Released pre-v5 row: the document is gone, no URL was ever
-        // backfilled, and the pasted link carries case/tracking/fragment
-        // drift no exact SQL match can meet.
-        try queue.write { db in
+        let store = try Store(databaseURL: databaseURL, device: "test-device", telemetry: TelemetryHub())
+        // Released row: the document is gone, the URL stays NULL, and the
+        // pasted link carries case/tracking/fragment drift no exact SQL
+        // match can meet.
+        try store.dbQueue.write { db in
             try db.execute(sql: """
                 INSERT INTO reading_position(
                     content_hash, document_id, title, word_index, finished, saved, url, original_url, total_words,
@@ -1132,10 +962,7 @@ struct LibraryIdentityTests {
                     14, 0, 3, 0, "", "", 1000.0,
                 ])
         }
-
-        // v13 keeps the NULL (no document to heal from); the re-added
-        // fresh row still finds its released sibling by pasted link.
-        let store = try Store(databaseURL: databaseURL, device: "test-device", telemetry: TelemetryHub())
+        // The re-added fresh row still finds its released sibling by link.
         var plan2 = makeSamplePlan()
         plan2.sourceSHA256 = "new-bytes"
         let document2 = Document(
@@ -1155,12 +982,11 @@ struct LibraryIdentityTests {
         defer { removeTemporaryStore(at: dir) }
         let databaseURL = dir.appendingPathComponent("store.sqlite")
 
-        let queue = try DatabaseQueue(path: databaseURL.path)
-        try makeMigrator().migrate(queue, upTo: "v13_canonicalize_urls")
+        let store = try Store(databaseURL: databaseURL, device: "test-device", telemetry: TelemetryHub())
         // Hand-edited `''` (not NULL) on a released row: decode normalizes
         // the empty string to nil, the widened gate fetches it, and the
         // pasted link absorbs it — no stranded duplicate.
-        try queue.write { db in
+        try store.dbQueue.write { db in
             try db.execute(sql: """
                 INSERT INTO reading_position(
                     content_hash, document_id, title, word_index, finished, saved, url, original_url, total_words,
@@ -1173,7 +999,6 @@ struct LibraryIdentityTests {
                 ])
         }
 
-        let store = try Store(databaseURL: databaseURL, device: "test-device", telemetry: TelemetryHub())
         let back = try #require(try store.position(contentHash: "released-empty"))
         #expect(back.url == nil)
         var plan2 = makeSamplePlan()
@@ -1231,35 +1056,8 @@ struct LibraryIdentityTests {
         #expect(back.url != nil)
     }
 
-    @Test("v9 leaves the original URL empty on an existing row")
-    func v9MigrationLeavesOriginalURLEmpty() throws {
-        let dir = FileManager.default.temporaryDirectory
-            .appendingPathComponent("ReadLaterStoreTests-\(UUID().uuidString)", isDirectory: true)
-        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        defer { removeTemporaryStore(at: dir) }
-        let databaseURL = dir.appendingPathComponent("store.sqlite")
-
-        let queue = try DatabaseQueue(path: databaseURL.path)
-        try makeMigrator().migrate(queue, upTo: "v9_raw_page")
-        try queue.write { db in
-            try db.execute(sql: """
-                INSERT INTO reading_position(
-                    content_hash, document_id, title, word_index, finished, saved, url, total_words, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, arguments: [
-                    "v8hash", UUID().uuidString, "V8 article", 4, 0, 0,
-                    "https://example.com/v8", 9, 1000.0,
-                ])
-        }
-
-        let store = try Store(databaseURL: databaseURL, device: "test-device", telemetry: TelemetryHub())
-        let back = try store.position(contentHash: "v8hash")
-        #expect(back?.wordIndex == 4)
-        #expect(back?.originalURL == nil)
-    }
-
-    @Test("v10 backfills the source hash and keeps hash-scoped deletes")
-    func v10MigrationBackfillsSourceSHA() throws {
+    @Test("The upgrade backfills the source hash used by hash-scoped deletes")
+    func migrationBackfillsSourceHash() throws {
         let dir = FileManager.default.temporaryDirectory
             .appendingPathComponent("ReadLaterStoreTests-\(UUID().uuidString)", isDirectory: true)
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
@@ -1267,21 +1065,21 @@ struct LibraryIdentityTests {
         let databaseURL = dir.appendingPathComponent("store.sqlite")
 
         let first = makeSampleDocument()
-        let planData = try JSONEncoder().encode(first.plan)
-        let planJSON = try #require(String(data: planData, encoding: .utf8))
+        let planJSON = try #require(String(data: try JSONEncoder().encode(first.plan), encoding: .utf8))
         let queue = try DatabaseQueue(path: databaseURL.path)
-        try makeMigrator().migrate(queue, upTo: "v10_original_url")
+        try makeMigrator().migrate(queue, upTo: "v6_syncoplog")
         try queue.write { db in
             try db.execute(sql: """
-                INSERT INTO document(id, url, title, added_at, plan_json)
-                VALUES (?, ?, ?, ?, ?)
+                INSERT INTO document(id, url, title, added_at, plan_json) VALUES (?, ?, ?, ?, ?)
                 """, arguments: [
                     first.id.uuidString, first.url?.absoluteString, first.title,
                     1000.0, planJSON,
                 ])
         }
 
-        // Opening runs v9→v10: the old row gains its hash without re-planning.
+        // Opening runs the upgrade: the old row gains its hash without a
+        // re-plan, so the raw page still finds a sibling that reads the same
+        // bytes and survives the first delete.
         let store = try Store(databaseURL: databaseURL, device: "test-device", telemetry: TelemetryHub())
         let second = makeSampleDocument()
         try store.save(document: second)
@@ -1294,39 +1092,5 @@ struct LibraryIdentityTests {
 
         try store.deleteDocument(id: second.id)
         #expect(try store.rawPage(contentHash: key) == nil)
-    }
-
-    @Test("v6 migration backfills furthest on a v5 database")
-    func v6MigrationBackfillsFurthest() throws {
-        let dir = FileManager.default.temporaryDirectory
-            .appendingPathComponent("ReadLaterStoreTests-\(UUID().uuidString)", isDirectory: true)
-        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        defer { removeTemporaryStore(at: dir) }
-        let url = dir.appendingPathComponent("store.sqlite")
-
-        // Build a v5-era database: run the migrator only up to v5, then write
-        // a position row with the v5 columns.
-        let queue = try DatabaseQueue(path: url.path)
-        try makeMigrator().migrate(queue, upTo: "v5_position_origin")
-        let docID = UUID().uuidString
-        try queue.write { db in
-            try db.execute(sql: """
-                INSERT INTO reading_position(
-                    content_hash, document_id, title, word_index, finished, saved, url, total_words, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, arguments: [
-                    "v5hash", docID, "V5 article", 4, 0, 0,
-                    "https://example.com/v5", 9, 1000.0,
-                ])
-        }
-
-        // Opening through Store runs the v6 migration on the old file.
-        let store = try Store(databaseURL: url, device: "test-device", telemetry: TelemetryHub())
-        let back = try store.position(contentHash: "v5hash")
-        #expect(back?.wordIndex == 4)
-        #expect(back?.furthest == 4)
-        #expect(back?.markedDone == false)
-        #expect(back?.extractorVersion == 0)
-        #expect(back?.reachedEnd == false)
     }
 }

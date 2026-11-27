@@ -162,8 +162,9 @@ public final class Store: Sendable {
         let dbQueue = try DatabaseQueue(path: databaseURL.path, configuration: configuration)
         let migrator = makeMigrator()
         // Migrations run once at open on the caller thread (main at launch):
-        // time the whole pass like any other write so a heavy backfill (v11
-        // re-hash, v13 canonicalization) shows in telemetry, not silence.
+        // time the whole pass like any other write so a heavy backfill (the
+        // source-hash re-read and URL canonicalization) shows in telemetry,
+        // not silence.
         let migrateStart = CFAbsoluteTimeGetCurrent()
         try migrator.migrate(dbQueue)
         let migrateMs = (CFAbsoluteTimeGetCurrent() - migrateStart) * 1000
@@ -302,7 +303,7 @@ public final class Store: Sendable {
             // One article can have several document rows under one hash
             // (re-fetch mints a new id). The raw page belongs to the hash, so
             // it goes only when no remaining document reads the same bytes.
-            // Both lookups ride the v11 `source_sha256` index: no plan parsing.
+            // Both lookups ride the `source_sha256` index: no plan parsing.
             // The id-scoped loop runs too: a raw page saved with a mutated
             // plan under this id keys a different hash than the stored row,
             // and only the id filing finds it. Each delete is a no-op for
@@ -599,8 +600,8 @@ public final class Store: Sendable {
             // matches miss (a drifted pasted link never equals the lookup
             // at SQL level); the Swift filter below decides, including a
             // release-only check the SQL cannot express alone. Most
-            // libraries have no NULL-url rows left (v13 backfilled every
-            // row with a live document), so the COUNT gate keeps the widened
+            // libraries have no NULL-url rows left (the migration backfilled
+            // every row with a live document), so the COUNT gate keeps the widened
             // branch — a full scan plus one doc lookup per candidate — off
             // the common path without changing the result. The gate counts
             // a superset the filter then narrows (live URL-less rows fire
