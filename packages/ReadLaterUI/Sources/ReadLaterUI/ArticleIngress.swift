@@ -71,7 +71,7 @@ public enum ArticleIngress {
     ) async -> Result<Document, IngressError> {
         switch input {
         case .text(let text):
-            return pasted(text, telemetry: telemetry)
+            return await pasted(text, telemetry: telemetry)
         case .link(let raw):
             guard let url = linkURL(from: raw) else {
                 return .failure(raw.isEmpty ? .empty : .badLink)
