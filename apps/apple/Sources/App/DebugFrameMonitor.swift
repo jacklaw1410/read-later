@@ -14,7 +14,7 @@ import AppKit
 /// The whole file compiles out of Release, so shipping behavior cannot
 /// change. The driver feeds vsync times (`targetTimestamp`, the time the
 /// frame will display) into the `FrameCounter` accumulator and writes one
-/// oplog event per window:
+/// telemetry event per window:
 ///
 /// - Tap window (`frame.tapWindow`): opened at handler entry, closed a short
 ///   tail after the state change. M1 counts frames from tap to state change
@@ -22,7 +22,7 @@ import AppKit
 /// - Scrub window (`frame.scrubWindow`): opened when the drag starts, closed
 ///   on release. M5 reads `fps` and `longestGapMs` straight off the event.
 ///
-/// Timestamps use `ProcessInfo.systemUptime`, the same basis as the oplog
+/// Timestamps use `ProcessInfo.systemUptime`, the same basis as the telemetry log
 /// clock, so `tapToStateMs` lines up with the `play`/`pause` events.
 @MainActor
 final class DebugFrameMonitor: NSObject {

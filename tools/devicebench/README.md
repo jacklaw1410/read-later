@@ -12,7 +12,7 @@ B=target/release/readlater-devicebench
 
 $B record --seconds 60 --out run.wav            # Mac microphone, 32-bit float mono
 $B onsets --wav run.wav                          # click and sound onsets, in seconds
-$B align --oplog oplog.jsonl --wav run.wav       # phone events mapped onto the recording
+$B align --telemetry telemetry.jsonl --wav run.wav  # phone events mapped onto the recording
 $B gen --out clicks.wav --times 1,2,3 --seconds 5   # test clicks for the speaker
 ```
 
@@ -43,7 +43,7 @@ session,event,phone_t,rec_t,response_ms,silence_level
 ## Clock alignment
 
 The app logs `marker.request` for each click (debug build, `--debug.marker=N`).
-Each event carries `t`, the oplog time. The click reaches the Mac at recording
+Each event carries `t`, the telemetry time. The click reaches the Mac at recording
 time `O_i`, and `outputLatency` is the session output latency, so:
 
     offset = median(O_i - (t_i + outputLatency_i))
@@ -63,8 +63,8 @@ delay is real and appears in every run. Report the error with every batch.
 2. Launch the Debug app with `--debug.marker=3`. The marker plays three clicks,
    starting 2 s after launch.
 3. Run the test (taps, scrubs). Stop the recording after the run.
-4. Copy the oplog from the phone (`devicectl device copy from`, section 6 of the plan).
-5. `align` the oplog against the WAV.
+4. Copy the telemetry log from the phone (`devicectl device copy from`, section 6 of the plan).
+5. `align` the telemetry log against the WAV.
 
 ## Limits
 
@@ -83,4 +83,4 @@ cargo test
 ```
 
 The unit tests use synthetic signals. They cover onset timing, silence and the
-gap rule, the clock fit, click matching and oplog parsing.
+gap rule, the clock fit, click matching and telemetry parsing.

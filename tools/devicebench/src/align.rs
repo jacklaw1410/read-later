@@ -1,6 +1,6 @@
-//! Clock alignment between the phone's oplog and the Mac recording. Pure functions.
+//! Clock alignment between the phone's telemetry log and the Mac recording. Pure functions.
 //!
-//! The phone plays a click at oplog time `t` (the `marker.request` event) and
+//! The phone plays a click at telemetry time `t` (the `marker.request` event) and
 //! the click reaches the speaker `outputLatency` seconds later. The Mac hears
 //! that click at recording time `O`. So `O = t + outputLatency + offset`, and
 //! `offset` is the median of `O_i - (t_i + latency_i)` over all clicks.
@@ -13,7 +13,7 @@ use std::collections::HashMap;
 use serde::Deserialize;
 
 #[derive(Debug, Clone, Deserialize)]
-pub struct OplogEvent {
+pub struct TelemetryEvent {
     pub t: f64,
     /// The phone's wall clock in UTC, for example `2026-11-15T07:27:45.567Z`.
     /// Shared by every app launch, unlike `t`.
@@ -27,9 +27,9 @@ pub struct OplogEvent {
 
 /// Parses JSONL. Lines that do not parse are skipped, so a partly written
 /// final line does not stop the analysis.
-pub fn parse_oplog(text: &str) -> Vec<OplogEvent> {
+pub fn parse_telemetry(text: &str) -> Vec<TelemetryEvent> {
     text.lines()
-        .filter_map(|line| serde_json::from_str::<OplogEvent>(line).ok())
+        .filter_map(|line| serde_json::from_str::<TelemetryEvent>(line).ok())
         .collect()
 }
 
@@ -154,7 +154,7 @@ fn spacing_error(chain: &[f64], spacing: &[f64]) -> f64 {
     (errors.iter().sum::<f64>() / errors.len() as f64).sqrt()
 }
 
-/// Seconds since 1970 for an oplog `iso` stamp. Returns `None` for any other
+/// Seconds since 1970 for a telemetry `iso` stamp. Returns `None` for any other
 /// shape, so an event without a stamp is skipped, not misread.
 pub fn wall_seconds(iso: &str) -> Option<f64> {
     let (date, time) = iso.trim_end_matches('Z').split_once('T')?;
@@ -185,7 +185,7 @@ fn days_from_civil(year: i64, month: i64, day: i64) -> i64 {
 /// offset to a phone time to get a recording time, like `Alignment::offset`.
 /// Assumes the phone and the Mac clocks agree. The difference from the click
 /// fit is the clock disagreement.
-pub fn wall_offset(events: &[OplogEvent], session: &str, recording_started: f64) -> Option<f64> {
+pub fn wall_offset(events: &[TelemetryEvent], session: &str, recording_started: f64) -> Option<f64> {
     let mut offsets: Vec<f64> = events
         .iter()
         .filter(|e| e.session == session)
@@ -199,7 +199,7 @@ pub fn wall_offset(events: &[OplogEvent], session: &str, recording_started: f64)
 }
 
 /// Marker requests of one session as (wall-clock seconds, output latency).
-pub fn markers_wall_for(events: &[OplogEvent], session: &str) -> Vec<(f64, f64)> {
+pub fn markers_wall_for(events: &[TelemetryEvent], session: &str) -> Vec<(f64, f64)> {
     events
         .iter()
         .filter(|e| e.session == session && e.event == "marker.request")
@@ -215,8 +215,8 @@ pub fn markers_wall_for(events: &[OplogEvent], session: &str) -> Vec<(f64, f64)>
         .collect()
 }
 
-/// Every session in the oplog, in first-seen order.
-pub fn sessions_in(events: &[OplogEvent]) -> Vec<String> {
+/// Every session in the telemetry log, in first-seen order.
+pub fn sessions_in(events: &[TelemetryEvent]) -> Vec<String> {
     let mut seen: Vec<String> = Vec::new();
     for e in events {
         if !seen.contains(&e.session) {
@@ -227,7 +227,7 @@ pub fn sessions_in(events: &[OplogEvent]) -> Vec<String> {
 }
 
 /// The marker requests of one session, as (time, output latency).
-pub fn markers_for(events: &[OplogEvent], session: &str) -> Vec<(f64, f64)> {
+pub fn markers_for(events: &[TelemetryEvent], session: &str) -> Vec<(f64, f64)> {
     events
         .iter()
         .filter(|e| e.session == session && e.event == "marker.request")
@@ -243,7 +243,7 @@ pub fn markers_for(events: &[OplogEvent], session: &str) -> Vec<(f64, f64)> {
 }
 
 /// Sessions that have at least one marker request, in first-seen order.
-pub fn sessions_with_markers(events: &[OplogEvent]) -> Vec<String> {
+pub fn sessions_with_markers(events: &[TelemetryEvent]) -> Vec<String> {
     let mut seen: Vec<String> = Vec::new();
     for e in events.iter().filter(|e| e.event == "marker.request") {
         if !seen.contains(&e.session) {
@@ -350,7 +350,7 @@ mod tests {
         // time 35 s, and the offset (recording time minus phone time) is 33 s.
         let started = wall_seconds("2026-11-17T09:27:09.000Z").unwrap();
         let text = r#"{"t":2.0,"iso":"2026-11-17T09:27:44.000Z","session":"a","event":"marker.request","fields":{}}"#;
-        let events = parse_oplog(text);
+        let events = parse_telemetry(text);
         let offset = wall_offset(&events, "a", started).unwrap();
         assert!((offset - 33.0).abs() < 1e-6, "offset {offset}");
         assert_eq!(wall_offset(&events, "missing", started), None);
@@ -360,7 +360,7 @@ mod tests {
     fn wall_offset_uses_any_stamped_event_in_the_session() {
         let started = wall_seconds("2026-11-17T09:27:09.000Z").unwrap();
         let text = r#"{"t":5.0,"iso":"2026-11-17T09:27:44.000Z","session":"a","event":"scrub.begin","fields":{}}"#;
-        let events = parse_oplog(text);
+        let events = parse_telemetry(text);
         let offset = wall_offset(&events, "a", started).unwrap();
         assert!((offset - 30.0).abs() < 1e-6, "offset {offset}");
     }
@@ -371,7 +371,7 @@ mod tests {
 {"t":2.0,"iso":"","session":"b","event":"tap.pause"}
 not json
 {"t":3.0,"iso":"","session":"b","event":"marker.request","fields":{"outputLatency":"0.2"}}"#;
-        let events = parse_oplog(text);
+        let events = parse_telemetry(text);
         assert_eq!(events.len(), 3, "the bad line is skipped");
         assert_eq!(
             sessions_with_markers(&events),
@@ -450,7 +450,7 @@ not json
     fn markers_wall_needs_a_stamp_but_not_a_latency() {
         let text = r#"{"t":1.0,"iso":"2026-11-15T07:27:45.000Z","session":"a","event":"marker.request","fields":{}}
 {"t":2.0,"iso":"","session":"a","event":"marker.request","fields":{"outputLatency":"0.1"}}"#;
-        let events = parse_oplog(text);
+        let events = parse_telemetry(text);
         let markers = markers_wall_for(&events, "a");
         assert_eq!(markers.len(), 1, "the stamp-less event is skipped");
         assert!(

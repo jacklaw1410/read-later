@@ -22,7 +22,7 @@ public struct TelemetryEvent: Codable, Sendable, Hashable {
 
 /// Event names. The `T0`–`T7` names match
 /// `read-later-research/spec/device-test-plan.md` exactly, so an Instruments
-/// trace and an oplog export agree. The rest reuse the pilot vocabulary
+/// trace and a telemetry export agree. The rest reuse the pilot vocabulary
 /// (`spec/pilot-instrument.md`) where it fits.
 public enum TelemetryName {
     public static let processStart = "launch.processStart"

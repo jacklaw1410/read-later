@@ -21,7 +21,10 @@ let package = Package(
         ),
         .testTarget(
             name: "ReadLaterStoreTests",
-            dependencies: ["ReadLaterStore", "ReadLaterCore"]
+            dependencies: [
+                "ReadLaterStore", "ReadLaterCore",
+                .product(name: "GRDB", package: "GRDB.swift"),
+            ]
         ),
     ]
 )

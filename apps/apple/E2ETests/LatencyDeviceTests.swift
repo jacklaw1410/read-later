@@ -12,7 +12,7 @@ import XCTest
 ///
 /// The batch taps play, pause or scrub at random times drawn from
 /// `LATENCY_SEED`, and attaches the schedule to the result bundle.
-/// The phone's oplog holds the handler times that `devicebench align` reads.
+/// The phone's telemetry log holds the handler times that `devicebench align` reads.
 ///
 /// The article text is not in the repo. The Mac passes it as base64 in
 /// `TEST_RUNNER_LATENCY_TEXT_B64`, and the test checks the word count first.
@@ -74,9 +74,9 @@ final class LatencyDeviceTests: XCTestCase {
     /// The gesture is the same tap the M4 batch uses; the analysis reads
     /// release-to-sound per seek from the recording. The last tap lands at
     /// 0.97, and the driver waits for Replay: the article ending on time
-    /// proves the voice followed the wash there. (The first-word oplog
+    /// proves the voice followed the wash there. (The first-word telemetry
     /// event needs an active telemetry run, which the seeded flow never
-    /// starts, so the oplog side is unavailable in this build.)
+    /// starts, so the telemetry side is unavailable in this build.)
     func test_m10_seekBatchOnShortArticle() throws {
         let run = try DeviceRun.read(expectedWords: 200, defaultCycles: 20)
         terminateApp()

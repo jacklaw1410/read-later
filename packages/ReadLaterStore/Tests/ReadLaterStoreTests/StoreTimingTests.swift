@@ -4,10 +4,10 @@ import ReadLaterCore
 @testable import ReadLaterStore
 
 /// M8 regression net: every store write logs one `store.write` event with
-/// its op, duration and thread. A new write method with no event fails here.
+/// its write kind, duration and thread. A new write method with no event fails here.
 @Suite("Store write timing (M8)")
 struct StoreTimingTests {
-    @Test("Every write op logs one store.write event")
+    @Test("Every write kind logs one store.write event")
     func everyWriteOpLogsStoreWrite() throws {
         let hub = TelemetryHub()
         let (store, dir) = try makeTemporaryStore(telemetry: hub)
@@ -22,14 +22,14 @@ struct StoreTimingTests {
         try store.setSaved(contentHash: hash, saved: true)
         try store.save(phrase: phrase)
         try store.recordOccurrence(phraseID: phrase.id, documentID: document.id, blockID: 0, charOffset: 0)
-        try store.oplog.append(op: "test.op", payload: "{}")
+        try store.syncOplog.append(op: "test.op", payload: "{}")
         try store.dismissPosition(contentHash: hash)
         try store.cacheBust(documentID: document.id)
         try store.forget(contentHash: hash, documentID: document.id)
         try store.deleteDocument(id: document.id)
 
-        let events = hub.oplog.tail(50).filter { $0.event == TelemetryName.storeWrite }
-        let ops = Set(events.compactMap { $0.fields["op"] })
+        let events = hub.telemetryLog.tail(50).filter { $0.event == TelemetryName.storeWrite }
+        let ops = Set(events.compactMap { $0.fields["write"] })
         #expect(ops == [
             "save.document", "record.position", "position.saved", "phrase.save",
             "occurrence.record", "oplog.append", "position.dismiss",
@@ -37,7 +37,7 @@ struct StoreTimingTests {
         ])
         #expect(events.allSatisfy { $0.fields["ms"] != nil && $0.fields["main"] != nil })
         #expect(events.allSatisfy { $0.fields["main"] == "1" || $0.fields["main"] == "0" })
-        let position = events.first { $0.fields["op"] == "record.position" }
+        let position = events.first { $0.fields["write"] == "record.position" }
         #expect(position?.fields["word"] == "3")
         #expect(position?.fields["source"] == "test")
         // Encode/copy split: copy is the SQLite write (equals ms), encode is
@@ -61,8 +61,8 @@ struct StoreTimingTests {
 
         let hash = Store.resumeKey(for: document)
         #expect(try store.position(contentHash: hash)?.wordIndex == 5)
-        let events = hub.oplog.tail(10).filter { $0.event == TelemetryName.storeWrite }
-        let position = events.first { $0.fields["op"] == "record.position" }
+        let events = hub.telemetryLog.tail(10).filter { $0.event == TelemetryName.storeWrite }
+        let position = events.first { $0.fields["write"] == "record.position" }
         #expect(position?.fields["word"] == "5")
         #expect(position?.fields["source"] == "pause")
     }

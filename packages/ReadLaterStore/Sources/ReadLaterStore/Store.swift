@@ -31,7 +31,7 @@ public struct PhraseOccurrence: Sendable, Hashable {
 /// Where the reader stopped in one started article.
 ///
 /// Keyed by content hash, not document id, so a re-pasted article resumes at
-/// the same word. Local-only: position writes append no changelog row, so a
+/// the same word. Local-only: position writes append no sync oplog row, so a
 /// throttled write during reading never enters sync.
 public struct ReadingPosition: Sendable, Hashable, Equatable {
     public var contentHash: String
@@ -68,15 +68,16 @@ public struct ReadingPosition: Sendable, Hashable, Equatable {
 
 /// Local-first SQLite store (GRDB, WAL, foreign keys on).
 ///
-/// Every write appends exactly one `changelog` row in the same transaction.
-/// The `device` identifier is injected by the caller, never read from the machine.
+/// Every sync write appends exactly one row to the sync oplog in the same
+/// transaction. Position writes stay local. The `device` identifier is
+/// injected by the caller, never read from the machine.
 ///
 /// Dates are stored as `timeIntervalSinceReferenceDate` REALs. `Date` keeps
 /// that same value internally, so a save/read round-trips bit-exact. Unix
 /// epoch storage would add and subtract 978307200 and drop the last bit.
 public final class Store: Sendable {
     let dbQueue: DatabaseQueue
-    public let oplog: Oplog
+    public let syncOplog: SyncOplog
     let telemetry: TelemetryHub
 
     public init(databaseURL: URL, device: String, telemetry: TelemetryHub) throws {
@@ -88,11 +89,11 @@ public final class Store: Sendable {
         try migrator.migrate(dbQueue)
         self.dbQueue = dbQueue
         self.telemetry = telemetry
-        self.oplog = Oplog(dbQueue: dbQueue, device: device, telemetry: telemetry)
+        self.syncOplog = SyncOplog(dbQueue: dbQueue, device: device, telemetry: telemetry)
     }
 
-    /// Single path for every write. Times the block and logs op, duration
-    /// and thread (M8: no main-thread writes). No write may call
+    /// Single path for every write. Times the block and logs the write kind,
+    /// duration and thread (M8: no main-thread writes). No write may call
     /// `dbQueue.write` direct.
     ///
     /// Encode/copy split: `copyMs` is the `dbQueue.write` itself (row bytes
@@ -110,7 +111,7 @@ public final class Store: Sendable {
         let copyMs = (CFAbsoluteTimeGetCurrent() - copyStart) * 1000
         let encodeStart = CFAbsoluteTimeGetCurrent()
         var logged = fields
-        logged["op"] = op
+        logged["write"] = op
         logged["ms"] = String(format: "%.2f", copyMs)
         logged["copyMs"] = String(format: "%.2f", copyMs)
         if logged["encodeMs"] == nil {
@@ -147,7 +148,7 @@ public final class Store: Sendable {
                     document.addedAt.timeIntervalSinceReferenceDate,
                     planJSON,
                 ])
-            try Oplog.insert(in: db, device: oplog.device, op: "document.save", payload: payload)
+            try SyncOplog.insert(in: db, device: syncOplog.device, op: "document.save", payload: payload)
         }
     }
 
@@ -173,7 +174,7 @@ public final class Store: Sendable {
         let payload = encodedJSON(["id": id.uuidString]) ?? "{}"
         try timedWrite("document.delete") { db in
             try db.execute(sql: "DELETE FROM document WHERE id = ?", arguments: [id.uuidString])
-            try Oplog.insert(in: db, device: oplog.device, op: "document.delete", payload: payload)
+            try SyncOplog.insert(in: db, device: syncOplog.device, op: "document.delete", payload: payload)
         }
     }
 
@@ -304,7 +305,7 @@ public final class Store: Sendable {
     }
 
     /// Sets or clears the saved flag. The flag is local-only, like the rest of
-    /// the position row, so no changelog entry is appended.
+    /// the position row, so no sync oplog entry is appended.
     public func setSaved(contentHash: String, saved: Bool) throws {
         try timedWrite("position.saved") { db in
             try db.execute(
@@ -346,7 +347,7 @@ public final class Store: Sendable {
                     phrase.source,
                     phrase.createdAt.timeIntervalSinceReferenceDate,
                 ])
-            try Oplog.insert(in: db, device: oplog.device, op: "phrase.save", payload: payload)
+            try SyncOplog.insert(in: db, device: syncOplog.device, op: "phrase.save", payload: payload)
         }
     }
 
@@ -387,7 +388,7 @@ public final class Store: Sendable {
                     date.timeIntervalSinceReferenceDate,
                 ])
             let rowID = db.lastInsertedRowID
-            try Oplog.insert(in: db, device: oplog.device, op: "occurrence.record", payload: payload)
+            try SyncOplog.insert(in: db, device: syncOplog.device, op: "occurrence.record", payload: payload)
             return rowID
         }
     }

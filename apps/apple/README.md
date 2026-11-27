@@ -181,11 +181,11 @@ at 429 ms a word (DEBUG only). See the root README §7.
 ## Diagnostics export
 
 Settings has a row named **Diagnostics**. One action stages a folder with the
-oplog files (`oplog.jsonl` plus rotations) and a `summary.json` carrying the
-build SHA, bundle id, app version, OS, device model, current pace, and the
-installed dictionary version. iOS opens a share sheet; macOS opens a save
-panel. The screen also says where the files came from:
-`Application Support/Oplog/` inside the app container.
+telemetry files (`telemetry.jsonl` plus rotations) and a `summary.json`
+carrying the build SHA, bundle id, app version, OS, device model, current pace,
+and the installed dictionary version. iOS opens a share sheet; macOS opens a
+save panel. The screen also says where the files came from:
+`Application Support/Telemetry/` inside the app container.
 
 Without the UI, pull the same folder off the device (`<UDID>` from
 `xcrun devicectl list devices`):
@@ -193,9 +193,9 @@ Without the UI, pull the same folder off the device (`<UDID>` from
 ```bash
 xcrun devicectl device copy from --device <UDID> \
   --domain-type appDataContainer --domain-identifier app.readlater.reader \
-  --source "Library/Application Support/Oplog" --destination ./oplog-from-device
+  --source "Library/Application Support/Telemetry" --destination ./telemetry-from-device
 ```
 
-The event names in the oplog match the device plan's checkpoint names
+The event names in the telemetry log match the device plan's checkpoint names
 (`T0.tap` … `T7.firstWord`, plus `launch.*`), so one file answers D2a–D2d
 when no Instruments trace exists.

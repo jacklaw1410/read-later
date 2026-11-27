@@ -6,7 +6,7 @@ import Foundation
 /// side of an interaction: how many display frames passed, and how far apart
 /// they were. This type is the pure accumulator. It knows nothing about
 /// `CADisplayLink`; the DEBUG-only driver in the app feeds it vsync times and
-/// writes the summary to the oplog. Inert unless fed, so Release builds that
+/// writes the summary to the telemetry log. Inert unless fed, so Release builds that
 /// never call it behave exactly as before.
 public struct FrameCounter: Sendable {
     private var stamps: [TimeInterval] = []

@@ -1,48 +1,5 @@
 import Foundation
 
-// MARK: - Diagnostics
-//
-// The seam that makes analytics and crash reporting a later implementation instead of a
-// later refactor. No vendor ships in the MVP. Every call site goes through here.
-
-public enum DiagnosticEvent: Sendable, Hashable {
-    case appLaunch(coldStartMS: Int)
-    case extractionFinished(PageClass, blockCount: Int)
-    case lookup(LookupSource, milliseconds: Double)
-    case miss(MissKind)
-    case packInstall(String)
-    case nonFatal(String, context: [String: String])
-}
-
-public protocol Diagnostics: Sendable {
-    func record(_ event: DiagnosticEvent)
-}
-
-public struct NoopDiagnostics: Diagnostics {
-    public init() {}
-    public func record(_ event: DiagnosticEvent) {}
-}
-
-/// Keeps events in memory so tests and the pilot export can read them.
-public final class InMemoryDiagnostics: Diagnostics, @unchecked Sendable {
-    private let lock = NSLock()
-    private var storage: [DiagnosticEvent] = []
-
-    public init() {}
-
-    public func record(_ event: DiagnosticEvent) {
-        lock.lock()
-        defer { lock.unlock() }
-        storage.append(event)
-    }
-
-    public var events: [DiagnosticEvent] {
-        lock.lock()
-        defer { lock.unlock() }
-        return storage
-    }
-}
-
 // MARK: - Speech
 //
 // `AVSpeechSynthesizer` reports word boundaries through

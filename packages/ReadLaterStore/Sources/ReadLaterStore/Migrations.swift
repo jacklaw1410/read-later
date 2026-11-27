@@ -38,5 +38,12 @@ func makeMigrator() -> DatabaseMigrator {
         try db.execute(sql: "ALTER TABLE reading_position ADD COLUMN total_words INTEGER NOT NULL DEFAULT 0")
     }
 
+    // v6 renames the sync operation log. SQLite keeps every row and its seq
+    // order. Fresh databases create the old name in v1 and rename here, so one
+    // path serves both upgrades and new installs.
+    migrator.registerMigration("v6_syncoplog") { db in
+        try db.execute(sql: "ALTER TABLE \(Schema.legacyChangelog) RENAME TO \(Schema.syncOplog)")
+    }
+
     return migrator
 }

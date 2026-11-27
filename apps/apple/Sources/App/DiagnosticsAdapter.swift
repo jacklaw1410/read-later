@@ -19,14 +19,14 @@ final class DiagnosticsAdapter: DiagnosticsExporting {
     var isEnabled: Bool { DiagnosticsExport.isEnabled }
 
     var sourcePath: String {
-        hub.oplog.configuredDirectory?.path ?? "memory only (directory not configured)"
+        hub.telemetryLog.configuredDirectory?.path ?? "memory only (directory not configured)"
     }
 
-    var fileCount: Int { hub.oplog.logFiles().count }
+    var fileCount: Int { hub.telemetryLog.logFiles().count }
 
-    var pendingCount: Int { hub.oplog.pendingCount }
+    var pendingCount: Int { hub.telemetryLog.pendingCount }
 
-    var latestEvents: [String] { hub.oplog.tail(5).map(\.event) }
+    var latestEvents: [String] { hub.telemetryLog.tail(5).map(\.event) }
 
     var pullCommand: String {
         DiagnosticsExport.pullCommand(
