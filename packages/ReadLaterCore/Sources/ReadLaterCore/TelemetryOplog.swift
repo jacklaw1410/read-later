@@ -42,6 +42,9 @@ public enum TelemetryName {
     public static let extractStart = "extract.start"
     public static let extractFailed = "extract.failed"
     public static let articleReady = "article.ready"
+    /// First committed frame of Reader. The end point of the Entry-to-Reader
+    /// timeline. `session` comes from the event; `source` names the ingress.
+    public static let readerEntered = "reader.entered"
     public static let speechDidStart = "speech.didStart"
     /// Per-utterance start mark for M4, logged from the synthesizer delegate
     /// without an active-run gate (the seeded flow never starts one), in the

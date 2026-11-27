@@ -259,6 +259,15 @@ public final class TelemetryHub: @unchecked Sendable {
         }
     }
 
+    /// Reader view appeared. The entry event follows on the next main runloop
+    /// turn, which is the first frame the reader can act on. Telemetry stamps
+    /// `session`; `source` names the ingress.
+    public func markReaderEntered(source: String) {
+        DispatchQueue.main.async { [weak self] in
+            self?.record(TelemetryName.readerEntered, fields: ["source": source])
+        }
+    }
+
     public func flush() {
         telemetryLog.flushNow()
     }

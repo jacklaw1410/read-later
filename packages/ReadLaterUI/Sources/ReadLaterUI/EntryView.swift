@@ -111,11 +111,14 @@ struct EntryRequest: Sendable, Equatable {
     var mode: EntryMode
     var link: String
     var raw: String
+    /// Ingress name captured at the tap, before any async work can change it.
+    var source: EntrySource
 
-    init(mode: EntryMode = .link, linkText: String, rawText: String) {
+    init(mode: EntryMode = .link, linkText: String, rawText: String, source: EntrySource = .link) {
         self.mode = mode
         self.link = linkText.trimmingCharacters(in: .whitespacesAndNewlines)
         self.raw = rawText.trimmingCharacters(in: .whitespacesAndNewlines)
+        self.source = source
     }
 
     /// Only the active mode counts. The hidden field keeps its text, but an
@@ -132,7 +135,7 @@ struct EntryRequest: Sendable, Equatable {
 /// loadline that appears below the button on the first open.
 public struct EntryView: View {
     private let telemetry: TelemetryHub
-    private let onOpen: (ReadLaterCore.Document) -> Void
+    private let onOpen: (ReadLaterCore.Document, EntrySource) -> Void
     private let onSettings: (() -> Void)?
     private let onLibrary: (() -> Void)?
     /// True for the clipboard-empty variant: no paste button, and the empty
@@ -147,6 +150,9 @@ public struct EntryView: View {
     @State private var pulseOn = false
     @State private var shimmerX: CGFloat = -80
     @State private var pasteHover = false
+    /// Set when the clipboard button puts text in the field. Consumed by the
+    /// next Open, so a typed link is not reported as a clipboard link.
+    @State private var inputFromClipboard = false
     #if !os(macOS)
     @State private var pasteBlocked = false
     @State private var pasting = false
@@ -156,7 +162,7 @@ public struct EntryView: View {
 
     public init(
         telemetry: TelemetryHub,
-        onOpen: @escaping (ReadLaterCore.Document) -> Void,
+        onOpen: @escaping (ReadLaterCore.Document, EntrySource) -> Void,
         onSettings: (() -> Void)? = nil,
         onLibrary: (() -> Void)? = nil,
         prefillLink: String = EntryCopy.sampleLink,
@@ -377,8 +383,10 @@ public struct EntryView: View {
                 if showPaste {
                     #if os(macOS)
                     Button {
-                        inputText = EntryPaste.appKitBoardText()
-                            ?? inputText
+                        if let text = EntryPaste.appKitBoardText() {
+                            inputText = text
+                            inputFromClipboard = true
+                        }
                     } label: {
                         Text(EntryCopy.pasteFromClipboard)
                             .font(.system(size: 13, weight: .semibold))
@@ -403,6 +411,7 @@ public struct EntryView: View {
                                     pasting = false
                                     pasteBlocked = false
                                     inputText = text
+                                    inputFromClipboard = true
                                 }
                             },
                             fail: {
@@ -632,14 +641,18 @@ public struct EntryView: View {
         telemetry.record(TelemetryName.tap)
         let request: EntryRequest
         if kind == .text {
-            request = EntryRequest(mode: .text, linkText: "", rawText: trimmedInput)
+            request = EntryRequest(
+                mode: .text, linkText: "", rawText: trimmedInput, source: .rawText
+            )
         } else {
             request = EntryRequest(
                 mode: .link,
                 linkText: EntryDetector.linkTarget(for: trimmedInput),
-                rawText: ""
+                rawText: "",
+                source: inputFromClipboard ? .clipboard : .link
             )
         }
+        inputFromClipboard = false
         Task { await load(request) }
     }
 
@@ -651,11 +664,11 @@ public struct EntryView: View {
         switch request.mode {
         case .text:
             setLoading(.stripping)
-            await reveal(.ready)
+            reveal(.ready)
             switch ArticleIngress.pasted(request.raw, telemetry: telemetry) {
             case .success(let document):
-                telemetry.record(TelemetryName.readerOpen, fields: ["source": "pasted"])
-                onOpen(document)
+                telemetry.record(TelemetryName.readerOpen, fields: ["source": request.source.rawValue])
+                onOpen(document, request.source)
             case .failure(let error):
                 state = .refused(error.message)
             }
@@ -665,15 +678,15 @@ public struct EntryView: View {
         }
         if request.link == EntryCopy.sampleLink {
             setLoading(.fetching)
-            await reveal(.stripping)
-            await reveal(.ready)
+            reveal(.stripping)
+            reveal(.ready)
             telemetry.record(TelemetryName.fetchSkipped, fields: ["reason": "sample-link"])
             telemetry.record(TelemetryName.planReady, fields: [
-                "source": "sample",
+                "source": EntrySource.sample.rawValue,
                 "words": String(ArticleLibrary.demo.plan.spokenWords),
             ])
-            telemetry.record(TelemetryName.readerOpen, fields: ["source": "sample"])
-            onOpen(ArticleLibrary.demo)
+            telemetry.record(TelemetryName.readerOpen, fields: ["source": EntrySource.sample.rawValue])
+            onOpen(ArticleLibrary.demo, .sample)
             return
         }
 
@@ -688,20 +701,18 @@ public struct EntryView: View {
         setLoading(.stripping)
         switch ArticleIngress.read(page, telemetry: telemetry) {
         case .success(let document):
-            await reveal(.ready)
-            telemetry.record(TelemetryName.readerOpen, fields: ["source": "link"])
-            onOpen(document)
+            reveal(.ready)
+            telemetry.record(TelemetryName.readerOpen, fields: ["source": request.source.rawValue])
+            onOpen(document, request.source)
         case .failure(let error):
             state = .refused(error.message)
         }
     }
 
-    /// Holds a stage long enough to be seen. Two stages can finish in the same
-    /// millisecond on a cached page, and a progress rule that never moves tells
-    /// the reader nothing.
+    /// Sets a loadline stage without holding the open path. The stage is
+    /// visible as soon as SwiftUI commits the next frame.
     @MainActor
-    private func reveal(_ stage: EntryStage) async {
+    private func reveal(_ stage: EntryStage) {
         setLoading(stage)
-        try? await Task.sleep(for: .milliseconds(180))
     }
 }
