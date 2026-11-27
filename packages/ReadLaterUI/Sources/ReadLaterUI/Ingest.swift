@@ -34,14 +34,20 @@ public enum Ingest {
         telemetry: TelemetryHub,
         extractor: Extractor
     ) -> Result<Document, IngressError> {
-        telemetry.record(TelemetryName.extractStart, fields: ["bytes": String(page.html.count)])
+        telemetry.record(TelemetryName.extractStart, fields: [
+            "bytes": String(page.html.count),
+            "thread": threadTag,
+        ])
         do {
             let result = try extractor.extract(
                 html: page.html,
                 source: page.url.absoluteString,
                 httpStatus: page.status
             )
-            telemetry.record(TelemetryName.parsed, fields: ["blocks": String(result.blocks.count)])
+            telemetry.record(TelemetryName.parsed, fields: [
+                "blocks": String(result.blocks.count),
+                "thread": threadTag,
+            ])
             let plan = SpokenPlanBuilder.build(
                 blocks: result.blocks,
                 source: page.url.host ?? page.url.absoluteString,
@@ -51,6 +57,7 @@ public enum Ingest {
             telemetry.record(TelemetryName.planReady, fields: [
                 "sentences": String(plan.sentenceCount),
                 "words": String(plan.spokenWords),
+                "thread": threadTag,
             ])
             return .success(Document(
                 url: CanonicalURL.canonicalize(page.url),
@@ -77,6 +84,12 @@ public enum Ingest {
             telemetry.record(TelemetryName.extractFailed, fields: ["kind": "failed"])
             return .failure(.failed)
         }
+    }
+
+    /// The executor each stage ran on. The seam is off-main by construction;
+    /// the field lets a Release telemetry export prove it per stage.
+    static var threadTag: String {
+        Thread.isMainThread ? "main" : "background"
     }
 
     /// The page title, or the host when the page has none.
