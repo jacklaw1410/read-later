@@ -56,7 +56,7 @@ struct TelemetryNameTests {
         var out: [String] = []
         for root in ["packages", "apps"] {
             let base = Self.repoRoot.appendingPathComponent(root)
-            guard let paths = manager.subpathsOfDirectory(atPath: base.path) else { continue }
+            guard let paths = try? manager.subpathsOfDirectory(atPath: base.path) else { continue }
             for path in paths where path.hasSuffix(".swift")
                 && !path.contains("/Tests/")
                 && !path.contains("/E2ETests/")

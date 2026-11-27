@@ -264,7 +264,7 @@ struct TelemetryLogTests {
         await withCheckedContinuation { continuation in
             DispatchQueue.main.async { continuation.resume() }
         }
-        let event = try #require(hub.oplog.tail(1).first)
+        let event = try #require(hub.telemetryLog.tail(1).first)
         #expect(event.event == TelemetryName.readerEntered)
         #expect(event.session == "frame-test")
         #expect(event.fields == ["source": "link"])
