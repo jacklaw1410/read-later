@@ -14,7 +14,7 @@ troubleshooting and the repo map.
 | XcodeGen | 2.46.0 | `xcodegen --version` |
 | Swift | 6.4.2 (Apple) | `swift --version` |
 
-Deployment targets: iOS 17.0, macOS 14.0.
+Deployment targets: iOS 17.0, macOS 14.0. Hold-by-scroll uses `onScrollGeometryChange` and `onScrollPhaseChange`, which need iOS 18 or macOS 15; on older systems the follow dot still enters Hold.
 Supported destinations: `iOS`, `macOS` (one target, `supportedDestinations`).
 
 ## Generate

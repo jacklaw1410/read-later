@@ -165,50 +165,77 @@ final class PlayerTests: XCTestCase {
 
     // MARK: - HoldDetector
 
-    func testHoldDetectorNeedsTwoFarEvents() {
+    func testHoldDetectorSetsBaselineOnFirstEvent() {
         var detector = HoldDetector()
-        XCTAssertFalse(detector.scrollEvent(distanceFromWash: 200, isFollowing: true, isScrubbing: false))
-        XCTAssertTrue(detector.scrollEvent(distanceFromWash: 200, isFollowing: true, isScrubbing: false))
+        XCTAssertFalse(
+            detector.scrollEvent(offset: 500, isDriving: true, isFollowing: true, isScrubbing: false)
+        )
+        XCTAssertFalse(
+            detector.scrollEvent(offset: 600, isDriving: true, isFollowing: true, isScrubbing: false),
+            "100 pt from the baseline is inside the tolerance"
+        )
     }
 
-    func testHoldDetectorIgnoresScrubbing() {
+    func testHoldDetectorHoldsPastToleranceInEitherDirection() {
+        var down = HoldDetector()
+        _ = down.scrollEvent(offset: 0, isDriving: true, isFollowing: true, isScrubbing: false)
+        XCTAssertTrue(down.scrollEvent(offset: 141, isDriving: true, isFollowing: true, isScrubbing: false))
+
+        var up = HoldDetector()
+        _ = up.scrollEvent(offset: 0, isDriving: true, isFollowing: true, isScrubbing: false)
+        XCTAssertTrue(up.scrollEvent(offset: -141, isDriving: true, isFollowing: true, isScrubbing: false))
+    }
+
+    func testHoldDetectorIgnoresProgrammaticOffsets() {
         var detector = HoldDetector()
-        XCTAssertFalse(detector.scrollEvent(distanceFromWash: 200, isFollowing: true, isScrubbing: true))
-        XCTAssertFalse(detector.scrollEvent(distanceFromWash: 200, isFollowing: true, isScrubbing: true))
+        _ = detector.scrollEvent(offset: 0, isDriving: true, isFollowing: true, isScrubbing: false)
+        XCTAssertFalse(
+            detector.scrollEvent(offset: 500, isDriving: false, isFollowing: true, isScrubbing: false),
+            "a programmatic offset is not a gesture"
+        )
     }
 
-    func testHoldDetectorNearEventResets() {
+    func testHoldDetectorIgnoresScrubbingAndHeld() {
         var detector = HoldDetector()
-        XCTAssertFalse(detector.scrollEvent(distanceFromWash: 200, isFollowing: true, isScrubbing: false))
-        XCTAssertFalse(detector.scrollEvent(distanceFromWash: 10, isFollowing: true, isScrubbing: false))
-        XCTAssertFalse(detector.scrollEvent(distanceFromWash: 200, isFollowing: true, isScrubbing: false))
-        XCTAssertTrue(detector.scrollEvent(distanceFromWash: 200, isFollowing: true, isScrubbing: false))
+        _ = detector.scrollEvent(offset: 0, isDriving: true, isFollowing: true, isScrubbing: false)
+        XCTAssertFalse(
+            detector.scrollEvent(offset: 500, isDriving: true, isFollowing: true, isScrubbing: true)
+        )
+        XCTAssertFalse(
+            detector.scrollEvent(offset: 500, isDriving: true, isFollowing: false, isScrubbing: false)
+        )
     }
 
-    func testHoldDetectorIgnoresWhenNotFollowing() {
+    func testHoldDetectorEndGestureResetsBaseline() {
         var detector = HoldDetector()
-        XCTAssertFalse(detector.scrollEvent(distanceFromWash: 200, isFollowing: false, isScrubbing: false))
-        XCTAssertFalse(detector.scrollEvent(distanceFromWash: 200, isFollowing: false, isScrubbing: false))
+        _ = detector.scrollEvent(offset: 0, isDriving: true, isFollowing: true, isScrubbing: false)
+        detector.endGesture()
+        XCTAssertFalse(
+            detector.scrollEvent(offset: 500, isDriving: true, isFollowing: true, isScrubbing: false),
+            "a new gesture sets a new baseline"
+        )
     }
 
-    // MARK: - Return pill
+    // MARK: - Wash resume control
 
-    func testReturnPillShowsWhenWashOffScreenAndHeld() {
-        XCTAssertTrue(shouldShowReturnPill(washVisible: false, isHeld: true, isPlaying: true))
+    func testWashResumeControlShowsWhenWashOffScreenAndHeld() {
+        XCTAssertTrue(shouldShowWashResumeControl(washVisible: false, isHeld: true, isPlaying: true))
     }
 
-    func testReturnPillShowsWhenWashOffScreenAndPaused() {
-        XCTAssertTrue(shouldShowReturnPill(washVisible: false, isHeld: false, isPlaying: false))
+    func testWashResumeControlShowsWhenWashOffScreenAndPaused() {
+        XCTAssertTrue(shouldShowWashResumeControl(washVisible: false, isHeld: false, isPlaying: false))
     }
 
-    func testReturnPillHidesWhenWashVisible() {
-        XCTAssertFalse(shouldShowReturnPill(washVisible: true, isHeld: true, isPlaying: true))
-        XCTAssertFalse(shouldShowReturnPill(washVisible: true, isHeld: false, isPlaying: false))
+    func testWashResumeControlHidesWhenWashVisible() {
+        XCTAssertFalse(shouldShowWashResumeControl(washVisible: true, isHeld: true, isPlaying: true))
+        XCTAssertFalse(shouldShowWashResumeControl(washVisible: true, isHeld: false, isPlaying: false))
     }
 
-    func testReturnPillHidesWhileFollowingOnScreen() {
-        XCTAssertFalse(shouldShowReturnPill(washVisible: false, isHeld: false, isPlaying: true))
+    func testWashResumeControlHidesWhileFollowingOnScreen() {
+        XCTAssertFalse(shouldShowWashResumeControl(washVisible: false, isHeld: false, isPlaying: true))
     }
+
+
 
     // MARK: - Unit navigation
 

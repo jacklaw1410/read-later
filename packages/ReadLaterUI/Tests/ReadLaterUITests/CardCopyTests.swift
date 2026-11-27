@@ -40,6 +40,16 @@ import ReadLaterCore
 
 // MARK: - Shared card copy
 
+@Test func closeIsTheOnlyCardExit() {
+    #expect(CardCopy.close == "Close")
+}
+
+@Test func pauseLinesDoNotSayResume() {
+    #expect(CardCopy.pauseLine(wasPlayingBeforeLookup: true, wordIndex: 3) == "Audio paused · continues at #3 on close")
+    #expect(CardCopy.pauseLine(wasPlayingBeforeLookup: true, wordIndex: nil) == "Audio paused · continues on close")
+    #expect(CardCopy.pauseLine(wasPlayingBeforeLookup: false, wordIndex: 3) == "Audio was already paused · stays paused")
+}
+
 @Test func missSourceLineNamesPackState() {
     #expect(
         CardCopy.missSourceLine(packInstalled: false)

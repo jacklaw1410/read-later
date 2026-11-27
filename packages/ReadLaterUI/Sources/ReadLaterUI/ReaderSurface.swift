@@ -166,7 +166,8 @@ public enum ReaderMetrics {
     public static let paragraphGap: CGFloat = 14
     /// A footnote marker needs a 44 pt target without growing the line box.
     public static let footnoteHitTarget: CGFloat = Theme.minTarget
-    /// Auto-scroll stops following once the wash is this far from centre.
+    /// Auto-scroll stops following once the reader's gesture has moved the
+    /// page this far from where the gesture began.
     public static let autoScrollTolerance: CGFloat = 140
     /// The wash is drawn half a word ahead of the audio clock so the eye lands
     /// on the word as it is spoken, not after it.

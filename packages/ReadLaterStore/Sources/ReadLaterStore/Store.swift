@@ -64,8 +64,8 @@ public struct ReadingPosition: Sendable, Hashable, Equatable {
     /// human `markedDone`); reaching for this field reintroduces the §6 bug
     /// where scrub-back-from-end disagrees with the offer list.
     public private(set) var finished: Bool
-    /// Chosen by the reader, not a side effect of reading. A saved row
-    /// survives a release; a visit row does not.
+    /// Chosen by the reader, not a side effect of reading. It is a library
+    /// flag only; releasing a copy keeps the row whether or not it is set.
     public var saved: Bool
     /// The article URL, kept so the list can fetch the page again after a
     /// release, when the stored plan is gone.
@@ -850,7 +850,8 @@ public final class Store: Sendable {
         }
     }
 
-    /// The saved queue: rows the reader chose. These survive a release.
+    /// The saved queue: rows the reader chose. The flag is a library choice;
+    /// it does not control whether a row survives a release.
     public func savedPositions() throws -> [ReadingPosition] {
         try dbQueue.read { db in
             let rows = try Row.fetchAll(db, sql: """
