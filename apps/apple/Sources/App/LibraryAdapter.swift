@@ -19,7 +19,7 @@ final class LibraryAdapter: LibraryProvider {
                 title: position.title,
                 wordIndex: position.wordIndex,
                 totalWords: position.totalWords,
-                finished: position.finished,
+                finished: position.reachedEnd || position.markedDone,
                 saved: position.saved
             )
         }
@@ -37,9 +37,9 @@ final class LibraryAdapter: LibraryProvider {
         model.setSaved(position, saved: saved)
     }
 
-    func refresh(_ row: LibraryRow) {
+    func releaseCopy(_ row: LibraryRow) {
         guard let position = storedPosition(for: row) else { return }
-        model.cacheBust(position)
+        model.releaseCopy(position)
     }
 
     func forget(_ row: LibraryRow) {

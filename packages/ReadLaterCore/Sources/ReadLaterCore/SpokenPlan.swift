@@ -125,7 +125,8 @@ enum SpokenPlanEngine {
         }
         for block in filled { visit(block) }
         return BlockPlan(
-            version: 1,
+            schemaVersion: 1,
+            extractorVersion: BlockPlan.currentExtractorVersion,
             source: source,
             sourceSHA256: sourceSHA256,
             sentenceCount: sentenceCount,

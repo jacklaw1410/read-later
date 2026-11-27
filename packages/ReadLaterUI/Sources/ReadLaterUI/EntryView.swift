@@ -135,7 +135,7 @@ struct EntryRequest: Sendable, Equatable {
 /// loadline that appears below the button on the first open.
 public struct EntryView: View {
     private let telemetry: TelemetryHub
-    private let onOpen: (ReadLaterCore.Document, EntrySource) -> Void
+    private let onOpen: (ReadLaterCore.Document, EntrySource, FetchedPage?) -> Void
     private let onSettings: (() -> Void)?
     private let onLibrary: (() -> Void)?
     /// True for the clipboard-empty variant: no paste button, and the empty
@@ -162,7 +162,7 @@ public struct EntryView: View {
 
     public init(
         telemetry: TelemetryHub,
-        onOpen: @escaping (ReadLaterCore.Document, EntrySource) -> Void,
+        onOpen: @escaping (ReadLaterCore.Document, EntrySource, FetchedPage?) -> Void,
         onSettings: (() -> Void)? = nil,
         onLibrary: (() -> Void)? = nil,
         prefillLink: String = EntryCopy.sampleLink,
@@ -668,7 +668,7 @@ public struct EntryView: View {
             switch ArticleIngress.pasted(request.raw, telemetry: telemetry) {
             case .success(let document):
                 telemetry.record(TelemetryName.readerOpen, fields: ["source": request.source.rawValue])
-                onOpen(document, request.source)
+                onOpen(document, request.source, nil)
             case .failure(let error):
                 state = .refused(error.message)
             }
@@ -686,7 +686,7 @@ public struct EntryView: View {
                 "words": String(ArticleLibrary.demo.plan.spokenWords),
             ])
             telemetry.record(TelemetryName.readerOpen, fields: ["source": EntrySource.sample.rawValue])
-            onOpen(ArticleLibrary.demo, .sample)
+            onOpen(ArticleLibrary.demo, .sample, nil)
             return
         }
 
@@ -699,11 +699,11 @@ public struct EntryView: View {
             return
         }
         setLoading(.stripping)
-        switch ArticleIngress.read(page, telemetry: telemetry) {
+        switch ArticleIngress.read(page, telemetry: telemetry, original: URL(string: request.link)) {
         case .success(let document):
             reveal(.ready)
             telemetry.record(TelemetryName.readerOpen, fields: ["source": request.source.rawValue])
-            onOpen(document, request.source)
+            onOpen(document, request.source, page)
         case .failure(let error):
             state = .refused(error.message)
         }

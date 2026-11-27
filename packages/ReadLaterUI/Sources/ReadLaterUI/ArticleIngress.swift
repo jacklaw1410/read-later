@@ -80,7 +80,7 @@ public enum ArticleIngress {
             case .failure(let error):
                 return .failure(error)
             case .success(let page):
-                return read(page, telemetry: telemetry, extractor: extractor)
+                return read(page, telemetry: telemetry, original: url, extractor: extractor)
             }
         }
     }
@@ -137,9 +137,51 @@ public enum ArticleIngress {
 
     /// Extracts one fetched page. The saved URL is the one that answered, so a
     /// redirect to a canonical address is recorded, not the link that was typed.
+    /// It is normalized on the way in (research `spec/library-identity.md` §2).
+    /// `original` is the link as pasted, kept alongside for refetch (§2);
+    /// nil for callers that never saw the pasted string.
+    /// Which pasted link a refetch carries. The request URL when it is not
+    /// the canonical one (the pasted short link), else nil: the canonical
+    /// retry must not re-stamp the dead link it just rescued, and a plain
+    /// canonical open carries nothing to keep. Compared normalized with
+    /// the query significant: scheme/host case, default port, fragment
+    /// and `%XX` case never count as different, but any query difference
+    /// does — stripping a tracking key can fetch a different resource
+    /// (§2), so the pasted variant is always kept.
+    public static func originalForRefetch(request: URL, canonical: URL?) -> URL? {
+        guard let canonical else { return request }
+        guard let req = normalizedForRefetch(request), let can = normalizedForRefetch(canonical)
+        else { return request }
+        return req == can ? nil : request
+    }
+
+    /// Normalizes for the refetch comparison only. Lowercases scheme and
+    /// host, drops the default port and the fragment (both already
+    /// dropped in the canonical identity), and runs the shared encoding
+    /// normalizer so `%7E` vs `~` and `%2b` vs `%2B` never count as
+    /// different. The query stays untouched and significant.
+    private static func normalizedForRefetch(_ url: URL) -> URLComponents? {
+        guard var parts = URLComponents(url: url, resolvingAgainstBaseURL: false) else { return nil }
+        parts.scheme = parts.scheme?.lowercased()
+        parts.host = parts.host?.lowercased()
+        if (parts.scheme == "http" && parts.port == 80)
+            || (parts.scheme == "https" && parts.port == 443)
+        {
+            parts.port = nil
+        }
+        parts.fragment = nil
+        if let path = parts.percentEncodedPath.isEmpty ? nil : parts.percentEncodedPath {
+            parts.percentEncodedPath = CanonicalURL.normalizeEncoding(path)
+        }
+        if let query = parts.percentEncodedQuery {
+            parts.percentEncodedQuery = CanonicalURL.normalizeEncoding(query)
+        }
+        return parts
+    }
     public static func read(
         _ page: FetchedPage,
         telemetry: TelemetryHub,
+        original: URL? = nil,
         extractor: Extractor = SwiftSoupExtractor()
     ) -> Result<Document, IngressError> {
         telemetry.record(TelemetryName.extractStart, fields: ["bytes": String(page.html.count)])
@@ -157,7 +199,8 @@ public enum ArticleIngress {
                 "words": String(plan.spokenWords),
             ])
             return .success(Document(
-                url: page.url,
+                url: CanonicalURL.canonicalize(page.url),
+                originalURL: original,
                 title: title(for: result, page: page),
                 plan: plan
             ))

@@ -36,6 +36,12 @@ struct SyncOplogTests {
         #expect(entries.count == 4)
         #expect(entries[3].op == "document.delete")
 
+        // A missing row (double release, forget-after-release) logs nothing:
+        // peers replaying a delete for a row they never saw just grow the log.
+        try store.deleteDocument(id: document.id)
+        try store.deleteDocument(id: UUID())
+        #expect(try store.syncOplog.entries().count == 4)
+
         let seqs = entries.map(\.seq)
         #expect(seqs == seqs.sorted())
         #expect(Set(seqs).count == 4)
@@ -80,24 +86,12 @@ struct SyncOplogTests {
     }
 }
 
-/// A database at v5, before the sync oplog was renamed. Migration v6 must
-/// rename the table without rewriting its rows.
+/// A database at v5, before the sync oplog was renamed. Built by the real
+/// migrator, so every table the later migrations touch exists.
 private func makeLegacyDatabase(at url: URL) throws {
     let queue = try DatabaseQueue(path: url.path)
+    try makeMigrator().migrate(queue, upTo: "v5_position_origin")
     try queue.write { db in
-        try db.execute(sql: "CREATE TABLE grdb_migrations(identifier TEXT PRIMARY KEY)")
-        for name in ["v1_initial", "v2_fts", "v3_positions", "v4_saved", "v5_position_origin"] {
-            try db.execute(sql: "INSERT INTO grdb_migrations(identifier) VALUES (?)", arguments: [name])
-        }
-        try db.execute(sql: """
-            CREATE TABLE changelog(
-                seq INTEGER PRIMARY KEY AUTOINCREMENT,
-                device TEXT NOT NULL,
-                "at" REAL NOT NULL,
-                op TEXT NOT NULL,
-                payload TEXT NOT NULL
-            )
-            """)
         try db.execute(sql: """
             INSERT INTO changelog(device, "at", op, payload) VALUES (?, ?, ?, ?)
             """, arguments: [
