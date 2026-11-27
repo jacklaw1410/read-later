@@ -12,7 +12,7 @@ struct SentenceAnchor: Equatable {
 }
 
 /// Maps a stored reading position onto a new plan of the same article
-/// (research `spec/library-identity.md` §4, F38).
+/// (research `spec/library-identity.md` §4, F43).
 ///
 /// Pure: no store access. Resolution order: exact anchor hash (single hit),
 /// nearest copy of a repeated anchor, rewrite gate, unique fuzzy head,
@@ -20,7 +20,7 @@ struct SentenceAnchor: Equatable {
 enum AnchorResolver {
     /// Dummy, non-blocking gate. Value 0.25 from synthetic trials on the
     /// unmerged research branch (`research/library-identity-build`:
-    /// `findings/F38-library-anchor-recommendation.md`, SCOPE §5 2026-11-17 —
+    /// `findings/F43-library-anchor-recommendation.md`, SCOPE §5 2026-11-27 —
     /// 36 synthetic trials; "not a proven gate"). Confirm against real edit
     /// histories when that branch lands. A same-length rewrite evades any
     /// length gate; with no anchor hit it falls back to proportion instead.
@@ -37,9 +37,11 @@ enum AnchorResolver {
     ///
     /// Exact anchor match first (single hit, then nearest copy), then the
     /// rewrite gate, then the unique fuzzy head, then proportion, then entry
-    /// start (0). A present anchor beats the length gate: verbatim sentences
-    /// resume where they are no matter how much the rest of the article
-    /// grew; the gate fires only when the anchor itself is gone. Exact and
+    /// start (0). Only a verbatim copy beats the length gate: it resumes
+    /// where it is no matter how much the rest of the article grew. Once no
+    /// copy survives, the gate fires before the fuzzy head, so a large
+    /// rewrite resets to the top even when the five-word head still matches
+    /// (SCOPE §5 2026-11-27). A row with no anchor skips the gate. Exact and
     /// fuzzy hits return the first word of the matched sentence, because
     /// the anchor is sentence-grained.
     /// One build of the match field per call: candidates once, exact hits

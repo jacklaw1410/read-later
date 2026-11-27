@@ -75,7 +75,7 @@ func makeMigrator() -> DatabaseMigrator {
         try db.execute(sql: "ALTER TABLE reading_position ADD COLUMN furthest INTEGER NOT NULL DEFAULT 0")
         try db.execute(sql: "ALTER TABLE reading_position ADD COLUMN marked_done INTEGER NOT NULL DEFAULT 0")
         // The sentence anchor the position resumes from (research
-        // `spec/library-identity.md` §4, F38): `anchor_hash` is the sha256-16
+        // `spec/library-identity.md` §4, F43): `anchor_hash` is the sha256-16
         // of the normalized sentence under the reader, `anchor_head` its
         // first five normalized words. Empty means no anchor. No backfill:
         // old rows fall to the proportional path and the next tick writes

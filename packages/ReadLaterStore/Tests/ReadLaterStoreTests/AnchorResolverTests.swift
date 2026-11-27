@@ -6,7 +6,7 @@ import ReadLaterCore
 @testable import ReadLaterStore
 
 /// Sentence anchor and position migration (research `spec/library-identity.md`
-/// §4, F38). Five sentences of ten words each: 50 spoken words, sentence
+/// §4, F43). Five sentences of ten words each: 50 spoken words, sentence
 /// starts at 0, 10, 20, 30, 40. Every head is distinct.
 @Suite("Anchor resolver")
 struct AnchorResolverTests {
