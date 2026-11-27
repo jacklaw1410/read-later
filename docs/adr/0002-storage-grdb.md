@@ -1,12 +1,13 @@
 # ADR-0002 — Storage is GRDB, not SwiftData
 
-Status: accepted · Date: 2026-11-12
+Status: accepted · Date: 2026-11-12 · Amended: 2026-11-27
 
 ## Decision
 
 `ReadLaterStore` is GRDB over system SQLite, with FTS5 for phrase
-search and an explicit oplog (`ChangeLogEntry`) as the sync boundary.
-CloudKit mirrors the log, never the store.
+search and an explicit oplog as the sync boundary. `SyncOplog` writes
+`SyncOplogEntry` rows to the `syncoplog` table. CloudKit mirrors the log,
+never the store.
 
 ## Context
 

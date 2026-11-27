@@ -260,12 +260,12 @@ How much a run records. Level 1 is the telemetry alone. Level 2 is pure audio or
 _Avoid_: tier (the MVP tiers already use it), grade, strength
 
 **Telemetry**:
-The app's timestamped measurement log, one JSON line per event.
+The app's timestamped measurement log, one JSON line per event. In code the type is `TelemetryLog` and the files are `telemetry*.jsonl`.
 _Avoid_: oplog (that name belongs to the sync log), trace, log
 
 **Oplog**:
-The append-only log of sync operations, replayed to bring a store up to date. It records changes, not measurements.
-_Avoid_: telemetry, measurement log
+The append-only log of sync operations, replayed to bring a store up to date. It records changes, not measurements. In code the type is `SyncOplog` and the table is `syncoplog`.
+_Avoid_: telemetry, measurement log, changelog
 
 **Timeline telemetry**:
 Telemetry whose timestamps share a clock with a recording, so each event maps to a moment in the recording.

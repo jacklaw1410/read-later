@@ -1,71 +1,70 @@
-# Telemetry and oplog
+# Telemetry and sync oplog
 
-Two different logs share the word "oplog" in code. This note separates them.
+Two logs serve two jobs. Telemetry records measurements locally; the oplog
+records state changes for replication. This note describes what each log
+contains. For why they stay separate, see `adr/0004-two-logs.md`.
 
 - **Telemetry** is the app's timestamped measurement log, one JSON line per
-  event (`GLOSSARY.md:240-242`). The code names it `TelemetryLog`
-  (`packages/ReadLaterCore/Sources/ReadLaterCore/TelemetryOplog.swift:98`).
-  The name is pending a migration ticket; "oplog" is not a synonym for
-  telemetry. Use "telemetry" in new names and prose. The rename row is
-  `../read-later-research/STATUS.md:165`.
-- **Oplog** is the append-only log of sync operations
-  (`GLOSSARY.md:244-246`). It lives in the `syncoplog` SQLite table and its
-  rows are `ChangeLogEntry`. That name is correct and stays.
+  event (`GLOSSARY.md`). The code type is `TelemetryLog`; files are
+  `telemetry*.jsonl` under `Application Support/Telemetry/`.
+- **Oplog** is the append-only log of sync operations (`GLOSSARY.md`). The
+  code type is `SyncOplog`; rows live in the `syncoplog` SQLite table and are
+  `SyncOplogEntry`.
 
 The app writes telemetry locally. No analytics SDK and no network are
-involved (`TelemetryOplog.swift:89-90`). Sync replays the oplog; it never
-mirrors a store (`packages/ReadLaterStore/Sources/ReadLaterStore/SyncOplog.swift:5`).
+involved. Sync replays the oplog; it never mirrors a store
+(`packages/ReadLaterStore/Sources/ReadLaterStore/SyncOplog.swift:5`).
 
 ## Data structures
 
 ### Telemetry event
 
 `TelemetryEvent` is one JSONL line
-(`packages/ReadLaterCore/Sources/ReadLaterCore/TelemetryOplog.swift:7-21`):
+(`packages/ReadLaterCore/Sources/ReadLaterCore/TelemetryLog.swift:7-21`):
 
 | Field | Type | Meaning |
 |---|---|---|
-| `t` | `Double` | Monotonic seconds since process start (`clock() - originUptime`, `TelemetryOplog.swift:172`). |
-| `iso` | `String` | Wall-clock time, ISO 8601 with fractional seconds (`TelemetryOplog.swift:173`, `:319-323`). |
-| `session` | `String` | Process id, eight UUID characters by default (`TelemetryOplog.swift:131`, `:174`). |
+| `t` | `Double` | Monotonic seconds since process start (`clock() - originUptime`, `TelemetryLog.swift:172`). |
+| `iso` | `String` | Wall-clock time, ISO 8601 with fractional seconds (`TelemetryLog.swift:173`, `:319-323`). |
+| `session` | `String` | Process id, eight UUID characters by default (`TelemetryLog.swift:131`, `:174`). |
 | `event` | `String` | Event name from `TelemetryName` or a dynamic name. |
 | `fields` | `[String: String]` | Flat string map. Numbers are formatted as strings at the call site. |
 
 `TelemetryName` is not an enum of cases. It is an enum namespace of static
-string constants (`TelemetryOplog.swift:27-87`). The `T0`–`T7` names match
+string constants (`TelemetryLog.swift:27-87`). The `T0`–`T7` names match
 `read-later-research/spec/device-test-plan.md` so a trace and an export
-agree (`TelemetryOplog.swift:23-26`).
+agree (`TelemetryLog.swift:23-26`).
 
 ### TelemetryLog
 
 The append-only writer
-(`packages/ReadLaterCore/Sources/ReadLaterCore/TelemetryOplog.swift:98-324`).
+(`packages/ReadLaterCore/Sources/ReadLaterCore/TelemetryLog.swift:98-324`).
 
 - `record(_:fields:)` never throws and never blocks the caller. It JSON-encodes
   the event, appends the line to `pending`, appends the event to a bounded
   in-memory `ring`, and schedules a flush on a private utility queue
-  (`TelemetryOplog.swift:169-196`).
+  (`TelemetryLog.swift:169-196`).
 - Defaults: `telemetry.jsonl`, 1,048,576 bytes per file, 5 files, ring capacity
-  200, flush delay 1.0 s (`TelemetryOplog.swift:99-103`).
+  200, flush delay 1.0 s (`TelemetryLog.swift:99-103`).
 - Stock directory is `Application Support/Telemetry/`
-  (`TelemetryOplog.swift:153-157`). Before `setDirectory` the log is
+  (`TelemetryLog.swift:153-157`). Before `setDirectory` the log is
   memory-only; the app calls `configure()` at launch before the first record
   (`packages/ReadLaterCore/Sources/ReadLaterCore/TelemetryHub.swift:212-216`,
   `apps/apple/Sources/App/ReadLaterApp.swift:31`).
 - Rotation keeps `telemetry.jsonl` plus `telemetry.1.jsonl` … `telemetry.4.jsonl`; the
-  newest rotated file is `telemetry.1.jsonl` (`TelemetryOplog.swift:296-317`).
+  newest rotated file is `telemetry.1.jsonl` (`TelemetryLog.swift:296-317`).
 - `tail(_:)` returns the last `n` ring events, oldest first. The ring survives
   a full disk, so a crash report or the Diagnostics screen can still show
-  events (`TelemetryOplog.swift:203-207`).
+  events (`TelemetryLog.swift:203-207`).
 - `flushNow()` writes pending lines and drops them on failure; `flushIfDue()`
   is the injected-clock path used by tests
-  (`TelemetryOplog.swift:209-234`). The hub flushes on app background and
+  (`TelemetryLog.swift:209-234`). The hub flushes on app background and
   foreground notifications on both platforms
   (`TelemetryHub.swift:193-204`); `flush()` is public for explicit exports
   (`TelemetryHub.swift:262-264`).
 - `ProcessStart.uptime()` derives true process start via `sysctl` so `t` is
   process-relative, not boot-relative (`TelemetryHub.swift:8-50`,
-  `TelemetryOplog.swift:148`).
+  `TelemetryLog.swift:148`).
 
 ### TelemetryHub and signposts
 
@@ -108,7 +107,7 @@ CREATE TABLE syncoplog(
 )
 ```
 
-`ChangeLogEntry` is the typed row: `seq`, `device`, `at: Date`, `op`,
+`SyncOplogEntry` is the typed row: `seq`, `device`, `at: Date`, `op`,
 `payload: String` (`packages/ReadLaterCore/Sources/ReadLaterCore/Model.swift:282-298`).
 Dates are `timeIntervalSinceReferenceDate` REALs so a save/read round-trips
 bit-exact (`packages/ReadLaterStore/Sources/ReadLaterStore/Store.swift:74-76`).
@@ -152,70 +151,71 @@ compile out of Release and require launch arguments
 
 | Event | Defined | Emitted at | When | Fields |
 |---|---|---|---|---|
-| `launch.processStart` | `TelemetryOplog.swift:28` | `apps/apple/Sources/App/ReadLaterApp.swift:32` | App `init`, after `configure()` | none |
-| `launch.entryReady` (signpost) | `TelemetryOplog.swift:29` | `TelemetryHub.swift:256`; called `packages/ReadLaterUI/Sources/ReadLaterUI/EntryView.swift:274` | Entry view `.onAppear` | none |
-| `launch.firstFrame` (signpost) | `TelemetryOplog.swift:30` | `TelemetryHub.swift:258` | One main-loop turn after `entryReady` | none |
-| `T0.tap` (signpost) | `TelemetryOplog.swift:31` | `EntryView.swift:632`, `apps/apple/Sources/App/RootView.swift:395` | Entry submit; DEBUG autoplay path | none |
-| `T1.fetchStart` (signpost) | `TelemetryOplog.swift:32` | `packages/ReadLaterUI/Sources/ReadLaterUI/PageFetching.swift:67` | Just before the page request | `host` |
-| `T2.headers` (signpost) | `TelemetryOplog.swift:33` | `PageFetching.swift:167-170` | URLSession delegate receives response headers | `status`, `host` |
-| `T3.bodyDone` (signpost) | `TelemetryOplog.swift:34` | `PageFetching.swift:76-79` | Body accumulated; before size/type checks | `status`, `bytes` |
-| `T4.parsed` (signpost) | `TelemetryOplog.swift:35` | `packages/ReadLaterUI/Sources/ReadLaterUI/ArticleIngress.swift:133` | Extractor returns blocks | `blocks` |
-| `T5.planReady` (signpost) | `TelemetryOplog.swift:36` | `ArticleIngress.swift:140-143`, `:175-178`, `EntryView.swift:671-674` | Spoken plan built (fetch, paste, or sample) | `sentences`, `words` (fetch); `source`, `words` (paste/sample) |
-| `T6.speakEnqueued` (signpost) | `TelemetryOplog.swift:37` | `apps/apple/Sources/Platform/AVSpeechController.swift:174-176` | First `speak`, only when a run is active | `sentences` |
-| `T7.firstWord` (signpost) | `TelemetryOplog.swift:38` | `AVSpeechController.swift:409-413` | First word boundary, only when a run is active; ends the run | none |
-| `run.end` | `TelemetryOplog.swift:39` | `TelemetryHub.swift:229`, `:249`; triggered `RootView.swift:115` | Superseded tap, reader close, or `endRunIfActive` | `outcome`: `superseded`, `closed`, or caller value (`stopped` in tests, `TelemetryOplogTests.swift:185`) |
-| `launch.build` | `TelemetryOplog.swift:72` | `ReadLaterApp.swift:33-57` | App `init`; ties the log to a build | `commit`, `configuration`, `model`, `os` |
+| `launch.processStart` | `TelemetryLog.swift:28` | `apps/apple/Sources/App/ReadLaterApp.swift:32` | App `init`, after `configure()` | none |
+| `launch.entryReady` (signpost) | `TelemetryLog.swift:29` | `TelemetryHub.swift:256`; called `packages/ReadLaterUI/Sources/ReadLaterUI/EntryView.swift:274` | Entry view `.onAppear` | none |
+| `launch.firstFrame` (signpost) | `TelemetryLog.swift:30` | `TelemetryHub.swift:258` | One main-loop turn after `entryReady` | none |
+| `T0.tap` (signpost) | `TelemetryLog.swift:31` | `EntryView.swift:632`, `apps/apple/Sources/App/RootView.swift:395` | Entry submit; DEBUG autoplay path | none |
+| `T1.fetchStart` (signpost) | `TelemetryLog.swift:32` | `packages/ReadLaterUI/Sources/ReadLaterUI/PageFetching.swift:67` | Just before the page request | `host` |
+| `T2.headers` (signpost) | `TelemetryLog.swift:33` | `PageFetching.swift:167-170` | URLSession delegate receives response headers | `status`, `host` |
+| `T3.bodyDone` (signpost) | `TelemetryLog.swift:34` | `PageFetching.swift:76-79` | Body accumulated; before size/type checks | `status`, `bytes` |
+| `T4.parsed` (signpost) | `TelemetryLog.swift:35` | `packages/ReadLaterUI/Sources/ReadLaterUI/ArticleIngress.swift:133` | Extractor returns blocks | `blocks` |
+| `T5.planReady` (signpost) | `TelemetryLog.swift:36` | `ArticleIngress.swift:140-143`, `:175-178`, `EntryView.swift:671-674` | Spoken plan built (fetch, paste, or sample) | `sentences`, `words` (fetch); `source`, `words` (paste/sample) |
+| `T6.speakEnqueued` (signpost) | `TelemetryLog.swift:37` | `apps/apple/Sources/Platform/AVSpeechController.swift:174-176` | First `speak`, only when a run is active | `sentences` |
+| `T7.firstWord` (signpost) | `TelemetryLog.swift:38` | `AVSpeechController.swift:409-413` | First word boundary, only when a run is active; ends the run | none |
+| `run.end` | `TelemetryLog.swift:39` | `TelemetryHub.swift:229`, `:249`; triggered `RootView.swift:115` | Superseded tap, reader close, or `endRunIfActive` | `outcome`: `superseded`, `closed`, or caller value (`stopped` in tests, `TelemetryLogTests.swift:185`) |
+| `launch.build` | `TelemetryLog.swift:72` | `ReadLaterApp.swift:33-57` | App `init`; ties the log to a build | `commit`, `configuration`, `model`, `os` |
+| `reader.entered` | `TelemetryLog.swift:47` | `TelemetryHub.swift:267`; called `packages/ReadLaterUI/Sources/ReadLaterUI/ReaderView.swift:219` | Reader view first frame, one main-loop turn after appear | `source`: `link`, `clipboard`, `rawText`, `sample`, `library` |
 
 ### Ingestion and article open
 
 | Event | Defined | Emitted at | When | Fields |
 |---|---|---|---|---|
-| `fetch.skipped` | `TelemetryOplog.swift:40` | `EntryView.swift:670` | Bundled sample link, no network | `reason=sample-link` |
-| `fetch.failed` | `TelemetryOplog.swift:41` | `ArticleIngress.swift:108`, `:111`, `:114`, `:118` | PageFetchError or catch-all | `kind=tooLarge` + `bytes`; `kind=notText`; `kind=offline` |
-| `extract.start` | `TelemetryOplog.swift:42` | `ArticleIngress.swift:130` | Before extraction | `bytes` |
-| `extract.failed` | `TelemetryOplog.swift:43` | `ArticleIngress.swift:152`, `:155`, `:158`, `:161`, `:165` | ExtractionError or catch-all | `kind`: `walled`, `unrendered`, `notAnArticle`, `failed` |
-| `article.ready` | `TelemetryOplog.swift:44` | `apps/apple/Sources/App/RootView.swift:104-107` | `LibraryModel.open` builds the reader session | `title`, `words` |
-| `reader-open` | `TelemetryOplog.swift:55` | `EntryView.swift:657`, `:675`, `:692` | Entry path opens a document | `source`: `pasted`, `sample`, `link` |
+| `fetch.skipped` | `TelemetryLog.swift:40` | `EntryView.swift:670` | Bundled sample link, no network | `reason=sample-link` |
+| `fetch.failed` | `TelemetryLog.swift:41` | `ArticleIngress.swift:108`, `:111`, `:114`, `:118` | PageFetchError or catch-all | `kind=tooLarge` + `bytes`; `kind=notText`; `kind=offline` |
+| `extract.start` | `TelemetryLog.swift:42` | `ArticleIngress.swift:130` | Before extraction | `bytes` |
+| `extract.failed` | `TelemetryLog.swift:43` | `ArticleIngress.swift:152`, `:155`, `:158`, `:161`, `:165` | ExtractionError or catch-all | `kind`: `walled`, `unrendered`, `notAnArticle`, `failed` |
+| `article.ready` | `TelemetryLog.swift:44` | `apps/apple/Sources/App/RootView.swift:104-107` | `LibraryModel.open` builds the reader session | `title`, `words` |
+| `reader-open` | `TelemetryLog.swift:55` | `EntryView.swift:657`, `:675`, `:692` | Entry path opens a document | `source`: `pasted`, `sample`, `link` |
 
 ### Speech and playback
 
 | Event | Defined | Emitted at | When | Fields |
 |---|---|---|---|---|
-| `speech.didStart` | `TelemetryOplog.swift:45` | `AVSpeechController.swift:385-389` | First utterance-start delegate callback in a run; once per `speak`, gated on active run | none |
-| `speech.utteranceStart` | `TelemetryOplog.swift:46-50` | `AVSpeechController.swift:382-384` | Every utterance start, ungated so scrub releases have a phone-side mark | `utterance` |
-| `tap.play` | `TelemetryOplog.swift:73` | `apps/apple/Sources/App/ReaderSession.swift:115-116` | Play handler entry, when not speaking | `word` (wash index, `-1` if unset) |
-| `tap.pause` | `TelemetryOplog.swift:74` | `ReaderSession.swift:115-116` | Play handler entry, when speaking | `word` |
-| `play` | `TelemetryOplog.swift:56` | `ReaderSession.swift:126` | Play branch starts audio | none |
-| `pause` | `TelemetryOplog.swift:57` | `ReaderSession.swift:123`, `:138` | Pause branch or `.speaking` case in toggle | none |
-| `finished` | `TelemetryOplog.swift:58` | `ReaderSession.swift:451` | Speech state becomes `.finished` | none |
-| `speed change` | `TelemetryOplog.swift:66` | `ReaderSession.swift:180` | Reader changes pace | `from`, `to` |
-| `scrub.commit` | `TelemetryOplog.swift:75` | `ReaderSession.swift:206-209` | After restart on scrub release | `fraction` (4 dp), `word` |
-| `scrub.begin` | `TelemetryOplog.swift:76` | `ReaderSession.swift:243-245` | Drag begins | `state` (speech state description) |
-| `hold-start` | `TelemetryOplog.swift:67` | `ReaderSession.swift:385`, `:391` | Scroll or menu disables auto-follow | `reason`: `scroll`, `menu` |
-| `hold-end` | `TelemetryOplog.swift:68` | `ReaderSession.swift:397` | Reader resumes auto-follow | `outcome=resume` |
-| `speech.pauseCall` | `TelemetryOplog.swift:77` | `AVSpeechController.swift:190-193` | `pauseSpeaking(at: .word)` call | `accepted`, `synthPaused` |
-| `speech.enqueue` | `TelemetryOplog.swift:80` | `AVSpeechController.swift:334-337` | Each utterance enqueued | `utterance`, `inFlight` |
-| `speech.didFinish` | `TelemetryOplog.swift:81` | `AVSpeechController.swift:426-431` | Utterance finish delegate callback | `utterance`, `inFlight`, `nextToEnqueue`, `state` |
-| `speech.didPause` | `TelemetryOplog.swift:78` | `AVSpeechController.swift:446-449` | Pause delegate callback, including late ones | `tracked`, `state` |
-| `speech.didResume` | `TelemetryOplog.swift:79` | `AVSpeechController.swift:456-459` | Resume delegate callback | `tracked`, `state` |
+| `speech.didStart` | `TelemetryLog.swift:45` | `AVSpeechController.swift:385-389` | First utterance-start delegate callback in a run; once per `speak`, gated on active run | none |
+| `speech.utteranceStart` | `TelemetryLog.swift:46-50` | `AVSpeechController.swift:382-384` | Every utterance start, ungated so scrub releases have a phone-side mark | `utterance` |
+| `tap.play` | `TelemetryLog.swift:73` | `apps/apple/Sources/App/ReaderSession.swift:115-116` | Play handler entry, when not speaking | `word` (wash index, `-1` if unset) |
+| `tap.pause` | `TelemetryLog.swift:74` | `ReaderSession.swift:115-116` | Play handler entry, when speaking | `word` |
+| `play` | `TelemetryLog.swift:56` | `ReaderSession.swift:126` | Play branch starts audio | none |
+| `pause` | `TelemetryLog.swift:57` | `ReaderSession.swift:123`, `:138` | Pause branch or `.speaking` case in toggle | none |
+| `finished` | `TelemetryLog.swift:58` | `ReaderSession.swift:451` | Speech state becomes `.finished` | none |
+| `speed change` | `TelemetryLog.swift:66` | `ReaderSession.swift:180` | Reader changes pace | `from`, `to` |
+| `scrub.commit` | `TelemetryLog.swift:75` | `ReaderSession.swift:206-209` | After restart on scrub release | `fraction` (4 dp), `word` |
+| `scrub.begin` | `TelemetryLog.swift:76` | `ReaderSession.swift:243-245` | Drag begins | `state` (speech state description) |
+| `hold-start` | `TelemetryLog.swift:67` | `ReaderSession.swift:385`, `:391` | Scroll or menu disables auto-follow | `reason`: `scroll`, `menu` |
+| `hold-end` | `TelemetryLog.swift:68` | `ReaderSession.swift:397` | Reader resumes auto-follow | `outcome=resume` |
+| `speech.pauseCall` | `TelemetryLog.swift:77` | `AVSpeechController.swift:190-193` | `pauseSpeaking(at: .word)` call | `accepted`, `synthPaused` |
+| `speech.enqueue` | `TelemetryLog.swift:80` | `AVSpeechController.swift:334-337` | Each utterance enqueued | `utterance`, `inFlight` |
+| `speech.didFinish` | `TelemetryLog.swift:81` | `AVSpeechController.swift:426-431` | Utterance finish delegate callback | `utterance`, `inFlight`, `nextToEnqueue`, `state` |
+| `speech.didPause` | `TelemetryLog.swift:78` | `AVSpeechController.swift:446-449` | Pause delegate callback, including late ones | `tracked`, `state` |
+| `speech.didResume` | `TelemetryLog.swift:79` | `AVSpeechController.swift:456-459` | Resume delegate callback | `tracked`, `state` |
 
 ### Lookup and card
 
 | Event | Defined | Emitted at | When | Fields |
 |---|---|---|---|---|
-| `lookup` | `TelemetryOplog.swift:59` | `apps/apple/Sources/App/LookupController.swift:58` | Token tap, after trimming | `word` |
-| `lookup.hit` | `TelemetryOplog.swift:60` | `LookupController.swift:70-76` | Provider returns a hit | `source` (LookupSource raw value), `lines` (gloss line count) |
-| `lookup.miss` | `TelemetryOplog.swift:61` | `LookupController.swift:80-83` | Provider returns a miss, after refinement | `kind` (MissKind description) |
-| `card.shown` | `TelemetryOplog.swift:62-65` | `packages/ReadLaterUI/Sources/ReadLaterUI/LookupCard.swift:112-115`, `MissCard.swift:145-148` | One main-loop turn after card `.onAppear`, once per card | `word`, `kind`: `hit` / `miss` |
-| `card.close` | `TelemetryOplog.swift:51-54` | `LookupController.swift:99` | Close request, before teardown | none |
+| `lookup` | `TelemetryLog.swift:59` | `apps/apple/Sources/App/LookupController.swift:58` | Token tap, after trimming | `word` |
+| `lookup.hit` | `TelemetryLog.swift:60` | `LookupController.swift:70-76` | Provider returns a hit | `source` (LookupSource raw value), `lines` (gloss line count) |
+| `lookup.miss` | `TelemetryLog.swift:61` | `LookupController.swift:80-83` | Provider returns a miss, after refinement | `kind` (MissKind description) |
+| `card.shown` | `TelemetryLog.swift:62-65` | `packages/ReadLaterUI/Sources/ReadLaterUI/LookupCard.swift:112-115`, `MissCard.swift:145-148` | One main-loop turn after card `.onAppear`, once per card | `word`, `kind`: `hit` / `miss` |
+| `card.close` | `TelemetryLog.swift:51-54` | `LookupController.swift:99` | Close request, before teardown | none |
 
 ### App lifecycle and store
 
 | Event | Defined | Emitted at | When | Fields |
 |---|---|---|---|---|
-| `app-hide` | `TelemetryOplog.swift:69` | `RootView.swift:366-371` | Scene phase `.background` | none |
-| `app-return` | `TelemetryOplog.swift:70` | `RootView.swift:372-374` | Scene phase `.active` | none |
-| `store.write` | `TelemetryOplog.swift:82` | `Store.swift:107-120`, `SyncOplog.swift:28-32` | Every `timedWrite` and every direct `oplog.append` | `write`, `ms`, `copyMs`, `encodeMs`, `main`; `record.position` adds `source`, `word`, `encodeMs` (`Store.swift:210-214`) |
+| `app-hide` | `TelemetryLog.swift:69` | `RootView.swift:366-371` | Scene phase `.background` | none |
+| `app-return` | `TelemetryLog.swift:70` | `RootView.swift:372-374` | Scene phase `.active` | none |
+| `store.write` | `TelemetryLog.swift:82` | `Store.swift:107-120`, `SyncOplog.swift:28-32` | Every `timedWrite` and every direct `oplog.append` | `write`, `ms`, `copyMs`, `encodeMs`, `main`; `record.position` adds `source`, `word`, `encodeMs` (`Store.swift:210-214`) |
 
 The `write` values seen on `store.write` are asserted in
 `packages/ReadLaterStore/Tests/ReadLaterStoreTests/StoreTimingTests.swift:33-37`:
@@ -226,10 +226,10 @@ The `write` values seen on `store.write` are asserted in
 
 | Event | Defined | Emitted at | When | Fields |
 |---|---|---|---|---|
-| `marker.request` | `TelemetryOplog.swift:83` | `apps/apple/Sources/App/DebugProbes.swift:96-100` | `--debug.marker=<n>` click, one per second after 2 s | `index`, `host` (CACurrentMediaTime), `outputLatency` |
-| `frames.second` | `TelemetryOplog.swift:84` | `DebugProbes.swift:132-135` | `--debug.frames` on iOS, once per second | `fps`, `longestGapMs` |
-| `frame.tapWindow` | `TelemetryOplog.swift:85` | `apps/apple/Sources/App/DebugFrameMonitor.swift:115-126` | Tap window closes, five frames after state change or at 120-frame cap | `frames`, `durationMs`, `fps`, `longestGapMs`, `tapToStateMs`, `state` (`changed`/`missing`) |
-| `frame.scrubWindow` | `TelemetryOplog.swift:86` | `DebugFrameMonitor.swift:96-102` | Scrub drag release | `frames`, `durationMs`, `fps`, `longestGapMs` |
+| `marker.request` | `TelemetryLog.swift:83` | `apps/apple/Sources/App/DebugProbes.swift:96-100` | `--debug.marker=<n>` click, one per second after 2 s | `index`, `host` (CACurrentMediaTime), `outputLatency` |
+| `frames.second` | `TelemetryLog.swift:84` | `DebugProbes.swift:132-135` | `--debug.frames` on iOS, once per second | `fps`, `longestGapMs` |
+| `frame.tapWindow` | `TelemetryLog.swift:85` | `apps/apple/Sources/App/DebugFrameMonitor.swift:115-126` | Tap window closes, five frames after state change or at 120-frame cap | `frames`, `durationMs`, `fps`, `longestGapMs`, `tapToStateMs`, `state` (`changed`/`missing`) |
+| `frame.scrubWindow` | `TelemetryLog.swift:86` | `DebugFrameMonitor.swift:96-102` | Scrub drag release | `frames`, `durationMs`, `fps`, `longestGapMs` |
 
 Frame fields come from `FrameWindowSummary.fields()`
 (`packages/ReadLaterCore/Sources/ReadLaterCore/FrameCounter.swift:71-80`);
@@ -266,7 +266,7 @@ by `seq`, with the injected device id
 ## Concrete examples
 
 One telemetry line, from the flush-and-order test
-(`packages/ReadLaterCore/Tests/ReadLaterCoreTests/TelemetryOplogTests.swift:55-81`).
+(`packages/ReadLaterCore/Tests/ReadLaterCoreTests/TelemetryLogTests.swift:55-81`).
 `fields` is a flat string map and `t` is process-relative:
 
 ```json
@@ -274,14 +274,14 @@ One telemetry line, from the flush-and-order test
 ```
 
 A T0–T7 run, as asserted by the hub test
-(`TelemetryOplogTests.swift:156-170`):
+(`TelemetryLogTests.swift:156-170`):
 
 ```text
 T0.tap → T1.fetchStart → … → T7.firstWord
 ```
 
 A superseded run shows why `run.end` is telemetry-log-only
-(`TelemetryOplogTests.swift:173-187`):
+(`TelemetryLogTests.swift:173-187`):
 
 ```text
 T0.tap → run.end {outcome: superseded} → T0.tap
