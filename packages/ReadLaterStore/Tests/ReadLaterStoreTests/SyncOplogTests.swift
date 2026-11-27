@@ -85,9 +85,9 @@ struct SyncOplogTests {
 private func makeLegacyDatabase(at url: URL) throws {
     let queue = try DatabaseQueue(path: url.path)
     try queue.write { db in
-        try db.execute(sql: "CREATE TABLE grdb_migrations(name TEXT PRIMARY KEY)")
+        try db.execute(sql: "CREATE TABLE grdb_migrations(identifier TEXT PRIMARY KEY)")
         for name in ["v1_initial", "v2_fts", "v3_positions", "v4_saved", "v5_position_origin"] {
-            try db.execute(sql: "INSERT INTO grdb_migrations(name) VALUES (?)", arguments: [name])
+            try db.execute(sql: "INSERT INTO grdb_migrations(identifier) VALUES (?)", arguments: [name])
         }
         try db.execute(sql: """
             CREATE TABLE changelog(
