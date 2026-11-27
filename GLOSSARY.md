@@ -32,7 +32,7 @@ The control that turns following on and off.
 _Avoid_: follow button
 
 **Hold**:
-The state where the page no longer follows the wash, so auto-scroll stops. Hold applies whether or not playback runs. The reader enters Hold by scrolling away from the wash or by turning following off, while playing or paused. Hold ends by Resume, by the Hold resume control or the wash resume control, or by turning following on. While in Hold, Play does not move the page. The current build holds only while playing.
+The state where the page no longer follows the wash, so auto-scroll stops. Hold applies whether or not playback runs. The reader enters Hold by moving the page more than the tolerance from where the gesture began, or by turning following off, while playing or paused. Hold-by-scroll needs iOS 18 or macOS 15; below that, the follow dot still enters Hold. Hold ends by Resume, by the Hold resume control or the wash resume control when they are shown, or by turning following on. While in Hold, Play does not move the page.
 _Avoid_: pause (that is audio), lock, detach
 
 **No-yank**:
@@ -41,7 +41,7 @@ _Avoid_: sticky scroll, follow
 
 **Resume**:
 Ending Hold. The page follows the wash again and brings the wash back into view at once. Playback is unchanged. Restarting audio after a lookup is not Resume; the card says Close.
-Invariant: leaving Hold brings the wash back into view immediately. The current build does not meet it yet.
+Invariant: leaving Hold brings the wash back into view immediately.
 _Avoid_: return, unhold
 
 **Return**:

@@ -377,24 +377,29 @@ final class ReaderSession {
     // MARK: - Hold
 
     /// Called when the reader scrolls the page themselves. Auto-scroll stops
-    /// following so the page does not fight the finger. Playback continues.
+    /// following so the page does not fight the finger. Hold applies whether
+    /// playback runs or is paused; playback itself is unchanged.
     func userScrolled() {
-        guard playbackState.isPlaying, playbackState.autoScroll else { return }
+        guard playbackState.autoScroll else { return }
         playbackState.autoScroll = false
         playbackState.isHeld = true
         telemetry.record(TelemetryName.holdStart, fields: ["reason": "scroll"])
     }
 
+    /// Turning following off enters Hold, whether playback runs or is paused.
     func holdFollowing() {
         playbackState.autoScroll = false
-        playbackState.isHeld = playbackState.isPlaying
+        playbackState.isHeld = true
         telemetry.record(TelemetryName.holdStart, fields: ["reason": "menu"])
     }
 
-    func resumeFollowing() {
+    func endHold() {
+        let wasHeld = playbackState.isHeld
         playbackState.autoScroll = true
         playbackState.isHeld = false
-        telemetry.record(TelemetryName.holdEnd, fields: ["outcome": "resume"])
+        if wasHeld {
+            telemetry.record(TelemetryName.holdEnd, fields: ["outcome": "resume"])
+        }
     }
 
     #if DEBUG

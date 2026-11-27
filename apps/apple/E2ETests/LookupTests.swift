@@ -26,7 +26,7 @@ final class LookupTests: XCTestCase {
 
         let card = app.otherElements[AccessibilityID.lookupCard]
         let word = JourneySteps.texts(app, id: AccessibilityID.lookupWord)
-        // Measured before the scroll. The hold badge can shorten the scroll
+        // Measured before the scroll. The Hold resume control can shorten the scroll
         // area after the drag, and the tap point must not move with it.
 
         func dismissLookupCardIfPresent() {

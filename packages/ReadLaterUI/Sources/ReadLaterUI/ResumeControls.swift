@@ -1,7 +1,8 @@
 import SwiftUI
 
-/// Strip above the player while auto-scroll is held. One pill, one button.
-public struct HoldBadge: View, Equatable {
+/// Strip above the player during playback while auto-scroll is held. One
+/// pill, one button.
+public struct HoldResumeControl: View, Equatable {
     private let isHeld: Bool
     private let isPlaying: Bool
     private let onResume: () -> Void
@@ -12,9 +13,9 @@ public struct HoldBadge: View, Equatable {
         self.onResume = onResume
     }
 
-    /// Data-only: the resume closure captures the stable session, so a wash
-    /// tick that rebuilds the parent must not re-evaluate this badge (M7).
-    nonisolated public static func == (lhs: HoldBadge, rhs: HoldBadge) -> Bool {
+    /// Data-only: the action closure is ignored in equality, so a wash tick
+    /// that rebuilds the parent must not re-evaluate this control (M7).
+    nonisolated public static func == (lhs: HoldResumeControl, rhs: HoldResumeControl) -> Bool {
         lhs.isHeld == rhs.isHeld && lhs.isPlaying == rhs.isPlaying
     }
 
@@ -52,18 +53,18 @@ public struct HoldBadge: View, Equatable {
     }
 }
 
-/// When the return-to-wash pill shows. The wash is off-screen and the
-/// reader is not following it: paused, or held after a deliberate scroll.
+/// When the wash resume control shows: the wash is off-screen and the
+/// reader is not following it (`!washVisible && (isHeld || !isPlaying)`).
 /// Pure so tests cover the rule without a scroll view.
-public func shouldShowReturnPill(washVisible: Bool, isHeld: Bool, isPlaying: Bool) -> Bool {
+public func shouldShowWashResumeControl(washVisible: Bool, isHeld: Bool, isPlaying: Bool) -> Bool {
     !washVisible && (isHeld || !isPlaying)
 }
 
-/// Quiet return pill. Shown whenever the wash is off-screen while paused
-/// or held. Same surface, ink, edge and chip type as the hold badge, so
-/// the two read as one control. The tap is the explicit user action that
-/// scrolls back; play alone never yanks.
-public struct ReturnToWashPill: View, Equatable {
+/// Quiet wash resume control. Shown whenever the wash is off-screen while
+/// paused or held. Same surface, ink, edge and chip type as the Hold resume
+/// control, so the two read as one control. The tap is the explicit user
+/// action that scrolls back; play alone never yanks.
+public struct WashResumeControl: View, Equatable {
     private let onReturn: () -> Void
 
     public init(onReturn: @escaping () -> Void) {
@@ -71,8 +72,8 @@ public struct ReturnToWashPill: View, Equatable {
     }
 
     /// No data: every instance is identical. The parent gates visibility, so
-    /// the pill itself never distinguishes a tick (M7).
-    nonisolated public static func == (lhs: ReturnToWashPill, rhs: ReturnToWashPill) -> Bool {
+    /// the control itself never distinguishes a tick (M7).
+    nonisolated public static func == (lhs: WashResumeControl, rhs: WashResumeControl) -> Bool {
         true
     }
 
@@ -108,28 +109,37 @@ public struct ReturnToWashPill: View, Equatable {
     }
 }
 
-/// Decides when a scroll counts as a deliberate move away from the wash.
+/// Decides when a scroll gesture has moved the page far enough to enter Hold.
 ///
-/// Programmatic scrolls arrive as bursts, so one far event never holds.
-/// Two consecutive far events hold. A near event resets the count.
+/// `scrollEvent` records the offset at the first event of a gesture. It holds
+/// once the move from that baseline passes the tolerance, in either direction.
+/// `endGesture` clears the baseline when the reader's scroll phase ends.
 public struct HoldDetector: Sendable {
-    private var farCount = 0
+    private var baseline: CGFloat?
 
     public init() {}
 
-    /// Check one scroll event. Return true when this event holds the follow.
+    /// Clear the baseline when the gesture ends.
+    public mutating func endGesture() {
+        baseline = nil
+    }
+
+    /// Feed the current offset. Return true when this gesture should hold.
     public mutating func scrollEvent(
-        distanceFromWash: CGFloat,
+        offset: CGFloat,
+        isDriving: Bool,
         isFollowing: Bool,
         isScrubbing: Bool
     ) -> Bool {
-        if isScrubbing { return false }
-        guard isFollowing else { return false }
-        if abs(distanceFromWash) > ReaderMetrics.autoScrollTolerance {
-            farCount += 1
-            return farCount >= 2
+        guard isDriving else {
+            baseline = nil
+            return false
         }
-        farCount = 0
-        return false
+        guard let baseline else {
+            self.baseline = offset
+            return false
+        }
+        guard isFollowing, !isScrubbing else { return false }
+        return abs(offset - baseline) > ReaderMetrics.autoScrollTolerance
     }
 }

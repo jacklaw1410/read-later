@@ -25,9 +25,9 @@ func makeMigrator() -> DatabaseMigrator {
         try Schema.createReadingPositionTable(db)
     }
 
-    // v4 adds the saved flag. A visit row is a side effect of reading and is
-    // evictable; a saved row is chosen by the reader and must survive a
-    // release. One flag separates the two, and it decides the delete rule.
+    // v4 adds the saved flag. The flag records the reader's choice and is
+    // shown in the library. It does not control survival: releasing a copy
+    // keeps every reading-position row.
     migrator.registerMigration("v4_saved") { db in
         try db.execute(sql: "ALTER TABLE reading_position ADD COLUMN saved INTEGER NOT NULL DEFAULT 0")
     }

@@ -103,7 +103,6 @@ public enum CardAction: String, Sendable, CaseIterable {
     case notNow = "Not now"
     case close = "Close"
     case searchWeb = "Web search ↗"
-    case closeAndResume = "Close & resume"
 }
 
 /// Every reader-facing pack/miss string in one type.

@@ -201,11 +201,11 @@ fn section_page() -> String {
     String::from(
         r#"<section>
 <h2>2 · Page and text</h2>
-<p>Foundation before accents. Paper is the page, surface holds cards, raised holds badges.</p>
+<p>Foundation before accents. Paper is the page, surface holds cards, raised is reserved.</p>
 <div class="panel" data-theme="light">
 <div class="layer" style="background:var(--page-paper)"><code class="t-code">page.paper</code> · Reader and entry background.
 <div class="layer" style="background:var(--page-surface)"><code class="t-code">page.surface</code> · Card, player bar, chrome.
-<div class="layer" style="background:var(--page-raised)"><code class="t-code">page.raised</code> · Hold badge fill, mono chip.</div>
+<div class="layer" style="background:var(--page-raised)"><code class="t-code">page.raised</code> · No view uses it; the token specimen does.</div>
 </div>
 </div>
 <p class="t-body" style="color:var(--text-body)">Body text reads here. The wash will mark the spoken word.</p>

@@ -14,7 +14,7 @@ public extension Theme {
     static let surface = themedColor(light: 0xFFFFFF, dark: 0x1E2226)
     static let surfaceHex: (light: UInt32, dark: UInt32) = (0xFFFFFF, 0x1E2226)
 
-    /// `page.raised`. Hold badge fill, mono chip.
+    /// `page.raised`. No view uses it; the token specimen does.
     static let surfaceRaised = themedColor(light: 0xFFF7ED, dark: 0x262B31)
     static let surfaceRaisedHex: (light: UInt32, dark: UInt32) = (0xFFF7ED, 0x262B31)
 
@@ -110,15 +110,15 @@ public extension Theme {
     static let scrim = themedColor(light: 0x191C1F, dark: 0x000000).opacity(0.28)
     static let scrimHex: (light: UInt32, dark: UInt32) = (0x191C1F, 0x000000)
 
-    /// `hold.surface`. Hold badge fill.
+    /// `hold.surface`. Amber accent fill: chips, notices and held-follow controls.
     static let holdSurface = themedColor(light: 0xFFF0E6, dark: 0x3A2A1F)
     static let holdSurfaceHex: (light: UInt32, dark: UInt32) = (0xFFF0E6, 0x3A2A1F)
 
-    /// `hold.ink`. Hold badge ink.
+    /// `hold.ink`. Amber accent ink: chips, notices and held-follow controls.
     static let holdInk = themedColor(light: 0x9A3412, dark: 0xFDBA74)
     static let holdInkHex: (light: UInt32, dark: UInt32) = (0x9A3412, 0xFDBA74)
 
-    /// `hold.border`. Hold badge edge.
+    /// `hold.border`. Amber accent edge: chips, notices and held-follow controls.
     static let holdBorder = themedColor(light: 0xFDBA74, dark: 0x7C4A1E)
     static let holdBorderHex: (light: UInt32, dark: UInt32) = (0xFDBA74, 0x7C4A1E)
 

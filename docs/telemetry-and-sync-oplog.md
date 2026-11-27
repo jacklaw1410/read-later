@@ -187,12 +187,12 @@ compile out of Release and require launch arguments
 | `tap.pause` | `TelemetryLog.swift:74` | `ReaderSession.swift:115-116` | Play handler entry, when speaking | `word` |
 | `play` | `TelemetryLog.swift:56` | `ReaderSession.swift:126` | Play branch starts audio | none |
 | `pause` | `TelemetryLog.swift:57` | `ReaderSession.swift:123`, `:138` | Pause branch or `.speaking` case in toggle | none |
-| `finished` | `TelemetryLog.swift:58` | `ReaderSession.swift:451` | Speech state becomes `.finished` | none |
+| `finished` | `TelemetryLog.swift:58` | `ReaderSession.swift:456` | Speech state becomes `.finished` | none |
 | `speed change` | `TelemetryLog.swift:66` | `ReaderSession.swift:180` | Reader changes pace | `from`, `to` |
 | `scrub.commit` | `TelemetryLog.swift:75` | `ReaderSession.swift:206-209` | After restart on scrub release | `fraction` (4 dp), `word` |
 | `scrub.begin` | `TelemetryLog.swift:76` | `ReaderSession.swift:243-245` | Drag begins | `state` (speech state description) |
-| `hold-start` | `TelemetryLog.swift:67` | `ReaderSession.swift:385`, `:391` | Scroll or menu disables auto-follow | `reason`: `scroll`, `menu` |
-| `hold-end` | `TelemetryLog.swift:68` | `ReaderSession.swift:397` | Reader resumes auto-follow | `outcome=resume` |
+| `hold-start` | `TelemetryLog.swift:67` | `ReaderSession.swift:386`, `:393` | Scroll or menu disables auto-follow | `reason`: `scroll`, `menu` |
+| `hold-end` | `TelemetryLog.swift:68` | `ReaderSession.swift:401` | Reader resumes auto-follow; only when a hold was active | `outcome=resume` |
 | `speech.pauseCall` | `TelemetryLog.swift:77` | `AVSpeechController.swift:190-193` | `pauseSpeaking(at: .word)` call | `accepted`, `synthPaused` |
 | `speech.enqueue` | `TelemetryLog.swift:80` | `AVSpeechController.swift:334-337` | Each utterance enqueued | `utterance`, `inFlight` |
 | `speech.didFinish` | `TelemetryLog.swift:81` | `AVSpeechController.swift:426-431` | Utterance finish delegate callback | `utterance`, `inFlight`, `nextToEnqueue`, `state` |
@@ -239,7 +239,7 @@ the tap window adds its two keys at `DebugFrameMonitor.swift:119-125`.
 
 | Event | Emitted at | When | Fields |
 |---|---|---|---|
-| `state.idle`, `state.warming`, `state.speaking`, `state.paused`, `state.finished` | `ReaderSession.swift:429-431`; states from `packages/ReadLaterCore/Sources/ReadLaterCore/Contracts.swift:68-74` | Every speech delegate state change, including late callbacks | none |
+| `state.idle`, `state.warming`, `state.speaking`, `state.paused`, `state.finished` | `ReaderSession.swift:434-436`; states from `packages/ReadLaterCore/Sources/ReadLaterCore/Contracts.swift:68-74` | Every speech delegate state change, including late callbacks | none |
 | `paste.tap` | `packages/ReadLaterUI/Sources/ReadLaterUI/EntryPaste.swift:122` | iOS paste button tap | `source=button` |
 | `paste.delivered` | `EntryPaste.swift:135-138` | Board text read within the 6 s prompt wait | `branch=prompt`, `chars` |
 | `paste.blocked` | `EntryPaste.swift:144-147` | Poll expires; followed by an immediate `flush()` | none |

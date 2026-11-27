@@ -51,7 +51,6 @@ enum CardCopy {
     static let install = "Install"
     static let notNow = "Not now"
     static let close = "Close"
-    static let closeAndResume = "Close & resume"
     static let searchWeb = "Web search ↗"
 
     /// Hit card provenance. Built from the result even when the gloss is empty,
@@ -68,17 +67,18 @@ enum CardCopy {
         }
     }
 
-    static func closeLabel(wasPlayingBeforeLookup: Bool) -> String {
-        wasPlayingBeforeLookup ? closeAndResume : close
-    }
-
     static func pauseLine(wasPlayingBeforeLookup: Bool, wordIndex: Int?) -> String {
         guard wasPlayingBeforeLookup else {
             return "Audio was already paused · stays paused"
         }
         if let wordIndex {
-            return "Audio paused · resumes at #\(wordIndex) on close"
+            return "Audio paused · continues at #\(wordIndex) on close"
         }
-        return "Audio paused · resumes on close"
+        return "Audio paused · continues on close"
     }
+}
+
+/// The pause line for a card or overlay outside this module. One copy home.
+public func cardPauseLine(wasPlayingBeforeLookup: Bool, wordIndex: Int?) -> String {
+    CardCopy.pauseLine(wasPlayingBeforeLookup: wasPlayingBeforeLookup, wordIndex: wordIndex)
 }

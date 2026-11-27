@@ -90,7 +90,7 @@ public struct LookupCard: View {
                 .foregroundStyle(Theme.inkSecondary)
                 .padding(.top, 8)
 
-            Button(CardCopy.closeLabel(wasPlayingBeforeLookup: wasPlayingBeforeLookup), action: onClose)
+            Button(CardCopy.close, action: onClose)
                 .buttonStyle(SecondaryActionButtonStyle())
                 .padding(.top, 8)
         }

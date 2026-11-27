@@ -14,8 +14,8 @@ public struct ReaderView<Player: View, Overlay: View>: View {
     private let spoken: SpokenWordNumbering
     private let autoScroll: Bool
     private let isScrubbing: Bool
-    /// Bumped by the caller to scroll back to the wash block. The tap on the
-    /// return pill is the only writer, so play alone never yanks.
+    /// Bumped by the caller to scroll back to the wash block. Leaving Hold
+    /// writes it, so play alone never yanks.
     private let returnToken: Int
     /// Telemetry and ingress name for the one Reader-entry event.
     private let telemetry: TelemetryHub
@@ -32,7 +32,6 @@ public struct ReaderView<Player: View, Overlay: View>: View {
 
     @State private var holdDetector = HoldDetector()
     @State private var userDriving = false
-    @State private var lastOffset: CGFloat?
     @State private var washMidY: CGFloat?
     @State private var viewportHeight: CGFloat = 0
     @State private var lastReportedVisible = true
@@ -147,11 +146,13 @@ public struct ReaderView<Player: View, Overlay: View>: View {
                         .frame(maxWidth: Theme.maxLineWidth)
                         .frame(maxWidth: .infinity, alignment: .center)
                         .background {
-                            GeometryReader { geo in
-                                Color.clear.preference(
-                                    key: ScrollOffsetKey.self,
-                                    value: geo.frame(in: .named("readerScroll")).minY
-                                )
+                            if #unavailable(macOS 15, iOS 18) {
+                                GeometryReader { geo in
+                                    Color.clear.preference(
+                                        key: ScrollOffsetKey.self,
+                                        value: geo.frame(in: .named("readerScroll")).minY
+                                    )
+                                }
                             }
                         }
                     }
@@ -166,14 +167,13 @@ public struct ReaderView<Player: View, Overlay: View>: View {
                             Color.clear.preference(key: ViewportHeightKey.self, value: geo.size.height)
                         }
                     }
-                    .trackUserDriving($userDriving)                    .onPreferenceChange(ScrollOffsetKey.self) { minY in
-                        let offset = -minY
-                        defer { lastOffset = offset }
-                        guard let last = lastOffset, userDriving else { return }
-                        let delta = offset - last
-                        guard delta != 0 else { return }
+                    .trackUserDriving($userDriving) {
+                        holdDetector.endGesture()
+                    }
+                    .trackScrollOffset { offset in
                         if holdDetector.scrollEvent(
-                            distanceFromWash: delta,
+                            offset: offset,
+                            isDriving: userDriving,
                             isFollowing: autoScroll && !isScrubbing,
                             isScrubbing: isScrubbing
                         ) {
@@ -190,7 +190,7 @@ public struct ReaderView<Player: View, Overlay: View>: View {
                     }
                     .onChange(of: wash.wordIndex) {
                         // No wash, no return target: report visible so a stale
-                        // anchor cannot pin the pill on.
+                        // anchor cannot pin the wash resume control on.
                         if wash.wordIndex == nil {
                             washMidY = nil
                             reportVisibility()
@@ -220,7 +220,7 @@ public struct ReaderView<Player: View, Overlay: View>: View {
         }
     }
 
-    /// Reports wash visibility once per change. The pill reads this, not the
+    /// Reports wash visibility once per change. The wash resume control reads this, not the
     /// wash ticks, so visibility costs one call per enter/leave.
     private func reportVisibility() {
         let visible: Bool
@@ -262,7 +262,7 @@ private struct ScrollOffsetKey: PreferenceKey {
 }
 
 /// Mid-Y of the block holding the wash word, in scroll space. Nil when no
-/// block holds the wash, so a stale anchor cannot pin the pill on.
+/// block holds the wash, so a stale anchor cannot pin the wash resume control on.
 private struct WashAnchorKey: PreferenceKey {
     static var defaultValue: CGFloat? { nil }
     static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
@@ -279,14 +279,37 @@ private struct ViewportHeightKey: PreferenceKey {
 }
 
 private extension View {
-    /// Tracks whether the scroll offset moves under the reader's finger.
-    /// `onScrollPhaseChange` is iOS 18 / macOS 15; below that the reader
-    /// never reports user-driven, so a deliberate scroll cannot hold.
+    /// Reports the scroll offset. `onScrollGeometryChange` is iOS 18 /
+    /// macOS 15 and reads `contentOffset` directly; below that the geometry
+    /// preference is the only source.
     @ViewBuilder
-    func trackUserDriving(_ driving: Binding<Bool>) -> some View {
+    func trackScrollOffset(_ onChange: @escaping (CGFloat) -> Void) -> some View {
+        if #available(macOS 15, iOS 18, *) {
+            self.onScrollGeometryChange(
+                for: CGFloat.self,
+                of: { $0.contentOffset.y },
+                action: { _, newValue in onChange(newValue) }
+            )
+        } else {
+            self.onPreferenceChange(ScrollOffsetKey.self) { minY in
+                onChange(-minY)
+            }
+        }
+    }
+
+    /// Tracks whether the scroll offset moves under the reader's finger.
+    /// `onScrollPhaseChange` is iOS 18 / macOS 15. Below that the phase is
+    /// unknown, so Hold-by-scroll does not fire; the follow dot still enters
+    /// Hold.
+    @ViewBuilder
+    func trackUserDriving(_ driving: Binding<Bool>, onEnded: @escaping () -> Void) -> some View {
         if #available(macOS 15, iOS 18, *) {
             self.onScrollPhaseChange { _, phase in
-                driving.wrappedValue = phase == .interacting || phase == .decelerating
+                let active = phase == .interacting || phase == .decelerating
+                if phase == .idle {
+                    onEnded()
+                }
+                driving.wrappedValue = active
             }
         } else {
             self

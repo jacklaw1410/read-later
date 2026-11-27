@@ -801,23 +801,18 @@ struct ReaderScreen: View {
             onWashVisibilityChanged: { washVisible = $0 },
             player: {
                 VStack(spacing: 0) {
-                    HoldBadge(
+                    HoldResumeControl(
                         isHeld: session.playbackState.isHeld,
                         isPlaying: session.playbackState.isPlaying,
-                        onResume: {
-                            lastProgrammaticFollow = Date()
-                            session.resumeFollowing()
-                        }
+                        onResume: { leaveHold() }
                     )
-                    if shouldShowReturnPill(
+                    if shouldShowWashResumeControl(
                         washVisible: washVisible,
                         isHeld: session.playbackState.isHeld,
                         isPlaying: session.playbackState.isPlaying
                     ) {
-                        ReturnToWashPill {
-                            lastProgrammaticFollow = Date()
-                            session.resumeFollowing()
-                            returnToken += 1
+                        WashResumeControl {
+                            leaveHold()
                         }
                     }
                 }
@@ -931,25 +926,39 @@ struct ReaderScreen: View {
     private var chrome: some View {
         ReaderChrome(
             title: session.document.title,
-            autoScroll: session.playbackState.autoScroll,
-            isHeld: session.playbackState.isHeld,
-            offScreen: !washVisible,
+            isFollowing: isFollowing,
             isFinished: session.playbackState.isFinished,
             onExit: onExit,
             onRestart: {
                 session.scrub(toFraction: 0)
-                session.resumeFollowing()
+                leaveHold(forceScroll: true)
             },
             onToggleFollow: {
-                if session.playbackState.autoScroll {
+                if isFollowing {
                     session.holdFollowing()
                 } else {
-                    lastProgrammaticFollow = Date()
-                    session.resumeFollowing()
+                    leaveHold()
                 }
             },
             onReplay: { session.togglePlay() }
         )
+    }
+
+    /// One value for the follow dot's icon, label and action.
+    private var isFollowing: Bool {
+        session.playbackState.autoScroll && !session.playbackState.isHeld
+    }
+
+    /// Leaves Hold: the page follows the wash again, and scrolls it into view
+    /// when it is off-screen. One path for the follow dot, the Hold resume
+    /// control and the wash resume control, so the invariant holds for every
+    /// exit.
+    private func leaveHold(forceScroll: Bool = false) {
+        lastProgrammaticFollow = Date()
+        session.endHold()
+        if forceScroll || !washVisible {
+            returnToken += 1
+        }
     }
 
     @ViewBuilder
@@ -1013,7 +1022,7 @@ struct ReaderScreen: View {
                     FootnoteOverlay(
                         marker: "¹",
                         text: block.text,
-                        pauseLine: note.wasPlaying ? "Audio paused · resumes on close" : "Audio was already paused · stays paused",
+                        pauseLine: cardPauseLine(wasPlayingBeforeLookup: note.wasPlaying, wordIndex: nil),
                         onTapWord: { word in session.lookup.tap(slot: nil, word: word) },
                         onClose: { session.lookup.closeNote() }
                     )
@@ -1027,17 +1036,16 @@ struct ReaderScreen: View {
 }
 
 /// Reader top bar. Takes plain values, never the session, so a wash tick
-/// cannot invalidate it. The menu reads two values, follow state and
-/// finished state, and no per-word state. No behavior change.
+/// cannot invalidate it. The dot reads follow state, the menu reads finished
+/// state, and neither reads per-word state. The dot now follows follow state
+/// alone; an off-screen wash is the wash resume control's job.
 ///
 /// Equatable (data-only, closures ignored): the parent rebuilds every tick
 /// with identical values, and without this the bar, menu and icon buttons
 /// re-evaluate per wash word (M7).
 struct ReaderChrome: View, Equatable {
     let title: String
-    let autoScroll: Bool
-    let isHeld: Bool
-    let offScreen: Bool
+    let isFollowing: Bool
     let isFinished: Bool
     let onExit: () -> Void
     let onRestart: () -> Void
@@ -1046,14 +1054,8 @@ struct ReaderChrome: View, Equatable {
 
     nonisolated static func == (lhs: ReaderChrome, rhs: ReaderChrome) -> Bool {
         lhs.title == rhs.title
-            && lhs.autoScroll == rhs.autoScroll
-            && lhs.isHeld == rhs.isHeld
-            && lhs.offScreen == rhs.offScreen
+            && lhs.isFollowing == rhs.isFollowing
             && lhs.isFinished == rhs.isFinished
-    }
-
-    private var isFollowing: Bool {
-        autoScroll && !isHeld && !offScreen
     }
 
     var body: some View {
@@ -1076,7 +1078,7 @@ struct ReaderChrome: View, Equatable {
             Spacer(minLength: 8)
 
             // Persistent follow dot (C1 revised). Filled only while
-            // following and on-screen; hollow when held or off-screen.
+            // following; hollow while held.
             Button(action: onToggleFollow) {
                 Image(systemName: isFollowing ? "circle.fill" : "circle")
                     .font(.system(size: 14, weight: .bold))

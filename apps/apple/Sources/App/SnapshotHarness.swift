@@ -69,7 +69,7 @@ enum SnapshotHarness {
         app.session?.holdFollowing()
         await pause(0.4)
         capture("06-hold", into: directory)
-        app.session?.resumeFollowing()
+        app.session?.endHold()
 
         app.session?.togglePlay()
         await pause(0.4)
