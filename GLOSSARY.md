@@ -229,25 +229,53 @@ _Avoid_: sheet, modal, popup, popover, error card, failure card
 The sheet listing started articles, with 'saved' as a flag on each row.
 _Avoid_: saved list, history, browse list
 
+**Canonical URL**:
+The one address the app treats as an article's identity: the final URL after redirects, with the host lowercased, the default port and the fragment dropped, tracking keys removed, and the remaining query sorted. Two links that canonicalize the same are one article.
+_Avoid_: clean URL, normalized link
+
+**Pasted link**:
+The link exactly as the reader pasted it, kept beside the canonical URL. A refetch prefers it, because stripping a site's own `ref` or `source` key can fetch a different resource.
+_Avoid_: source link, raw link
+
 **Reading position**:
-Where reading stands in an article: its place, saved flag, and finished flag. Seeded into the wash on reopen. The place is the spoken word index. The current build keys an article by content hash. The target keys it by canonical URL, with each content hash as a version under it.
+Where reading stands in an article: its place, saved flag, and finished flag. Seeded into the wash on reopen. The place is the spoken word index. A row is keyed by content hash and carries the canonical URL, so a later copy of the same article finds the earlier place. The Entry and Version tables are not split yet; one row holds both.
 _Avoid_: row, record, entry
+
+**Anchor**:
+The sentence under the wash when the reader stops, stored as a hash and its first five words. It survives a re-split: when the sentence is still present on reopen, the place resumes at that sentence.
+_Avoid_: marker, position hint
+
+**Furthest**:
+The last spoken word the wash reached, never lowered by a rewind. Finished is derived from it, so scrubbing back does not clear finished.
+_Avoid_: high-water mark, max word
 
 **Saved**:
 A reader-chosen flag on a reading position, shown as the filled icon on the library row.
 _Avoid_: bookmark, starred
 
 **Finished**:
-An article whose furthest reached spoken word is the last one (`reachedEnd`, target). The current build sets it from the last word written, so scrubbing back clears it. Skipped regions add no spoken words. It is not the human done signal, `markedDone`.
+An article whose furthest reached spoken word is the last one (`reachedEnd`), or one the reader marked done (`markedDone`). The library checkmark shows either. Skipped regions add no spoken words. No UI sets `markedDone` yet.
 _Avoid_: completed, done
 
+**Raw page**:
+The fetched HTML an article was planned from, gzipped with its status and final URL. Local only: it holds no headers or cookies, and it is deleted with the article. Nothing re-plans from it yet; it is kept for the parser-change path.
+_Avoid_: snapshot, page cache
+
+**Extractor version**:
+The version of the code that built a plan, stored on the reading position. With the same bytes and total, a matching version keeps the exact word; a different version needs one exact anchor hit to prove the word stream.
+_Avoid_: parser version, build number
+
+**Schema version**:
+The block-plan contract version a plan follows, stored in the plan. The app rejects a plan whose version it does not support.
+_Avoid_: plan version, API version
+
 **Refresh**:
-Dropping the cached plan while keeping the reading position. Reopening refetches the article only when the plan is missing and a URL is stored.
+Dropping the article's copy (its plan and raw page) while keeping the reading position, so the next open fetches it again. In code the action is `releaseCopy`; the library button reads Refresh.
 _Avoid_: cache bust, reload
 
 **Remove**:
-Dropping the article and its reading position together. Removing a pack is a Pack management action, not Remove.
-_Avoid_: forget, delete
+Dropping the article, its plan, its raw page, and its reading position together. In code the action is `forget`; the library button reads Remove. Removing a pack is a Pack management action, not Remove.
+_Avoid_: delete
 
 ## Measurement
 
