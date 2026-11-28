@@ -38,21 +38,26 @@ enum InteractionBenchmark {
             let warmup = index < warmupIterations
             let prefix = ["iteration": String(index), "warmup": warmup ? "1" : "0"]
 
+            // Capture the mark before the tap: a stale window from the previous
+            // iteration must not satisfy the wait, or the next tap lands while
+            // the monitor is still armed and the windows coalesce.
+            let playSince = lastT(telemetry)
             await measure("play", prefix: prefix, telemetry: telemetry) { since in
                 session.togglePlay()
                 return await waitForEvent(
                     "speech.speaking", telemetry: telemetry, after: since, timeout: 2)
             }
             _ = await waitForEvent(
-                TelemetryName.frameTapWindow, telemetry: telemetry, timeout: 2)
+                TelemetryName.frameTapWindow, telemetry: telemetry, after: playSince, timeout: 2)
 
+            let pauseSince = lastT(telemetry)
             await measure("pause", prefix: prefix, telemetry: telemetry) { since in
                 session.togglePlay()
                 return await waitForEvent(
                     "speech.paused", telemetry: telemetry, after: since, timeout: 2)
             }
             _ = await waitForEvent(
-                TelemetryName.frameTapWindow, telemetry: telemetry, timeout: 2)
+                TelemetryName.frameTapWindow, telemetry: telemetry, after: pauseSince, timeout: 2)
 
             // Hold the drag for a few frames so `frame.scrub_window` has a
             // window: begin and finish in one runloop produce none. Only the
