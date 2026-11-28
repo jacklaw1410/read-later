@@ -1,0 +1,165 @@
+name: benchmark-probes
+
+# Evidence run for the measurement probes. This is not the gate: it writes no
+# baseline and compares nothing. It exists so a probe change can be checked on
+# the hosted runner without waiting for the workflow ticket.
+#
+# Run it by hand from `main` after it lands. The benchmark gate replaces it.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/benchmark-probes]
+
+permissions:
+  contents: read
+
+jobs:
+  stages:
+    name: stages (macos)
+    runs-on: macos-15
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - name: run the Release stage probe
+        run: |
+          set -euo pipefail
+          OUT="$PWD/artifacts/stages"
+          rm -rf "$OUT"
+          ENTRY_PROBE_OUT="$OUT" \
+          ENTRY_PROBE_FIXTURES="$PWD/fixtures/pages" \
+          ENTRY_PROBE_ONLY="027-hn,095-sciencedaily,004-averages,005-great-work" \
+          swift test -c release -Xswiftc -enable-testing \
+            --package-path packages/ReadLaterUI \
+            --filter EntryStageBenchmarkTests
+      - name: check the sample set
+        run: |
+          set -euo pipefail
+          F=artifacts/stages/telemetry.jsonl
+          test -f "$F" || { echo "::error::no telemetry.jsonl"; exit 1; }
+          samples=$(jq -r 'select(.event=="probe.sample") | .fields.arm + "/" + .fields.article' "$F" | sort -u | wc -l | tr -d ' ')
+          echo "distinct arm/article pairs: $samples"
+          test "$samples" -eq 36 || { echo "::error::expected 36 arm/article pairs, got $samples"; exit 1; }
+          bad=$(jq -r 'select(.event=="probe.sample" and (.fields.reps != "20" or .fields.ms_p50 == null or .fields.ms_p95 == null or .fields.checksum == null)) | .fields.arm + "/" + .fields.article' "$F" | wc -l | tr -d ' ')
+          test "$bad" -eq 0 || { echo "::error::$bad samples are missing reps or a statistic"; exit 1; }
+          skips=$(jq -r 'select(.event=="probe.skip") | .fields.article' "$F" | wc -l | tr -d ' ')
+          test "$skips" -eq 0 || { echo "::error::$skips fixtures were skipped"; exit 1; }
+          jq -r 'select(.event=="probe.sample") | [.fields.article, .fields.arm, .fields.ms_p50, .fields.ms_p95] | @tsv' "$F" |
+            sort > artifacts/stages/samples.tsv
+          {
+            echo "### stage probe"
+            echo '| Article | Arm | p50 ms | p95 ms |'
+            echo '|---|---|---:|---:|'
+            jq -r 'select(.event=="probe.sample") | "| \(.fields.article) | \(.fields.arm) | \(.fields.ms_p50) | \(.fields.ms_p95) |"' "$F"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: probe-stages
+          path: artifacts/stages
+          if-no-files-found: ignore
+          retention-days: 7
+
+  app:
+    name: app (macos)
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - name: stub Device.xcconfig for xcodegen
+        working-directory: apps/apple
+        run: |
+          if [ ! -f Config/Device.xcconfig ]; then
+            cp Config/Device.xcconfig.example Config/Device.xcconfig
+          fi
+      - name: install xcodegen
+        run: brew install xcodegen
+      - name: generate project
+        working-directory: apps/apple
+        run: xcodegen generate
+      - name: build the Debug app
+        working-directory: apps/apple
+        run: |
+          xcodebuild -project ReadLater.xcodeproj -scheme ReadLater \
+            -destination 'platform=macOS' -configuration Debug \
+            -derivedDataPath build/probes build \
+            CODE_SIGN_IDENTITY="-" CODE_SIGNING_REQUIRED=NO
+      - name: interaction driver, one launch
+        run: |
+          set -euo pipefail
+          APP="$PWD/apps/apple/build/probes/Build/Products/Debug/ReadLater.app"
+          OUT="$PWD/artifacts/interactions"
+          rm -rf "$OUT" && mkdir -p "$OUT"
+          B64=$(base64 -i fixtures/bench/interaction.txt | tr -d '\n')
+          ( sleep 180; pkill -f "ReadLater.app/Contents/MacOS/ReadLater" || true ) &
+          WATCH=$!
+          open -n -W "$APP" --args \
+            --debug.preset=e2e \
+            --debug.seedTextB64="$B64" \
+            --debug.interactions=23 \
+            --debug.telemetryDir="$OUT"
+          kill "$WATCH" 2>/dev/null || true
+      - name: check the interaction set
+        run: |
+          set -euo pipefail
+          F=artifacts/interactions/telemetry.jsonl
+          test -f "$F" || { echo "::error::no interaction telemetry"; exit 1; }
+          jq -e 'select(.event=="benchmark.done")' "$F" > /dev/null ||
+            { echo "::error::the driver did not finish"; exit 1; }
+          measured=$(jq -r 'select(.event=="benchmark.interaction" and .fields.warmup=="0") | .fields.kind' "$F" | wc -l | tr -d ' ')
+          test "$measured" -eq 100 || { echo "::error::expected 100 measured intents, got $measured"; exit 1; }
+          bad=$(jq -r 'select(.event=="benchmark.interaction" and .fields.outcome != "ok") | .fields.kind' "$F" | wc -l | tr -d ' ')
+          test "$bad" -eq 0 || { echo "::error::$bad intents timed out"; exit 1; }
+          taps=$(jq -r 'select(.event=="frame.tap_window") | .event' "$F" | wc -l | tr -d ' ')
+          scrubs=$(jq -r 'select(.event=="frame.scrub_window") | .event' "$F" | wc -l | tr -d ' ')
+          cards=$(jq -r 'select(.event=="card.shown") | .event' "$F" | wc -l | tr -d ' ')
+          test "$taps" -ge 20 || { echo "::error::only $taps tap windows"; exit 1; }
+          test "$scrubs" -ge 20 || { echo "::error::only $scrubs scrub windows"; exit 1; }
+          test "$cards" -ge 40 || { echo "::error::only $cards cards"; exit 1; }
+          {
+            echo "### interaction driver"
+            echo "taps=$taps scrubs=$scrubs cards=$cards measured=$measured"
+            echo '| Kind | p50 ms | max ms |'
+            echo '|---|---:|---:|'
+            jq -r 'select(.event=="benchmark.interaction" and .fields.warmup=="0")' "$F" |
+              jq -s -r 'group_by(.fields.kind)[] | "| \(.[0].fields.kind) | \(map(.fields.ms|tonumber)|sort|.[length/2|floor]) | \(map(.fields.ms|tonumber)|max) |"'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: launch samples, 12 launches
+        run: |
+          set -euo pipefail
+          APP="$PWD/apps/apple/build/probes/Build/Products/Debug/ReadLater.app"
+          for i in $(seq 1 12); do
+            OUT="$PWD/artifacts/launch-$i"
+            rm -rf "$OUT" && mkdir -p "$OUT"
+            ( sleep 45; pkill -f "ReadLater.app/Contents/MacOS/ReadLater" || true ) &
+            WATCH=$!
+            open -n -W "$APP" --args \
+              --debug.benchmarkExit=firstFrame \
+              --debug.telemetryDir="$OUT"
+            kill "$WATCH" 2>/dev/null || true
+            test -f "$OUT/telemetry.jsonl" || { echo "::error::launch $i wrote no telemetry"; exit 1; }
+            jq -e 'select(.event=="launch.first_frame")' "$OUT/telemetry.jsonl" > /dev/null ||
+              { echo "::error::launch $i emitted no launch.first_frame"; exit 1; }
+          done
+      - name: summarise launches
+        if: always()
+        run: |
+          {
+            echo "### launches"
+            echo '| Run | process_start | first_frame | entry_ready |'
+            echo '|---|---:|---:|---:|'
+            for f in artifacts/launch-*/telemetry.jsonl; do
+              [ -f "$f" ] || continue
+              t=$(jq -r 'select(.event=="launch.process_start") | .t' "$f" | head -1)
+              ff=$(jq -r 'select(.event=="launch.first_frame") | .t' "$f" | head -1)
+              er=$(jq -r 'select(.event=="launch.entry_ready") | .t' "$f" | head -1)
+              printf '| %s | %s | %s | %s |\n' "$(basename "$(dirname "$f")")" "$t" "$ff" "$er"
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: probe-app
+          path: artifacts
+          if-no-files-found: ignore
+          retention-days: 7

@@ -35,6 +35,11 @@ public struct LaunchOptions: Equatable, Sendable {
         case all
     }
 
+    /// Launch mark after which a benchmark run exits on its own.
+    public enum BenchmarkExit: String, Equatable, Sendable {
+        case firstFrame
+    }
+
     public static let flagPrefix = "--debug."
     public static let defaultScriptedPace = 80
     public static let scriptedPaceRange = 20 ... 1_000
@@ -61,6 +66,15 @@ public struct LaunchOptions: Equatable, Sendable {
     /// playback. Nil = off. Exists for CLI SwiftUI traces, which interpose
     /// only at launch and cannot host a test runner's taps (M7).
     public private(set) var autoPlayAfterMs: Int?
+    /// Number of scripted reader-interaction iterations to run after the
+    /// reader opens, warmups included. Nil = off. Debug-only benchmark driver.
+    public private(set) var interactionIterations: Int?
+    /// Telemetry output directory for benchmark runs. Nil = the stock
+    /// Application Support directory. Debug-only.
+    public private(set) var telemetryDirectory: String?
+    /// Exit as soon as a named launch mark lands, so the harness never has
+    /// to kill the app and lose a buffered line. Nil = stay running.
+    public private(set) var benchmarkExit: BenchmarkExit?
     /// True when at least one `--debug.` flag was present.
     public private(set) var isActive = false
     /// Human-readable notes for flags that were ignored.
@@ -157,6 +171,30 @@ public struct LaunchOptions: Equatable, Sendable {
             }
         }
 
+        if let raw = values["interactions"] {
+            if let count = Int(raw), (0 ... 10_000).contains(count) {
+                interactionIterations = count
+            } else {
+                warnings.append("ignored interactions=\(raw): expected count 0...10000")
+            }
+        }
+
+        if let raw = values["telemetryDir"] {
+            if raw.isEmpty {
+                warnings.append("ignored telemetryDir: the value is empty")
+            } else {
+                telemetryDirectory = raw
+            }
+        }
+
+        if let raw = values["benchmarkExit"] {
+            if let parsed = BenchmarkExit(rawValue: raw) {
+                benchmarkExit = parsed
+            } else {
+                warnings.append("ignored benchmarkExit=\(raw): expected firstFrame")
+            }
+        }
+
         for key in values.keys where !Self.knownKeys.contains(key) {
             warnings.append("ignored unknown flag \(Self.flagPrefix)\(key)")
         }
@@ -178,6 +216,7 @@ public struct LaunchOptions: Equatable, Sendable {
     private static let knownKeys: Set<String> = [
         "preset", "reset", "voice", "voice-pace", "animations", "appearance", "locale",
         "seedTextB64", "seedPasteboard", "autoplay",
+        "interactions", "telemetryDir", "benchmarkExit",
     ]
 
     private static func pace(from raw: String?) -> Int? {

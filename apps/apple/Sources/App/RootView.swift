@@ -713,6 +713,15 @@ struct RootView: View {
                 await SnapshotHarness.run(app: model, registry: registry, telemetry: telemetry)
             }
         }
+        #if DEBUG
+        .task {
+            if let count = DebugLaunch.options.interactionIterations, count > 0,
+               !SnapshotHarness.isEnabled
+            {
+                await InteractionBenchmark.run(app: model, telemetry: telemetry, iterations: count)
+            }
+        }
+        #endif
         #endif
     }
 

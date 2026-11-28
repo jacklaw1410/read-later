@@ -8,7 +8,10 @@ let package = Package(
         .library(name: "ReadLaterUI", targets: ["ReadLaterUI"])
     ],
     dependencies: [
-        .package(path: "../ReadLaterCore")
+        .package(path: "../ReadLaterCore"),
+        // The stage probe times a stored document, so the test target needs
+        // the store. The UI target itself does not depend on it.
+        .package(path: "../ReadLaterStore"),
     ],
     targets: [
         .target(
@@ -17,7 +20,7 @@ let package = Package(
         ),
         .testTarget(
             name: "ReadLaterUITests",
-            dependencies: ["ReadLaterUI", "ReadLaterCore"]
+            dependencies: ["ReadLaterUI", "ReadLaterCore", "ReadLaterStore"]
         )
     ]
 )

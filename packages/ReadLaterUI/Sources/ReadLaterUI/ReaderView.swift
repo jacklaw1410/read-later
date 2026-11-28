@@ -1,4 +1,5 @@
 import ReadLaterCore
+import QuartzCore
 import SwiftUI
 
 /// Reads a document in order. The body renders `document.bodyBlocks`; notes
@@ -217,7 +218,20 @@ public struct ReaderView<Player: View, Overlay: View>: View {
             guard !didMarkEntered else { return }
             didMarkEntered = true
             telemetry.markReaderEntered(source: source.rawValue)
+            markFirstFrame()
         }
+    }
+
+    /// The first committed Reader frame is the one this appearance callback is
+    /// drawn in, so the transaction's completion is the frame's landing point.
+    /// `reader.entered` marks intent; this marks paint.
+    private func markFirstFrame() {
+        let hub = telemetry
+        CATransaction.begin()
+        CATransaction.setCompletionBlock {
+            hub.record(TelemetryName.readerFirstFrame)
+        }
+        CATransaction.commit()
     }
 
     /// Reports wash visibility once per change. The pill reads this, not the

@@ -123,5 +123,43 @@ final class LaunchOptionsTests: XCTestCase {
         XCTAssertFalse(options.isActive)
         XCTAssertEqual(options.reset, .none)
     }
+
+    func test_benchmarkFlagsParse() {
+        let options = LaunchOptions(arguments: [
+            "app",
+            "--debug.telemetryDir=/tmp/telemetry",
+            "--debug.interactions=23",
+            "--debug.benchmarkExit=firstFrame",
+        ])
+        XCTAssertTrue(options.isActive)
+        XCTAssertEqual(options.telemetryDirectory, "/tmp/telemetry")
+        XCTAssertEqual(options.interactionIterations, 23)
+        XCTAssertEqual(options.benchmarkExit, .firstFrame)
+        XCTAssertTrue(options.warnings.isEmpty)
+    }
+
+    func test_benchmarkFlagsDefaultOff() {
+        let options = LaunchOptions(arguments: ["app", "--debug.preset=e2e"])
+        XCTAssertNil(options.telemetryDirectory)
+        XCTAssertNil(options.interactionIterations)
+        XCTAssertNil(options.benchmarkExit)
+    }
+
+    func test_badBenchmarkValuesKeepTheDefaultAndWarn() {
+        let options = LaunchOptions(arguments: [
+            "app",
+            "--debug.interactions=many",
+            "--debug.telemetryDir=",
+            "--debug.benchmarkExit=lastFrame",
+        ])
+        XCTAssertNil(options.interactionIterations)
+        XCTAssertNil(options.telemetryDirectory)
+        XCTAssertNil(options.benchmarkExit)
+        XCTAssertEqual(options.warnings, [
+            "ignored interactions=many: expected count 0...10000",
+            "ignored telemetryDir: the value is empty",
+            "ignored benchmarkExit=lastFrame: expected firstFrame",
+        ])
+    }
 }
 #endif
