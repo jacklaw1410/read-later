@@ -8,7 +8,8 @@ let package = Package(
         .library(name: "ReadLaterUI", targets: ["ReadLaterUI"])
     ],
     dependencies: [
-        .package(path: "../ReadLaterCore")
+        .package(path: "../ReadLaterCore"),
+        .package(path: "../ReadLaterStore"),
     ],
     targets: [
         .target(
@@ -17,7 +18,7 @@ let package = Package(
         ),
         .testTarget(
             name: "ReadLaterUITests",
-            dependencies: ["ReadLaterUI", "ReadLaterCore"]
+            dependencies: ["ReadLaterUI", "ReadLaterCore", "ReadLaterStore"]
         )
     ]
 )

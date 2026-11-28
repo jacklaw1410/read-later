@@ -1,3 +1,4 @@
+import Foundation
 import ReadLaterCore
 import ReadLaterUI
 import SwiftUI
@@ -27,8 +28,14 @@ struct ReadLaterApp: App {
         #if DEBUG
         DebugLaunch.prepare()
         DebugProbes.start()
-        #endif
+        if let dir = DebugLaunch.options.telemetryDirectory {
+            telemetry.configure(directory: URL(fileURLWithPath: dir, isDirectory: true))
+        } else {
+            telemetry.configure()
+        }
+        #else
         telemetry.configure()
+        #endif
         telemetry.record(TelemetryName.processStart, fields: [
             "uptime": String(format: "%.6f", ProcessInfo.processInfo.systemUptime),
         ])

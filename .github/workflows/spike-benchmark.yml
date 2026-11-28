@@ -1,0 +1,124 @@
+name: spike-benchmark
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  spike:
+    name: spike (macos)
+    runs-on: macos-15
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v5
+      - name: stub Device.xcconfig for xcodegen
+        working-directory: apps/apple
+        run: |
+          if [ ! -f Config/Device.xcconfig ]; then
+            cp Config/Device.xcconfig.example Config/Device.xcconfig
+          fi
+      - name: install xcodegen
+        run: brew install xcodegen
+      - name: generate project
+        working-directory: apps/apple
+        run: xcodegen generate
+
+      # Five separate Release probe processes. This is the stage-suite spike.
+      - name: stage probe, five runs
+        run: |
+          set -euo pipefail
+          for i in 1 2 3 4 5; do
+            OUT="$PWD/artifacts/stages-$i"
+            rm -rf "$OUT"
+            mkdir -p "$OUT"
+            echo "::group::stage run $i"
+            ENTRY_PROBE_OUT="$OUT" \
+            ENTRY_PROBE_FIXTURES="$PWD/fixtures/pages" \
+            ENTRY_PROBE_ONLY="027-hn,095-sciencedaily,004-averages,005-great-work" \
+            swift test -c release -Xswiftc -enable-testing \
+              --package-path packages/ReadLaterUI \
+              --filter EntryStageBenchmarkTests
+            echo "::endgroup::"
+          done
+
+      - name: build Debug macOS app
+        working-directory: apps/apple
+        run: |
+          xcodebuild -project ReadLater.xcodeproj -scheme ReadLater \
+            -destination 'platform=macOS' -configuration Debug \
+            -derivedDataPath build/spike build \
+            CODE_SIGN_IDENTITY="-" CODE_SIGNING_REQUIRED=NO
+
+      # Five separate launches. The driver runs 3 warmups + 2 measured
+      # iterations and then exits.
+      - name: interaction probe, five launches
+        run: |
+          set -euo pipefail
+          APP="$PWD/apps/apple/build/spike/Build/Products/Debug/ReadLater.app"
+          B64=$(base64 -i fixtures/bench/interaction.txt | tr -d '\n')
+          for i in 1 2 3 4 5; do
+            OUT="$PWD/artifacts/interactions-$i"
+            rm -rf "$OUT"
+            mkdir -p "$OUT"
+            echo "::group::interaction run $i"
+            # Watchdog: a hung app must not eat the job timeout.
+            ( sleep 120; pkill -f "ReadLater.app/Contents/MacOS/ReadLater" || true ) &
+            WATCH=$!
+            open -n -W "$APP" --args \
+              --debug.preset=e2e \
+              --debug.seedTextB64="$B64" \
+              --debug.interactions=5 \
+              --debug.telemetryDir="$OUT"
+            kill "$WATCH" 2>/dev/null || true
+            echo "::endgroup::"
+            ls -la "$OUT"
+          done
+
+      - name: inspect telemetry
+        if: always()
+        run: |
+          set -euo pipefail
+          echo "### event counts" >> "$GITHUB_STEP_SUMMARY"
+          echo '| Run | Event | Count |' >> "$GITHUB_STEP_SUMMARY"
+          echo '|---|---:|---:|' >> "$GITHUB_STEP_SUMMARY"
+          for dir in artifacts/stages-* artifacts/interactions-*; do
+            [ -d "$dir" ] || continue
+            file="$dir/telemetry.jsonl"
+            if [ ! -f "$file" ]; then
+              echo "::warning::$dir has no telemetry.jsonl"
+              continue
+            fi
+            echo "== $dir =="
+            jq -r '.event' "$file" | sort | uniq -c | sort -nr
+            jq -r '.event' "$file" | sort | uniq -c | sort -nr |
+              awk -v d="$(basename "$dir")" '{printf "| %s | %s | %s |\n", d, $2, $1}' >> "$GITHUB_STEP_SUMMARY"
+          done
+          echo
+          echo "### required marks"
+          for name in reader.entered state.speaking state.paused card.shown \
+                      frame.tapWindow frame.scrubWindow benchmark.interaction \
+                      benchmark.done launch.firstFrame; do
+            printf '%-24s %s\n' "$name" "$(cat artifacts/*/telemetry.jsonl 2>/dev/null | grep -c "\"event\":\"$name\"" || true)"
+          done
+
+      - name: show sample interaction rows
+        if: always()
+        run: |
+          cat artifacts/interactions-*/telemetry.jsonl 2>/dev/null |
+            grep '"event":"benchmark.interaction"' |
+            head -30 || true
+          echo
+          cat artifacts/interactions-*/telemetry.jsonl 2>/dev/null |
+            grep -E '"event":"frame\.(tapWindow|scrubWindow)"' |
+            head -20 || true
+
+      - name: upload spike artefacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spike-benchmark
+          path: artifacts
+          if-no-files-found: ignore
+          retention-days: 7

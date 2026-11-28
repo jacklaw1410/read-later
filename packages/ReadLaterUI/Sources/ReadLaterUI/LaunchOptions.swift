@@ -61,6 +61,12 @@ public struct LaunchOptions: Equatable, Sendable {
     /// playback. Nil = off. Exists for CLI SwiftUI traces, which interpose
     /// only at launch and cannot host a test runner's taps (M7).
     public private(set) var autoPlayAfterMs: Int?
+    /// Number of scripted reader-interaction iterations to run after the
+    /// reader opens. Nil = off. Debug-only benchmark spike.
+    public private(set) var interactionIterations: Int?
+    /// Telemetry output directory for benchmark runs. Nil = the stock
+    /// Application Support directory. Debug-only benchmark spike.
+    public private(set) var telemetryDirectory: String?
     /// True when at least one `--debug.` flag was present.
     public private(set) var isActive = false
     /// Human-readable notes for flags that were ignored.
@@ -157,6 +163,22 @@ public struct LaunchOptions: Equatable, Sendable {
             }
         }
 
+        if let raw = values["interactions"] {
+            if let count = Int(raw), (0 ... 10_000).contains(count) {
+                interactionIterations = count
+            } else {
+                warnings.append("ignored interactions=\(raw): expected count 0...10000")
+            }
+        }
+
+        if let raw = values["telemetryDir"] {
+            if raw.isEmpty {
+                warnings.append("ignored telemetryDir: the value is empty")
+            } else {
+                telemetryDirectory = raw
+            }
+        }
+
         for key in values.keys where !Self.knownKeys.contains(key) {
             warnings.append("ignored unknown flag \(Self.flagPrefix)\(key)")
         }
@@ -178,6 +200,7 @@ public struct LaunchOptions: Equatable, Sendable {
     private static let knownKeys: Set<String> = [
         "preset", "reset", "voice", "voice-pace", "animations", "appearance", "locale",
         "seedTextB64", "seedPasteboard", "autoplay",
+        "interactions", "telemetryDir",
     ]
 
     private static func pace(from raw: String?) -> Int? {
