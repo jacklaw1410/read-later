@@ -48,7 +48,7 @@ final class EntryStageBenchmarkTests: XCTestCase {
         #else
         let build = "release"
         #endif
-        hub.telemetryLog.record(TelemetryName.probeStart, fields: [
+        hub.telemetryLog.record("probe.start", fields: [
             "build": build,
             "os": ProcessInfo.processInfo.operatingSystemVersionString,
             "arms": String(Self.arms.count),
@@ -137,7 +137,7 @@ final class EntryStageBenchmarkTests: XCTestCase {
         case "record":
             // One telemetry write with a small field map. This is the overhead
             // that inflates the `plan` span by about 23 %.
-            quiet.record(TelemetryName.probeRecord, fields: ["arm": "record"])
+            quiet.record("probe.record", fields: ["arm": "record"])
             return 1
         case "read":
             // A check that the probe still drives the shipped ingress path.
@@ -230,7 +230,7 @@ final class EntryStageBenchmarkTests: XCTestCase {
             "nodes": String(tagCount(input.html)),
             "checksum": String(timing.check),
         ]
-        oplog.record(TelemetryName.probeSample, fields: fields)
+        oplog.record("probe.sample", fields: fields)
     }
 
     // MARK: - Inputs

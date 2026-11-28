@@ -31,7 +31,7 @@ involved. Sync replays the oplog; it never mirrors a store
 | `fields` | `[String: String]` | Flat string map. Numbers are formatted as strings at the call site. |
 
 `TelemetryName` is not an enum of cases. It is an enum namespace of static
-string constants (`TelemetryLog.swift:27-110`). Every event name is
+string constants (`TelemetryLog.swift:27-104`). Every event name is
 `<category>.<event>` with lower_snake_case segments, for example
 `launch.process_start`, `entry.tap`, `fetch.body_done` and
 `speech.first_word`. There is no camelCase, hyphen or bare event name.
@@ -246,17 +246,19 @@ the tap window adds its two keys at `DebugFrameMonitor.swift:119-125`.
 
 ### Benchmark probes
 
-The stage probe runs in the test process and writes directly. The interaction
-driver runs only in a Debug macOS app. `probe.record` is the payload the
-`record` arm times; it stays in the ring and never reaches a file.
+The stage probe runs in the test process and writes directly. Its three names
+are string literals in the test target, not `TelemetryName` constants: the
+vocabulary guard requires a production call site, and a probe has none. The
+interaction driver runs only in a Debug macOS app. `probe.record` is the payload
+the `record` arm times; it stays in the ring and never reaches a file.
 
 | Event | Defined | Emitted at | When | Fields |
 |---|---|---|---|---|
-| `probe.start` | `TelemetryLog.swift:102` | `packages/ReadLaterUI/Tests/ReadLaterUITests/EntryStageBenchmarkTests.swift:51-55` | Stage probe begins, after the output directory is created | `build`, `os`, `arms` |
-| `probe.sample` | `TelemetryLog.swift:103` | `EntryStageBenchmarkTests.swift:233` | One per fixture and arm, after 1 warm-up and 20 timed calls | `source`, `article`, `arm`, `blocks`, `words`, `sentences`, `bytes`, `wpb`, `ms`, `ms_p50`, `ms_p95`, `ms_min`, `ms_max`, `reps`, `nodes`, `checksum` |
-| `benchmark.interaction` | `TelemetryLog.swift:107` | `apps/apple/Sources/App/InteractionBenchmark.swift:71`, `:126` | One per scripted intent: `play`, `pause`, `scrub`, `lookup.hit`, `lookup.miss` | `kind`, `iteration`, `warmup`, `ms`, `outcome` |
-| `benchmark.done` | `TelemetryLog.swift:108` | `InteractionBenchmark.swift:132-134` | Last iteration finished; followed by flush and exit | `iterations`, `outcome` |
-| `benchmark.failed` | `TelemetryLog.swift:109` | `InteractionBenchmark.swift:132-134`, `apps/apple/Sources/App/DebugBenchmarkExit.swift:34` | No session, no reader, or the launch mark timed out | `reason`, `outcome` |
+| `probe.start` | test literal | `packages/ReadLaterUI/Tests/ReadLaterUITests/EntryStageBenchmarkTests.swift:51-55` | Stage probe begins, after the output directory is created | `build`, `os`, `arms` |
+| `probe.sample` | test literal | `EntryStageBenchmarkTests.swift:233` | One per fixture and arm, after 1 warm-up and 20 timed calls | `source`, `article`, `arm`, `blocks`, `words`, `sentences`, `bytes`, `wpb`, `ms`, `ms_p50`, `ms_p95`, `ms_min`, `ms_max`, `reps`, `nodes`, `checksum` |
+| `benchmark.interaction` | `TelemetryLog.swift:101` | `apps/apple/Sources/App/InteractionBenchmark.swift:76`, `:131` | One per scripted intent: `play`, `pause`, `scrub`, `lookup.hit`, `lookup.miss` | `kind`, `iteration`, `warmup`, `ms`, `outcome` |
+| `benchmark.done` | `TelemetryLog.swift:102` | `InteractionBenchmark.swift:137-139` | Last iteration finished; followed by flush and exit | `iterations`, `outcome` |
+| `benchmark.failed` | `TelemetryLog.swift:103` | `InteractionBenchmark.swift:137-139`, `apps/apple/Sources/App/DebugBenchmarkExit.swift:34` | No session, no reader, or the launch mark timed out | `reason`, `outcome` |
 
 ### Dynamic names (not in `TelemetryName`)
 

@@ -96,12 +96,6 @@ public enum TelemetryName {
     /// First committed Reader frame, recorded one display transaction after
     /// `reader.entered`. Reader open time is report-only, not gated.
     public static let readerFirstFrame = "reader.first_frame"
-    /// Stage probe (`EntryStageBenchmarkTests`): one sample per article and
-    /// arm, plus a start mark. `probe.record` is the payload the `record` arm
-    /// times; it stays in the ring and never reaches a file.
-    public static let probeStart = "probe.start"
-    public static let probeSample = "probe.sample"
-    public static let probeRecord = "probe.record"
     /// Scripted interaction driver, Debug only: one row per intent, plus the
     /// run's start and end marks.
     public static let benchmarkInteraction = "benchmark.interaction"
