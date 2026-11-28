@@ -267,7 +267,7 @@ final class ReadingExtendedTests: XCTestCase {
         XCTAssertTrue(speed.waitForExistence(timeout: Waits.screen), "the speed control is missing")
         JourneySteps.tap(app, speed)
         JourneySteps.tap(app, speed)
-        waitForLabel(label, on: speed, timeout: Waits.state, "the speed change did not land")
+        waitForLabel(label, on: speed, timeout: Waits.state, "the speed did not change")
     }
 
     /// Waits for the element label to read `expected`.

@@ -4,7 +4,7 @@ import ReadLaterCore
 import UIKit
 import XCTest
 
-/// Regression for the reader-open crash on device. Two things were wrong in
+/// Regression for the reader open crash on device. Two things were wrong in
 /// `_WashedTextView`, and both are pinned here.
 ///
 /// 1. `init(usingTextLayoutManager:)` left the subclass's stored properties

@@ -7,7 +7,7 @@ import ReadLaterCore
 /// pause/resume contract run unchanged.
 ///
 /// Used by `--debug.voice=scripted`. The interval is a fixed number of
-/// milliseconds per word divided by the speed, so a speed change is visible in
+/// milliseconds per word divided by the speed, so a speed adjustment is visible in
 /// the state without making a test wait on real speech.
 ///
 /// `Sentence.offset` counts Characters; the block text is not available here,
