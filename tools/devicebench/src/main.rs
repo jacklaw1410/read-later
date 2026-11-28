@@ -60,7 +60,7 @@ const SCRUB_QUIET_S: f64 = 0.05;
 const SCRUB_STOP_WINDOW_S: f64 = 0.5;
 
 /// A sentence onset must follow this many seconds of quiet, and fall within
-/// this many seconds after the `speech.utterance-start` event.
+/// this many seconds after the `speech.utterance_start` event.
 const UTTERANCE_QUIET_S: f64 = 0.05;
 const UTTERANCE_WINDOW_S: f64 = 0.5;
 
@@ -181,7 +181,7 @@ fn cmd_align(args: &[String]) -> Result<(), String> {
         eprintln!("# session {session}: using offset {offset:.4} s ({})", if wall_only { "wall clock" } else { "clicks" });
 
         for e in events.iter().filter(|e| e.session == session) {
-            if !matches!(e.event.as_str(), "tap.play" | "tap.pause" | "scrub.begin" | "scrub.commit" | "speech.utterance-start") {
+            if !matches!(e.event.as_str(), "tap.play" | "tap.pause" | "scrub.begin" | "scrub.commit" | "speech.utterance_start") {
                 continue;
             }
             let rec_t = e.t + offset;
@@ -226,7 +226,7 @@ fn align_by_wall(
     };
     for session in sessions {
         for e in events.iter().filter(|e| e.session == session) {
-            if !matches!(e.event.as_str(), "tap.play" | "tap.pause" | "scrub.begin" | "scrub.commit" | "speech.utterance-start") {
+            if !matches!(e.event.as_str(), "tap.play" | "tap.pause" | "scrub.begin" | "scrub.commit" | "speech.utterance_start") {
                 continue;
             }
             let Some(wall) = align::wall_seconds(&e.iso) else {
@@ -314,7 +314,7 @@ fn respond(env: &detect::Envelope, event: &str, rec_t: f64, levels: Levels) -> (
                 format!("{level:.6}"),
             )
         }
-        "speech.utterance-start" => {
+        "speech.utterance_start" => {
             let level = quiet_level(env, rec_t, levels);
             (
                 detect::onset_after_quiet(env, rec_t, UTTERANCE_WINDOW_S, level, UTTERANCE_QUIET_S),

@@ -16,10 +16,10 @@ import AppKit
 /// frame will display) into the `FrameCounter` accumulator and writes one
 /// telemetry event per window:
 ///
-/// - Tap window (`frame.tap-window`): opened at handler entry, closed a short
+/// - Tap window (`frame.tap_window`): opened at handler entry, closed a short
 ///   tail after the state change. M1 counts frames from tap to state change
 ///   against the one-frame gate.
-/// - Scrub window (`frame.scrub-window`): opened when the drag starts, closed
+/// - Scrub window (`frame.scrub_window`): opened when the drag starts, closed
 ///   on release. M5 reads `fps` and `longestGapMs` straight off the event.
 ///
 /// Timestamps use `ProcessInfo.systemUptime`, the same basis as the telemetry log
@@ -92,7 +92,7 @@ final class DebugFrameMonitor: NSObject {
         ensureLink()
     }
 
-    /// Call when the drag releases. Emits `frame.scrub-window`.
+    /// Call when the drag releases. Emits `frame.scrub_window`.
     func noteScrubEnded() {
         guard mode == .scrub else { return }
         mode = .idle

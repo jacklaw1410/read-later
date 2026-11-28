@@ -187,7 +187,7 @@ struct TelemetryLogTests {
         #expect(hub.hasActiveRun)
         hub.record(TelemetryName.firstWord)
         #expect(!hub.hasActiveRun)
-        #expect(hub.telemetryLog.tail(3).map(\.event) == ["entry.tap", "fetch.start", "speech.first-word"])
+        #expect(hub.telemetryLog.tail(3).map(\.event) == ["entry.tap", "fetch.start", "speech.first_word"])
     }
 
     @Test("A fixed date records the ISO8601 style output")

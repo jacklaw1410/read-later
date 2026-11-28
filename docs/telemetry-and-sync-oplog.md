@@ -32,9 +32,10 @@ involved. Sync replays the oplog; it never mirrors a store
 
 `TelemetryName` is not an enum of cases. It is an enum namespace of static
 string constants (`TelemetryLog.swift:27-94`). Every event name is
-`<category>.<event>` with lowercase kebab-case segments, for example
-`launch.process-start`, `entry.tap`, `fetch.body-done` and
-`speech.first-word`. There is no camelCase, underscore or bare event name.
+`<category>.<event>` with lower_snake_case segments, for example
+`launch.process_start`, `entry.tap`, `fetch.body_done` and
+`speech.first_word`. There is no camelCase, hyphen or bare event name.
+A name matches `^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$`.
 The checkpoint names map one-to-one onto
 `read-later-research/spec/device-test-plan.md` so a trace and an export agree
 (`TelemetryLog.swift:23-26`).
@@ -46,33 +47,33 @@ Old names that changed in the 2026-11 rename:
 | `T0.tap` | `entry.tap` |
 | `T1.fetchStart` | `fetch.start` |
 | `T2.headers` | `fetch.headers` |
-| `T3.bodyDone` | `fetch.body-done` |
+| `T3.bodyDone` | `fetch.body_done` |
 | `T4.parsed` | `extract.parsed` |
 | `T5.planReady` | `plan.ready` |
 | `T6.speakEnqueued` | `speech.enqueued` |
-| `T7.firstWord` | `speech.first-word` |
-| `launch.processStart` | `launch.process-start` |
-| `launch.entryReady` | `launch.entry-ready` |
-| `launch.firstFrame` | `launch.first-frame` |
+| `T7.firstWord` | `speech.first_word` |
+| `launch.processStart` | `launch.process_start` |
+| `launch.entryReady` | `launch.entry_ready` |
+| `launch.firstFrame` | `launch.first_frame` |
 | `reader-open` | `reader.open` |
 | `play` | `playback.play` |
 | `pause` | `playback.pause` |
 | `finished` | `playback.finished` |
 | `lookup` | `lookup.start` |
-| `speed change` | `playback.speed-change` |
+| `speed change` | `playback.speed_change` |
 | `hold-start` | `hold.start` |
 | `hold-end` | `hold.end` |
 | `app-hide` | `app.hide` |
 | `app-return` | `app.return` |
-| `speech.didStart` | `speech.did-start` |
-| `speech.didPause` | `speech.did-pause` |
-| `speech.didResume` | `speech.did-resume` |
-| `speech.didFinish` | `speech.did-finish` |
-| `speech.didCancel` | `speech.did-cancel` |
-| `speech.utteranceStart` | `speech.utterance-start` |
+| `speech.didStart` | `speech.did_start` |
+| `speech.didPause` | `speech.did_pause` |
+| `speech.didResume` | `speech.did_resume` |
+| `speech.didFinish` | `speech.did_finish` |
+| `speech.didCancel` | `speech.did_cancel` |
+| `speech.utteranceStart` | `speech.utterance_start` |
 | `frames.second` | `frame.second` |
-| `frame.tapWindow` | `frame.tap-window` |
-| `frame.scrubWindow` | `frame.scrub-window` |
+| `frame.tapWindow` | `frame.tap_window` |
+| `frame.scrubWindow` | `frame.scrub_window` |
 | `state.speaking` … | `speech.speaking` … |
 
 ### TelemetryLog
@@ -113,24 +114,24 @@ The append-only writer
 telemetry log, and adds lifecycle behavior for four names
 (`TelemetryHub.swift:220-243`):
 
-- `launch.process-start` begins the `launch` signpost interval.
+- `launch.process_start` begins the `launch` signpost interval.
 - `entry.tap` ends a dangling run as `run.end` with `outcome=superseded`, then
   begins a new `ttfw` interval.
-- `launch.first-frame` emits the launch signpost event and ends `launch`.
-- `speech.first-word` emits the signpost event and ends `ttfw`.
+- `launch.first_frame` emits the launch signpost event and ends `launch`.
+- `speech.first_word` emits the signpost event and ends `ttfw`.
 
 `endRunIfActive(outcome:)` writes `run.end` and ends the interval only when a
 run is active (`TelemetryHub.swift:245-251`). `markEntryReady()` records
-`launch.entry-ready` then schedules `launch.first-frame` one main-loop turn
+`launch.entry_ready` then schedules `launch.first_frame` one main-loop turn
 later (`TelemetryHub.swift:253-260`).
 
 `SignpostEmitter` emits `os_signpost` intervals `launch` and `ttfw`, and
 events under subsystem `app.readlater`, category `ttfw`
 (`TelemetryHub.swift:52-65`, `:77-130`). Only the ten checkpoint names get a
 signpost; every other name is telemetry-log-only (`TelemetryHub.swift:132-163`).
-Checkpoints with signposts: `launch.entry-ready`, `launch.first-frame`,
-`entry.tap`, `fetch.start`, `fetch.headers`, `fetch.body-done`, `extract.parsed`,
-`plan.ready`, `speech.enqueued`, `speech.first-word`
+Checkpoints with signposts: `launch.entry_ready`, `launch.first_frame`,
+`entry.tap`, `fetch.start`, `fetch.headers`, `fetch.body_done`, `extract.parsed`,
+`plan.ready`, `speech.enqueued`, `speech.first_word`
 (`TelemetryHub.swift:137-157`).
 
 ### Sync oplog
@@ -191,17 +192,17 @@ compile out of Release and require launch arguments
 
 | Event | Defined | Emitted at | When | Fields |
 |---|---|---|---|---|
-| `launch.process-start` | `TelemetryLog.swift:28` | `apps/apple/Sources/App/ReadLaterApp.swift:32` | App `init`, after `configure()` | none |
-| `launch.entry-ready` (signpost) | `TelemetryLog.swift:29` | `TelemetryHub.swift:256`; called `packages/ReadLaterUI/Sources/ReadLaterUI/EntryView.swift:274` | Entry view `.onAppear` | none |
-| `launch.first-frame` (signpost) | `TelemetryLog.swift:30` | `TelemetryHub.swift:258` | One main-loop turn after `entryReady` | none |
+| `launch.process_start` | `TelemetryLog.swift:28` | `apps/apple/Sources/App/ReadLaterApp.swift:32` | App `init`, after `configure()` | none |
+| `launch.entry_ready` (signpost) | `TelemetryLog.swift:29` | `TelemetryHub.swift:256`; called `packages/ReadLaterUI/Sources/ReadLaterUI/EntryView.swift:274` | Entry view `.onAppear` | none |
+| `launch.first_frame` (signpost) | `TelemetryLog.swift:30` | `TelemetryHub.swift:258` | One main-loop turn after `entryReady` | none |
 | `entry.tap` (signpost) | `TelemetryLog.swift:31` | `EntryView.swift:632`, `apps/apple/Sources/App/RootView.swift:395` | Entry submit; DEBUG autoplay path | none |
 | `fetch.start` (signpost) | `TelemetryLog.swift:32` | `packages/ReadLaterUI/Sources/ReadLaterUI/PageFetching.swift:67` | Just before the page request | `host` |
 | `fetch.headers` (signpost) | `TelemetryLog.swift:33` | `PageFetching.swift:167-170` | URLSession delegate receives response headers | `status`, `host` |
-| `fetch.body-done` (signpost) | `TelemetryLog.swift:34` | `PageFetching.swift:76-79` | Body accumulated; before size/type checks | `status`, `bytes` |
+| `fetch.body_done` (signpost) | `TelemetryLog.swift:34` | `PageFetching.swift:76-79` | Body accumulated; before size/type checks | `status`, `bytes` |
 | `extract.parsed` (signpost) | `TelemetryLog.swift:35` | `packages/ReadLaterUI/Sources/ReadLaterUI/ArticleIngress.swift:133` | Extractor returns blocks | `blocks` |
 | `plan.ready` (signpost) | `TelemetryLog.swift:36` | `ArticleIngress.swift:140-143`, `:175-178`, `EntryView.swift:671-674` | Spoken plan built (fetch, paste, or sample) | `sentences`, `words` (fetch); `source`, `words` (paste/sample) |
 | `speech.enqueued` (signpost) | `TelemetryLog.swift:37` | `apps/apple/Sources/Platform/AVSpeechController.swift:174-176` | First `speak`, only when a run is active | `sentences` |
-| `speech.first-word` (signpost) | `TelemetryLog.swift:38` | `AVSpeechController.swift:409-413` | First word boundary, only when a run is active; ends the run | none |
+| `speech.first_word` (signpost) | `TelemetryLog.swift:38` | `AVSpeechController.swift:409-413` | First word boundary, only when a run is active; ends the run | none |
 | `run.end` | `TelemetryLog.swift:39` | `TelemetryHub.swift:229`, `:249`; triggered `RootView.swift:115` | Superseded tap, reader close, or `endRunIfActive` | `outcome`: `superseded`, `closed`, or caller value (`stopped` in tests, `TelemetryLogTests.swift:185`) |
 | `launch.build` | `TelemetryLog.swift:72` | `ReadLaterApp.swift:33-57` | App `init`; ties the log to a build | `commit`, `configuration`, `model`, `os` |
 | `reader.entered` | `TelemetryLog.swift:47` | `TelemetryHub.swift:267`; called `packages/ReadLaterUI/Sources/ReadLaterUI/ReaderView.swift:219` | Reader view first frame, one main-loop turn after appear | `source`: `link`, `clipboard`, `rawText`, `sample`, `library` |
@@ -221,24 +222,24 @@ compile out of Release and require launch arguments
 
 | Event | Defined | Emitted at | When | Fields |
 |---|---|---|---|---|
-| `speech.did-start` | `TelemetryLog.swift:48` | `AVSpeechController.swift:436` | First utterance-start delegate callback in a run; once per `speak`, gated on active run | none |
-| `speech.utterance-start` | `TelemetryLog.swift:53` | `AVSpeechController.swift:400-402` | Every utterance start, ungated so scrub releases have a phone-side mark | `utterance` |
+| `speech.did_start` | `TelemetryLog.swift:48` | `AVSpeechController.swift:436` | First utterance-start delegate callback in a run; once per `speak`, gated on active run | none |
+| `speech.utterance_start` | `TelemetryLog.swift:53` | `AVSpeechController.swift:400-402` | Every utterance start, ungated so scrub releases have a phone-side mark | `utterance` |
 | `tap.play` | `TelemetryLog.swift:76` | `apps/apple/Sources/App/ReaderSession.swift:115-116` | Play handler entry, when not speaking | `word` (wash index, `-1` if unset) |
 | `tap.pause` | `TelemetryLog.swift:77` | `ReaderSession.swift:115-116` | Play handler entry, when speaking | `word` |
 | `playback.play` | `TelemetryLog.swift:59` | `ReaderSession.swift:126` | Play branch starts audio | none |
 | `playback.pause` | `TelemetryLog.swift:60` | `ReaderSession.swift:123`, `:138` | Pause branch or `.speaking` case in toggle | none |
 | `audio.interruption` | `TelemetryLog.swift:89` | `StallProbe.swift:57-60` | An audio interruption began or ended, before the hold or resume | `type` (raw value), `state` |
 | `playback.finished` | `TelemetryLog.swift:61` | `ReaderSession.swift:451` | Speech state becomes `.finished` | none |
-| `playback.speed-change` | `TelemetryLog.swift:69` | `ReaderSession.swift:180` | Reader changes pace | `from`, `to` |
+| `playback.speed_change` | `TelemetryLog.swift:69` | `ReaderSession.swift:180` | Reader changes pace | `from`, `to` |
 | `scrub.commit` | `TelemetryLog.swift:78` | `ReaderSession.swift:206-209` | After restart on scrub release | `fraction` (4 dp), `word` |
 | `scrub.begin` | `TelemetryLog.swift:79` | `ReaderSession.swift:243-245` | Drag begins | `state` (speech state description) |
 | `hold.start` | `TelemetryLog.swift:70` | `ReaderSession.swift:385`, `:391` | Scroll or menu disables auto-follow | `reason`: `scroll`, `menu` |
 | `hold.end` | `TelemetryLog.swift:71` | `ReaderSession.swift:397` | Reader resumes auto-follow | `outcome=resume` |
 | `speech.enqueue` | `TelemetryLog.swift:82` | `AVSpeechController.swift:376-379` | Each utterance enqueued | `utterance`, `inFlight` |
-| `speech.did-finish` | `TelemetryLog.swift:83` | `AVSpeechController.swift:481-486` | Utterance finish delegate callback | `utterance`, `inFlight`, `nextToEnqueue`, `state` |
-| `speech.did-pause` | `TelemetryLog.swift:80` | `AVSpeechController.swift:502-505` | Pause delegate callback, including late ones | `tracked`, `state` |
-| `speech.did-resume` | `TelemetryLog.swift:81` | `AVSpeechController.swift:512-515` | Resume delegate callback | `tracked`, `state` |
-| `speech.did-cancel` | `TelemetryLog.swift:88` | `StallProbe.swift:52-55` | Utterance cancel delegate callback, including the hold's own stop | `tracked`, `state` |
+| `speech.did_finish` | `TelemetryLog.swift:83` | `AVSpeechController.swift:481-486` | Utterance finish delegate callback | `utterance`, `inFlight`, `nextToEnqueue`, `state` |
+| `speech.did_pause` | `TelemetryLog.swift:80` | `AVSpeechController.swift:502-505` | Pause delegate callback, including late ones | `tracked`, `state` |
+| `speech.did_resume` | `TelemetryLog.swift:81` | `AVSpeechController.swift:512-515` | Resume delegate callback | `tracked`, `state` |
+| `speech.did_cancel` | `TelemetryLog.swift:88` | `StallProbe.swift:52-55` | Utterance cancel delegate callback, including the hold's own stop | `tracked`, `state` |
 | `speech.word` | `TelemetryLog.swift:86` | `StallProbe.swift:47-50` | Every word boundary; Debug builds only, so a stall shows its last word | `word`, `utterance` |
 | `speech.heartbeat` | `TelemetryLog.swift:87` | `StallProbe.swift:102` | 1 Hz while the voice runs; Debug builds only, for stall evidence. The probe stops if the sampled state leaves `.speaking` | `state`, `isSpeaking`, `isPaused`, `inFlight`, `word`, `uptime`, `outputVolume` (iOS) |
 
@@ -271,8 +272,8 @@ The `write` values seen on `store.write` are asserted in
 |---|---|---|---|---|
 | `marker.request` | `TelemetryLog.swift:83` | `apps/apple/Sources/App/DebugProbes.swift:96-100` | `--debug.marker=<n>` click, one per second after 2 s | `index`, `host` (CACurrentMediaTime), `outputLatency` |
 | `frame.second` | `TelemetryLog.swift:84` | `DebugProbes.swift:132-135` | `--debug.frames` on iOS, once per second | `fps`, `longestGapMs` |
-| `frame.tap-window` | `TelemetryLog.swift:85` | `apps/apple/Sources/App/DebugFrameMonitor.swift:115-126` | Tap window closes, five frames after state change or at 120-frame cap | `frames`, `durationMs`, `fps`, `longestGapMs`, `tapToStateMs`, `state` (`changed`/`missing`) |
-| `frame.scrub-window` | `TelemetryLog.swift:86` | `DebugFrameMonitor.swift:96-102` | Scrub drag release | `frames`, `durationMs`, `fps`, `longestGapMs` |
+| `frame.tap_window` | `TelemetryLog.swift:85` | `apps/apple/Sources/App/DebugFrameMonitor.swift:115-126` | Tap window closes, five frames after state change or at 120-frame cap | `frames`, `durationMs`, `fps`, `longestGapMs`, `tapToStateMs`, `state` (`changed`/`missing`) |
+| `frame.scrub_window` | `TelemetryLog.swift:86` | `DebugFrameMonitor.swift:96-102` | Scrub drag release | `frames`, `durationMs`, `fps`, `longestGapMs` |
 
 Frame fields come from `FrameWindowSummary.fields()`
 (`packages/ReadLaterCore/Sources/ReadLaterCore/FrameCounter.swift:71-80`);
@@ -320,7 +321,7 @@ An entry run, as asserted by the hub test
 (`TelemetryLogTests.swift:156-170`):
 
 ```text
-entry.tap → fetch.start → … → speech.first-word
+entry.tap → fetch.start → … → speech.first_word
 ```
 
 A superseded run shows why `run.end` is telemetry-log-only

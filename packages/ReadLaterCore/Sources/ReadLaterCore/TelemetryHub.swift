@@ -137,9 +137,9 @@ final class SignpostEmitter: @unchecked Sendable {
             #if canImport(os)
             switch name {
             case TelemetryName.entryReady:
-                if let id = launchID { poster.emitEvent("launch.entry-ready", id: id) }
+                if let id = launchID { poster.emitEvent("launch.entry_ready", id: id) }
             case TelemetryName.firstFrame:
-                if let id = launchID { poster.emitEvent("launch.first-frame", id: id) }
+                if let id = launchID { poster.emitEvent("launch.first_frame", id: id) }
             case TelemetryName.entryTap:
                 if let id = runID { poster.emitEvent("entry.tap", id: id) }
             case TelemetryName.fetchStart:
@@ -147,7 +147,7 @@ final class SignpostEmitter: @unchecked Sendable {
             case TelemetryName.fetchHeaders:
                 if let id = runID { poster.emitEvent("fetch.headers", id: id) }
             case TelemetryName.fetchBodyDone:
-                if let id = runID { poster.emitEvent("fetch.body-done", id: id) }
+                if let id = runID { poster.emitEvent("fetch.body_done", id: id) }
             case TelemetryName.extractParsed:
                 if let id = runID { poster.emitEvent("extract.parsed", id: id) }
             case TelemetryName.planReady:
@@ -155,7 +155,7 @@ final class SignpostEmitter: @unchecked Sendable {
             case TelemetryName.speakEnqueued:
                 if let id = runID { poster.emitEvent("speech.enqueued", id: id) }
             case TelemetryName.firstWord:
-                if let id = runID { poster.emitEvent("speech.first-word", id: id) }
+                if let id = runID { poster.emitEvent("speech.first_word", id: id) }
             default:
                 break
             }

@@ -90,7 +90,7 @@ public final class AVSpeechController: NSObject, SpeechController {
     private var epochAtFill = 0
     private var warmupIDs = Set<ObjectIdentifier>()
     /// First voice callback and first word boundary of the current `speak`,
-    /// for the speech.enqueued → speech.first-word stage. Reset on every speak; only the first of each is
+    /// for the speech.enqueued → speech.first_word stage. Reset on every speak; only the first of each is
     /// recorded, and only while a tap-to-first-word run is active.
     private var ttfwVoiceStarted = false
     private var ttfwWordDelivered = false
