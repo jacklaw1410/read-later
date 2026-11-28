@@ -13,9 +13,7 @@ import XCTest
 /// `.html` pages. `ENTRY_PROBE_ONLY` (comma-separated labels) limits the run to those inputs.
 /// Build with `-Xswiftc -enable-testing` so `@testable` reaches internals.
 final class EntryStageBenchmarkTests: XCTestCase {
-    private static let windowSeconds = 0.02
-    private static let minReps = 5
-    private static let maxIterations = 100_000
+    private static let samplesPerArm = 20
     private static let telemetryCalls = 5
     private static let arms = ["read", "extract", "plan", "invariant", "sha256", "save", "library", "seed"]
 
@@ -145,29 +143,40 @@ final class EntryStageBenchmarkTests: XCTestCase {
     // MARK: - Timing
 
     private struct Timing {
-        let ms: Double
+        let p50: Double
+        let p95: Double
         let minMs: Double
         let maxMs: Double
         let reps: Int
         let check: Int
     }
 
-    /// One result per article and arm. The first call is an untimed warm-up and
-    /// sizes the repeat count: at least `minReps`, and enough calls to fill
-    /// `windowSeconds`. Each call is timed on its own. The record keeps the median,
-    /// minimum and maximum, so a single slow call shows as spread.
+    /// One result per article and arm: one untimed warm-up, then 20 timed
+    /// calls. The record keeps nearest-rank p50 and p95 plus min and max, so
+    /// the gate compares the same statistics the CI tool reports.
     private static func timed(_ body: () -> Int) -> Timing {
         var check = body()
-        let one = seconds { check = body() }
-        let reps = min(maxIterations, max(minReps, Int((windowSeconds / max(one, 1e-9)).rounded(.up))))
+        _ = seconds { check = body() }
         var samples: [Double] = []
-        samples.reserveCapacity(reps)
-        for _ in 0 ..< reps {
+        samples.reserveCapacity(samplesPerArm)
+        for _ in 0 ..< samplesPerArm {
             let elapsed = seconds { check = body() }
             samples.append(elapsed * 1000)
         }
         samples.sort()
-        return Timing(ms: samples[reps / 2], minMs: samples[0], maxMs: samples[reps - 1], reps: reps, check: check)
+        return Timing(
+            p50: percentile(samples, 0.50),
+            p95: percentile(samples, 0.95),
+            minMs: samples[0],
+            maxMs: samples[samples.count - 1],
+            reps: samples.count,
+            check: check
+        )
+    }
+
+    private static func percentile(_ sorted: [Double], _ fraction: Double) -> Double {
+        let index = max(0, min(sorted.count - 1, Int((fraction * Double(sorted.count)).rounded(.up)) - 1))
+        return sorted[index]
     }
 
     /// Opening tags in the page. This approximates the DOM node count without SwiftSoup.
@@ -195,7 +204,9 @@ final class EntryStageBenchmarkTests: XCTestCase {
             "sentences": String(document.plan.sentenceCount),
             "bytes": String(input.html.utf8.count),
             "wpb": String(format: "%.3f", Double(words) / Double(max(blocks, 1))),
-            "ms": String(format: "%.6f", timing.ms),
+            "ms": String(format: "%.6f", timing.p50),
+            "ms_p50": String(format: "%.6f", timing.p50),
+            "ms_p95": String(format: "%.6f", timing.p95),
             "ms_min": String(format: "%.6f", timing.minMs),
             "ms_max": String(format: "%.6f", timing.maxMs),
             "reps": String(timing.reps),

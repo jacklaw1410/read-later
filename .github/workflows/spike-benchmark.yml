@@ -71,7 +71,7 @@ jobs:
             open -n -W "$APP" --args \
               --debug.preset=e2e \
               --debug.seedTextB64="$B64" \
-              --debug.interactions=5 \
+              --debug.interactions=23 \
               --debug.telemetryDir="$OUT"
             kill "$WATCH" 2>/dev/null || true
             echo "::endgroup::"
