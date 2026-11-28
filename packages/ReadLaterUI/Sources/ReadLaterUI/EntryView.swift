@@ -638,7 +638,7 @@ public struct EntryView: View {
         // The keyboard has done its job once the request leaves. Dismiss it
         // here so the loadline is visible on small screens.
         fieldFocused = false
-        telemetry.record(TelemetryName.tap)
+        telemetry.record(TelemetryName.entryTap)
         let request: EntryRequest
         if kind == .text {
             request = EntryRequest(

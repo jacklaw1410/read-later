@@ -49,9 +49,9 @@ enum ProcessStart {
     #endif
 }
 
-/// Emits `os_signpost` intervals and events for the T0–T7 checkpoints. Names
-/// are static literals matching `TelemetryName` exactly; the switch below is
-/// what keeps a dynamic event string from becoming a dynamic signpost name.
+/// Emits `os_signpost` intervals and events for the entry checkpoints. The
+/// switch below admits only checkpoint names; the admitted name is passed
+/// through, so the signpost cannot drift from `TelemetryName`.
 final class SignpostEmitter: @unchecked Sendable {
     private let lock = NSLock()
     #if canImport(os)
@@ -136,25 +136,25 @@ final class SignpostEmitter: @unchecked Sendable {
             #if canImport(os)
             switch name {
             case TelemetryName.entryReady:
-                if let id = launchID { poster.emitEvent("launch.entryReady", id: id) }
+                if let id = launchID { poster.emitEvent(name, id: id) }
             case TelemetryName.firstFrame:
-                if let id = launchID { poster.emitEvent("launch.firstFrame", id: id) }
-            case TelemetryName.tap:
-                if let id = runID { poster.emitEvent("T0.tap", id: id) }
+                if let id = launchID { poster.emitEvent(name, id: id) }
+            case TelemetryName.entryTap:
+                if let id = runID { poster.emitEvent(name, id: id) }
             case TelemetryName.fetchStart:
-                if let id = runID { poster.emitEvent("T1.fetchStart", id: id) }
-            case TelemetryName.headers:
-                if let id = runID { poster.emitEvent("T2.headers", id: id) }
-            case TelemetryName.bodyDone:
-                if let id = runID { poster.emitEvent("T3.bodyDone", id: id) }
-            case TelemetryName.parsed:
-                if let id = runID { poster.emitEvent("T4.parsed", id: id) }
+                if let id = runID { poster.emitEvent(name, id: id) }
+            case TelemetryName.fetchHeaders:
+                if let id = runID { poster.emitEvent(name, id: id) }
+            case TelemetryName.fetchBodyDone:
+                if let id = runID { poster.emitEvent(name, id: id) }
+            case TelemetryName.extractParsed:
+                if let id = runID { poster.emitEvent(name, id: id) }
             case TelemetryName.planReady:
-                if let id = runID { poster.emitEvent("T5.planReady", id: id) }
+                if let id = runID { poster.emitEvent(name, id: id) }
             case TelemetryName.speakEnqueued:
-                if let id = runID { poster.emitEvent("T6.speakEnqueued", id: id) }
+                if let id = runID { poster.emitEvent(name, id: id) }
             case TelemetryName.firstWord:
-                if let id = runID { poster.emitEvent("T7.firstWord", id: id) }
+                if let id = runID { poster.emitEvent(name, id: id) }
             default:
                 break
             }
@@ -224,7 +224,7 @@ public final class TelemetryHub: @unchecked Sendable {
         switch name {
         case TelemetryName.processStart:
             emitter.beginLaunch()
-        case TelemetryName.tap:
+        case TelemetryName.entryTap:
             if emitter.hasActiveRun {
                 telemetryLog.record(TelemetryName.runEnd, fields: ["outcome": "superseded"])
                 emitter.endRun()

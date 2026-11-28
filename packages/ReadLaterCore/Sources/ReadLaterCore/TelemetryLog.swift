@@ -20,22 +20,23 @@ public struct TelemetryEvent: Codable, Sendable, Hashable {
     }
 }
 
-/// Event names. The `T0`–`T7` names match
-/// `read-later-research/spec/device-test-plan.md` exactly, so an Instruments
-/// trace and a telemetry export agree. The rest reuse the pilot vocabulary
-/// (`spec/pilot-instrument.md`) where it fits.
+/// Event names. Every name is `<category>.<event>` with kebab-case segments,
+/// and the checkpoint names map one-to-one onto
+/// `read-later-research/spec/device-test-plan.md` so an Instruments trace and
+/// a telemetry export agree. The rest reuse the
+/// pilot vocabulary (`spec/pilot-instrument.md`) where it fits.
 public enum TelemetryName {
-    public static let processStart = "launch.processStart"
-    public static let entryReady = "launch.entryReady"
-    public static let firstFrame = "launch.firstFrame"
-    public static let tap = "T0.tap"
-    public static let fetchStart = "T1.fetchStart"
-    public static let headers = "T2.headers"
-    public static let bodyDone = "T3.bodyDone"
-    public static let parsed = "T4.parsed"
-    public static let planReady = "T5.planReady"
-    public static let speakEnqueued = "T6.speakEnqueued"
-    public static let firstWord = "T7.firstWord"
+    public static let processStart = "launch.process-start"
+    public static let entryReady = "launch.entry-ready"
+    public static let firstFrame = "launch.first-frame"
+    public static let entryTap = "entry.tap"
+    public static let fetchStart = "fetch.start"
+    public static let fetchHeaders = "fetch.headers"
+    public static let fetchBodyDone = "fetch.body-done"
+    public static let extractParsed = "extract.parsed"
+    public static let planReady = "plan.ready"
+    public static let speakEnqueued = "speech.enqueued"
+    public static let firstWord = "speech.first-word"
     public static let runEnd = "run.end"
     public static let fetchSkipped = "fetch.skipped"
     public static let fetchFailed = "fetch.failed"
@@ -45,53 +46,53 @@ public enum TelemetryName {
     /// First committed frame of Reader. The end point of the Entry-to-Reader
     /// timeline. `session` comes from the event; `source` names the ingress.
     public static let readerEntered = "reader.entered"
-    public static let speechDidStart = "speech.didStart"
+    public static let speechDidStart = "speech.did-start"
     /// Per-utterance start mark for M4, logged from the synthesizer delegate
     /// without an active-run gate (the seeded flow never starts one), in the
-    /// `card.shown` style. `speech.didStart` fires once per `speak`; this
+    /// `card.shown` style. `speech.did-start` fires once per `speak`; this
     /// fires for every utterance so scrub releases have a phone-side mark.
-    public static let utteranceStart = "speech.utteranceStart"
+    public static let utteranceStart = "speech.utterance-start"
     /// Close-request mark for M14, logged in `ReaderSession.closeCard`
     /// before teardown: the near half of close-to-resume. No fields — one
     /// card is open at a time, so session order joins it to `card.shown`.
     public static let cardClose = "card.close"
-    public static let readerOpen = "reader-open"
-    public static let play = "play"
-    public static let pause = "pause"
-    public static let finished = "finished"
-    public static let lookup = "lookup"
+    public static let readerOpen = "reader.open"
+    public static let playbackPlay = "playback.play"
+    public static let playbackPause = "playback.pause"
+    public static let playbackFinished = "playback.finished"
+    public static let lookupStart = "lookup.start"
     public static let lookupHit = "lookup.hit"
     public static let lookupMiss = "lookup.miss"
     /// First commit of a lookup card (hit or miss) after `onAppear`, logged
     /// from one main-loop turn later: the present-plus-paint mark for M14.
     /// `lookup.hit` already covers resolve; this covers what the user sees.
     public static let cardShown = "card.shown"
-    public static let speedChange = "speed change"
-    public static let holdStart = "hold-start"
-    public static let holdEnd = "hold-end"
-    public static let appHide = "app-hide"
-    public static let appReturn = "app-return"
+    public static let speedChange = "playback.speed-change"
+    public static let holdStart = "hold.start"
+    public static let holdEnd = "hold.end"
+    public static let appHide = "app.hide"
+    public static let appReturn = "app.return"
     /// Probe events for the device latency runs (device-verification-latency.md §5).
     public static let launchBuild = "launch.build"
     public static let tapPlay = "tap.play"
     public static let tapPause = "tap.pause"
     public static let scrubCommit = "scrub.commit"
     public static let scrubBegin = "scrub.begin"
-    public static let speechDidPause = "speech.didPause"
-    public static let speechDidResume = "speech.didResume"
+    public static let speechDidPause = "speech.did-pause"
+    public static let speechDidResume = "speech.did-resume"
     public static let speechEnqueue = "speech.enqueue"
-    public static let speechDidFinish = "speech.didFinish"
+    public static let speechDidFinish = "speech.did-finish"
     /// Stall probes, Debug builds only (`StallProbe`). The device runs that
     /// chase a stall use Debug; release builds do not write them.
     public static let speechWord = "speech.word"
     public static let speechHeartbeat = "speech.heartbeat"
-    public static let speechDidCancel = "speech.didCancel"
+    public static let speechDidCancel = "speech.did-cancel"
     public static let audioInterruption = "audio.interruption"
     public static let storeWrite = "store.write"
     public static let markerRequest = "marker.request"
-    public static let framesSecond = "frames.second"
-    public static let frameTapWindow = "frame.tapWindow"
-    public static let frameScrubWindow = "frame.scrubWindow"
+    public static let frameSecond = "frame.second"
+    public static let frameTapWindow = "frame.tap-window"
+    public static let frameScrubWindow = "frame.scrub-window"
 }
 
 /// Append-only JSONL measurement log. The app writes it; the analyst takes it

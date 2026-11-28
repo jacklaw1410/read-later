@@ -181,13 +181,13 @@ struct TelemetryLogTests {
             clock: fake.clock, wall: fake.wall, originUptime: 1_000
         )
         #expect(!hub.hasActiveRun)
-        hub.record(TelemetryName.tap)
+        hub.record(TelemetryName.entryTap)
         #expect(hub.hasActiveRun)
         hub.record(TelemetryName.fetchStart)
         #expect(hub.hasActiveRun)
         hub.record(TelemetryName.firstWord)
         #expect(!hub.hasActiveRun)
-        #expect(hub.telemetryLog.tail(3).map(\.event) == ["T0.tap", "T1.fetchStart", "T7.firstWord"])
+        #expect(hub.telemetryLog.tail(3).map(\.event) == ["entry.tap", "fetch.start", "speech.first-word"])
     }
 
     @Test("A fixed date records the ISO8601 style output")
@@ -237,11 +237,11 @@ struct TelemetryLogTests {
             directory: nil, sessionID: "hub-test",
             clock: fake.clock, wall: fake.wall, originUptime: 1_000
         )
-        hub.record(TelemetryName.tap)
-        hub.record(TelemetryName.tap)
+        hub.record(TelemetryName.entryTap)
+        hub.record(TelemetryName.entryTap)
         #expect(hub.hasActiveRun)
         let tail = hub.telemetryLog.tail(3).map(\.event)
-        #expect(tail == ["T0.tap", "run.end", "T0.tap"])
+        #expect(tail == ["entry.tap", "run.end", "entry.tap"])
         hub.endRunIfActive(outcome: "stopped")
         #expect(!hub.hasActiveRun)
         #expect(hub.telemetryLog.tail(1).first?.fields == ["outcome": "stopped"])
