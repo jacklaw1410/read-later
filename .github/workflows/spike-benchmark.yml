@@ -2,6 +2,8 @@ name: spike-benchmark
 
 on:
   workflow_dispatch:
+  push:
+    branches: [spike/benchmark-probes]
 
 permissions:
   contents: read
