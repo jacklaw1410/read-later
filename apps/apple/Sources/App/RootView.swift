@@ -697,8 +697,8 @@ struct RootView: View {
                 return
             }
             // Same path as the entry tap and the play button. The tap starts
-            // the telemetry run, so T7.firstWord lands in the trace.
-            telemetry.record(TelemetryName.tap)
+            // the telemetry run, so speech.first_word lands in the trace.
+            telemetry.record(TelemetryName.entryTap)
             if model.session == nil {
                 model.openLatestSavedPlace()
             }

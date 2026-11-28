@@ -187,7 +187,7 @@ public enum ArticleIngress {
         telemetry.record(TelemetryName.extractStart, fields: ["bytes": String(page.html.count)])
         do {
             let result = try extractor.extract(html: page.html, source: page.url.absoluteString, httpStatus: page.status)
-            telemetry.record(TelemetryName.parsed, fields: ["blocks": String(result.blocks.count)])
+            telemetry.record(TelemetryName.extractParsed, fields: ["blocks": String(result.blocks.count)])
             let plan = SpokenPlanBuilder.build(
                 blocks: result.blocks,
                 source: page.url.host ?? page.url.absoluteString,

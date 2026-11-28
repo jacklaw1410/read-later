@@ -73,7 +73,7 @@ public struct URLSessionPageFetcher: PageFetching {
         } catch {
             throw PageFetchError.offline((error as NSError).localizedDescription)
         }
-        telemetry.record(TelemetryName.bodyDone, fields: [
+        telemetry.record(TelemetryName.fetchBodyDone, fields: [
             "status": String(http.statusCode),
             "bytes": String(data.count),
         ])
@@ -94,7 +94,7 @@ public struct URLSessionPageFetcher: PageFetching {
     }
 
     /// Runs the request on a per-fetch session so a delegate can stamp the
-    /// header arrival (T2). The stored session's configuration is reused, so a
+    /// header arrival (`fetch.headers`). The stored session's configuration is reused, so a
     /// custom configuration still applies; the delegate cannot live on a
     /// shared session.
     private func perform(_ request: URLRequest, url: URL) async throws -> (Data, HTTPURLResponse) {
@@ -110,7 +110,7 @@ public struct URLSessionPageFetcher: PageFetching {
     }
 }
 
-/// Stamps T2 when the response headers arrive and accumulates the body.
+/// Stamps `fetch.headers` when the response headers arrive and accumulates the body.
 /// One instance per fetch; all mutable state is lock-guarded because the
 /// callbacks arrive off the caller's actor.
 private final class FetchTimingDelegate: NSObject, URLSessionDataDelegate, @unchecked Sendable {
@@ -164,7 +164,7 @@ private final class FetchTimingDelegate: NSObject, URLSessionDataDelegate, @unch
             finish(.failure(PageFetchError.offline("no HTTP response")))
             return
         }
-        telemetry.record(TelemetryName.headers, fields: [
+        telemetry.record(TelemetryName.fetchHeaders, fields: [
             "status": String(http.statusCode),
             "host": url.host ?? url.absoluteString,
         ])

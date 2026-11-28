@@ -120,10 +120,10 @@ final class ReaderSession {
         if speech.state == .speaking {
             speech.pause()
             checkpoint(source: "pause")
-            telemetry.record(TelemetryName.pause)
+            telemetry.record(TelemetryName.playbackPause)
             return
         }
-        telemetry.record(TelemetryName.play)
+        telemetry.record(TelemetryName.playbackPlay)
         // A paused scrub arms the latch. It wins over resume-from-pause:
         // resuming would replay the old position and strand the scrub.
         if let target = latch.peek() {
@@ -135,7 +135,7 @@ final class ReaderSession {
             speech.resume()
         case .speaking:
             speech.pause()
-            telemetry.record(TelemetryName.pause)
+            telemetry.record(TelemetryName.playbackPause)
         case .warming, .idle, .finished:
             // Warming is a background pre-warm, not playback. The reader's
             // first press must start the article even if the voice is still
@@ -428,7 +428,7 @@ final class ReaderSession {
 
     private func speechStateChanged(_ state: SpeechState) {
         // Every delegate change is logged, including late callbacks (F20.4).
-        telemetry.record("state.\(state)")
+        telemetry.record("speech.\(state)")
         #if DEBUG
         DebugFrameMonitor.shared.noteStateChange()
         #endif
@@ -448,7 +448,7 @@ final class ReaderSession {
             playbackState.isFinished = true
             playbackState.isPlaying = false
             record(max(spoken.totalWords - 1, 0), force: true, source: "finish")
-            telemetry.record(TelemetryName.finished)
+            telemetry.record(TelemetryName.playbackFinished)
         }
         playbackState.isPlaying = playbackState.isPlaying
     }

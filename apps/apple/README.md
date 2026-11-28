@@ -196,6 +196,6 @@ xcrun devicectl device copy from --device <UDID> \
   --source "Library/Application Support/Telemetry" --destination ./telemetry-from-device
 ```
 
-The event names in the telemetry log match the device plan's checkpoint names
-(`T0.tap` … `T7.firstWord`, plus `launch.*`), so one file answers D2a–D2d
-when no Instruments trace exists.
+The event names in the telemetry log map one-to-one onto the device plan's
+entry checkpoints (`entry.tap` … `speech.first_word`, plus `launch.*`), so one
+file answers D2a–D2d when no Instruments trace exists.

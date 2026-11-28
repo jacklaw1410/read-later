@@ -55,7 +55,7 @@ final class LookupController {
         let wasPlaying = openSession()
         selectedWordIndex = slot?.index
         playback.isPlaying = false
-        telemetry.record(TelemetryName.lookup, fields: ["word": token])
+        telemetry.record(TelemetryName.lookupStart, fields: ["word": token])
 
         task?.cancel()
         task = Task { [weak self] in
@@ -94,7 +94,7 @@ final class LookupController {
     func closeCard() {
         guard state.card != nil else { return }
         // Close-request mark for M14: with lookup card.shown (paint) and
-        // state.speaking (resume) this splits close-to-resume into test
+        // speech.speaking (resume) this splits close-to-resume into test
         // delivery (tap to here) and teardown-plus-resume (here to speaking).
         telemetry.record(TelemetryName.cardClose)
         state.card = nil

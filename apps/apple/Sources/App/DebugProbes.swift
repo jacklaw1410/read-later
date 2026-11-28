@@ -10,7 +10,7 @@ import ReadLaterCore
 ///
 ///   --debug.marker=<count>   plays <count> clicks, one per second, starting 2 s
 ///                            after launch. Each click logs `marker.request`.
-///   --debug.frames           logs `frames.second` once per second (iOS only).
+///   --debug.frames           logs `frame.second` once per second (iOS only).
 @MainActor
 enum DebugProbes {
     private static let markerPrefix = "--debug.marker="
@@ -129,7 +129,7 @@ final class FrameCounter: NSObject {
         frames += 1
         let window = now - windowStart
         if window >= 1 {
-            TelemetryHub.shared.record(TelemetryName.framesSecond, fields: [
+            TelemetryHub.shared.record(TelemetryName.frameSecond, fields: [
                 "fps": String(format: "%.1f", Double(frames) / window),
                 "longestGapMs": String(format: "%.1f", longestGap * 1_000),
             ])

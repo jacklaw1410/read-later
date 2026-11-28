@@ -797,7 +797,7 @@ final class _WashedTextView: UITextView {
     /// Do not build it with `init(usingTextLayoutManager:)`. That initializer
     /// leaves this subclass's stored properties zeroed: `washMarkList` holds no
     /// array buffer and `bodyLength` holds no value. Reading either one traps.
-    /// That was the reader-open crash on device: `_ArrayBuffer.count` on
+    /// That was the reader open crash on device: `_ArrayBuffer.count` on
     /// address `0x10`, SIGSEGV, on the first mark assignment. The frame and
     /// container initializer is a designated initializer, so the Swift defaults
     /// do run, and the wash chip needs TextKit 1 glyph rects anyway.
