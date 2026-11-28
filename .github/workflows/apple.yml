@@ -83,6 +83,19 @@ jobs:
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v5
+      - name: swift version
+        id: swift
+        run: echo "version=$(swift --version | head -1 | tr -cs 'A-Za-z0-9.-' '-')" >> "$GITHUB_OUTPUT"
+      - name: cache SwiftPM and package builds
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/org.swift.swiftpm
+            ~/.swiftpm
+            packages/*/.build
+          key: swiftpm-tests-${{ runner.os }}-${{ steps.swift.outputs.version }}-${{ hashFiles('packages/*/Package.resolved', 'packages/*/Package.swift') }}
+          restore-keys: |
+            swiftpm-tests-${{ runner.os }}-${{ steps.swift.outputs.version }}-
       - name: swift test, every package, warnings as errors
         run: |
           for pkg in packages/*/; do
@@ -98,6 +111,9 @@ jobs:
       - uses: actions/checkout@v5
       - name: install xcodegen
         run: brew install xcodegen
+      - name: xcode version
+        id: xcode
+        run: echo "version=$(xcodebuild -version | head -1 | tr ' ' '-')" >> "$GITHUB_OUTPUT"
       - name: stub Device.xcconfig for xcodegen
         working-directory: apps/apple
         run: |
@@ -106,12 +122,25 @@ jobs:
           if [ ! -f Config/Device.xcconfig ]; then
             cp Config/Device.xcconfig.example Config/Device.xcconfig
           fi
+      - name: cache Debug build intermediates
+        uses: actions/cache@v4
+        with:
+          path: |
+            apps/apple/build/macos/Build/Intermediates.noindex
+            apps/apple/build/macos/SourcePackages
+          key: xcode-debug-macos-${{ runner.os }}-${{ steps.xcode.outputs.version }}-${{ hashFiles('apps/apple/project.yml', 'packages/*/Package.resolved') }}
+          restore-keys: |
+            xcode-debug-macos-${{ runner.os }}-${{ steps.xcode.outputs.version }}-
       - name: unsigned macOS build
         working-directory: apps/apple
         run: |
           xcodegen generate
+          # The hosted runner is arm64. Build its active slice, not a
+          # universal app that also carries an x86_64 slice nobody runs.
           xcodebuild -project ReadLater.xcodeproj -scheme ReadLater \
-            -destination 'platform=macOS' build CODE_SIGNING_ALLOWED=NO
+            -destination 'platform=macOS' -derivedDataPath build/macos \
+            build CODE_SIGNING_ALLOWED=NO ONLY_ACTIVE_ARCH=YES \
+            COMPILER_INDEX_STORE_ENABLE=NO
 
   build-ios:
     name: build-ios
@@ -120,6 +149,9 @@ jobs:
       - uses: actions/checkout@v5
       - name: install xcodegen
         run: brew install xcodegen
+      - name: xcode version
+        id: xcode
+        run: echo "version=$(xcodebuild -version | head -1 | tr ' ' '-')" >> "$GITHUB_OUTPUT"
       - name: stub Device.xcconfig for xcodegen
         working-directory: apps/apple
         run: |
@@ -128,25 +160,30 @@ jobs:
           if [ ! -f Config/Device.xcconfig ]; then
             cp Config/Device.xcconfig.example Config/Device.xcconfig
           fi
+      - name: cache Debug build intermediates
+        uses: actions/cache@v4
+        with:
+          path: |
+            apps/apple/build/ios/Build/Intermediates.noindex
+            apps/apple/build/ios/SourcePackages
+          key: xcode-debug-ios-simulator-${{ runner.os }}-${{ steps.xcode.outputs.version }}-${{ hashFiles('apps/apple/project.yml', 'packages/*/Package.resolved') }}
+          restore-keys: |
+            xcode-debug-ios-simulator-${{ runner.os }}-${{ steps.xcode.outputs.version }}-
       - name: unsigned simulator build
         working-directory: apps/apple
         run: |
           xcodegen generate
+          # The runner is arm64. Pin the simulator build to one arm64 slice so
+          # it does not also compile x86_64.
           xcodebuild -project ReadLater.xcodeproj -scheme ReadLater \
-            -destination 'generic/platform=iOS Simulator' build CODE_SIGNING_ALLOWED=NO
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build/ios build CODE_SIGNING_ALLOWED=NO \
+            ONLY_ACTIVE_ARCH=YES ARCHS=arm64 \
+            COMPILER_INDEX_STORE_ENABLE=NO
 
-  invariant:
-    name: invariant
-    runs-on: macos-15
-    steps:
-      - uses: actions/checkout@v5
-      - name: spoken-slice invariant, 0 failures required
-        run: |
-          for pkg in packages/*/; do
-            if [ -f "$pkg/Package.swift" ]; then
-              swift test --package-path "$pkg" --filter Invariant
-            fi
-          done
+  # There is no separate invariant job. `swift test --filter Invariant`
+  # matched no Swift Testing names, so it only repeated the `unit` build.
+  # `unit` runs the invariant tests in every package already.
 
   # Core holds the three journeys that prove the product loop. It runs on a pull
   # request and on a push to main. A failure is a failure: no retries.
@@ -188,7 +225,9 @@ jobs:
             -project ReadLater.xcodeproj -scheme ReadLater \
             -destination '${{ matrix.destination }}' \
             -derivedDataPath build/e2e \
-            CODE_SIGNING_ALLOWED=NO
+            -only-testing:ReadLaterE2ETests \
+            CODE_SIGNING_ALLOWED=NO ONLY_ACTIVE_ARCH=YES \
+            COMPILER_INDEX_STORE_ENABLE=NO
       - name: run core journeys
         working-directory: apps/apple
         run: |
@@ -310,7 +349,9 @@ jobs:
             -project ReadLater.xcodeproj -scheme ReadLater \
             -destination '${{ matrix.destination }}' \
             -derivedDataPath build/e2e \
-            CODE_SIGNING_ALLOWED=NO
+            -only-testing:ReadLaterE2ETests \
+            CODE_SIGNING_ALLOWED=NO ONLY_ACTIVE_ARCH=YES \
+            COMPILER_INDEX_STORE_ENABLE=NO
       - name: start simulator video
         working-directory: apps/apple
         run: |
@@ -413,6 +454,13 @@ jobs:
 
   # The debug surface is DEBUG-only. A Release binary that still holds the
   # flag prefix ships a back door, so the literal must be absent.
+  #
+  # The guard inspects the device slice, which is the one that ships, not a
+  # simulator slice that never does. A generic iOS build produces that arm64
+  # slice only, so the simulator's x86_64 slice is never compiled.
+  # `DEBUG_INFORMATION_FORMAT=dwarf` and `COMPILER_INDEX_STORE_ENABLE=NO` skip
+  # dSYM and index-store work. Neither changes the `#if DEBUG` condition, so
+  # the build still proves the debug surface is compiled out.
   release-guard:
     name: release-guard
     runs-on: macos-15
@@ -427,27 +475,62 @@ jobs:
           fi
       - name: install xcodegen
         run: brew install xcodegen
+      - name: xcode version
+        id: xcode
+        run: echo "version=$(xcodebuild -version | head -1 | tr ' ' '-')" >> "$GITHUB_OUTPUT"
+      # A cache miss must never fail the job. Caches are scoped to the merge
+      # ref on a pull request, so the first run primes them and a rerun reuses
+      # them; `main` primes them for every later pull request.
+      - name: cache SwiftPM
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/org.swift.swiftpm
+            ~/.swiftpm
+          key: swiftpm-${{ runner.os }}-${{ steps.xcode.outputs.version }}-${{ hashFiles('packages/*/Package.resolved') }}
+          restore-keys: |
+            swiftpm-${{ runner.os }}-${{ steps.xcode.outputs.version }}-
+      # Caching the intermediates and the package checkouts reuses dependency
+      # modules and unchanged object files. The products are not cached, so
+      # the guard always inspects a binary linked in this run.
+      - name: cache Release build intermediates
+        uses: actions/cache@v4
+        with:
+          path: |
+            apps/apple/build/release/Build/Intermediates.noindex
+            apps/apple/build/release/SourcePackages
+          key: xcode-release-${{ runner.os }}-${{ steps.xcode.outputs.version }}-${{ hashFiles('apps/apple/project.yml', 'packages/*/Package.resolved') }}
+          restore-keys: |
+            xcode-release-${{ runner.os }}-${{ steps.xcode.outputs.version }}-
       - name: generate project
         working-directory: apps/apple
         run: xcodegen generate
-      - name: release build for the simulator
+      - name: release build for the device
         working-directory: apps/apple
         run: |
           xcodebuild -project ReadLater.xcodeproj -scheme ReadLater \
-            -destination 'generic/platform=iOS Simulator' \
+            -destination 'generic/platform=iOS' \
             -configuration Release -derivedDataPath build/release \
-            build CODE_SIGNING_ALLOWED=NO
+            build \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO \
+            ONLY_ACTIVE_ARCH=YES ARCHS=arm64 \
+            DEBUG_INFORMATION_FORMAT=dwarf COMPILER_INDEX_STORE_ENABLE=NO
       - name: the debug flag prefix is absent
         working-directory: apps/apple
         run: |
-          BIN="build/release/Build/Products/Release-iphonesimulator/ReadLater.app/ReadLater"
+          BIN="build/release/Build/Products/Release-iphoneos/ReadLater.app/ReadLater"
           if [ ! -f "$BIN" ]; then
             echo "::error::release binary not found at $BIN"
+            exit 1
+          fi
+          SLICES=$(lipo -archs "$BIN")
+          if [ "$SLICES" != "arm64" ]; then
+            echo "::error::expected one arm64 device slice, got: $SLICES"
             exit 1
           fi
           if strings -a "$BIN" | grep -F -e '--debug.'; then
             echo "::error::the Release binary still holds the debug flag prefix"
             exit 1
           fi
-          echo "Release binary holds no --debug. marker."
+          echo "Release device binary ($SLICES) holds no --debug. marker."
 
