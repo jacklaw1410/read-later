@@ -40,42 +40,6 @@ The checkpoint names map one-to-one onto
 `read-later-research/spec/device-test-plan.md` so a trace and an export agree
 (`TelemetryLog.swift:23-26`).
 
-Old names that changed in the 2026-11 rename:
-
-| Old | New |
-|---|---|
-| `T0.tap` | `entry.tap` |
-| `T1.fetchStart` | `fetch.start` |
-| `T2.headers` | `fetch.headers` |
-| `T3.bodyDone` | `fetch.body_done` |
-| `T4.parsed` | `extract.parsed` |
-| `T5.planReady` | `plan.ready` |
-| `T6.speakEnqueued` | `speech.enqueued` |
-| `T7.firstWord` | `speech.first_word` |
-| `launch.processStart` | `launch.process_start` |
-| `launch.entryReady` | `launch.entry_ready` |
-| `launch.firstFrame` | `launch.first_frame` |
-| `reader-open` | `reader.open` |
-| `play` | `playback.play` |
-| `pause` | `playback.pause` |
-| `finished` | `playback.finished` |
-| `lookup` | `lookup.start` |
-| `speed change` | `playback.speed_change` |
-| `hold-start` | `hold.start` |
-| `hold-end` | `hold.end` |
-| `app-hide` | `app.hide` |
-| `app-return` | `app.return` |
-| `speech.didStart` | `speech.did_start` |
-| `speech.didPause` | `speech.did_pause` |
-| `speech.didResume` | `speech.did_resume` |
-| `speech.didFinish` | `speech.did_finish` |
-| `speech.didCancel` | `speech.did_cancel` |
-| `speech.utteranceStart` | `speech.utterance_start` |
-| `frames.second` | `frame.second` |
-| `frame.tapWindow` | `frame.tap_window` |
-| `frame.scrubWindow` | `frame.scrub_window` |
-| `state.speaking` … | `speech.speaking` … |
-
 ### TelemetryLog
 
 The append-only writer
