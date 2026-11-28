@@ -31,13 +31,49 @@ involved. Sync replays the oplog; it never mirrors a store
 | `fields` | `[String: String]` | Flat string map. Numbers are formatted as strings at the call site. |
 
 `TelemetryName` is not an enum of cases. It is an enum namespace of static
-string constants (`TelemetryLog.swift:27-87`). Every event name is
+string constants (`TelemetryLog.swift:27-94`). Every event name is
 `<category>.<event>` with lowercase kebab-case segments, for example
 `launch.process-start`, `entry.tap`, `fetch.body-done` and
 `speech.first-word`. There is no camelCase, underscore or bare event name.
 The checkpoint names map one-to-one onto
 `read-later-research/spec/device-test-plan.md` so a trace and an export agree
 (`TelemetryLog.swift:23-26`).
+
+Old names that changed in the 2026-11 rename:
+
+| Old | New |
+|---|---|
+| `T0.tap` | `entry.tap` |
+| `T1.fetchStart` | `fetch.start` |
+| `T2.headers` | `fetch.headers` |
+| `T3.bodyDone` | `fetch.body-done` |
+| `T4.parsed` | `extract.parsed` |
+| `T5.planReady` | `plan.ready` |
+| `T6.speakEnqueued` | `speech.enqueued` |
+| `T7.firstWord` | `speech.first-word` |
+| `launch.processStart` | `launch.process-start` |
+| `launch.entryReady` | `launch.entry-ready` |
+| `launch.firstFrame` | `launch.first-frame` |
+| `reader-open` | `reader.open` |
+| `play` | `playback.play` |
+| `pause` | `playback.pause` |
+| `finished` | `playback.finished` |
+| `lookup` | `lookup.start` |
+| `speed change` | `playback.speed-change` |
+| `hold-start` | `hold.start` |
+| `hold-end` | `hold.end` |
+| `app-hide` | `app.hide` |
+| `app-return` | `app.return` |
+| `speech.didStart` | `speech.did-start` |
+| `speech.didPause` | `speech.did-pause` |
+| `speech.didResume` | `speech.did-resume` |
+| `speech.didFinish` | `speech.did-finish` |
+| `speech.didCancel` | `speech.did-cancel` |
+| `speech.utteranceStart` | `speech.utterance-start` |
+| `frames.second` | `frame.second` |
+| `frame.tapWindow` | `frame.tap-window` |
+| `frame.scrubWindow` | `frame.scrub-window` |
+| `state.speaking` … | `speech.speaking` … |
 
 ### TelemetryLog
 
