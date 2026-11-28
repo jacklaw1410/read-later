@@ -34,18 +34,29 @@ enum InteractionBenchmark {
                 session.togglePlay()
                 return await waitForEvent("state.speaking", telemetry: telemetry, after: since, timeout: 2)
             }
+            _ = await waitForEvent("frame.tapWindow", telemetry: telemetry, after: lastT(telemetry), timeout: 2)
 
             await measure("pause", prefix: prefix, telemetry: telemetry) { since in
                 session.togglePlay()
                 return await waitForEvent("state.paused", telemetry: telemetry, after: since, timeout: 2)
             }
+            _ = await waitForEvent("frame.tapWindow", telemetry: telemetry, after: lastT(telemetry), timeout: 2)
 
-            await measure("scrub", prefix: prefix, telemetry: telemetry) { _ in
-                session.beginScrubbing()
-                session.scrub(toFraction: 0.5)
-                session.finishScrubbing()
-                return true
-            }
+            // Hold the drag for a few frames so frame.scrubWindow has a
+            // window. Only the release handler is measured.
+            let scrubSince = lastT(telemetry)
+            session.beginScrubbing()
+            try? await Task.sleep(for: .milliseconds(300))
+            let scrubStart = ProcessInfo.processInfo.systemUptime
+            session.scrub(toFraction: 0.5)
+            let scrubMs = (ProcessInfo.processInfo.systemUptime - scrubStart) * 1000
+            session.finishScrubbing()
+            var scrubFields = prefix
+            scrubFields["kind"] = "scrub"
+            scrubFields["ms"] = String(format: "%.3f", scrubMs)
+            scrubFields["outcome"] = "ok"
+            telemetry.record("benchmark.interaction", fields: scrubFields)
+            _ = await waitForEvent("frame.scrubWindow", telemetry: telemetry, after: scrubSince, timeout: 2)
 
             // The lookup path resumes only when a voice was live at open.
             session.togglePlay()
